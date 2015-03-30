@@ -163,7 +163,7 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('js', [
         'jshint',
-        'uglify',
+        'uglify:vendor',
         'lineending:js'
     ]);
     grunt.registerTask('browsersync', [

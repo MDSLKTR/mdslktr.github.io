@@ -4,53 +4,88 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             skills: [],
             passives: [],
             stats: [],
+            heroes: [],
             class: {},
             name: {},
             level: {},
             paragon: {},
             polling: true,
+            url: '',
             isHidden: false,
-            url: localStorage.getItem('url')
+            //url: localStorage.getItem('url'),
+            battleTag: localStorage.getItem('battleTag'),
+            apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
+            profile: 'https://eu.api.battle.net/d3/profile/',
+            a: 'https://eu.api.battle.net/d3/profile/Ferdi-1763/hero/44057278?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm'
         };
     },
-    loadCommentsFromServer: function () {
-        if (this.state.polling === true) {
-            $.ajax({
-                url: this.state.url,
-                dataType: 'jsonp',
-                success: function (data) {
-                    this.setState({name: data.name});
-                    this.setState({class: data.class});
-                    this.setState({level: data.level});
-                    this.setState({paragon: data.paragonLevel});
-                    this.setState({skills: data.skills.active});
-                    this.setState({passives: data.skills.passive});
-                    this.setState({stats: data.stats});
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    this.setState({url: 'invalid api url'});
-                    console.error(this.state.url, status, err.toString());
-                }.bind(this)
-            });
-            console.log('updated');
-        }
+
+    loadProfileData: function() {
+        var urlConstructor = this.state.profile.concat(this.state.battleTag, '/', this.state.apiKey);
+        console.log(urlConstructor);
+        this.setState({url: urlConstructor});
+        $.ajax({
+            url: this.state.url,
+            dataType: 'jsonp',
+            success: function (data) {
+                this.setState({heroes: data.heroes});
+            }.bind(this),
+            error: function (xhr, status, err) {
+                this.setState({battleTag: 'invalid battletag'});
+                console.log(this.state.url);
+                console.error(this.state.url, status, err.toString());
+            }.bind(this)
+        });
+        console.log(this.state.heroes);
     },
+    //
+    //loadCommentsFromServer: function () {
+    //    if (this.state.polling === true) {
+    //        $.ajax({
+    //            url: this.state.url,
+    //            dataType: 'jsonp',
+    //            success: function (data) {
+    //                this.setState({name: data.name});
+    //                this.setState({class: data.class});
+    //                this.setState({level: data.level});
+    //                this.setState({paragon: data.paragonLevel});
+    //                this.setState({skills: data.skills.active});
+    //                this.setState({passives: data.skills.passive});
+    //                this.setState({stats: data.stats});
+    //            }.bind(this),
+    //            error: function (xhr, status, err) {
+    //                console.error(this.state.url, status, err.toString());
+    //            }.bind(this)
+    //        });
+    //        console.log('updated');
+    //    }
+    //},
 
     componentWillMount: function () {
-        this.loadCommentsFromServer();
-        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        //this.loadCommentsFromServer();
+        //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
 
     componentDidMount: function() {
     },
 
-    clickHandler: function () {
+    handleChange: function(e) {
+        var input =  e.target.value;
+        this.setState({battleTag: input});
+        //console.log(input);
+        //this.setState({polling: true});
+    },
+
+    onEnter: function() {
+        if (event.keyCode === 13) {
+            this.loadProfileData();
+            localStorage.setItem('battleTag', this.state.battleTag);
+        }
+    },
+
+    clearAndFocusInput: function() {
         this.setState({polling: false});
-        var newUrl = this.state.url.replace(this.state.url,[prompt('Enter a new url')]);
-        this.setState({url: newUrl});
-        console.log(newUrl);
-        this.setState({polling: true});
-        localStorage.setItem('url', newUrl);
+        this.setState({battleTag: ''});
     },
 
     render: function () {
@@ -123,7 +158,15 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
         return (
             React.DOM.div({className: 'd3-container'},
                 React.DOM.div({className: 'd3-char-bg', key: classState.key + '-image', style: style}),
-                React.DOM.div({className: 'd3-api-url' , onClick: this.clickHandler}, this.state.url),
+                React.DOM.div({className: 'd3-api-url' , onClick: this.clearAndFocusInput},
+                    React.DOM.input(
+                        {
+                            value: this.state.battleTag,
+                            onChange: this.handleChange,
+                            onKeyPress: this.onEnter
+                        }
+                    )
+                ),
                 React.DOM.div({className: 'd3-data'},
                     React.DOM.ul({className: 'base'}, base),
                     React.DOM.ul({className: 'skills'}, skills),
