@@ -8,3 +8,11 @@ D3 Profile Page build with react.js
 - Grunt
 - Bower
 - Vagrant
+
+
+## information
+
+- vagrant up -> port: 1234
+- grunt css/js to compile
+- autoprefixer is available
+- grunt browsersync is available
