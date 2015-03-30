@@ -8,18 +8,6 @@ sudo apt-get -y install curl apache2 php5 php5-curl php5-mcrypt python-software-
 # Composer will be the package manager for our 3rd party PHP libraries
 curl -sS https://getcomposer.org/installer | php
 mv composer.phar /usr/local/bin/composer
-# remove any existing couchdb binaries
-sudo apt-get remove couchdb couchdb-bin couchdb-common -yf
-# see my shiny goodness - note the version number displayed and ensure its what you expect
-sudo apt-get install -Vy couchdb
-# manage via upstart
-sudo service couchdb stop
-
-# Create desired CouchDB configuration
-sudo cp /vagrant/_vagrant/local.ini /etc/couchdb/local.ini
-sudo chmod 0777 /etc/couchdb/local.ini
-
-sudo service couchdb start
 
 # Activate Apache2's mod_rewrite and mod_headers (just in case)
 a2enmod rewrite
@@ -46,5 +34,3 @@ sudo chmod 0777 /etc/apache2/sites-available/000-default.conf
 
 # Restart Apache2 for the changes to take effect
 service apache2 restart
-
-sudo curl -X PUT http://localhost:5984/_config/admins/pixolith -d '"test12345"'

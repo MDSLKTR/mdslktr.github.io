@@ -6,7 +6,9 @@ module.exports = function (grunt) {
     var sourcemaps = true;
 
     require('jit-grunt')(grunt, {
-        'scsslint' : 'grunt-scss-lint'
+        'scsslint' : 'grunt-scss-lint',
+        'sass' : 'grunt-sass',
+        'browserSync' : 'grunt-browser-sync'
     });
 
     grunt.initConfig({
@@ -50,6 +52,41 @@ module.exports = function (grunt) {
                 }
             }
         },
+        jshint: {
+            options: {
+                jshintrc: '.jshintrc'
+            },
+            dist: [
+                '_dev/js/**/*.js'
+            ],
+            Gruntfile: [
+                'Gruntfile.js'
+            ]
+        },
+        uglify: {
+            vendor: {
+                options: {
+                    sourceMap: false
+                },
+                files: {
+                    'assets/js/vendor.min.js': [
+                        '_vendor/jquery/dist/jquery.js',
+                        '_vendor/react/react-with-addons.js'
+
+                    ]
+                }
+            },
+            scripts: {
+                options: {
+                    sourceMap: false
+                },
+                files: {
+                    'assets/js/scripts.min.js': [
+                        '_dev/js/*.js'
+                    ]
+                }
+            }
+        },
         lineending: {
             options: {
                 eol: 'lf',
@@ -71,6 +108,7 @@ module.exports = function (grunt) {
                 bsFiles: {
                     src: [
                         'assets/css/styles.min.css',
+                        'assets/js/*.js',
                         'assets/images/*.png',
                         'assets/images/*.svg',
                         'site/templates/*.php',
@@ -98,6 +136,12 @@ module.exports = function (grunt) {
                     'css'
                 ]
             },
+            vendor_js: {
+                files: ['_dev/js/*.js'],
+                tasks: [
+                    'terminal_js'
+                ]
+            },
             Gruntfile: {
                 files: ['Gruntfile.js'],
                 tasks: [
@@ -108,13 +152,19 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('default', [
-        'css'
+        'css',
+        'js'
     ]);
     grunt.registerTask('css', [
         'libsass',
         'autoprefixer',
         //'cssmin',
         'lineending:css'
+    ]);
+    grunt.registerTask('js', [
+        'jshint',
+        'uglify',
+        'lineending:js'
     ]);
     grunt.registerTask('browsersync', [
         'browserSync'

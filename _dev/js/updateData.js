@@ -1,4 +1,4 @@
-var DataWrapper = React.createClass({displayName: "DataWrapper",
+var DataWrapper = React.createClass({displayName: 'DataWrapper',
     getInitialState: function () {
         return {
             skills: [],
@@ -70,26 +70,26 @@ var DataWrapper = React.createClass({displayName: "DataWrapper",
 
         if (classState === 'demon-hunter') {
             style = {
-                backgroundImage: "url('/assets/images/dh.jpg')"
+                backgroundImage: 'url("/assets/images/dh.jpg")'
             };
         } else if (classState === 'witch-doctor') {
             style = {
-                backgroundImage: "url('/assets/images/wd.png')"
+                backgroundImage: 'url("/assets/images/wd.png")'
             };
         } else {
             style = {
-                backgroundImage: "url('/assets/images/empty.svg')"
+                backgroundImage: 'url("/assets/images/empty.svg")'
             };
         }
 
-        base.push(React.DOM.li({key: nameState.key}, "Name: ", nameState));
-        base.push(React.DOM.li({key: classState.key}, "Class: ", classState));
-        base.push(React.DOM.li({key: levelState.key + paragonState.key}, "Level: ", levelState));
-        base.push(React.DOM.li({key: paragonState.key}, "Paragon: ", paragonState));
+        base.push(React.DOM.li({key: nameState.key}, 'Name: ', nameState));
+        base.push(React.DOM.li({key: classState.key}, 'Class: ', classState));
+        base.push(React.DOM.li({key: levelState.key + paragonState.key}, 'Level: ', levelState));
+        base.push(React.DOM.li({key: paragonState.key}, 'Paragon: ', paragonState));
 
         skillsState.forEach(function (skillName) {
             if (skillName.rune) {
-                skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, " with ", skillName.rune.name));
+                skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
             } else {
                 skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
             }
@@ -100,25 +100,25 @@ var DataWrapper = React.createClass({displayName: "DataWrapper",
         });
 
 
-        stats.push(React.DOM.li({key: statsState.key}, "Life: ", statsState.life));
-        stats.push(React.DOM.li({key: statsState.key}, "Damage: ", statsState.damage));
-        stats.push(React.DOM.li({key: statsState.key}, "Toughness: ", statsState.toughness));
+        stats.push(React.DOM.li({key: statsState.key}, 'Life: ', statsState.life));
+        stats.push(React.DOM.li({key: statsState.key}, 'Damage: ', statsState.damage));
+        stats.push(React.DOM.li({key: statsState.key}, 'Toughness: ', statsState.toughness));
 
 
         var statsArray = [statsState.strength, statsState.dexterity, statsState.intelligence];
         if (classState === ('demon-hunter' || 'monk')) {
-           stats.push(React.DOM.li({key: statsState.key}, "Dexterity: ", statsState.dexterity));
+           stats.push(React.DOM.li({key: statsState.key}, 'Dexterity: ', statsState.dexterity));
 
         } else if (classState === ('witch-doctor' || 'wizard')) {
-           stats.push(React.DOM.li({key: statsState.key}, "Intelligence: ", statsState.intelligence));
+           stats.push(React.DOM.li({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
 
         } else if (classState === ('barbarian' || 'crusader')) {
-           stats.push(React.DOM.li({key: statsState.key}, "Strength: ", statsState.strength));
+           stats.push(React.DOM.li({key: statsState.key}, 'Strength: ', statsState.strength));
         } else {
             console.log('new class?');
         }
 
-        stats.push(React.DOM.li({key: statsState.key}, "Vitality: ", statsState.vitality));
+        stats.push(React.DOM.li({key: statsState.key}, 'Vitality: ', statsState.vitality));
 
         return (
             React.DOM.div({className: 'd3-container'},
