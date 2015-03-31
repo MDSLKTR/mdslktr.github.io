@@ -94,7 +94,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
         if (classState === 'demon-hunter') {
             style = {
-                backgroundImage: 'url("/assets/images/dh.jpg")'
+                backgroundImage: 'url("/assets/images/dh.png")'
             };
         } else if (classState === 'witch-doctor') {
             style = {
