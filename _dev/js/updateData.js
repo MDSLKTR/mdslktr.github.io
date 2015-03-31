@@ -11,81 +11,77 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             paragon: {},
             polling: true,
             url: '',
+            id: '',
             isHidden: false,
             //url: localStorage.getItem('url'),
             battleTag: localStorage.getItem('battleTag'),
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
             profile: 'https://eu.api.battle.net/d3/profile/',
-            a: 'https://eu.api.battle.net/d3/profile/Ferdi-1763/hero/44057278?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm'
+            a: 'https://eu.api.battle.net/d3/profile/Ferdi-1763/hero/44057278?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
+            b: 'https://eu.api.battle.net/d3/profile/Ferdi-1763/?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm'
         };
     },
 
     loadProfileData: function() {
-        var urlConstructor = this.state.profile.concat(this.state.battleTag, '/', this.state.apiKey);
-        console.log(urlConstructor);
-        this.setState({url: urlConstructor});
-        $.ajax({
-            url: this.state.url,
-            dataType: 'jsonp',
-            success: function (data) {
-                this.setState({heroes: data.heroes});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                this.setState({battleTag: 'invalid battletag'});
-                console.log(this.state.url);
-                console.error(this.state.url, status, err.toString());
-            }.bind(this)
-        });
-        console.log(this.state.heroes);
+        if (this.state.battleTag) {
+            this.setState({url: this.state.profile.concat(this.state.battleTag, '/', this.state.apiKey)});
+            $.ajax({
+                url: this.state.url,
+                dataType: 'jsonp',
+                success: function (data) {
+                    this.setState({heroes: data.heroes});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(this.state.url, status, err.toString());
+                }.bind(this)
+            });
+            console.log('updated herolist');
+        }
     },
-    //
-    //loadCommentsFromServer: function () {
-    //    if (this.state.polling === true) {
-    //        $.ajax({
-    //            url: this.state.url,
-    //            dataType: 'jsonp',
-    //            success: function (data) {
-    //                this.setState({name: data.name});
-    //                this.setState({class: data.class});
-    //                this.setState({level: data.level});
-    //                this.setState({paragon: data.paragonLevel});
-    //                this.setState({skills: data.skills.active});
-    //                this.setState({passives: data.skills.passive});
-    //                this.setState({stats: data.stats});
-    //            }.bind(this),
-    //            error: function (xhr, status, err) {
-    //                console.error(this.state.url, status, err.toString());
-    //            }.bind(this)
-    //        });
-    //        console.log('updated');
-    //    }
-    //},
+
+    loadCommentsFromServer: function () {
+        if (this.state.selected) {
+            this.setState({url: this.state.profile.concat(this.state.battleTag, '/hero/',this.state.selected, this.state.apiKey)});
+            $.ajax({
+                url: this.state.url,
+                dataType: 'jsonp',
+                success: function (data) {
+                    this.setState({name: data.name});
+                    this.setState({class: data.class});
+                    this.setState({level: data.level});
+                    this.setState({paragon: data.paragonLevel});
+                    this.setState({skills: data.skills.active});
+                    this.setState({passives: data.skills.passive});
+                    this.setState({stats: data.stats});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(this.state.url, status, err.toString());
+                }.bind(this)
+            });
+            console.log('updated data');
+        }
+    },
 
     componentWillMount: function () {
         //this.loadCommentsFromServer();
+        this.loadProfileData();
         //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
-    },
-
-    componentDidMount: function() {
+        setInterval(this.loadProfileData, this.props.pollInterval);
+        if (this.state.polling === true) {
+            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+        }
     },
 
     handleChange: function(e) {
         var input =  e.target.value;
         this.setState({battleTag: input});
-        //console.log(input);
-        //this.setState({polling: true});
+        localStorage.setItem('battleTag', input);
     },
 
-    onEnter: function() {
-        if (event.keyCode === 13) {
-            this.loadProfileData();
-            localStorage.setItem('battleTag', this.state.battleTag);
-        }
-    },
-
-    clearAndFocusInput: function() {
-        this.setState({polling: false});
-        this.setState({battleTag: ''});
+    setSelect: function() {
+        var newValue = this.refs.select.getDOMNode().value;
+        this.setState({selected: newValue});
+        this.loadCommentsFromServer();
     },
 
     render: function () {
@@ -97,6 +93,8 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             statsState = this.state.stats,
             stats = [],
             nameState = this.state.name,
+            heroes = [],
+            heroesState = this.state.heroes,
             classState = this.state.class,
             levelState = this.state.level,
             paragonState = this.state.paragon,
@@ -111,62 +109,97 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             style = {
                 backgroundImage: 'url("/assets/images/wd.png")'
             };
+        } else if (classState === 'barbarian') {
+            style = {
+                backgroundImage: 'url("/assets/images/barb.png")'
+            };
+        } else if (classState === 'crusader') {
+            style = {
+                backgroundImage: 'url("/assets/images/crusader.png")'
+            };
+        } else if (classState === 'monk') {
+            style = {
+                backgroundImage: 'url("/assets/images/monk.png")'
+            };
+        } else if (classState === 'wizard') {
+            style = {
+                backgroundImage: 'url("/assets/images/wiz.jpg")'
+            };
         } else {
             style = {
-                backgroundImage: 'url("/assets/images/empty.svg")'
+                backgroundImage: 'url("/assets/images/empty.svg)'
             };
         }
 
-        base.push(React.DOM.li({key: nameState.key}, 'Name: ', nameState));
-        base.push(React.DOM.li({key: classState.key}, 'Class: ', classState));
-        base.push(React.DOM.li({key: levelState.key + paragonState.key}, 'Level: ', levelState));
-        base.push(React.DOM.li({key: paragonState.key}, 'Paragon: ', paragonState));
-
-        skillsState.forEach(function (skillName) {
-            if (skillName.rune) {
-                skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
-            } else {
-                skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
-            }
-        });
-
-        passivesState.forEach(function (passiveName) {
-            passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name));
-        });
-
-
-        stats.push(React.DOM.li({key: statsState.key}, 'Life: ', statsState.life));
-        stats.push(React.DOM.li({key: statsState.key}, 'Damage: ', statsState.damage));
-        stats.push(React.DOM.li({key: statsState.key}, 'Toughness: ', statsState.toughness));
-
-
-        var statsArray = [statsState.strength, statsState.dexterity, statsState.intelligence];
-        if (classState === ('demon-hunter' || 'monk')) {
-           stats.push(React.DOM.li({key: statsState.key}, 'Dexterity: ', statsState.dexterity));
-
-        } else if (classState === ('witch-doctor' || 'wizard')) {
-           stats.push(React.DOM.li({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
-
-        } else if (classState === ('barbarian' || 'crusader')) {
-           stats.push(React.DOM.li({key: statsState.key}, 'Strength: ', statsState.strength));
-        } else {
-            console.log('new class?');
+        if (this.state.heroes) {
+            heroes.push(React.DOM.option({key: heroesState.key, value: '', style: {display:'none'} }, 'select hero'));
+            heroesState.forEach(function (heroName) {
+                heroes.push(React.DOM.option({key: heroesState.key, value: heroName.id}, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
+            });
         }
 
-        stats.push(React.DOM.li({key: statsState.key}, 'Vitality: ', statsState.vitality));
+        if (nameState !== [] || classState !== [] || levelState !== [] || paragonState !== [] ) {
+            base.push(React.DOM.li({key: nameState.key}, 'Name: ', nameState));
+            base.push(React.DOM.li({key: classState.key}, 'Class: ', classState));
+            base.push(React.DOM.li({key: levelState.key + paragonState.key}, 'Level: ', levelState));
+            base.push(React.DOM.li({key: paragonState.key}, 'Paragon: ', paragonState));
+        }
+
+        if (skillsState !== []) {
+            skillsState.forEach(function (skillName) {
+                if (skillName.rune) {
+                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
+                } else if (skillName.skill) {
+                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
+                }
+            });
+        }
+
+        if (passivesState !== []) {
+            passivesState.forEach(function (passiveName) {
+                if (passiveName.skill) {
+                    passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name));
+                }
+            });
+        }
+
+
+        if (statsState.life !== [] || statsState.damage !== [] || statsState.toughness !== []) {
+            stats.push(React.DOM.li({key: statsState.key}, 'Life: ', statsState.life));
+            stats.push(React.DOM.li({key: statsState.key}, 'Damage: ', statsState.damage));
+            stats.push(React.DOM.li({key: statsState.key}, 'Toughness: ', statsState.toughness));
+
+            if (classState === 'demon-hunter' || classState === 'monk') {
+                stats.push(React.DOM.li({key: statsState.key}, 'Dexterity: ', statsState.dexterity));
+
+            } else if (classState === 'witch-doctor' || classState === 'wizard') {
+                stats.push(React.DOM.li({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
+
+            } else if (classState === 'barbarian' ||  classState === 'crusader') {
+                stats.push(React.DOM.li({key: statsState.key}, 'Strength: ', statsState.strength));
+            }
+
+            stats.push(React.DOM.li({key: statsState.key}, 'Vitality: ', statsState.vitality));
+        }
+
+        var statsArray = [statsState.strength, statsState.dexterity, statsState.intelligence];
 
         return (
             React.DOM.div({className: 'd3-container'},
-                React.DOM.div({className: 'd3-char-bg', key: classState.key + '-image', style: style}),
+                React.DOM.div({className: 'd3-char-bg', style: style}),
                 React.DOM.div({className: 'd3-api-url' , onClick: this.clearAndFocusInput},
                     React.DOM.input(
                         {
                             value: this.state.battleTag,
-                            onChange: this.handleChange,
-                            onKeyPress: this.onEnter
+                            placeholder: 'NAME-1234',
+                            onChange: this.handleChange
                         }
                     )
                 ),
+                React.DOM.div({className: 'd3-char-wrapper'},
+                    React.DOM.select({className: 'd3-chars' , ref: 'select' ,value: this.state.selected ,onChange: this.setSelect}, heroes)
+                ),
+
                 React.DOM.div({className: 'd3-data'},
                     React.DOM.ul({className: 'base'}, base),
                     React.DOM.ul({className: 'skills'}, skills),
@@ -179,18 +212,13 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 });
 
 React.render(React.createElement(DataWrapper, {
-        pollInterval: 5000
+        pollInterval: 2000
     }),
     document.getElementById('profile-data'));
 
-// http://eu.battle.net/api/d3/profile/Ferdi-1763/hero/44057278
-// http://eu.battle.net/api/d3/profile/McleodNUS-2608/hero/56016042
+// Ferdi-1763
+// /McleodNUS-2608
 
-// https://eu.api.battle.net/d3/profile/Ferdi-1763/hero/44057278?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
-// https://eu.api.battle.net/d3/profile/McleodNUS-2608/hero/56016042?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
-
-// https://eu.api.battle.net/d3/profile/Ferdi-1763/hero/44057278?locale=en_GB&callback=data&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
-// https://eu.api.battle.net/d3/profile/McleodNUS-2608/hero/56016042?locale=en_GB&callback=data&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
 
 // todos
 // save url to localStorage - done

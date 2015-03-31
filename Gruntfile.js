@@ -136,10 +136,10 @@ module.exports = function (grunt) {
                     'css'
                 ]
             },
-            vendor_js: {
+            js: {
                 files: ['_dev/js/*.js'],
                 tasks: [
-                    'terminal_js'
+                    'js'
                 ]
             },
             Gruntfile: {
