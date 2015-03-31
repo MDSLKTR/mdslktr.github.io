@@ -11,20 +11,15 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             paragon: {},
             polling: true,
             url: '',
-            id: '',
-            isHidden: false,
-            //url: localStorage.getItem('url'),
             battleTag: localStorage.getItem('battleTag'),
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
-            profile: 'https://eu.api.battle.net/d3/profile/',
-            a: 'https://eu.api.battle.net/d3/profile/Ferdi-1763/hero/44057278?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
-            b: 'https://eu.api.battle.net/d3/profile/Ferdi-1763/?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm'
+            profile: 'https://eu.api.battle.net/d3/profile/'
         };
     },
 
     loadProfileData: function() {
         if (this.state.battleTag) {
-            this.setState({url: this.state.profile.concat(this.state.battleTag, '/', this.state.apiKey)});
+            this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, "-"), '/', this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
                 dataType: 'jsonp',
@@ -41,7 +36,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
     loadCommentsFromServer: function () {
         if (this.state.selected) {
-            this.setState({url: this.state.profile.concat(this.state.battleTag, '/hero/',this.state.selected, this.state.apiKey)});
+            this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, "-"), '/hero/',this.state.selected, this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
                 dataType: 'jsonp',
@@ -63,13 +58,9 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
     },
 
     componentWillMount: function () {
-        //this.loadCommentsFromServer();
         this.loadProfileData();
-        //setInterval(this.loadCommentsFromServer, this.props.pollInterval);
         setInterval(this.loadProfileData, this.props.pollInterval);
-        if (this.state.polling === true) {
-            setInterval(this.loadCommentsFromServer, this.props.pollInterval);
-        }
+        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
 
     handleChange: function(e) {
@@ -163,7 +154,6 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             });
         }
 
-
         if (statsState.life !== [] || statsState.damage !== [] || statsState.toughness !== []) {
             stats.push(React.DOM.li({key: statsState.key}, 'Life: ', statsState.life));
             stats.push(React.DOM.li({key: statsState.key}, 'Damage: ', statsState.damage));
@@ -178,11 +168,8 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             } else if (classState === 'barbarian' ||  classState === 'crusader') {
                 stats.push(React.DOM.li({key: statsState.key}, 'Strength: ', statsState.strength));
             }
-
             stats.push(React.DOM.li({key: statsState.key}, 'Vitality: ', statsState.vitality));
         }
-
-        var statsArray = [statsState.strength, statsState.dexterity, statsState.intelligence];
 
         return (
             React.DOM.div({className: 'd3-container'},
@@ -197,7 +184,14 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     )
                 ),
                 React.DOM.div({className: 'd3-char-wrapper'},
-                    React.DOM.select({className: 'd3-chars' , ref: 'select' ,value: this.state.selected ,onChange: this.setSelect}, heroes)
+                    React.DOM.select(
+                        {
+                            className: 'd3-chars' ,
+                            ref: 'select' ,
+                            value: this.state.selected ,
+                            onChange: this.setSelect
+                        }, heroes
+                    )
                 ),
 
                 React.DOM.div({className: 'd3-data'},
@@ -216,8 +210,8 @@ React.render(React.createElement(DataWrapper, {
     }),
     document.getElementById('profile-data'));
 
-// Ferdi-1763
-// /McleodNUS-2608
+// Ferdi#1763
+// McleodNUS#2608
 
 
 // todos
