@@ -155,7 +155,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             icons.forEach(function (img) {
                 var constructedLink = this.state.iconLink.concat(img.skill.icon);
                 if (img.skill.icon) {
-                    img.push(React.DOM.span({key: imgLink.key ,style: {background: url(constructedLink)}}, 'skill-img'));
+                    icons.push(React.DOM.span({key: imgLink.key ,style: {background: url(constructedLink)}}, 'skill-img'));
                 }
             });
         }
@@ -210,7 +210,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
                 React.DOM.div({className: 'd3-data'},
                     React.DOM.ul({className: 'base'}, base),
-                    React.DOM.ul({className: 'skills'}, skills),
+                    React.DOM.ul({className: 'skills'}, skills + icons),
                     React.DOM.ul({className: 'passives'}, passives),
                     React.DOM.ul({className: 'stats'}, stats)
                 )
