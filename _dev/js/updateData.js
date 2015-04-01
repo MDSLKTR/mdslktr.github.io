@@ -13,7 +13,10 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             url: '',
             battleTag: localStorage.getItem('battleTag'),
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
-            profile: 'https://eu.api.battle.net/d3/profile/'
+            profile: 'https://eu.api.battle.net/d3/profile/',
+            iconLink: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
+            skillIconLink: 'http://media.blizzard.com/d3/icons/skills/64/barbarian_overpower.png',
+            passsiveIconLink : 'http://us.media.blizzard.com/d3/icons/skills/64/barbarian_passive_brawler.png'
         };
     },
 
