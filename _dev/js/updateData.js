@@ -15,7 +15,8 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
             profile: 'https://eu.api.battle.net/d3/profile/',
             iconLink: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
-            skillIconLink: 'http://media.blizzard.com/d3/icons/skills/64/barbarian_overpower.png',
+            test: 'http://media.blizzard.com/d3/icons/skills/64/barbarian_overpower.png',
+            skillIconLink: 'http://media.blizzard.com/d3/icons/skills/64/',
             passsiveIconLink : 'http://us.media.blizzard.com/d3/icons/skills/64/barbarian_passive_brawler.png'
         };
     },
@@ -93,7 +94,8 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             levelState = this.state.level,
             paragonState = this.state.paragon,
             base = [],
-            style = [];
+            style = [],
+            icons = [];
 
         if (classState === 'demon-hunter') {
             style = {
@@ -145,6 +147,15 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
                 } else if (skillName.skill) {
                     skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
+                }
+            });
+        }
+
+        if (icons !== []) {
+            icons.forEach(function (img) {
+                var constructedLink = this.state.iconLink.concat(img.skill.icon);
+                if (img.skill.icon) {
+                    img.push(React.DOM.span({key: imgLink.key ,style: {background: url(constructedLink)}}, 'skill-img'));
                 }
             });
         }
