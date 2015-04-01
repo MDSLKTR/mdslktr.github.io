@@ -178,7 +178,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     React.DOM.input(
                         {
                             value: this.state.battleTag,
-                            placeholder: 'NAME-1234',
+                            placeholder: 'NAME#1234',
                             onChange: this.handleChange
                         }
                     )
