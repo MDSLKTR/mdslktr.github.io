@@ -149,9 +149,12 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     var constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
                 }
                 if (skillName.rune) {
-                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.span({key: skillsState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'skill-img')));
+                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
+                    skills.push(React.DOM.span({key: skillsState.key, style: {background:'url(' + constructedLink + '.png)'}}));
                 } else if (skillName.skill) {
-                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, React.DOM.span({key: skillsState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'skill-img')));
+                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
+                    skills.push(React.DOM.span({key: skillsState.key, style: {background:'url(' + constructedLink + '.png)'}}));
+
                 }
             });
         }
@@ -160,7 +163,8 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             passivesState.forEach(function (passiveName) {
                 if (passiveName.skill) {
                     var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
-                    passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name, React.DOM.span({key: passivesState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'passive-img')));
+                    passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name));
+                    passives.push(React.DOM.span({key: passivesState.key , style: {background:'url(' + constructedLink + '.png)'}}));
                 }
             });
         }
