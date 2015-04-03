@@ -145,19 +145,21 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
         if (skillsState !== []) {
             skillsState.forEach(function (skillName) {
-                var constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
+                if (skillName.skill) {
+                    var constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
+                }
                 if (skillName.rune) {
                     skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.span({key: skillsState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'skill-img')));
                 } else if (skillName.skill) {
-                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
+                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, React.DOM.span({key: skillsState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'skill-img')));
                 }
             });
         }
 
         if (passivesState !== []) {
             passivesState.forEach(function (passiveName) {
-                var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
                 if (passiveName.skill) {
+                    var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
                     passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name, React.DOM.span({key: passivesState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'passive-img')));
                 }
             });
