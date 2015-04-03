@@ -35,6 +35,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                 }.bind(this)
             });
             console.log('updated herolist');
+            console.log(this.state.url);
         }
     },
 
@@ -58,6 +59,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                 }.bind(this)
             });
             console.log('updated data');
+            console.log(this.state.url);
         }
     },
 
@@ -95,7 +97,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             paragonState = this.state.paragon,
             base = [],
             style = [],
-            icons = [];
+            skillIconBaseUrl = this.state.skillIconLink;
 
         if (classState === 'demon-hunter') {
             style = {
@@ -143,27 +145,20 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
         if (skillsState !== []) {
             skillsState.forEach(function (skillName) {
+                var constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
                 if (skillName.rune) {
-                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
+                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.span({key: skillsState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'skill-img')));
                 } else if (skillName.skill) {
                     skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
                 }
             });
         }
 
-        if (icons !== []) {
-            icons.forEach(function (img) {
-                var constructedLink = this.state.iconLink.concat(img.skill.icon);
-                if (img.skill.icon) {
-                    icons.push(React.DOM.span({key: imgLink.key ,style: {background: url(constructedLink)}}, 'skill-img'));
-                }
-            });
-        }
-
         if (passivesState !== []) {
             passivesState.forEach(function (passiveName) {
+                var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
                 if (passiveName.skill) {
-                    passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name));
+                    passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name, React.DOM.span({key: passivesState.key , style: {background:'url(' + constructedLink + '.png)'}}, 'passive-img')));
                 }
             });
         }
@@ -210,7 +205,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
                 React.DOM.div({className: 'd3-data'},
                     React.DOM.ul({className: 'base'}, base),
-                    React.DOM.ul({className: 'skills'}, skills + icons),
+                    React.DOM.ul({className: 'skills'}, skills),
                     React.DOM.ul({className: 'passives'}, passives),
                     React.DOM.ul({className: 'stats'}, stats)
                 )
