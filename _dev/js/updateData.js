@@ -101,37 +101,37 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
         switch(classState) {
             case 'demon-hunter':
                 style = {
-                    backgroundImage: 'url("/assets/images/dh.png")'
+                    backgroundImage: 'url("../../assets/images/dh.png")'
                 };
                 break;
             case 'witch-doctor':
                 style = {
-                    backgroundImage: 'url("/assets/images/wd.png")'
+                    backgroundImage: 'url("../../assets/images/wd.png")'
                 };
                 break;
             case 'barbarian':
                 style = {
-                    backgroundImage: 'url("/assets/images/barb.png")'
+                    backgroundImage: 'url("../../assets/images/barb.png")'
                 };
                 break;
             case 'crusader':
                 style = {
-                    backgroundImage: 'url("/assets/images/crusader.png")'
+                    backgroundImage: 'url("../../assets/images/crusader.png")'
                 };
                 break;
             case 'monk':
                 style = {
-                    backgroundImage: 'url("/assets/images/monk.png")'
+                    backgroundImage: 'url("../../assets/images/monk.png")'
                 };
                 break;
             case 'wizard':
                 style = {
-                    backgroundImage: 'url("/assets/images/wiz.jpg")'
+                    backgroundImage: 'url("../../assets/images/wiz.jpg")'
                 };
                 break;
             default:
                 style = {
-                    backgroundImage: 'url("/assets/images/empty.svg)'
+                    backgroundImage: 'url("../../assets/images/empty.svg)'
                 };
         }
 
@@ -142,11 +142,13 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             });
         }
 
-        if (nameState !== [] || classState !== [] || levelState !== [] || paragonState !== [] ) {
+        if (nameState !== [] && classState !== [] && levelState !== []) {
             base.push(React.DOM.li({key: nameState.key}, 'Name: ', nameState));
             base.push(React.DOM.li({key: classState.key}, 'Class: ', classState));
             base.push(React.DOM.li({key: levelState.key}, 'Level: ', levelState));
-            base.push(React.DOM.li({key: paragonState.key}, 'Paragon: ', paragonState));
+            if (paragonState !== []) {
+                base.push(React.DOM.li({key: paragonState.key}, 'Paragon: ', paragonState));
+            }
         }
 
         if (skillsState !== []) {
@@ -174,7 +176,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             });
         }
 
-        if (statsState.life !== [] || statsState.damage !== [] || statsState.toughness !== []) {
+        if (statsState.life !== [] && statsState.damage !== [] && statsState.toughness !== [] && statsState.vitality !== []) {
             stats.push(React.DOM.li({key: statsState.key}, 'Life: ', statsState.life));
             stats.push(React.DOM.li({key: statsState.key}, 'Damage: ', statsState.damage));
             stats.push(React.DOM.li({key: statsState.key}, 'Toughness: ', statsState.toughness));
@@ -206,14 +208,13 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                 React.DOM.div({className: 'd3-char-wrapper'},
                     React.DOM.select(
                         {
-                            className: 'd3-chars' ,
-                            ref: 'select' ,
-                            value: this.state.selected ,
+                            className: 'd3-chars',
+                            ref: 'select',
+                            value: this.state.selected,
                             onChange: this.setSelect
                         }, heroes
                     )
                 ),
-
                 React.DOM.ul({className: 'base'}, base),
                 React.DOM.ul({className: 'skills'}, skills),
                 React.DOM.ul({className: 'passives'}, passives),
