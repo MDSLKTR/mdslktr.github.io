@@ -98,34 +98,41 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             style = [],
             skillIconBaseUrl = this.state.skillIconLink;
 
-        if (classState === 'demon-hunter') {
-            style = {
-                backgroundImage: 'url("/assets/images/dh.png")'
-            };
-        } else if (classState === 'witch-doctor') {
-            style = {
-                backgroundImage: 'url("/assets/images/wd.png")'
-            };
-        } else if (classState === 'barbarian') {
-            style = {
-                backgroundImage: 'url("/assets/images/barb.png")'
-            };
-        } else if (classState === 'crusader') {
-            style = {
-                backgroundImage: 'url("/assets/images/crusader.png")'
-            };
-        } else if (classState === 'monk') {
-            style = {
-                backgroundImage: 'url("/assets/images/monk.png")'
-            };
-        } else if (classState === 'wizard') {
-            style = {
-                backgroundImage: 'url("/assets/images/wiz.jpg")'
-            };
-        } else {
-            style = {
-                backgroundImage: 'url("/assets/images/empty.svg)'
-            };
+        switch(classState) {
+            case 'demon-hunter':
+                style = {
+                    backgroundImage: 'url("/assets/images/dh.png")'
+                };
+                break;
+            case 'witch-doctor':
+                style = {
+                    backgroundImage: 'url("/assets/images/wd.png")'
+                };
+                break;
+            case 'barbarian':
+                style = {
+                    backgroundImage: 'url("/assets/images/barb.png")'
+                };
+                break;
+            case 'crusader':
+                style = {
+                    backgroundImage: 'url("/assets/images/crusader.png")'
+                };
+                break;
+            case 'monk':
+                style = {
+                    backgroundImage: 'url("/assets/images/monk.png")'
+                };
+                break;
+            case 'wizard':
+                style = {
+                    backgroundImage: 'url("/assets/images/wiz.jpg")'
+                };
+                break;
+            default:
+                style = {
+                    backgroundImage: 'url("/assets/images/empty.svg)'
+                };
         }
 
         if (this.state.heroes) {
