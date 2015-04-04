@@ -21,7 +21,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
         };
     },
 
-    loadProfileData: function() {
+    loadHeroesData: function() {
         if (this.state.battleTag) {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
             $.ajax({
@@ -39,7 +39,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
         }
     },
 
-    loadCommentsFromServer: function () {
+    loadProfileData: function () {
         if (this.state.selected) {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/',this.state.selected, this.state.apiKey)});
             $.ajax({
@@ -64,9 +64,9 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
     },
 
     componentWillMount: function () {
-        this.loadProfileData();
+        this.loadHeroesData();
+        setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadProfileData, this.props.pollInterval);
-        setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
 
     handleChange: function(e) {
@@ -78,7 +78,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
     setSelect: function() {
         var newValue = this.refs.select.getDOMNode().value;
         this.setState({selected: newValue});
-        this.loadCommentsFromServer();
+        this.loadProfileData();
     },
 
     render: function () {

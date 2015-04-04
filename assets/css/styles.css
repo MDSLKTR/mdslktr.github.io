@@ -22,7 +22,7 @@ body { background: url(/assets/images/bg.jpg); background-size: cover; backgroun
 .d3-char-wrapper select { position: absolute; left: 50%; top: 5%; -webkit-transform: translateX(-50%); transform: translateX(-50%); width: 90%; }
 
 ul { list-style: none; margin: 0; padding: 0; }
-ul li { background: lightgrey; opacity: 0.85; -webkit-animation-duration: 5s; animation-duration: 5s; -webkit-animation-iteration-count: 1; animation-iteration-count: 1; -webkit-animation-fill-mode: forwards; animation-fill-mode: forwards; }
+ul li { background: lightgrey; opacity: 0.85; -webkit-animation-duration: 5s; animation-duration: 5s; -webkit-animation-iteration-count: 1; animation-iteration-count: 1; -webkit-animation-fill-mode: forwards; animation-fill-mode: forwards; will-change: animation; }
 
 .d3-char-bg { position: relative; margin: 7.5vh auto; width: 405px; height: 615px; background-size: contain; background-repeat: no-repeat; background-position: center center; -webkit-animation: fadeIn 3s; animation: fadeIn 3s; -webkit-animation-delay: 2.5s; animation-delay: 2.5s; -webkit-animation-fill-mode: forwards; animation-fill-mode: forwards; opacity: 0; will-change: animation; }
 
@@ -33,7 +33,7 @@ ul li { background: lightgrey; opacity: 0.85; -webkit-animation-duration: 5s; an
   to { opacity: 1; } }
 .header-center { border-radius: 7px; padding: 0.5vh 2.5vw; color: white; background: grey; opacity: 0.85; position: fixed; top: 0; font-size: 2rem; left: 50%; will-change: animation; -webkit-animation: fromTop 1s; animation: fromTop 1s; -webkit-animation-fill-mode: forwards; animation-fill-mode: forwards; }
 
-.header-left, .header-right, .header-bottom-left, .header-bottom-right { position: fixed; opacity: 0.5; background: black; color: white; z-index: 1; font-size: 1.25rem; -webkit-animation-duration: 5s; animation-duration: 5s; -webkit-animation-iteration-count: 1; animation-iteration-count: 1; -webkit-animation-fill-mode: forwards; animation-fill-mode: forwards; border-radius: 7px; padding: 1.5vh; }
+.header-left, .header-right, .header-bottom-left, .header-bottom-right { position: fixed; opacity: 0.5; background: black; color: white; z-index: 1; font-size: 1.25rem; -webkit-animation-duration: 5s; animation-duration: 5s; -webkit-animation-iteration-count: 1; animation-iteration-count: 1; -webkit-animation-fill-mode: forwards; animation-fill-mode: forwards; border-radius: 7px; padding: 1.5vh; will-change: animation; }
 
 .header-left, .header-right { height: 40vh; top: 1.5vh; width: 35vw; }
 

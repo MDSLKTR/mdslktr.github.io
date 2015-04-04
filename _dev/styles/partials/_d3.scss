@@ -59,6 +59,7 @@ ul {
     animation-duration: 5s;
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
+    will-change: animation;
   }
 }
 .d3-char-bg {
@@ -115,6 +116,7 @@ ul {
   animation-fill-mode: forwards;
   border-radius: 7px;
   padding: 1.5vh;
+  will-change: animation;
 }
 .header-left,
 .header-right {
