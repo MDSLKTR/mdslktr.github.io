@@ -31,6 +31,7 @@ body {
 .d3-char-wrapper {
   height: 15vh;
   padding: 2.5%;
+  z-index: 3;
   width: 15%;
   text-align: center;
   position: absolute;
@@ -141,7 +142,7 @@ ul {
 }
 
 .header-left,
-.base {
+.base li {
   box-shadow: 3px 3px 3px 0 dimgrey;
   animation-name: fadein-left;
   text-align: right;
@@ -176,8 +177,8 @@ ul {
   text-align: right;
   height: 45vh;
   width: 45%;
-  bottom: -100%;
-  left: -100%;
+  bottom: -60vh;
+  left: -60vw;
   animation-name: fadein-bottom-left;
 }
 
@@ -185,8 +186,8 @@ ul {
   box-shadow: -3px 3px 3px 0 dimgrey;
   height: 45vh;
   width: 45%;
-  bottom: -100%;
-  right: -100%;
+  bottom: -60vh;
+  right: -60vw;
   animation-name: fadein-bottom-right;
 }
 
@@ -210,7 +211,7 @@ ul {
 .passives {
   width: 37.5vw;
   height: 35vh;
-  bottom: 0;
+  bottom: -55vh;
 
   li {
     background: white;
@@ -229,7 +230,7 @@ ul {
 }
 
 .skills {
-  left: 0;
+  left: -55vw;
   li {
     animation-name: fadein-bottom-left;
     text-align: right;
@@ -238,7 +239,7 @@ ul {
 }
 
 .passives {
-  right: 0;
+  right: -55vw;
   li {
     animation-name: fadein-bottom-right;
     text-align: left;
@@ -285,21 +286,21 @@ ul {
 
 @keyframes fadein-bottom-left {
   from {
-    transform: translateX(-100%) translateY(-100%) rotate(-20deg);
+    transform: translateX(0) translateY(0) rotate(-20deg);
   }
 
   to {
-    transform: translateX(0) translateY(0) rotate(-20deg);
+    transform: translateX(50vw) translateY(-50vh) rotate(-20deg);
   }
 }
 
 @keyframes fadein-bottom-right {
   from {
-    transform: translateX(100%) translateY(100%) rotate(20deg);
+    transform: translateX(0) translateY(0) rotate(20deg);
   }
 
   to {
-    transform: translateX(0) translateY(0) rotate(20deg);
+    transform: translateX(-50vw) translateY(-50vh) rotate(20deg);
   }
 }
 
