@@ -15,9 +15,8 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
             profile: 'https://eu.api.battle.net/d3/profile/',
             iconLink: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
-            test: 'http://media.blizzard.com/d3/icons/skills/64/barbarian_overpower.png',
             skillIconLink: 'http://media.blizzard.com/d3/icons/skills/64/',
-            passsiveIconLink : 'http://us.media.blizzard.com/d3/icons/skills/64/barbarian_passive_brawler.png'
+            itemToolTipBase: 'https://eu.battle.net/api/d3/data/item/'
         };
     },
 
@@ -237,3 +236,6 @@ React.render(React.createElement(DataWrapper, {
 // save url to localStorage - done
 // find out how animations triggers work
 // correct stats
+// <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>
+// https://eu.api.battle.net/d3/data/item/CmII7uHdNRIHCAQVtjA30B0yicdaHYQDodYdYJ4mRx29VYTTHT_yCdgdB16d0zCLGjiaA0AASANQElgEYJoDgAFGjQGfRZt_pQG9VYTTrQHegvzltQGgRZt_uAG6wuKqC8ABEhiTvcb8BVAAWAKgAdWb4uwOoAGVnfLhDqABk73G_AWgAcyPgPcBoAG-wY2rDw?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
+// http://media.blizzard.com/d3/icons/items/large/unique_chest_set_07_x1_demonhunter_male.png
