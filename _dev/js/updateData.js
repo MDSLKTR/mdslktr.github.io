@@ -152,13 +152,20 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
 
         if (skillsState !== []) {
             skillsState.forEach(function (skillName) {
-                var constructedLink;
+                var constructedLink,
+                    runeType;
                 if (skillName.rune) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                    skills.push(React.DOM.div({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.img({key: skillsState.key, className: 'icon', style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
+                    skills.push(React.DOM.div({key: skillsState.key, className: 'hasIcon'}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.img({key: skillsState.key, className: 'icon-front', style: {backgroundImage:'url(' + constructedLink + '.png)'}}), React.DOM.img({key: skillsState.key, className: 'icon-back', style: {}})));
+                    switch(skillName.rune.type) {
+                        case 'a':
+                            runeType = {
+                                backgroundPosition: '20px 20px'
+                            };
+                    }
                 } else if (skillName.skill) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                    skills.push(React.DOM.div({key: skillsState.key}, skillName.skill.name, React.DOM.img({key: skillsState.key, className: 'icon',style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
+                    skills.push(React.DOM.div({key: skillsState.key, className: 'hasIcon'}, skillName.skill.name, React.DOM.img({key: skillsState.key, className: 'icon-front',style: {backgroundImage:'url(' + constructedLink + '.png)'}}), React.DOM.img({key: skillsState.key, className: 'icon-back', style: {}})));
                 }
             });
         }
@@ -167,7 +174,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             passivesState.forEach(function (passiveName) {
                 if (passiveName.skill) {
                     var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
-                    passives.push(React.DOM.div({key: passivesState.key}, passiveName.skill.name, React.DOM.img({key: passivesState.key , className: 'icon',style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
+                    passives.push(React.DOM.div({key: passivesState.key, className: 'hasIcon'}, passiveName.skill.name, React.DOM.img({key: passivesState.key , className: 'icon',style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
                 }
             });
         }
