@@ -14,9 +14,9 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             battleTag: localStorage.getItem('battleTag'),
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
             profile: 'https://eu.api.battle.net/d3/profile/',
-            iconLink: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
+            itemIconLink: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
             skillIconLink: 'http://media.blizzard.com/d3/icons/skills/64/',
-            itemToolTipBase: 'https://eu.battle.net/api/d3/data/item/'
+            itemToolTipBase: 'https://eu.api.battle.net/d3/data/'
         };
     },
 
@@ -142,11 +142,11 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
         }
 
         if (nameState !== [] && classState !== [] && levelState !== []) {
-            base.push(React.DOM.li({key: nameState.key}, 'Name: ', nameState));
-            base.push(React.DOM.li({key: classState.key}, 'Class: ', classState));
-            base.push(React.DOM.li({key: levelState.key}, 'Level: ', levelState));
+            base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
+            base.push(React.DOM.div({key: classState.key}, 'Class: ', classState));
+            base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
             if (paragonState !== []) {
-                base.push(React.DOM.li({key: paragonState.key}, 'Paragon: ', paragonState));
+                base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
             }
         }
 
@@ -155,12 +155,10 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                 var constructedLink;
                 if (skillName.rune) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name));
-                    skills.push(React.DOM.span({key: skillsState.key, style: {background:'url(' + constructedLink + '.png)'}}));
+                    skills.push(React.DOM.div({key: skillsState.key}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.img({key: skillsState.key, className: 'icon', style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
                 } else if (skillName.skill) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                    skills.push(React.DOM.li({key: skillsState.key}, skillName.skill.name));
-                    skills.push(React.DOM.span({key: skillsState.key, style: {background:'url(' + constructedLink + '.png)'}}));
+                    skills.push(React.DOM.div({key: skillsState.key}, skillName.skill.name, React.DOM.img({key: skillsState.key, className: 'icon',style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
                 }
             });
         }
@@ -169,27 +167,26 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             passivesState.forEach(function (passiveName) {
                 if (passiveName.skill) {
                     var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
-                    passives.push(React.DOM.li({key: passivesState.key}, passiveName.skill.name));
-                    passives.push(React.DOM.span({key: passivesState.key , style: {background:'url(' + constructedLink + '.png)'}}));
+                    passives.push(React.DOM.div({key: passivesState.key}, passiveName.skill.name, React.DOM.img({key: passivesState.key , className: 'icon',style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
                 }
             });
         }
 
         if (statsState.life !== [] && statsState.damage !== [] && statsState.toughness !== [] && statsState.vitality !== []) {
-            stats.push(React.DOM.li({key: statsState.key}, 'Life: ', statsState.life));
-            stats.push(React.DOM.li({key: statsState.key}, 'Damage: ', statsState.damage));
-            stats.push(React.DOM.li({key: statsState.key}, 'Toughness: ', statsState.toughness));
+            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', statsState.life));
+            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', statsState.damage));
+            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', statsState.toughness));
 
             if (classState === 'demon-hunter' || classState === 'monk') {
-                stats.push(React.DOM.li({key: statsState.key}, 'Dexterity: ', statsState.dexterity));
+                stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity));
 
             } else if (classState === 'witch-doctor' || classState === 'wizard') {
-                stats.push(React.DOM.li({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
+                stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
 
             } else if (classState === 'barbarian' ||  classState === 'crusader') {
-                stats.push(React.DOM.li({key: statsState.key}, 'Strength: ', statsState.strength));
+                stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength));
             }
-            stats.push(React.DOM.li({key: statsState.key}, 'Vitality: ', statsState.vitality));
+            stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality));
         }
 
         return (
@@ -214,10 +211,10 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                         }, heroes
                     )
                 ),
-                React.DOM.ul({className: 'base'}, base),
-                React.DOM.ul({className: 'skills'}, skills),
-                React.DOM.ul({className: 'passives'}, passives),
-                React.DOM.ul({className: 'stats'}, stats)
+                React.DOM.div({className: 'panel-left'}, 'General', base),
+                React.DOM.div({className: 'panel-bottom-left'}, 'Skills', skills),
+                React.DOM.div({className: 'panel-bottom-right'}, 'Passives', passives),
+                React.DOM.div({className: 'panel-right'}, 'Stats', stats)
             )
         );
     }
