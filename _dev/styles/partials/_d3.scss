@@ -59,17 +59,47 @@ body {
   transform: translateY(-50%);
   background: rgba(0,0,0,1);
   border: 2px solid rgba(255,0,0,0.5);
+  transition: opacity 0.5s;
 }
 
-.icon-front {
+.icon-front:not(.no-rune) {
   z-index: 2;
   opacity: 1;
 
-  &:hover {
-    opacity: 0.1;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -25%;
+    left: -25%;
+    width: 125%;
+    height: 125%;
+    border: ((10 / 16) * 1rem) solid rgba(255,255,255,0.3);
+    box-shadow: inset 0 0 ((40 / 16) * 1rem) rgba(255,255,255,0.3);
+    pointer-events: none;
+    transform: scale(0.001);
+    animation-name: pulse;
+    animation-duration: 2500ms;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
   }
 
-  &:hover ~ .icon-back {
+  &:hover:not(.no-rune) {
+    transition: opacity 0.5s;
+    opacity: 0.1;
+
+    &:before {
+      animation-name: pulse;
+      animation-duration: 2500ms;
+      animation-iteration-count: 1;
+      animation-fill-mode: both;
+      animation-timing-function: ease-out;
+      display: none;
+    }
+  }
+
+  &:hover:not(.no-rune) ~ .icon-back {
+    transition: opacity 0.5s;
     opacity: 1;
   }
 
@@ -91,10 +121,12 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
+  -webkit-filter: drop-shadow(1px 1px 30px white);
 }
 
 
-.d3-container div > div:not(.hasIcon) {
+.panel-left > div:not(.hasIcon),
+.panel-right > div:not(.hasIcon){
   padding: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative;
@@ -167,7 +199,7 @@ body {
     right: -5px;
   }
 
-  div {
+  & > div {
     padding-right: 70px;
   }
 }
@@ -185,7 +217,7 @@ body {
     left: -5px;
   }
 
-  div {
+  & > div {
     padding-left: 70px;
   }
 }
@@ -227,5 +259,23 @@ body {
 
   to {
     transform: translateX(-50vw) translateY(-50vh) rotate(15deg);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.001);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
   }
 }

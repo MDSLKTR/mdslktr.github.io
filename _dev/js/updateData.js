@@ -1,16 +1,20 @@
-var DataWrapper = React.createClass({displayName: 'DataWrapper',
+var DataWrapper = React.createClass({
+    displayName: 'DataWrapper',
     getInitialState: function () {
         return {
             skills: [],
             passives: [],
             stats: [],
             heroes: [],
+            items: [],
+            attributes: [],
             class: {},
             name: {},
             level: {},
             paragon: {},
             polling: true,
             url: '',
+            itemUrl: '',
             battleTag: localStorage.getItem('battleTag'),
             apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
             profile: 'https://eu.api.battle.net/d3/profile/',
@@ -20,7 +24,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
         };
     },
 
-    loadHeroesData: function() {
+    loadHeroesData: function () {
         if (this.state.battleTag) {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
             $.ajax({
@@ -33,14 +37,14 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     console.error(this.state.url, status, err.toString());
                 }.bind(this)
             });
-            console.log('updated herolist');
+            //console.log('updated herolist');
             console.log(this.state.url);
         }
     },
 
     loadProfileData: function () {
         if (this.state.selected) {
-            this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/',this.state.selected, this.state.apiKey)});
+            this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
                 dataType: 'jsonp',
@@ -52,32 +56,64 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     this.setState({skills: data.skills.active});
                     this.setState({passives: data.skills.passive});
                     this.setState({stats: data.stats});
+                    this.setState({items: data.items});
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
                 }.bind(this)
             });
-            console.log('updated data');
+            //console.log('updated data');
             console.log(this.state.url);
         }
+    },
+
+    loadItemData: function (itemKey) {
+            this.setState({item: itemKey});
+            this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+            console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
+            $.ajax({
+                url: this.state.itemUrl,
+                dataType: 'jsonp',
+                success: function (data) {
+                    this.setState({attributes: data.attributes});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(this.state.url, status, err.toString());
+                }.bind(this)
+            });
+            console.log('updated item');
+            console.log(this.state.itemUrl);
     },
 
     componentWillMount: function () {
         this.loadHeroesData();
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadProfileData, this.props.pollInterval);
+        setInterval(this.checkAmu, this.props.pollInterval);
     },
 
-    handleChange: function(e) {
-        var input =  e.target.value;
+    handleChange: function (e) {
+        var input = e.target.value;
         this.setState({battleTag: input});
         localStorage.setItem('battleTag', input);
     },
 
-    setSelect: function() {
+    setSelect: function () {
         var newValue = this.refs.select.getDOMNode().value;
         this.setState({selected: newValue});
         this.loadProfileData();
+        this.checkAmu();
+    },
+
+    checkAmu: function () {
+        if (this.state.items.neck) {
+            if (this.state.items.neck.name === 'Hellfire Amulet') {
+                var hellfireAmu = this.state.items.neck.tooltipParams;
+                this.loadItemData(hellfireAmu);
+            } else {
+                this.setState({attributes: []});
+            }
+        }
     },
 
     render: function () {
@@ -93,11 +129,13 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             classState = this.state.class,
             levelState = this.state.level,
             paragonState = this.state.paragon,
+            itemsState = this.state.attributes,
+            specialPassive = [],
             base = [],
             style = [],
             skillIconBaseUrl = this.state.skillIconLink;
 
-        switch(classState) {
+        switch (classState) {
             case 'demon-hunter':
                 style = {
                     backgroundImage: 'url("../../assets/images/dh.png")'
@@ -134,10 +172,13 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                 };
         }
 
-        if (this.state.heroes) {
-            heroes.push(React.DOM.option({key: heroesState.key, value: '', style: {display:'none'} }, 'select hero'));
+        if (heroesState !== []) {
+            heroes.push(React.DOM.option({key: heroesState.key, value: '', style: {display: 'none'}}, 'select hero'));
             heroesState.forEach(function (heroName) {
-                heroes.push(React.DOM.option({key: heroesState.key, value: heroName.id}, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
+                heroes.push(React.DOM.option({
+                    key: heroesState.key,
+                    value: heroName.id
+                }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
             });
         }
 
@@ -156,16 +197,54 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                     runeType;
                 if (skillName.rune) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                    skills.push(React.DOM.div({key: skillsState.key, className: 'hasIcon'}, skillName.skill.name, ' with ', skillName.rune.name, React.DOM.img({key: skillsState.key, className: 'icon-front', style: {backgroundImage:'url(' + constructedLink + '.png)'}}), React.DOM.img({key: skillsState.key, className: 'icon-back', style: {}})));
-                    switch(skillName.rune.type) {
+                    switch (skillName.rune.type) {
                         case 'a':
                             runeType = {
-                                backgroundPosition: '20px 20px'
+                                backgroundPosition: '0 0'
                             };
+                            break;
+                        case 'b':
+                            runeType = {
+                                backgroundPosition: '0 25%'
+                            };
+                            break;
+                        case 'c':
+                            runeType = {
+                                backgroundPosition: '0 49%'
+                            };
+                            break;
+                        case 'd':
+                            runeType = {
+                                backgroundPosition: '0 73%'
+                            };
+                            break;
+                        case 'e':
+                            runeType = {
+                                backgroundPosition: '0 97%'
+                            };
+                            break;
                     }
+                    skills.push(React.DOM.div({key: skillsState.key, className: 'hasIcon'},
+                            skillName.skill.name,
+                            ' with ',
+                            skillName.rune.name,
+                            React.DOM.div({
+                                key: skillsState.key,
+                                className: 'icon-front',
+                                style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                            }),
+                            React.DOM.div({key: skillsState.key, className: 'icon-back', style: runeType}))
+                    );
                 } else if (skillName.skill) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                    skills.push(React.DOM.div({key: skillsState.key, className: 'hasIcon'}, skillName.skill.name, React.DOM.img({key: skillsState.key, className: 'icon-front',style: {backgroundImage:'url(' + constructedLink + '.png)'}}), React.DOM.img({key: skillsState.key, className: 'icon-back', style: {}})));
+                    skills.push(React.DOM.div({
+                        key: skillsState.key,
+                        className: 'hasIcon'
+                    }, skillName.skill.name, React.DOM.div({
+                        key: skillsState.key,
+                        className: 'icon-front no-rune',
+                        style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                    })));
                 }
             });
         }
@@ -174,9 +253,52 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             passivesState.forEach(function (passiveName) {
                 if (passiveName.skill) {
                     var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
-                    passives.push(React.DOM.div({key: passivesState.key, className: 'hasIcon'}, passiveName.skill.name, React.DOM.img({key: passivesState.key , className: 'icon',style: {backgroundImage:'url(' + constructedLink + '.png)'}})));
+                    passives.push(React.DOM.div({
+                        key: passivesState.key,
+                        className: 'hasIcon'
+                    }, passiveName.skill.name, React.DOM.div({
+                        key: passivesState.key,
+                        className: 'icon',
+                        style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                    })));
                 }
             });
+        }
+
+        if (itemsState !== []) {
+            if (itemsState.passive !== [] && itemsState.passive) {
+                var hellfirePassiveLink = itemsState.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g,'').toLowerCase(),
+                    hellfirePassiveDisplay = itemsState.passive[0].text.substring(9).replace(' passive.', ''),
+                    constructedLink;
+
+                switch (classState) {
+                    case 'demon-hunter':
+                        constructedLink  = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
+                        break;
+                    case 'witch-doctor':
+                        constructedLink  = skillIconBaseUrl.concat('witchdoctor_passive_', hellfirePassiveLink);
+                        break;
+                    case 'barbarian':
+                        constructedLink  = skillIconBaseUrl.concat('barbarian_passive_', hellfirePassiveLink);
+                        break;
+                    case 'crusader':
+                        constructedLink  = skillIconBaseUrl.concat('crusader_passive_', hellfirePassiveLink);
+                        break;
+                    case 'monk':
+                        constructedLink  = skillIconBaseUrl.concat('monk_passive_', hellfirePassiveLink);
+                        break;
+                    case 'wizard':
+                        constructedLink  = skillIconBaseUrl.concat('wizard_passive_', hellfirePassiveLink);
+                        break;
+                    default:
+                        console.log('new class?');
+                }
+                specialPassive.push(React.DOM.div({key: itemsState.key, className: 'hasIcon'}, hellfirePassiveDisplay, ' (HA)', React.DOM.div({
+                    key: itemsState.key,
+                    className: 'icon',
+                    style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                })));
+            }
         }
 
         if (statsState.life !== [] && statsState.damage !== [] && statsState.toughness !== [] && statsState.vitality !== []) {
@@ -190,7 +312,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
             } else if (classState === 'witch-doctor' || classState === 'wizard') {
                 stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
 
-            } else if (classState === 'barbarian' ||  classState === 'crusader') {
+            } else if (classState === 'barbarian' || classState === 'crusader') {
                 stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength));
             }
             stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality));
@@ -220,7 +342,7 @@ var DataWrapper = React.createClass({displayName: 'DataWrapper',
                 ),
                 React.DOM.div({className: 'panel-left'}, 'General', base),
                 React.DOM.div({className: 'panel-bottom-left'}, 'Skills', skills),
-                React.DOM.div({className: 'panel-bottom-right'}, 'Passives', passives),
+                React.DOM.div({className: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({className: 'panel-right'}, 'Stats', stats)
             )
         );

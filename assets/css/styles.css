@@ -13,17 +13,19 @@ body { background: url(/assets/images/bg.jpg) center center/cover no-repeat; }
 
 .icon { position: absolute; height: 64px; width: 64px; background-repeat: no-repeat; background-size: contain; top: 50%; -webkit-transform: translateY(-50%); transform: translateY(-50%); background: black; border: 2px solid rgba(255, 0, 0, 0.5); }
 
-.icon-front, .icon-back { position: absolute; height: 64px; width: 64px; background-repeat: no-repeat; background-size: contain; top: 50%; -webkit-transform: translateY(-50%); transform: translateY(-50%); background: black; border: 2px solid rgba(255, 0, 0, 0.5); }
+.icon-front, .icon-back { position: absolute; height: 64px; width: 64px; background-repeat: no-repeat; background-size: contain; top: 50%; -webkit-transform: translateY(-50%); transform: translateY(-50%); background: black; border: 2px solid rgba(255, 0, 0, 0.5); -webkit-transition: opacity 0.5s; transition: opacity 0.5s; }
 
-.icon-front { z-index: 2; opacity: 1; }
-.icon-front:hover { opacity: 0.1; }
-.icon-front:hover ~ .icon-back { opacity: 1; }
+.icon-front:not(.no-rune) { z-index: 2; opacity: 1; }
+.icon-front:not(.no-rune):before { content: ''; position: absolute; top: -25%; left: -25%; width: 125%; height: 125%; border: 0.625rem solid rgba(255, 255, 255, 0.3); box-shadow: inset 0 0 2.5rem rgba(255, 255, 255, 0.3); pointer-events: none; -webkit-transform: scale(0.001); transform: scale(0.001); -webkit-animation-name: pulse; animation-name: pulse; -webkit-animation-duration: 2500ms; animation-duration: 2500ms; -webkit-animation-iteration-count: 1; animation-iteration-count: 1; -webkit-animation-fill-mode: both; animation-fill-mode: both; -webkit-animation-timing-function: ease-out; animation-timing-function: ease-out; }
+.icon-front:not(.no-rune):hover:not(.no-rune) { -webkit-transition: opacity 0.5s; transition: opacity 0.5s; opacity: 0.1; }
+.icon-front:not(.no-rune):hover:not(.no-rune):before { -webkit-animation-name: pulse; animation-name: pulse; -webkit-animation-duration: 2500ms; animation-duration: 2500ms; -webkit-animation-iteration-count: 1; animation-iteration-count: 1; -webkit-animation-fill-mode: both; animation-fill-mode: both; -webkit-animation-timing-function: ease-out; animation-timing-function: ease-out; display: none; }
+.icon-front:not(.no-rune):hover:not(.no-rune) ~ .icon-back { -webkit-transition: opacity 0.5s; transition: opacity 0.5s; opacity: 1; }
 
 .icon-back { background: url("/assets/images/runes.jpg"); background-position: 0 0; background-repeat: no-repeat; background-size: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; opacity: 0; }
 
-.d3-char-bg { position: relative; margin: 7.5vh auto; width: 405px; height: 615px; background-size: contain; background-repeat: no-repeat; background-position: center center; }
+.d3-char-bg { position: relative; margin: 7.5vh auto; width: 405px; height: 615px; background-size: contain; background-repeat: no-repeat; background-position: center center; -webkit-filter: drop-shadow(1px 1px 30px white); }
 
-.d3-container div > div:not(.hasIcon) { padding: 1.75vh; margin-bottom: 1.5vh; position: relative; border-radius: 7px; background: black; border: 1px solid rgba(255, 0, 0, 0.5); }
+.panel-left > div:not(.hasIcon), .panel-right > div:not(.hasIcon) { padding: 1.75vh; margin-bottom: 1.5vh; position: relative; border-radius: 7px; background: black; border: 1px solid rgba(255, 0, 0, 0.5); }
 
 .hasIcon { background: black; border: 1px solid rgba(255, 0, 0, 0.5); padding-top: 1.75vh; padding-bottom: 1.75vh; margin-bottom: 1.5vh; position: relative; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
 
@@ -38,11 +40,11 @@ body { background: url(/assets/images/bg.jpg) center center/cover no-repeat; }
 
 .panel-bottom-left { text-align: right; height: 45vh; width: 45%; bottom: -55vh; left: -60vw; -webkit-animation-name: fadein-bottom-left; animation-name: fadein-bottom-left; }
 .panel-bottom-left .icon-front, .panel-bottom-left .icon-back, .panel-bottom-left .icon { right: -5px; }
-.panel-bottom-left div { padding-right: 70px; }
+.panel-bottom-left > div { padding-right: 70px; }
 
 .panel-bottom-right { height: 45vh; width: 45%; bottom: -55vh; right: -60vw; -webkit-animation-name: fadein-bottom-right; animation-name: fadein-bottom-right; }
 .panel-bottom-right .icon-front, .panel-bottom-right .icon-back, .panel-bottom-right .icon { left: -5px; }
-.panel-bottom-right div { padding-left: 70px; }
+.panel-bottom-right > div { padding-left: 70px; }
 
 @-webkit-keyframes fadein-left { from { -webkit-transform: translateX(0); transform: translateX(0); }
   to { -webkit-transform: translateX(100%); transform: translateX(100%); } }
@@ -61,5 +63,13 @@ body { background: url(/assets/images/bg.jpg) center center/cover no-repeat; }
   to { -webkit-transform: translateX(-50vw) translateY(-50vh) rotate(15deg); transform: translateX(-50vw) translateY(-50vh) rotate(15deg); } }
 @keyframes fadein-bottom-right { from { -webkit-transform: translateX(0) translateY(0) rotate(15deg); transform: translateX(0) translateY(0) rotate(15deg); }
   to { -webkit-transform: translateX(-50vw) translateY(-50vh) rotate(15deg); transform: translateX(-50vw) translateY(-50vh) rotate(15deg); } }
+@-webkit-keyframes pulse { from { -webkit-transform: scale(0.001); transform: scale(0.001); opacity: 0; }
+  45% { opacity: 1; }
+  50% { -webkit-transform: scale(1); transform: scale(1); opacity: 0; }
+  to { -webkit-transform: scale(1); transform: scale(1); opacity: 0; } }
+@keyframes pulse { from { -webkit-transform: scale(0.001); transform: scale(0.001); opacity: 0; }
+  45% { opacity: 1; }
+  50% { -webkit-transform: scale(1); transform: scale(1); opacity: 0; }
+  to { -webkit-transform: scale(1); transform: scale(1); opacity: 0; } }
 
 /*# sourceMappingURL=styles.css.map */
