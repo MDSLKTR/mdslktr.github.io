@@ -124,6 +124,105 @@ body {
   -webkit-filter: drop-shadow(1px 1px 30px white);
 }
 
+.d3-item-wrapper {
+  position: fixed;
+  left: 50%;
+  top: 10%;
+  transform: translateX(-50%);
+  width: 405px;
+  height: 615px;
+
+  div {
+    position: absolute;
+    background-color: rgba(255,0,0,0.5);
+    border: 1px solid rgba(0,0,0,1);
+    border-radius: 7px;
+    background-size: 64px auto;
+    background-position: 0 50%;
+    background-repeat: no-repeat;
+    width: 64px;
+    height: 128px;
+    transition: width 1s, background 0.5s;
+  }
+
+  div:hover {
+    background-color: rgba(255,0,0,1);
+    z-index: 10;
+    transition: width 1s, background 0.5s;
+    width: 300px;
+  }
+
+  .head {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+  }
+
+  .torso {
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+  }
+
+  .legs {
+    left: 50%;
+    top: 55%;
+    transform: translateX(-50%);
+  }
+
+  .feet {
+    left: 50%;
+    top: 75%;
+    transform: translateX(-50%);
+  }
+
+  .hands {
+    left: 0;
+    top: 45%;
+  }
+
+  .bracers {
+    right: 0;
+    top: 35%;
+  }
+
+  .shoulders {
+    left: 0;
+    top: 15%;
+  }
+
+  .neck {
+    right: 0;
+    top: 0;
+  }
+
+  .leftFinger {
+    left: 25%;
+    top: 45%;
+  }
+
+  .rightFinger {
+    right: 25%;
+    top: 45%;
+  }
+
+  .waist {
+    top: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .mainHand {
+    bottom: 0;
+    left: 0;
+  }
+
+  .offHand {
+    bottom: 0;
+    right: 0;
+  }
+}
+
 
 .panel-left > div:not(.hasIcon),
 .panel-right > div:not(.hasIcon){

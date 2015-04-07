@@ -12,6 +12,9 @@ var DataWrapper = React.createClass({
             name: {},
             level: {},
             paragon: {},
+            neckItem: [],
+            shoulderItem: [],
+            torsoItem: [],
             polling: true,
             url: '',
             itemUrl: '',
@@ -68,28 +71,35 @@ var DataWrapper = React.createClass({
     },
 
     loadItemData: function (itemKey) {
-            this.setState({item: itemKey});
-            this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
-            console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
-            $.ajax({
-                url: this.state.itemUrl,
-                dataType: 'jsonp',
-                success: function (data) {
-                    this.setState({attributes: data.attributes});
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(this.state.url, status, err.toString());
-                }.bind(this)
-            });
-            console.log('updated item');
-            console.log(this.state.itemUrl);
+        this.setState({item: itemKey});
+        this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+        console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
+        $.ajax({
+            url: this.state.itemUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                switch (data.type.id) {
+                    case 'Amulet':
+                        this.setState({neckItem: data.attributes});
+                        break;
+                    case 'Shoulders':
+                        this.setState({shoulderItem: data.attributes});
+                        break;
+                }
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.state.url, status, err.toString());
+            }.bind(this)
+        });
+        console.log('updated item');
+        console.log(this.state.itemUrl);
     },
 
     componentWillMount: function () {
         this.loadHeroesData();
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadProfileData, this.props.pollInterval);
-        setInterval(this.checkAmu, this.props.pollInterval);
+        setInterval(this.getItemData, this.props.pollInterval);
     },
 
     handleChange: function (e) {
@@ -102,17 +112,23 @@ var DataWrapper = React.createClass({
         var newValue = this.refs.select.getDOMNode().value;
         this.setState({selected: newValue});
         this.loadProfileData();
-        this.checkAmu();
+        this.getItemData();
     },
 
-    checkAmu: function () {
+    getItemData: function () {
         if (this.state.items.neck) {
             if (this.state.items.neck.name === 'Hellfire Amulet') {
                 var hellfireAmu = this.state.items.neck.tooltipParams;
-                this.loadItemData(hellfireAmu);
+                    this.loadItemData(hellfireAmu);
             } else {
-                this.setState({attributes: []});
+                var neck = this.state.items.neck.tooltipParams;
+                    this.loadItemData(neck);
             }
+        }
+
+        if (this.state.items.shoulders) {
+            var shoulders = this.state.items.shoulders.tooltipParams;
+            this.loadItemData(shoulders);
         }
     },
 
@@ -129,11 +145,15 @@ var DataWrapper = React.createClass({
             classState = this.state.class,
             levelState = this.state.level,
             paragonState = this.state.paragon,
-            itemsState = this.state.attributes,
+            itemsState = this.state.neckItem,
+            //shouldersState = this.state.shoulderItem,
             specialPassive = [],
             base = [],
             style = [],
-            skillIconBaseUrl = this.state.skillIconLink;
+            itemsIconState = this.state.items,
+            items = [],
+            skillIconBaseUrl = this.state.skillIconLink,
+            itemIconBaseUrl = this.state.itemIconLink;
 
         switch (classState) {
             case 'demon-hunter':
@@ -148,7 +168,7 @@ var DataWrapper = React.createClass({
                 break;
             case 'barbarian':
                 style = {
-                    backgroundImage: 'url("../../assets/images/barb.png")'
+                    backgroundImage: 'url("../../assets/images/barbarian.png")'
                 };
                 break;
             case 'crusader':
@@ -265,6 +285,71 @@ var DataWrapper = React.createClass({
             });
         }
 
+        if (itemsIconState.head) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.head.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'head', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.torso) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'torso', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.hands) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'hands', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.feet) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'feet', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.shoulders) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'shoulders', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.legs) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'legs', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.bracers) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'bracers', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.mainHand) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'mainHand', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.offHand) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'offHand', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.waist) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'waist', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.rightFinger) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'rightFinger', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.leftFinger) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'leftFinger', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
+        if (itemsIconState.neck) {
+            var constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
+            items.push(React.DOM.div({key: itemsIconState.key, className: 'neck', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+        }
+
         if (itemsState !== []) {
             if (itemsState.passive !== [] && itemsState.passive) {
                 var hellfirePassiveLink = itemsState.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g,'').toLowerCase(),
@@ -321,6 +406,7 @@ var DataWrapper = React.createClass({
         return (
             React.DOM.div({className: 'd3-container'},
                 React.DOM.div({className: 'd3-char-bg', style: style}),
+                React.DOM.div({className: 'd3-item-wrapper'}, items),
                 React.DOM.div({className: 'd3-api-url'},
                     React.DOM.input(
                         {
