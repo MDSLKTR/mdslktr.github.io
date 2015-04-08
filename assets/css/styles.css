@@ -141,19 +141,23 @@ body {
 @-webkit-keyframes increase {
   from {
     width: 64px;
+    height: 128px;
     background-color: rgba(0, 0, 0, 0.5); }
 
   to {
     width: 328px;
+    height: 164px;
     background-color: black; } }
 
 @keyframes increase {
   from {
     width: 64px;
+    height: 128px;
     background-color: rgba(0, 0, 0, 0.5); }
 
   to {
     width: 328px;
+    height: 164px;
     background-color: black; } }
 
 @-webkit-keyframes fade {
@@ -246,8 +250,12 @@ body {
           background-repeat: no-repeat;
           position: absolute;
           bottom: 0;
-          width: 20%;
+          width: 15%;
           right: 0; }
+          .d3-item-wrapper > div > div > ul .socket + .socket {
+            right: 20%; }
+            .d3-item-wrapper > div > div > ul .socket + .socket + .socket {
+              right: 40%; }
   .d3-item-wrapper .head {
     left: 50%;
     top: 4.5%;

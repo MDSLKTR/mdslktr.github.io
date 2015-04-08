@@ -12,15 +12,22 @@ var DataWrapper = React.createClass({
             name: {},
             level: {},
             paragon: {},
+
             helmItem: [],
             helmRaw: [],
             helmGem: [],
+
             amuletItem: [],
             amuletGem: [],
             amuletRaw: [],
+
             shouldersItem: [],
             bracersItem: [],
+
             chestItem: [],
+            chestRaw: [],
+            chestGem: [],
+
             legsItem: [],
             bootsItem: [],
             mainItem: [],
@@ -96,6 +103,7 @@ var DataWrapper = React.createClass({
             success: function (data) {
                 switch (data.type.id) {
                     case 'Helm':
+                    case 'Helm_Barbarian':
                     case 'Helm_DemonHunter':
                     case 'Helm_WitchDoctor':
                     case 'Helm_Monk':
@@ -104,6 +112,7 @@ var DataWrapper = React.createClass({
                         this.setState({helmGem: data.gems});
                         break;
                     case 'Shoulders':
+                    case 'Shoulders_Barbarian':
                     case 'Shoulders_DemonHunter':
                     case 'Shoulders_WitchDoctor':
                     case 'Shoulders_Monk':
@@ -117,6 +126,8 @@ var DataWrapper = React.createClass({
                     case 'ChestArmor_WitchDoctor':
                     case 'ChestArmor_Monk':
                         this.setState({chestItem: data.attributes});
+                        this.setState({chestRaw: data.attributesRaw});
+                        this.setState({chestGem: data.gems});
                         break;
                     case 'Legs':
                     case 'Legs_DemonHunter':
@@ -145,7 +156,7 @@ var DataWrapper = React.createClass({
                     case 'Gloves_Monk':
                         this.setState({glovesItem: data.attributes});
                         break;
-                    case 'Belt':
+                    case 'GenericBelt':
                     case 'Belt_Barbarian':
                         this.setState({beltItem: data.attributes});
                         break;
@@ -300,6 +311,8 @@ var DataWrapper = React.createClass({
             helmStateRaw = this.state.helmRaw,
             torsoState = this.state.chestItem,
             torso = [],
+            torsoStateRaw = this.state.chestRaw,
+            torsoGem = this.state.chestGem,
             handsState = this.state.glovesItem,
             hands = [],
             feetState = this.state.bootsItem,
@@ -474,7 +487,11 @@ var DataWrapper = React.createClass({
 
             if (helmStateRaw.Sockets && helmGem[0]) {
                 var gemLink = itemIconBaseUrl.concat(helmGem[0].item.icon, '.png');
-                helmet.push(React.DOM.li({key: helmState.key, className: 'socket', style: {backgroundImage: 'url(' + gemLink + ')'}}));
+                helmet.push(React.DOM.li({
+                    key: helmState.key,
+                    className: 'socket',
+                    style: {backgroundImage: 'url(' + gemLink + ')'}
+                }));
             }
             items.push(React.DOM.div({
                 key: itemsIconState.key,
@@ -498,6 +515,29 @@ var DataWrapper = React.createClass({
             torsoState.passive.forEach(function (passiveStat) {
                 torso.push(React.DOM.li({key: torsoState.key, className: 'passive'}, passiveStat.text));
             });
+
+            if (torsoStateRaw.Sockets && torsoGem[0]) {
+                var gemLink = itemIconBaseUrl.concat(torsoGem[0].item.icon, '.png');
+                torso.push(React.DOM.li({
+                    key: torsoState.key,
+                    className: 'socket',
+                    style: {backgroundImage: 'url(' + gemLink + ')'}
+                }));
+                torso.push(React.DOM.li({
+                    key: torsoState.key,
+                    className: 'socket',
+                    style: {backgroundImage: 'url(' + gemLink + ')'}
+                }));
+                torso.push(React.DOM.li({
+                    key: torsoState.key,
+                    className: 'socket',
+                    style: {backgroundImage: 'url(' + gemLink + ')'}
+                }));
+            } else if (neckStateRaw.Sockets) {
+                torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
+                torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
+                torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
+            }
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
@@ -744,7 +784,11 @@ var DataWrapper = React.createClass({
 
             if (neckStateRaw.Sockets && neckGem[0]) {
                 var gemLink = itemIconBaseUrl.concat(neckGem[0].item.icon, '.png');
-                neck.push(React.DOM.li({key: neckState.key, className: 'socket', style: {backgroundImage: 'url(' + gemLink + ')'}}));
+                neck.push(React.DOM.li({
+                    key: neckState.key,
+                    className: 'socket',
+                    style: {backgroundImage: 'url(' + gemLink + ')'}
+                }));
             } else if (neckStateRaw.Sockets) {
                 neck.push(React.DOM.li({key: neckState.key, className: 'socket'}));
             }

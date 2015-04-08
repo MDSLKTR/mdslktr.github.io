@@ -44,8 +44,8 @@ body {
   background-size: contain;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,1);
-  border: 2px solid rgba(255,0,0,0.5);
+  background: rgba(0, 0, 0, 1);
+  border: 2px solid rgba(255, 0, 0, 0.5);
 }
 
 .icon-front,
@@ -57,8 +57,8 @@ body {
   background-size: contain;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0,0,0,1);
-  border: 2px solid rgba(255,0,0,0.5);
+  background: rgba(0, 0, 0, 1);
+  border: 2px solid rgba(255, 0, 0, 0.5);
   transition: opacity 0.5s;
 }
 
@@ -73,8 +73,8 @@ body {
     left: -25%;
     width: 125%;
     height: 125%;
-    border: ((10 / 16) * 1rem) solid rgba(255,255,255,0.3);
-    box-shadow: inset 0 0 ((40 / 16) * 1rem) rgba(255,255,255,0.3);
+    border: ((10 / 16) * 1rem) solid rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 0 ((40 / 16) * 1rem) rgba(255, 255, 255, 0.3);
     pointer-events: none;
     transform: scale(0.001);
     animation-name: pulse;
@@ -113,6 +113,7 @@ body {
   backface-visibility: hidden;
   opacity: 0;
 }
+
 .d3-char-bg {
   position: relative;
   margin: 7.5vh auto;
@@ -127,11 +128,13 @@ body {
 @keyframes increase {
   from {
     width: 64px;
-    background-color: rgba(0,0,0,0.5);
+    height: 128px;
+    background-color: rgba(0, 0, 0, 0.5);
   }
   to {
     width: 328px;
-    background-color: rgba(0,0,0,1);
+    height: 164px;
+    background-color: rgba(0, 0, 0, 1);
   }
 }
 
@@ -156,15 +159,15 @@ body {
     overflow: hidden;
     backface-visibility: hidden;
     position: absolute;
-    background-color: rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,0,0,1);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 0, 0, 1);
     border-radius: 7px;
     background-size: 64px auto;
     background-position: 0 50%;
     background-repeat: no-repeat;
     width: 64px;
     height: 128px;
-    color: rgba(255,0,0,1);
+    color: rgba(255, 0, 0, 1);
 
     &:hover {
       z-index: 1;
@@ -225,8 +228,16 @@ body {
           background-repeat: no-repeat;
           position: absolute;
           bottom: 0;
-          width: 20%;
+          width: 15%;
           right: 0;
+
+          & + .socket {
+            right: 20%;
+
+            & + .socket {
+              right: 40%;
+            }
+          }
         }
       }
     }
@@ -303,20 +314,19 @@ body {
   }
 }
 
-
 .panel-left > div:not(.hasIcon),
-.panel-right > div:not(.hasIcon){
+.panel-right > div:not(.hasIcon) {
   padding: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative;
   border-radius: 7px;
-  background: rgba(0,0,0,1);
-  border: 1px solid rgba(255,0,0,0.5);
+  background: rgba(0, 0, 0, 1);
+  border: 1px solid rgba(255, 0, 0, 0.5);
 }
 
 .hasIcon {
-  background: rgba(0,0,0,1);
-  border: 1px solid rgba(255,0,0,0.5);
+  background: rgba(0, 0, 0, 1);
+  border: 1px solid rgba(255, 0, 0, 0.5);
   padding-top: 1.75vh;
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
@@ -329,7 +339,7 @@ body {
 .panel-bottom-left,
 .panel-bottom-right {
   position: fixed;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   color: red;
   z-index: 1;
   animation-duration: 5s;
