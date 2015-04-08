@@ -166,7 +166,7 @@ select, input {
     background-color: rgba(0, 0, 0, 0.5);
   }
   to {
-    width: 328px;
+    width: 354px;
     height: 286px;
     background-color: rgba(0, 0, 0, 1);
   }
@@ -256,12 +256,13 @@ select, input {
         }
 
         .primary {
-          color: red;
+          color: white;
+          font-size: 14px;
           width: 100%;
         }
 
         .secondary {
-          color: white;
+          color: silver;
           width: 100%;
         }
 
@@ -293,22 +294,26 @@ select, input {
         .gem-passive {
           right: 0;
           width: 70%;
-          top: 50%;
+          bottom: 35%;
           position: absolute;
           color: goldenrod;
 
+          &.unique {
+            bottom: 20%;
+          }
+
           & + .gem-passive {
-            top: 65%;
+            bottom: 20%;
 
             &.unique {
-              top: 75%;
+              bottom: 0;
             }
 
             & + .gem-passive {
-              top: 80%;
+              bottom: 5%;
 
               &.unique {
-                top: 90%;
+                bottom: 0;
               }
             }
           }
@@ -325,13 +330,13 @@ select, input {
           border: 2px solid white;
           border-radius: 30%;
           left: 0;
-          top: 45%;
+          bottom: 30%;
 
           & + .socket {
-            top: 60%;
+            bottom: 15%;
 
             & + .socket {
-              top: 75%;
+              bottom: 0;
             }
           }
         }
@@ -436,7 +441,7 @@ select, input {
 .panel-bottom-right {
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
-  color: red;
+  color: sienna;
   z-index: 1;
   animation-duration: 5s;
   animation-iteration-count: 1;
