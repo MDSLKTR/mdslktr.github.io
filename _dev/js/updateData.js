@@ -1196,6 +1196,7 @@ React.render(React.createElement(DataWrapper, {
 // item colors
 // ancient state
 // offhand weapons dont work
+// fallback if socket is empty
 // find out how animations triggers work
 // correct stats
 // <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>

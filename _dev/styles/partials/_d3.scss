@@ -3,6 +3,13 @@ body {
   overflow: hidden;
 }
 
+select, input {
+  background: darkred;
+  color: wheat;
+  outline: none;
+  border: 1px solid black;
+}
+
 .d3-bg {
   background: transparent url(/assets/images/bg-3.jpg) center center/ cover no-repeat;
   animation: bg 4s linear both;
@@ -165,6 +172,19 @@ body {
   }
 }
 
+@keyframes decrease {
+  from {
+    width: 328px;
+    height: 286px;
+    background-color: rgba(0, 0, 0, 1);
+  }
+  to {
+    width: 64px;
+    height: 128px;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}
+
 @keyframes fade {
   from {
     opacity: 0;
@@ -263,7 +283,7 @@ body {
         .gem-level {
           top: 55%;
           left: 15%;
-          background: sienna;
+          background: goldenrod;
           color: black;
           clip-path: circle(50% at 50% 50%);
           padding: 1%;
@@ -275,6 +295,7 @@ body {
           width: 70%;
           top: 50%;
           position: absolute;
+          color: goldenrod;
 
           & + .gem-passive {
             top: 65%;

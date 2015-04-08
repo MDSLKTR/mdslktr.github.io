@@ -13,6 +13,12 @@ body {
   background: black;
   overflow: hidden; }
 
+select, input {
+  background: darkred;
+  color: wheat;
+  outline: none;
+  border: 1px solid black; }
+
 .d3-bg {
   background: transparent url(/assets/images/bg-3.jpg) center center/cover no-repeat;
   -webkit-animation: bg 4s linear both;
@@ -210,6 +216,28 @@ body {
     height: 286px;
     background-color: black; } }
 
+@-webkit-keyframes decrease {
+  from {
+    width: 328px;
+    height: 286px;
+    background-color: black; }
+
+  to {
+    width: 64px;
+    height: 128px;
+    background-color: rgba(0, 0, 0, 0.5); } }
+
+@keyframes decrease {
+  from {
+    width: 328px;
+    height: 286px;
+    background-color: black; }
+
+  to {
+    width: 64px;
+    height: 128px;
+    background-color: rgba(0, 0, 0, 0.5); } }
+
 @-webkit-keyframes fade {
   from {
     opacity: 0; }
@@ -304,7 +332,7 @@ body {
         .d3-item-wrapper > div > div > ul .gem-level {
           top: 55%;
           left: 15%;
-          background: sienna;
+          background: goldenrod;
           color: black;
           -webkit-clip-path: circle(50% at 50% 50%);
                   clip-path: circle(50% at 50% 50%);
@@ -314,7 +342,8 @@ body {
           right: 0;
           width: 70%;
           top: 50%;
-          position: absolute; }
+          position: absolute;
+          color: goldenrod; }
           .d3-item-wrapper > div > div > ul .gem-passive + .gem-passive {
             top: 65%; }
             .d3-item-wrapper > div > div > ul .gem-passive + .gem-passive.unique {
