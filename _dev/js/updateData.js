@@ -843,21 +843,21 @@ var DataWrapper = React.createClass({
             }
         }
 
-        if (statsState.life !== [] && statsState.damage !== [] && statsState.toughness !== [] && statsState.vitality !== []) {
-            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', statsState.life));
-            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', statsState.damage));
-            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', statsState.toughness));
+        if (statsState.life && statsState.damage&& statsState.toughness && statsState.vitality) {
+            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', statsState.life.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', statsState.damage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', statsState.toughness.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
 
             if (classState === 'demon-hunter' || classState === 'monk') {
-                stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity));
+                stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
 
             } else if (classState === 'witch-doctor' || classState === 'wizard') {
-                stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence));
+                stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
 
             } else if (classState === 'barbarian' || classState === 'crusader') {
-                stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength));
+                stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
             }
-            stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality));
+            stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
         }
 
         return (
