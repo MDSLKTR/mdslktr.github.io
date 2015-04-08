@@ -12,9 +12,25 @@ var DataWrapper = React.createClass({
             name: {},
             level: {},
             paragon: {},
-            neckItem: [],
-            shoulderItem: [],
-            torsoItem: [],
+            helmItem: [],
+            helmRaw: [],
+            helmGem: [],
+            amuletItem: [],
+            amuletGem: [],
+            amuletRaw: [],
+            shouldersItem: [],
+            bracersItem: [],
+            chestItem: [],
+            legsItem: [],
+            bootsItem: [],
+            mainItem: [],
+            mainRaw: [],
+            offItem: [],
+            glovesItem: [],
+            beltItem: [],
+            ringItem: [],
+            leftRing: [],
+            rightRing: [],
             polling: true,
             url: '',
             itemUrl: '',
@@ -79,11 +95,64 @@ var DataWrapper = React.createClass({
             dataType: 'jsonp',
             success: function (data) {
                 switch (data.type.id) {
-                    case 'Amulet':
-                        this.setState({neckItem: data.attributes});
+                    case 'Helm':
+                    case 'Helm_DemonHunter':
+                    case 'Helm_WitchDoctor':
+                    case 'Helm_Monk':
+                        this.setState({helmItem: data.attributes});
+                        this.setState({helmRaw: data.attributesRaw});
+                        this.setState({helmGem: data.gems});
                         break;
                     case 'Shoulders':
-                        this.setState({shoulderItem: data.attributes});
+                    case 'Shoulders_DemonHunter':
+                    case 'Shoulders_WitchDoctor':
+                    case 'Shoulders_Monk':
+                        this.setState({shouldersItem: data.attributes});
+                        break;
+                    case 'Bracers':
+                        this.setState({bracersItem: data.attributes});
+                        break;
+                    case 'ChestArmor':
+                    case 'ChestArmor_DemonHunter':
+                    case 'ChestArmor_WitchDoctor':
+                    case 'ChestArmor_Monk':
+                        this.setState({chestItem: data.attributes});
+                        break;
+                    case 'Legs':
+                    case 'Legs_DemonHunter':
+                    case 'Legs_WitchDoctor':
+                    case 'Legs_Monk':
+                        this.setState({legsItem: data.attributes});
+                        break;
+                    case 'Boots':
+                    case 'Boots_DemonHunter':
+                    case 'Boots_WitchDoctor':
+                    case 'Boots_Monk':
+                        this.setState({bootsItem: data.attributes});
+                        break;
+                    case 'Polearm':
+                    case 'Crossbow':
+                        this.setState({mainItem: data.attributes});
+                        this.setState({mainRaw: data.attributesRaw});
+                        this.setState({mainGem: data.gems});
+                        break;
+                    case 'Quiver':
+                        this.setState({offItem: data.attributes});
+                        break;
+                    case 'Gloves':
+                    case 'Gloves_DemonHunter':
+                    case 'Gloves_WitchDoctor':
+                    case 'Gloves_Monk':
+                        this.setState({glovesItem: data.attributes});
+                        break;
+                    case 'Belt':
+                    case 'Belt_Barbarian':
+                        this.setState({beltItem: data.attributes});
+                        break;
+                    case 'Amulet':
+                        this.setState({amuletItem: data.attributes});
+                        this.setState({amuletRaw: data.attributesRaw});
+                        this.setState({amuletGem: data.gems});
                         break;
                 }
             }.bind(this),
@@ -92,6 +161,32 @@ var DataWrapper = React.createClass({
             }.bind(this)
         });
         console.log('updated item');
+        console.log(this.state.itemUrl);
+    },
+
+    loadItemDataWithProps: function (itemKey, left) {
+        this.setState({item: itemKey});
+        this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+        console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
+        $.ajax({
+            url: this.state.itemUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                if (left === true) {
+                    this.setState({ringItemLeft: data.attributes});
+                    this.setState({ringItemLeftRaw: data.attributesRaw});
+                    this.setState({ringItemLeftGem: data.gems});
+                } else {
+                    this.setState({ringItemRight: data.attributes});
+                    this.setState({ringItemRightRaw: data.attributesRaw});
+                    this.setState({ringItemRightGem: data.gems});
+                }
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.state.url, status, err.toString());
+            }.bind(this)
+        });
+        console.log('updated ringset');
         console.log(this.state.itemUrl);
     },
 
@@ -117,18 +212,68 @@ var DataWrapper = React.createClass({
 
     getItemData: function () {
         if (this.state.items.neck) {
-            if (this.state.items.neck.name === 'Hellfire Amulet') {
-                var hellfireAmu = this.state.items.neck.tooltipParams;
-                    this.loadItemData(hellfireAmu);
-            } else {
-                var neck = this.state.items.neck.tooltipParams;
-                    this.loadItemData(neck);
-            }
+            var neck = this.state.items.neck.tooltipParams;
+            this.loadItemData(neck);
+        }
+
+        if (this.state.items.head) {
+            var head = this.state.items.head.tooltipParams;
+            this.loadItemData(head);
+        }
+
+        if (this.state.items.torso) {
+            var torso = this.state.items.torso.tooltipParams;
+            this.loadItemData(torso);
+        }
+
+        if (this.state.items.feet) {
+            var feet = this.state.items.feet.tooltipParams;
+            this.loadItemData(feet);
+        }
+
+        if (this.state.items.hands) {
+            var hands = this.state.items.hands.tooltipParams;
+            this.loadItemData(hands);
         }
 
         if (this.state.items.shoulders) {
             var shoulders = this.state.items.shoulders.tooltipParams;
             this.loadItemData(shoulders);
+        }
+
+        if (this.state.items.legs) {
+            var legs = this.state.items.legs.tooltipParams;
+            this.loadItemData(legs);
+        }
+
+        if (this.state.items.bracers) {
+            var bracers = this.state.items.bracers.tooltipParams;
+            this.loadItemData(bracers);
+        }
+
+        if (this.state.items.mainHand) {
+            var mainHand = this.state.items.mainHand.tooltipParams;
+            this.loadItemData(mainHand);
+        }
+
+        if (this.state.items.offHand) {
+            var offHand = this.state.items.offHand.tooltipParams;
+            this.loadItemData(offHand);
+        }
+
+        if (this.state.items.waist) {
+            var waist = this.state.items.waist.tooltipParams;
+            this.loadItemData(waist);
+        }
+
+        if (this.state.items.rightFinger) {
+            var rightFinger = this.state.items.rightFinger.tooltipParams;
+            this.loadItemDataWithProps(rightFinger, false);
+        }
+
+        if (this.state.items.leftFinger) {
+            var leftFinger = this.state.items.leftFinger.tooltipParams;
+            this.loadItemDataWithProps(leftFinger, true);
         }
     },
 
@@ -142,11 +287,41 @@ var DataWrapper = React.createClass({
             nameState = this.state.name,
             heroes = [],
             heroesState = this.state.heroes,
+            itemsState = this.state.items,
             classState = this.state.class,
             levelState = this.state.level,
             paragonState = this.state.paragon,
-            itemsState = this.state.neckItem,
-            //shouldersState = this.state.shoulderItem,
+            amuletState = this.state.amuletItem,
+            shouldersState = this.state.shouldersItem,
+            shoulders = [],
+            helmState = this.state.helmItem,
+            helmet = [],
+            helmGem = this.state.helmGem,
+            helmStateRaw = this.state.helmRaw,
+            torsoState = this.state.chestItem,
+            torso = [],
+            handsState = this.state.glovesItem,
+            hands = [],
+            feetState = this.state.bootsItem,
+            feet = [],
+            bracersState = this.state.bracersItem,
+            bracers = [],
+            legsState = this.state.legsItem,
+            legs = [],
+            mainHandState = this.state.mainItem,
+            mainHand = [],
+            offHandState = this.state.offItem,
+            offHand = [],
+            beltState = this.state.beltItem,
+            belt = [],
+            neckState = this.state.amuletItem,
+            neck = [],
+            neckGem = this.state.amuletGem,
+            neckStateRaw = this.state.amuletRaw,
+            ringStateLeft = this.state.ringItemLeft,
+            ringLeft = [],
+            ringStateRight = this.state.ringItemRight,
+            ringRight = [],
             specialPassive = [],
             base = [],
             style = [],
@@ -192,7 +367,7 @@ var DataWrapper = React.createClass({
                 };
         }
 
-        if (heroesState !== []) {
+        if (heroesState) {
             heroes.push(React.DOM.option({key: heroesState.key, value: '', style: {display: 'none'}}, 'select hero'));
             heroesState.forEach(function (heroName) {
                 heroes.push(React.DOM.option({
@@ -202,11 +377,11 @@ var DataWrapper = React.createClass({
             });
         }
 
-        if (nameState !== [] && classState !== [] && levelState !== []) {
+        if (nameState && classState && levelState) {
             base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
             base.push(React.DOM.div({key: classState.key}, 'Class: ', classState));
             base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
-            if (paragonState !== []) {
+            if (paragonState) {
                 base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
             }
         }
@@ -285,101 +460,339 @@ var DataWrapper = React.createClass({
             });
         }
 
-        if (itemsIconState.head) {
+        if (itemsIconState.head && helmState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.head.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'head', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            helmState.primary.forEach(function (primaryStat) {
+                helmet.push(React.DOM.li({key: helmState.key, className: 'primary'}, primaryStat.text));
+            });
+            helmState.secondary.forEach(function (secondaryStat) {
+                helmet.push(React.DOM.li({key: helmState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            helmState.passive.forEach(function (passiveStat) {
+                helmet.push(React.DOM.li({key: helmState.key, className: 'passive'}, passiveStat.text));
+            });
+
+            if (helmStateRaw.Sockets && helmGem[0]) {
+                var gemLink = itemIconBaseUrl.concat(helmGem[0].item.icon, '.png');
+                helmet.push(React.DOM.li({key: helmState.key, className: 'socket', style: {backgroundImage: 'url(' + gemLink + ')'}}));
+            }
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'head',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: helmState.key, className: 'desc'}, React.DOM.ul({
+                    key: helmState.key,
+                    className: 'stats'
+                }, helmet)
+            )));
         }
 
-        if (itemsIconState.torso) {
+        if (itemsIconState.torso && torsoState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'torso', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            torsoState.primary.forEach(function (primaryStat) {
+                torso.push(React.DOM.li({key: torsoState.key, className: 'primary'}, primaryStat.text));
+            });
+            torsoState.secondary.forEach(function (secondaryStat) {
+                torso.push(React.DOM.li({key: torsoState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            torsoState.passive.forEach(function (passiveStat) {
+                torso.push(React.DOM.li({key: torsoState.key, className: 'passive'}, passiveStat.text));
+            });
+
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'torso',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: torsoState.key, className: 'desc'}, React.DOM.ul({
+                    key: torsoState.key,
+                    className: 'stats'
+                }, torso)
+            )));
         }
 
-        if (itemsIconState.hands) {
+        if (itemsIconState.hands && handsState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'hands', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            handsState.primary.forEach(function (primaryStat) {
+                hands.push(React.DOM.li({key: handsState.key, className: 'primary'}, primaryStat.text));
+            });
+            handsState.secondary.forEach(function (secondaryStat) {
+                hands.push(React.DOM.li({key: handsState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            handsState.passive.forEach(function (passiveStat) {
+                hands.push(React.DOM.li({key: handsState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'hands',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: handsState.key, className: 'desc'}, React.DOM.ul({
+                    key: handsState.key,
+                    className: 'stats'
+                }, hands)
+            )));
         }
 
-        if (itemsIconState.feet) {
+        if (itemsIconState.feet && feetState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'feet', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            feetState.primary.forEach(function (primaryStat) {
+                feet.push(React.DOM.li({key: feetState.key, className: 'primary'}, primaryStat.text));
+            });
+            feetState.secondary.forEach(function (secondaryStat) {
+                feet.push(React.DOM.li({key: feetState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            feetState.passive.forEach(function (passiveStat) {
+                feet.push(React.DOM.li({key: feetState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'feet',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: feetState.key, className: 'desc'}, React.DOM.ul({
+                    key: feetState.key,
+                    className: 'stats'
+                }, feet)
+            )));
         }
 
-        if (itemsIconState.shoulders) {
+        if (itemsIconState.shoulders && shouldersState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'shoulders', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            shouldersState.primary.forEach(function (primaryStat) {
+                shoulders.push(React.DOM.li({key: shouldersState.key, className: 'primary'}, primaryStat.text));
+            });
+            shouldersState.secondary.forEach(function (secondaryStat) {
+                shoulders.push(React.DOM.li({key: shouldersState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            shouldersState.passive.forEach(function (passiveStat) {
+                shoulders.push(React.DOM.li({key: shouldersState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'shoulders',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: shouldersState.key, className: 'desc'}, React.DOM.ul({
+                    key: shouldersState.key,
+                    className: 'stats'
+                }, shoulders)
+            )));
         }
 
-        if (itemsIconState.legs) {
+        if (itemsIconState.legs && legsState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'legs', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            legsState.primary.forEach(function (primaryStat) {
+                legs.push(React.DOM.li({key: legsState.key, className: 'primary'}, primaryStat.text));
+            });
+            legsState.secondary.forEach(function (secondaryStat) {
+                legs.push(React.DOM.li({key: legsState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            legsState.passive.forEach(function (passiveStat) {
+                legs.push(React.DOM.li({key: legsState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'legs',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: legsState.key, className: 'desc'}, React.DOM.ul({
+                    key: legsState.key,
+                    className: 'stats'
+                }, legs)
+            )));
         }
 
-        if (itemsIconState.bracers) {
+        if (itemsIconState.bracers && bracersState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'bracers', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            bracersState.primary.forEach(function (primaryStat) {
+                bracers.push(React.DOM.li({key: bracersState.key, className: 'primary'}, primaryStat.text));
+            });
+            bracersState.secondary.forEach(function (secondaryStat) {
+                bracers.push(React.DOM.li({key: bracersState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            bracersState.passive.forEach(function (passiveStat) {
+                bracers.push(React.DOM.li({key: bracersState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'bracers',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: bracersState.key, className: 'desc'}, React.DOM.ul({
+                    key: bracersState.key,
+                    className: 'stats'
+                }, bracers)
+            )));
         }
 
-        if (itemsIconState.mainHand) {
+        if (itemsIconState.mainHand && mainHandState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'mainHand', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            mainHandState.primary.forEach(function (primaryStat) {
+                mainHand.push(React.DOM.li({key: mainHandState.key, className: 'primary'}, primaryStat.text));
+            });
+            mainHandState.secondary.forEach(function (secondaryStat) {
+                mainHand.push(React.DOM.li({key: mainHandState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            mainHandState.passive.forEach(function (passiveStat) {
+                mainHand.push(React.DOM.li({key: mainHandState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'mainHand',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: mainHandState.key, className: 'desc'}, React.DOM.ul({
+                    key: mainHandState.key,
+                    className: 'stats'
+                }, mainHand)
+            )));
         }
 
-        if (itemsIconState.offHand) {
+        if (itemsIconState.offHand && offHandState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'offHand', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            offHandState.primary.forEach(function (primaryStat) {
+                offHand.push(React.DOM.li({key: offHandState.key, className: 'primary'}, primaryStat.text));
+            });
+            offHandState.secondary.forEach(function (secondaryStat) {
+                offHand.push(React.DOM.li({key: offHandState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            offHandState.passive.forEach(function (passiveStat) {
+                offHand.push(React.DOM.li({key: offHandState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'offHand',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: offHandState.key, className: 'desc'}, React.DOM.ul({
+                    key: offHandState.key,
+                    className: 'stats'
+                }, offHand)
+            )));
         }
 
-        if (itemsIconState.waist) {
+        if (itemsIconState.waist && beltState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'waist', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            beltState.primary.forEach(function (primaryStat) {
+                belt.push(React.DOM.li({key: beltState.key, className: 'primary'}, primaryStat.text));
+            });
+            beltState.secondary.forEach(function (secondaryStat) {
+                belt.push(React.DOM.li({key: beltState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            beltState.passive.forEach(function (passiveStat) {
+                belt.push(React.DOM.li({key: beltState.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'waist',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: beltState.key, className: 'desc'}, React.DOM.ul({
+                    key: beltState.key,
+                    className: 'stats'
+                }, belt)
+            )));
         }
 
-        if (itemsIconState.rightFinger) {
+        if (itemsIconState.rightFinger && ringStateRight) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'rightFinger', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            ringStateRight.primary.forEach(function (primaryStat) {
+                ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'primary'}, primaryStat.text));
+            });
+            ringStateRight.secondary.forEach(function (secondaryStat) {
+                ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'secondary'}, secondaryStat.text));
+            });
+            ringStateRight.passive.forEach(function (passiveStat) {
+                ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'rightFinger',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: ringStateRight.key, className: 'desc'}, React.DOM.ul({
+                    key: ringStateRight.key,
+                    className: 'stats'
+                }, ringRight)
+            )));
         }
 
-        if (itemsIconState.leftFinger) {
+        if (itemsIconState.leftFinger && ringStateLeft) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'leftFinger', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            ringStateLeft.primary.forEach(function (primaryStat) {
+                ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'primary'}, primaryStat.text));
+            });
+            ringStateLeft.secondary.forEach(function (secondaryStat) {
+                ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'secondary'}, secondaryStat.text));
+            });
+            ringStateLeft.passive.forEach(function (passiveStat) {
+                ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'passive'}, passiveStat.text));
+            });
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'leftFinger',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: ringStateLeft.key, className: 'desc'}, React.DOM.ul({
+                    key: ringStateLeft.key,
+                    className: 'stats'
+                }, ringLeft)
+            )));
         }
 
-        if (itemsIconState.neck) {
+        if (itemsIconState.neck && neckState.primary) {
             var constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
-            items.push(React.DOM.div({key: itemsIconState.key, className: 'neck', style: {backgroundImage: 'url(' + constructedLink + ')'}}));
+            neckState.primary.forEach(function (primaryStat) {
+                neck.push(React.DOM.li({key: neckState.key, className: 'primary'}, primaryStat.text));
+            });
+            neckState.secondary.forEach(function (secondaryStat) {
+                neck.push(React.DOM.li({key: neckState.key, className: 'secondary'}, secondaryStat.text));
+            });
+            neckState.passive.forEach(function (passiveStat) {
+                neck.push(React.DOM.li({key: neckState.key, className: 'passive'}, passiveStat.text));
+            });
+
+            if (neckStateRaw.Sockets && neckGem[0]) {
+                var gemLink = itemIconBaseUrl.concat(neckGem[0].item.icon, '.png');
+                neck.push(React.DOM.li({key: neckState.key, className: 'socket', style: {backgroundImage: 'url(' + gemLink + ')'}}));
+            } else if (neckStateRaw.Sockets) {
+                neck.push(React.DOM.li({key: neckState.key, className: 'socket'}));
+            }
+
+            items.push(React.DOM.div({
+                key: itemsIconState.key,
+                className: 'neck',
+                style: {backgroundImage: 'url(' + constructedLink + ')'}
+            }, React.DOM.div({key: neckState.key, className: 'desc'}, React.DOM.ul({
+                    key: neckState.key,
+                    className: 'stats'
+                }, neck)
+            )));
         }
 
-        if (itemsState !== []) {
-            if (itemsState.passive !== [] && itemsState.passive) {
-                var hellfirePassiveLink = itemsState.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g,'').toLowerCase(),
-                    hellfirePassiveDisplay = itemsState.passive[0].text.substring(9).replace(' passive.', ''),
+        if (amuletState !== []) {
+            if (amuletState.passive !== [] && amuletState.passive && itemsState.neck !== [] && itemsState.neck.name === 'Hellfire Amulet') {
+                var hellfirePassiveLink = amuletState.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase(),
+                    hellfirePassiveDisplay = amuletState.passive[0].text.substring(9).replace(' passive.', ''),
                     constructedLink;
 
                 switch (classState) {
                     case 'demon-hunter':
-                        constructedLink  = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
+                        constructedLink = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
                         break;
                     case 'witch-doctor':
-                        constructedLink  = skillIconBaseUrl.concat('witchdoctor_passive_', hellfirePassiveLink);
+                        constructedLink = skillIconBaseUrl.concat('witchdoctor_passive_', hellfirePassiveLink);
                         break;
                     case 'barbarian':
-                        constructedLink  = skillIconBaseUrl.concat('barbarian_passive_', hellfirePassiveLink);
+                        constructedLink = skillIconBaseUrl.concat('barbarian_passive_', hellfirePassiveLink);
                         break;
                     case 'crusader':
-                        constructedLink  = skillIconBaseUrl.concat('crusader_passive_', hellfirePassiveLink);
+                        constructedLink = skillIconBaseUrl.concat('crusader_passive_', hellfirePassiveLink);
                         break;
                     case 'monk':
-                        constructedLink  = skillIconBaseUrl.concat('monk_passive_', hellfirePassiveLink);
+                        constructedLink = skillIconBaseUrl.concat('monk_passive_', hellfirePassiveLink);
                         break;
                     case 'wizard':
-                        constructedLink  = skillIconBaseUrl.concat('wizard_passive_', hellfirePassiveLink);
+                        constructedLink = skillIconBaseUrl.concat('wizard_passive_', hellfirePassiveLink);
                         break;
                     default:
                         console.log('new class?');
                 }
-                specialPassive.push(React.DOM.div({key: itemsState.key, className: 'hasIcon'}, hellfirePassiveDisplay, ' (HA)', React.DOM.div({
-                    key: itemsState.key,
+                specialPassive.push(React.DOM.div({
+                    key: amuletState.key,
+                    className: 'hasIcon'
+                }, hellfirePassiveDisplay, ' (HA)', React.DOM.div({
+                    key: amuletState.key,
                     className: 'icon',
                     style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                 })));

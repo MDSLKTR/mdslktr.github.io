@@ -124,55 +124,135 @@ body {
   -webkit-filter: drop-shadow(1px 1px 30px white);
 }
 
+@keyframes increase {
+  from {
+    width: 64px;
+    background-color: rgba(0,0,0,0.5);
+  }
+  to {
+    width: 328px;
+    background-color: rgba(0,0,0,1);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .d3-item-wrapper {
   position: fixed;
   left: 50%;
-  top: 10%;
+  top: 0;
   transform: translateX(-50%);
   width: 405px;
-  height: 615px;
+  height: 750px;
 
-  div {
+  & > div {
+    overflow: hidden;
+    backface-visibility: hidden;
     position: absolute;
-    background-color: rgba(255,0,0,0.5);
-    border: 1px solid rgba(0,0,0,1);
+    background-color: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,0,0,1);
     border-radius: 7px;
     background-size: 64px auto;
     background-position: 0 50%;
     background-repeat: no-repeat;
     width: 64px;
     height: 128px;
-    transition: width 1s, background 0.5s;
-  }
+    color: rgba(255,0,0,1);
 
-  div:hover {
-    background-color: rgba(255,0,0,1);
-    z-index: 10;
-    transition: width 1s, background 0.5s;
-    width: 300px;
+    &:hover {
+      z-index: 1;
+      animation: increase 0.5s linear;
+      animation-fill-mode: both;
+      animation-iteration-count: 1;
+      will-change: animation;
+
+      & .desc {
+        animation: fade 0.5s linear;
+        animation-delay: 0.5s;
+        animation-fill-mode: both;
+        animation-iteration-count: 1;
+        will-change: animation;
+      }
+    }
+
+    & > div {
+      overflow: hidden;
+      backface-visibility: hidden;
+      position: absolute;
+      right: 0;
+      width: 75%;
+      height: 100%;
+      opacity: 0;
+
+      & > ul {
+        top: 50%;
+        height: 100%;
+        position: absolute;
+        transform: translateY(-50%);
+        font-size: 11px;
+        padding: 0;
+        list-style: none;
+
+        li {
+          margin: 0.15rem;
+        }
+
+        .primary {
+          color: red;
+          width: 100%;
+        }
+
+        .secondary {
+          color: white;
+          width: 100%;
+        }
+
+        .passive {
+          color: goldenrod;
+          width: 100%;
+        }
+
+        .socket {
+          height: 64px;
+          background-size: contain;
+          background-repeat: no-repeat;
+          position: absolute;
+          bottom: 0;
+          width: 20%;
+          right: 0;
+        }
+      }
+    }
   }
 
   .head {
     left: 50%;
-    top: 0;
+    top: 4.5%;
     transform: translateX(-50%);
   }
 
   .torso {
     left: 50%;
-    top: 20%;
+    top: 22.5%;
     transform: translateX(-50%);
   }
 
   .legs {
     left: 50%;
-    top: 55%;
+    top: 60%;
     transform: translateX(-50%);
   }
 
   .feet {
     left: 50%;
-    top: 75%;
+    bottom: 5%;
     transform: translateX(-50%);
   }
 
@@ -183,43 +263,43 @@ body {
 
   .bracers {
     right: 0;
-    top: 35%;
+    top: 30%;
   }
 
   .shoulders {
-    left: 0;
-    top: 15%;
+    left: 10%;
+    top: 25%;
   }
 
   .neck {
-    right: 0;
-    top: 0;
+    right: 15%;
+    top: 10%;
   }
 
   .leftFinger {
-    left: 25%;
+    left: 22.5%;
     top: 45%;
   }
 
   .rightFinger {
-    right: 25%;
+    right: 22.5%;
     top: 45%;
   }
 
   .waist {
-    top: 35%;
+    top: 41.5%;
     left: 50%;
     transform: translateX(-50%);
   }
 
   .mainHand {
-    bottom: 0;
-    left: 0;
+    bottom: 10%;
+    left: 10%;
   }
 
   .offHand {
-    bottom: 0;
-    right: 0;
+    bottom: 10%;
+    right: 10%;
   }
 }
 
