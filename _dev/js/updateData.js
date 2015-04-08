@@ -181,9 +181,13 @@ var DataWrapper = React.createClass({
                     case 'CeremonialKnife':
                     case 'MightyWeapon':
                     case 'Flail2H':
+                    case 'Flail':
                     case 'HandXbow':
                     case 'Bow2H':
                     case 'Bow':
+                    case 'Wand':
+                    case 'Staff':
+                    case 'Staff2H':
                         this.setState({mainItem: data.attributes});
                         this.setState({mainRaw: data.attributesRaw});
                         this.setState({mainGem: data.gems});
@@ -193,6 +197,7 @@ var DataWrapper = React.createClass({
                     case 'CrusaderShield':
                     case 'Shield':
                     case 'Source':
+                    case 'Mojo':
                         this.setState({offItem: data.attributes});
                         break;
                     case 'Gloves':
@@ -866,6 +871,12 @@ var DataWrapper = React.createClass({
                     className: 'socket',
                     style: {backgroundImage: 'url(' + gemLink + ')'}
                 }));
+
+                if (mainHandGem[0].attributes.primary) {
+                    mainHandGem[0].attributes.primary.forEach(function (Stat) {
+                        mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
+                    });
+                }
             } else if (mainHandStateRaw.Sockets) {
                 mainHand.push(React.DOM.li({key: mainHandState.key, className: 'socket'}));
             }

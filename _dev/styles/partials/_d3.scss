@@ -207,7 +207,7 @@ select, input {
     backface-visibility: hidden;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 0, 0, 1);
+    border: 1px solid rgba(255, 0, 0, 0.5);
     border-radius: 7px;
     background-size: 64px auto;
     background-position: 0 50%;
@@ -246,7 +246,7 @@ select, input {
         height: 100%;
         position: absolute;
         transform: translateY(-50%);
-        font-size: 11px;
+        font-size: 12px;
         padding: 0;
         margin: 3% 1.5%;
         list-style: none;
