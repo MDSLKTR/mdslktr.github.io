@@ -559,6 +559,18 @@ var DataWrapper = React.createClass({
                     className: 'socket',
                     style: {backgroundImage: 'url(' + gemLink + ')'}
                 }));
+
+                if (helmGem[0].attributes.primary) {
+                    helmGem[0].attributes.primary.forEach(function (Stat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'gem-passive'}, Stat.text));
+                    });
+                }
+
+                if (helmGem[0].attributes.secondary) {
+                    helmGem[0].attributes.secondary.forEach(function (Stat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'gem-passive'}, Stat.text));
+                    });
+                }
             }
             items.push(React.DOM.div({
                 key: itemsIconState.key,
@@ -957,7 +969,7 @@ var DataWrapper = React.createClass({
             }
 
 
-            if (ringRightRaw.Sockets && ringRightGem[0]) {
+            if (ringRightRaw && ringRightRaw.Sockets && ringRightGem[0]) {
                 var gemLink = itemIconBaseUrl.concat(ringRightGem[0].item.icon, '.png');
                 ringRight.push(React.DOM.li({
                     key: ringStateRight.key,
@@ -966,7 +978,7 @@ var DataWrapper = React.createClass({
                 }));
 
                 ringRightGem[0].attributes.passive.forEach(function (passiveStat) {
-                    ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'gem-passive'}, passiveStat.text));
+                    ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'gem-passive unique'}, passiveStat.text));
                 });
 
                 ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'gem-level'}, ringRightGem[0].attributesRaw.Jewel_Rank.min));
@@ -1005,7 +1017,7 @@ var DataWrapper = React.createClass({
                 });
             }
 
-            if (ringLeftRaw.Sockets && ringLeftGem[0]) {
+            if (ringLeftRaw && ringLeftRaw.Sockets && ringLeftGem[0]) {
                 var gemLink = itemIconBaseUrl.concat(ringLeftGem[0].item.icon, '.png');
                 ringLeft.push(React.DOM.li({
                     key: ringStateLeft.key,
@@ -1013,7 +1025,7 @@ var DataWrapper = React.createClass({
                     style: {backgroundImage: 'url(' + gemLink + ')'}
                 }));
                 ringLeftGem[0].attributes.passive.forEach(function (passiveStat) {
-                    ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'gem-passive'}, passiveStat.text));
+                    ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'gem-passive unique'}, passiveStat.text));
                 });
 
                 ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'gem-level'}, ringLeftGem[0].attributesRaw.Jewel_Rank.min));
@@ -1053,7 +1065,7 @@ var DataWrapper = React.createClass({
                 });
             }
 
-            if (neckStateRaw.Sockets && neckGem[0]) {
+            if (neckState && neckStateRaw.Sockets && neckGem[0]) {
                 var gemLink = itemIconBaseUrl.concat(neckGem[0].item.icon, '.png');
                 neck.push(React.DOM.li({
                     key: neckState.key,
@@ -1062,7 +1074,7 @@ var DataWrapper = React.createClass({
                 }));
 
                 neckGem[0].attributes.passive.forEach(function (passiveStat) {
-                    neck.push(React.DOM.li({key: neckState.key, className: 'gem-passive'}, passiveStat.text));
+                    neck.push(React.DOM.li({key: neckState.key, className: 'gem-passive unique'}, passiveStat.text));
                 });
 
                 neck.push(React.DOM.li({key: neckState.key, className: 'gem-level'}, neckGem[0].attributesRaw.Jewel_Rank.min));
@@ -1183,6 +1195,7 @@ React.render(React.createElement(DataWrapper, {
 // save url to localStorage - done
 // item colors
 // ancient state
+// offhand weapons dont work
 // find out how animations triggers work
 // correct stats
 // <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>

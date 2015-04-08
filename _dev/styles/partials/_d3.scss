@@ -1,5 +1,32 @@
 body {
-  background: url(/assets/images/bg.jpg) center center/ cover no-repeat;
+  background: rgba(0,0,0,1);
+  overflow: hidden;
+}
+
+.d3-bg {
+  background: transparent url(/assets/images/bg-3.jpg) center center/ cover no-repeat;
+  animation: bg 4s linear both;
+  will-change: animation;
+  position: absolute;
+  height: 120%;
+  width: 100%;
+  perspective: 0;
+}
+@keyframes bg {
+  from {
+    filter: unquote('brightness(0)');
+    transform: translateY(-10%) scale(1);
+  }
+
+  50% {
+    filter: unquote('brightness(1)');
+    transform: translateY(-5%) scale(1.01);
+  }
+
+  to {
+    filter: unquote('brightness(0.25)');
+    transform: translateY(0) scale(1);
+  }
 }
 
 .d3 {
@@ -133,7 +160,7 @@ body {
   }
   to {
     width: 328px;
-    height: 192px;
+    height: 286px;
     background-color: rgba(0, 0, 0, 1);
   }
 }
@@ -233,6 +260,39 @@ body {
           color: silver;
         }
 
+        .gem-level {
+          top: 55%;
+          left: 15%;
+          background: sienna;
+          color: black;
+          clip-path: circle(50% at 50% 50%);
+          padding: 1%;
+          position: absolute;
+        }
+
+        .gem-passive {
+          right: 0;
+          width: 70%;
+          top: 50%;
+          position: absolute;
+
+          & + .gem-passive {
+            top: 65%;
+
+            &.unique {
+              top: 75%;
+            }
+
+            & + .gem-passive {
+              top: 80%;
+
+              &.unique {
+                top: 90%;
+              }
+            }
+          }
+        }
+
         .socket {
           height: 38px;
           filter: drop-shadow(0px 0px 2px white);
@@ -244,12 +304,13 @@ body {
           border: 2px solid white;
           border-radius: 30%;
           left: 0;
+          top: 45%;
 
           & + .socket {
-            left: 20%;
+            top: 60%;
 
             & + .socket {
-              left: 40%;
+              top: 75%;
             }
           }
         }
@@ -362,6 +423,7 @@ body {
   border-radius: 7px;
   padding: 1.5vh;
   will-change: animation;
+  box-shadow: inset 0px 0 10px 1px rgba(255, 0, 0, 0.5);
 
   & > span {
     display: block;
