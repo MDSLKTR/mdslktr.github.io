@@ -1066,7 +1066,7 @@ var DataWrapper = React.createClass({
 
 
             if (neckState.attributesRaw && neckState.attributesRaw.Sockets && neckState.gems[0]) {
-                gemLink = itemIconBaseUrl.concat(neckGem[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(neckState.gems[0].item.icon, '.png');
                 neck.push(React.DOM.li({
                     key: neckState.key,
                     className: 'socket',
