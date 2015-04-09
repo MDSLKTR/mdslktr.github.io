@@ -234,7 +234,9 @@ var DataWrapper = React.createClass({
     },
 
     getItemData: function () {
-        var i;
+        var i,
+            itemData;
+
         if (this.state.items) {
             var itemSlots = [
                 this.state.items.neck,
@@ -247,7 +249,7 @@ var DataWrapper = React.createClass({
                 this.state.items.bracers,
                 this.state.items.mainHand,
                 this.state.items.offHand,
-                this.state.items.waist,
+                this.state.items.waist
             ];
 
             var itemSlotsWithProps = [
@@ -257,14 +259,14 @@ var DataWrapper = React.createClass({
 
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i]) {
-                    var itemData = itemSlots[i].tooltipParams;
+                    itemData = itemSlots[i].tooltipParams;
                     this.loadItemData(itemData);
                 }
             }
 
             for (i = 0; i < itemSlotsWithProps.length; i++) {
                 if (itemSlotsWithProps[i][0]) {
-                    var itemData = itemSlotsWithProps[i][0].tooltipParams;
+                    itemData = itemSlotsWithProps[i][0].tooltipParams;
                     if (itemSlotsWithProps[i][1] === 'left') {
                         this.loadItemDataWithProps(itemData, true);
                     } else {
@@ -322,7 +324,9 @@ var DataWrapper = React.createClass({
             itemsIconState = this.state.items,
             items = [],
             skillIconBaseUrl = this.state.skillIconBase,
-            itemIconBaseUrl = this.state.itemIconBase;
+            itemIconBaseUrl = this.state.itemIconBase,
+            constructedLink,
+            gemLink;
 
         switch (classState) {
             case 'demon-hunter':
@@ -382,8 +386,7 @@ var DataWrapper = React.createClass({
 
         if (skillsState !== []) {
             skillsState.forEach(function (skillName) {
-                var constructedLink,
-                    runeType;
+                var runeType;
                 if (skillName.rune) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
                     switch (skillName.rune.type) {
@@ -441,7 +444,7 @@ var DataWrapper = React.createClass({
         if (passivesState !== []) {
             passivesState.forEach(function (passiveName) {
                 if (passiveName.skill) {
-                    var constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
+                    constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
                     passives.push(React.DOM.div({
                         key: passivesState.key,
                         className: 'hasIcon'
@@ -455,7 +458,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.head && helmState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.head.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.head.icon, '.png');
 
             helmet.push(React.DOM.li({key: helmState.key, className: 'name'}, itemsState.head.name));
 
@@ -479,7 +482,7 @@ var DataWrapper = React.createClass({
             }
 
             if (helmState.attributesRaw && helmState.attributesRaw.Sockets && helmState.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(helmState.gems[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(helmState.gems[0].item.icon, '.png');
                 helmet.push(React.DOM.li({
                     key: helmState.key,
                     className: 'socket',
@@ -510,7 +513,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.torso && torsoState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
             torso.push(React.DOM.li({key: torsoState.key, className: 'name'}, itemsState.torso.name));
 
             if (torsoState.attributes) {
@@ -534,7 +537,7 @@ var DataWrapper = React.createClass({
             }
 
             if (torsoState.attributesRaw && torsoState.attributesRaw.Sockets && torsoState.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(torsoState.gems[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(torsoState.gems[0].item.icon, '.png');
                 torso.push(React.DOM.li({
                     key: torsoState.key,
                     className: 'socket',
@@ -577,7 +580,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.hands && handsState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
             hands.push(React.DOM.li({key: handsState.key, className: 'name'}, itemsState.hands.name));
 
             if (handsState.attributes) {
@@ -610,7 +613,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.feet && feetState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
 
             feet.push(React.DOM.li({key: feetState.key, className: 'name'}, itemsState.feet.name));
 
@@ -645,7 +648,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.shoulders && shouldersState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
 
             shoulders.push(React.DOM.li({key: shouldersState.key, className: 'name'}, itemsState.shoulders.name));
 
@@ -679,7 +682,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.legs && legsState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
 
             legs.push(React.DOM.li({key: legsState.key, className: 'name'}, itemsState.legs.name));
             if (legsState.attributes) {
@@ -702,7 +705,7 @@ var DataWrapper = React.createClass({
 
 
             if (legsState.attributesRaw && legsState.attributesRaw.Sockets && legsState.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(legsState.gems[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(legsState.gems[0].item.icon, '.png');
                 legs.push(React.DOM.li({
                     key: legsState.key,
                     className: 'socket',
@@ -738,7 +741,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.bracers && bracersState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
 
             bracers.push(React.DOM.li({key: bracersState.key, className: 'name'}, itemsState.bracers.name));
 
@@ -772,7 +775,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.mainHand && mainHandState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
 
             mainHand.push(React.DOM.li({key: mainHandState.key, className: 'name'}, itemsState.mainHand.name));
 
@@ -804,7 +807,7 @@ var DataWrapper = React.createClass({
             }
 
             if (mainHandState.attributesRaw && mainHandState.attributesRaw.Sockets && mainHandState.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
                 mainHand.push(React.DOM.li({
                     key: mainHandState.key,
                     className: 'socket',
@@ -832,7 +835,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.offHand && offHandState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
 
             offHand.push(React.DOM.li({key: offHandState.key, className: 'name'}, itemsState.offHand.name));
 
@@ -866,7 +869,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.waist && beltState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
 
             belt.push(React.DOM.li({key: beltState.key, className: 'name'}, itemsState.waist.name));
 
@@ -900,7 +903,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.rightFinger && ringStateRight) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
 
             ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'name'}, itemsState.rightFinger.name));
 
@@ -925,7 +928,7 @@ var DataWrapper = React.createClass({
             }
 
             if (ringStateRight.attributesRaw && ringStateRight.attributesRaw.Sockets && ringStateRight.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(ringStateRight.gems[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(ringStateRight.gems[0].item.icon, '.png');
                 ringRight.push(React.DOM.li({
                     key: ringStateRight.key,
                     className: 'socket',
@@ -957,7 +960,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.leftFinger && ringStateLeft) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
 
             ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'name'}, itemsState.leftFinger.name));
 
@@ -981,7 +984,7 @@ var DataWrapper = React.createClass({
             }
 
             if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets && ringStateLeft.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(ringStateLeft.gems[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(ringStateLeft.gems[0].item.icon, '.png');
                 ringLeft.push(React.DOM.li({
                     key: ringStateLeft.key,
                     className: 'socket',
@@ -1012,7 +1015,7 @@ var DataWrapper = React.createClass({
         }
 
         if (itemsIconState.neck && neckState) {
-            var constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
+            constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
 
             neck.push(React.DOM.li({key: neckState.key, className: 'name'}, itemsState.neck.name));
 
@@ -1038,7 +1041,7 @@ var DataWrapper = React.createClass({
 
 
             if (neckState.attributesRaw && neckState.attributesRaw.Sockets && neckState.gems[0]) {
-                var gemLink = itemIconBaseUrl.concat(neckGem[0].item.icon, '.png');
+                gemLink = itemIconBaseUrl.concat(neckGem[0].item.icon, '.png');
                 neck.push(React.DOM.li({
                     key: neckState.key,
                     className: 'socket',
@@ -1072,8 +1075,7 @@ var DataWrapper = React.createClass({
         if (amuletState && itemsState) {
             if (amuletState.passive && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
                 var hellfirePassiveLink = amuletState.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase(),
-                    hellfirePassiveDisplay = amuletState.passive[0].text.substring(9).replace(' passive.', ''),
-                    constructedLink;
+                    hellfirePassiveDisplay = amuletState.passive[0].text.substring(9).replace(' passive.', '');
 
                 switch (classState) {
                     case 'demon-hunter':
