@@ -10,14 +10,13 @@ select, input {
   border: 1px solid black;
 }
 
-.d3-bg {
+#d3-bg {
   background: transparent url(/assets/images/bg-3.jpg) center center/ cover no-repeat;
-  animation: bg 4s linear both;
-  will-change: animation;
+  animation: bg 4s linear forwards;
+  animation-delay: 500ms;
   position: absolute;
   height: 120%;
   width: 100%;
-  perspective: 0;
 }
 @keyframes bg {
   from {
@@ -204,7 +203,7 @@ select, input {
 
   & > div {
     overflow: hidden;
-    backface-visibility: hidden;
+    transform: translate3d(0,0,0);
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 0, 0, 0.5);
@@ -215,26 +214,28 @@ select, input {
     width: 64px;
     height: 128px;
     color: rgba(255, 0, 0, 1);
+    will-change: initial;
+
+    &:hover .desc {
+        will-change: opacity;
+    }
 
     &:hover {
       z-index: 1;
       animation: increase 0.5s linear;
       animation-fill-mode: both;
       animation-iteration-count: 1;
-      will-change: animation;
 
       & .desc {
         animation: fade 0.5s linear;
         animation-delay: 0.5s;
         animation-fill-mode: both;
         animation-iteration-count: 1;
-        will-change: animation;
       }
     }
 
     & > div {
       overflow: hidden;
-      backface-visibility: hidden;
       position: absolute;
       right: 0;
       width: 75%;
@@ -415,8 +416,8 @@ select, input {
   }
 }
 
-.panel-left > div:not(.hasIcon),
-.panel-right > div:not(.hasIcon) {
+#panel-left > div:not(.hasIcon),
+#panel-right > div:not(.hasIcon) {
   padding: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative;
@@ -432,24 +433,24 @@ select, input {
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative;
-  backface-visibility: hidden;
 }
 
-.panel-left,
-.panel-right,
-.panel-bottom-left,
-.panel-bottom-right {
+#panel-left,
+#panel-right,
+#panel-bottom-left,
+#panel-bottom-right {
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
   color: sienna;
   z-index: 1;
   animation-duration: 5s;
+  animation-delay: 500ms;
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
   border-radius: 7px;
   padding: 1.5vh;
-  will-change: animation;
-  box-shadow: inset 0px 0 10px 1px rgba(255, 0, 0, 0.5);
+  // make pseudo here
+  box-shadow: inset 0 0 10px 1px rgba(255, 0, 0, 0.5);
 
   & > span {
     display: block;
@@ -457,26 +458,26 @@ select, input {
   }
 }
 
-.panel-left,
-.panel-right {
+#panel-left,
+#panel-right {
   height: 40vh;
   top: 1.5vh;
   width: 35vw;
 }
 
-.panel-left {
+#panel-left {
   left: -40vw;
   animation-name: fadein-left;
   text-align: right;
 }
 
-.panel-right {
+#panel-right {
   right: -40vw;
   animation-name: fadein-right;
   text-align: left;
 }
 
-.panel-bottom-left {
+#panel-bottom-left {
   text-align: right;
   height: 45vh;
   width: 45%;
@@ -495,7 +496,7 @@ select, input {
   }
 }
 
-.panel-bottom-right {
+#panel-bottom-right {
   height: 45vh;
   width: 45%;
   bottom: -55vh;

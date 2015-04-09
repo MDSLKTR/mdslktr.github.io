@@ -636,7 +636,7 @@ var DataWrapper = React.createClass({
                         torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
-                
+
             } else if (torsoStateRaw.Sockets) {
                 torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
                 torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
@@ -788,7 +788,7 @@ var DataWrapper = React.createClass({
                         legs.push(React.DOM.li({key: legsState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
-                
+
             } else if (legsStateRaw.Sockets) {
                 legs.push(React.DOM.li({key: legsState.key, className: 'socket'}));
                 legs.push(React.DOM.li({key: legsState.key, className: 'socket'}));
@@ -1184,10 +1184,10 @@ var DataWrapper = React.createClass({
                         }, heroes
                     )
                 ),
-                React.DOM.div({className: 'panel-left'}, 'General', base),
-                React.DOM.div({className: 'panel-bottom-left'}, 'Skills', skills),
-                React.DOM.div({className: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({className: 'panel-right'}, 'Stats', stats)
+                React.DOM.div({id: 'panel-left'}, 'General', base),
+                React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
+                React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
+                React.DOM.div({id: 'panel-right'}, 'Stats', stats)
             )
         );
     }

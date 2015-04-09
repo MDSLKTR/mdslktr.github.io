@@ -19,16 +19,15 @@ select, input {
   outline: none;
   border: 1px solid black; }
 
-.d3-bg {
+#d3-bg {
   background: transparent url(/assets/images/bg-3.jpg) center center/cover no-repeat;
-  -webkit-animation: bg 4s linear both;
-          animation: bg 4s linear both;
-  will-change: animation;
+  -webkit-animation: bg 4s linear forwards;
+          animation: bg 4s linear forwards;
+  -webkit-animation-delay: 500ms;
+          animation-delay: 500ms;
   position: absolute;
   height: 120%;
-  width: 100%;
-  -webkit-perspective: 0;
-          perspective: 0; }
+  width: 100%; }
 
 @-webkit-keyframes bg {
   from {
@@ -262,8 +261,8 @@ select, input {
   height: 750px; }
   .d3-item-wrapper > div {
     overflow: hidden;
-    -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 0, 0, 0.5);
@@ -273,7 +272,10 @@ select, input {
     background-repeat: no-repeat;
     width: 64px;
     height: 128px;
-    color: red; }
+    color: red;
+    will-change: initial; }
+    .d3-item-wrapper > div:hover .desc {
+      will-change: opacity; }
     .d3-item-wrapper > div:hover {
       z-index: 1;
       -webkit-animation: increase 0.5s linear;
@@ -281,8 +283,7 @@ select, input {
       -webkit-animation-fill-mode: both;
               animation-fill-mode: both;
       -webkit-animation-iteration-count: 1;
-              animation-iteration-count: 1;
-      will-change: animation; }
+              animation-iteration-count: 1; }
       .d3-item-wrapper > div:hover .desc {
         -webkit-animation: fade 0.5s linear;
                 animation: fade 0.5s linear;
@@ -291,12 +292,9 @@ select, input {
         -webkit-animation-fill-mode: both;
                 animation-fill-mode: both;
         -webkit-animation-iteration-count: 1;
-                animation-iteration-count: 1;
-        will-change: animation; }
+                animation-iteration-count: 1; }
     .d3-item-wrapper > div > div {
       overflow: hidden;
-      -webkit-backface-visibility: hidden;
-              backface-visibility: hidden;
       position: absolute;
       right: 0;
       width: 75%;
@@ -422,7 +420,7 @@ select, input {
     bottom: 10%;
     right: 10%; }
 
-.panel-left > div:not(.hasIcon), .panel-right > div:not(.hasIcon) {
+#panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon) {
   padding: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative;
@@ -436,47 +434,46 @@ select, input {
   padding-top: 1.75vh;
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
-  position: relative;
-  -webkit-backface-visibility: hidden;
-          backface-visibility: hidden; }
+  position: relative; }
 
-.panel-left, .panel-right, .panel-bottom-left, .panel-bottom-right {
+#panel-left, #panel-right, #panel-bottom-left, #panel-bottom-right {
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
   color: sienna;
   z-index: 1;
   -webkit-animation-duration: 5s;
           animation-duration: 5s;
+  -webkit-animation-delay: 500ms;
+          animation-delay: 500ms;
   -webkit-animation-iteration-count: 1;
           animation-iteration-count: 1;
   -webkit-animation-fill-mode: forwards;
           animation-fill-mode: forwards;
   border-radius: 7px;
   padding: 1.5vh;
-  will-change: animation;
-  box-shadow: inset 0px 0 10px 1px rgba(255, 0, 0, 0.5); }
-  .panel-left > span, .panel-right > span, .panel-bottom-left > span, .panel-bottom-right > span {
+  box-shadow: inset 0 0 10px 1px rgba(255, 0, 0, 0.5); }
+  #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span {
     display: block;
     margin: 0.75vh 0; }
 
-.panel-left, .panel-right {
+#panel-left, #panel-right {
   height: 40vh;
   top: 1.5vh;
   width: 35vw; }
 
-.panel-left {
+#panel-left {
   left: -40vw;
   -webkit-animation-name: fadein-left;
           animation-name: fadein-left;
   text-align: right; }
 
-.panel-right {
+#panel-right {
   right: -40vw;
   -webkit-animation-name: fadein-right;
           animation-name: fadein-right;
   text-align: left; }
 
-.panel-bottom-left {
+#panel-bottom-left {
   text-align: right;
   height: 45vh;
   width: 45%;
@@ -484,21 +481,21 @@ select, input {
   left: -60vw;
   -webkit-animation-name: fadein-bottom-left;
           animation-name: fadein-bottom-left; }
-  .panel-bottom-left .icon-front, .panel-bottom-left .icon-back, .panel-bottom-left .icon {
+  #panel-bottom-left .icon-front, #panel-bottom-left .icon-back, #panel-bottom-left .icon {
     right: -5px; }
-  .panel-bottom-left > div {
+  #panel-bottom-left > div {
     padding-right: 70px; }
 
-.panel-bottom-right {
+#panel-bottom-right {
   height: 45vh;
   width: 45%;
   bottom: -55vh;
   right: -60vw;
   -webkit-animation-name: fadein-bottom-right;
           animation-name: fadein-bottom-right; }
-  .panel-bottom-right .icon-front, .panel-bottom-right .icon-back, .panel-bottom-right .icon {
+  #panel-bottom-right .icon-front, #panel-bottom-right .icon-back, #panel-bottom-right .icon {
     left: -5px; }
-  .panel-bottom-right > div {
+  #panel-bottom-right > div {
     padding-left: 70px; }
 
 @-webkit-keyframes fadein-left {
