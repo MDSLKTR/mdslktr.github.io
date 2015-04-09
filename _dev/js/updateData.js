@@ -27,7 +27,7 @@ var DataWrapper = React.createClass({
             glovesItem: [],
             beltItem: [],
 
-            polling: true,
+            refreshing: 'on',
             url: '',
             itemUrl: '',
             battleTag: localStorage.getItem('battleTag'),
@@ -40,7 +40,7 @@ var DataWrapper = React.createClass({
     },
 
     loadHeroesData: function () {
-        if (this.state.battleTag) {
+        if (this.state.battleTag && this.state.refreshing === 'on') {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
@@ -58,7 +58,7 @@ var DataWrapper = React.createClass({
     },
 
     loadProfileData: function () {
-        if (this.state.selected) {
+        if (this.state.selected && this.state.refreshing === 'on') {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
@@ -83,134 +83,146 @@ var DataWrapper = React.createClass({
     },
 
     loadItemData: function (itemKey) {
-        this.setState({item: itemKey});
-        this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
-        console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
-        $.ajax({
-            url: this.state.itemUrl,
-            dataType: 'jsonp',
-            success: function (data) {
-                switch (data.type.id) {
-                    case 'Helm':
-                    case 'Helm_Barbarian':
-                    case 'Helm_DemonHunter':
-                    case 'Helm_WitchDoctor':
-                    case 'Helm_Crusader':
-                    case 'Helm_Wizard':
-                    case 'Helm_Monk':
-                    case 'VoodooMask':
-                        this.setState({helmItem: data});
-                        break;
-                    case 'Shoulders':
-                    case 'Shoulders_Barbarian':
-                    case 'Shoulders_DemonHunter':
-                    case 'Shoulders_WitchDoctor':
-                    case 'Shoulders_Crusader':
-                    case 'Shoulders_Wizard':
-                    case 'Shoulders_Monk':
-                        this.setState({shouldersItem: data});
-                        break;
-                    case 'Bracers':
-                        this.setState({bracersItem: data});
-                        break;
-                    case 'ChestArmor':
-                    case 'ChestArmor_Barbarian':
-                    case 'ChestArmor_DemonHunter':
-                    case 'ChestArmor_WitchDoctor':
-                    case 'ChestArmor_Crusader':
-                    case 'ChestArmor_Wizard':
-                    case 'ChestArmor_Monk':
-                        this.setState({chestItem: data});
-                        break;
-                    case 'Legs':
-                    case 'Legs_Barbarian':
-                    case 'Legs_DemonHunter':
-                    case 'Legs_WitchDoctor':
-                    case 'Legs_Crusader':
-                    case 'Legs_Wizard':
-                    case 'Legs_Monk':
-                        this.setState({legsItem: data});
-                        break;
-                    case 'Boots':
-                    case 'Boots_Barbarian':
-                    case 'Boots_DemonHunter':
-                    case 'Boots_WitchDoctor':
-                    case 'Boots_Crusader':
-                    case 'Boots_Wizard':
-                    case 'Boots_Monk':
-                        this.setState({bootsItem: data});
-                        break;
-                    case 'Polearm':
-                    case 'Crossbow':
-                    case 'Dagger':
-                    case 'Sword':
-                    case 'Mace':
-                    case 'Axe':
-                    case 'CeremonialKnife':
-                    case 'MightyWeapon':
-                    case 'Flail2H':
-                    case 'Flail':
-                    case 'HandXbow':
-                    case 'Bow2H':
-                    case 'Bow':
-                    case 'Wand':
-                    case 'Staff':
-                    case 'Staff2H':
-                        this.setState({mainItem: data});
-                        break;
-                    case 'Quiver':
-                    case 'CrusaderShield':
-                    case 'Shield':
-                    case 'Source':
-                    case 'Mojo':
-                        this.setState({offItem: data});
-                        break;
-                    case 'Gloves':
-                    case 'Gloves_Barbarian':
-                    case 'Gloves_DemonHunter':
-                    case 'Gloves_WitchDoctor':
-                    case 'Gloves_Crusader':
-                    case 'Gloves_Wizard':
-                    case 'Gloves_Monk':
-                        this.setState({glovesItem: data});
-                        break;
-                    case 'GenericBelt':
-                    case 'Belt_Barbarian':
-                        this.setState({beltItem: data});
-                        break;
-                    case 'Amulet':
-                        this.setState({amuletItem: data});
-                        break;
-                }
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.state.url, status, err.toString());
-            }.bind(this)
-        });
-        //console.log('updated item');
-        //console.log(this.state.itemUrl);
+        if (this.state.refreshing === 'on') {
+            this.setState({item: itemKey});
+            this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+            console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
+            $.ajax({
+                url: this.state.itemUrl,
+                dataType: 'jsonp',
+                success: function (data) {
+                    switch (data.type.id) {
+                        case 'Helm':
+                        case 'Helm_Barbarian':
+                        case 'Helm_DemonHunter':
+                        case 'Helm_WitchDoctor':
+                        case 'Helm_Crusader':
+                        case 'Helm_Wizard':
+                        case 'Helm_Monk':
+                        case 'VoodooMask':
+                            this.setState({helmItem: data});
+                            break;
+                        case 'Shoulders':
+                        case 'Shoulders_Barbarian':
+                        case 'Shoulders_DemonHunter':
+                        case 'Shoulders_WitchDoctor':
+                        case 'Shoulders_Crusader':
+                        case 'Shoulders_Wizard':
+                        case 'Shoulders_Monk':
+                            this.setState({shouldersItem: data});
+                            break;
+                        case 'Bracers':
+                            this.setState({bracersItem: data});
+                            break;
+                        case 'ChestArmor':
+                        case 'ChestArmor_Barbarian':
+                        case 'ChestArmor_DemonHunter':
+                        case 'ChestArmor_WitchDoctor':
+                        case 'ChestArmor_Crusader':
+                        case 'ChestArmor_Wizard':
+                        case 'ChestArmor_Monk':
+                            this.setState({chestItem: data});
+                            break;
+                        case 'Legs':
+                        case 'Legs_Barbarian':
+                        case 'Legs_DemonHunter':
+                        case 'Legs_WitchDoctor':
+                        case 'Legs_Crusader':
+                        case 'Legs_Wizard':
+                        case 'Legs_Monk':
+                            this.setState({legsItem: data});
+                            break;
+                        case 'Boots':
+                        case 'Boots_Barbarian':
+                        case 'Boots_DemonHunter':
+                        case 'Boots_WitchDoctor':
+                        case 'Boots_Crusader':
+                        case 'Boots_Wizard':
+                        case 'Boots_Monk':
+                            this.setState({bootsItem: data});
+                            break;
+                        case 'Polearm':
+                        case 'Crossbow':
+                        case 'Dagger':
+                        case 'Sword':
+                        case 'Mace':
+                        case 'Axe':
+                        case 'CeremonialKnife':
+                        case 'MightyWeapon':
+                        case 'Flail2H':
+                        case 'Flail':
+                        case 'HandXbow':
+                        case 'Bow2H':
+                        case 'Bow':
+                        case 'Wand':
+                        case 'Staff':
+                        case 'Staff2H':
+                            this.setState({mainItem: data});
+                            break;
+                        case 'Quiver':
+                        case 'CrusaderShield':
+                        case 'Shield':
+                        case 'Source':
+                        case 'Mojo':
+                            this.setState({offItem: data});
+                            break;
+                        case 'Gloves':
+                        case 'Gloves_Barbarian':
+                        case 'Gloves_DemonHunter':
+                        case 'Gloves_WitchDoctor':
+                        case 'Gloves_Crusader':
+                        case 'Gloves_Wizard':
+                        case 'Gloves_Monk':
+                            this.setState({glovesItem: data});
+                            break;
+                        case 'GenericBelt':
+                        case 'Belt_Barbarian':
+                            this.setState({beltItem: data});
+                            break;
+                        case 'Amulet':
+                            this.setState({amuletItem: data});
+                            break;
+                    }
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(this.state.url, status, err.toString());
+                }.bind(this)
+            });
+            //console.log('updated item');
+            //console.log(this.state.itemUrl);
+        }
     },
 
     loadItemDataWithProps: function (itemKey, left) {
-        this.setState({item: itemKey});
-        this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
-        console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
-        $.ajax({
-            url: this.state.itemUrl,
-            dataType: 'jsonp',
-            success: function (data) {
-                if (left === true) {
-                    this.setState({ringItemLeft: data});
-                } else {
-                    this.setState({ringItemRight: data});
-                }
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.state.url, status, err.toString());
-            }.bind(this)
-        });
-        //console.log('updated ringset');
-        //console.log(this.state.itemUrl);
+        if (this.state.refreshing === 'on') {
+            this.setState({item: itemKey});
+            this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+            console.log(this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey));
+            $.ajax({
+                url: this.state.itemUrl,
+                dataType: 'jsonp',
+                success: function (data) {
+                    if (left === true) {
+                        this.setState({ringItemLeft: data});
+                    } else {
+                        this.setState({ringItemRight: data});
+                    }
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(this.state.url, status, err.toString());
+                }.bind(this)
+            });
+            //console.log('updated ringset');
+            //console.log(this.state.itemUrl);
+        }
+    },
+
+    setPolling: function () {
+        if (this.state.refreshing === 'off') {
+            this.setState({refreshing: 'on'});
+        } else {
+            this.setState({refreshing: 'off'});
+        }
     },
 
     componentWillMount: function () {
@@ -326,7 +338,8 @@ var DataWrapper = React.createClass({
             skillIconBaseUrl = this.state.skillIconBase,
             itemIconBaseUrl = this.state.itemIconBase,
             constructedLink,
-            gemLink;
+            gemLink,
+            refreshing = this.state.refreshing;
 
         switch (classState) {
             case 'demon-hunter':
@@ -1165,7 +1178,8 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-left'}, 'General', base),
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({id: 'panel-right'}, 'Stats', stats)
+                React.DOM.div({id: 'panel-right'}, 'Stats', stats),
+                React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
             )
         );
     }

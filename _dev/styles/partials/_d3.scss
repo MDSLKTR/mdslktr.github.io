@@ -10,6 +10,21 @@ select, input {
   border: 1px solid black;
 }
 
+.setButton {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    background: darkred;
+    width: 8.5%;
+    color: wheat;
+    text-align: center;
+    padding: 0.15rem;
+    cursor: pointer;
+
+}
+
 #d3-bg {
   background: transparent url(/assets/images/bg-3.jpg) center center/ cover no-repeat;
   animation: bg 4s linear forwards;
