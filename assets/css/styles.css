@@ -435,7 +435,7 @@ select, input {
     right: 10%; }
 
 #panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon) {
-  padding: 1.75vh;
+  padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
   border-radius: 7px;

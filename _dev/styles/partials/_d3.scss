@@ -432,8 +432,9 @@ select, input {
 }
 
 #panel-left > div:not(.hasIcon),
-#panel-right > div:not(.hasIcon) {
-  padding: 1.75vh;
+#panel-right > div:not(.hasIcon),
+#panel-right-additional > div:not(.hasIcon) {
+  padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
   border-radius: 7px;
@@ -453,7 +454,8 @@ select, input {
 #panel-left,
 #panel-right,
 #panel-bottom-left,
-#panel-bottom-right {
+#panel-bottom-right,
+#panel-right-additional {
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
   color: sienna;
@@ -471,6 +473,14 @@ select, input {
     display: block;
     margin: 0.75vh 0;
   }
+}
+
+#panel-right-additional {
+  right: -40vw;
+  height: 40vh;
+  top: 1.5vh;
+  width: 35vw;
+  text-align: left;
 }
 
 #panel-left,

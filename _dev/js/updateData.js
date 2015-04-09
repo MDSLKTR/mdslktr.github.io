@@ -150,7 +150,7 @@ var DataWrapper = React.createClass({
                         case 'CeremonialKnife':
                         case 'MightyWeapon':
                         case 'Flail2H':
-                        case 'Flail':
+                        case 'Flail1H':
                         case 'HandXbow':
                         case 'Bow2H':
                         case 'Bow':
@@ -289,6 +289,35 @@ var DataWrapper = React.createClass({
         }
     },
 
+    checkStats: function() {
+        var statPool = ['Resistance_All',
+            'Resistance#Fire',
+            'Resistance#Arcane',
+            'Resistance#Poison',
+            'Resistance#Physical',
+            'Resistance#Lightning',
+            'Ancient_Rank',
+            'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
+            'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
+            'Crit_Damage_Percent',
+            'Crit_Percent_Bonus_Capped',
+            'Damage_Dealt_Percent_Bonus#Cold',
+            'Damage_Dealt_Percent_Bonus#Physical',
+            'Gold_PickUp_Radius',
+            'Hitpoints_On_Kill',
+            'Splash_Damage_Effect_Percent',
+            'Resource_Max_Bonus#Discipline',
+            'Resource_Max_Bonus#Fury',
+            'Resource_Cost_Reduction_Percent_All',
+            'Damage_Percent_Reduction_From_Melee',
+            'Damage_Percent_Reduction_From_Ranged',
+            'Power_Cooldown_Reduction_Percent_All',
+            'Damage_Percent_Bonus_Vs_Elites',
+            'Attacks_Per_Second_Percent',
+            'Hitpoints_Max_Percent_Bonus_Item'
+        ]
+    },
+
     render: function () {
         var skillsState = this.state.skills,
             skills = [],
@@ -339,7 +368,23 @@ var DataWrapper = React.createClass({
             itemIconBaseUrl = this.state.itemIconBase,
             constructedLink,
             gemLink,
-            refreshing = this.state.refreshing;
+            refreshing = this.state.refreshing,
+            cdr = [],
+            resRed = [],
+            skillDmg = [],
+            critDmg = [],
+            critChance = [],
+            areaDmg = [],
+            fireDmg = [],
+            coldDmg = [],
+            lightningDmg = [],
+            physicalDmg = [],
+            poisonDmg = [],
+            atkSpd = [],
+            percentDmg = [],
+            goldPickUp = [],
+            lifePerHit = [],
+            lifePerKill = [];
 
         switch (classState) {
             case 'demon-hunter':
@@ -513,6 +558,8 @@ var DataWrapper = React.createClass({
                         helmet.push(React.DOM.li({key: helmState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
+
+
             }
             items.push(React.DOM.div({
                 key: itemsIconState.key,
@@ -1143,12 +1190,34 @@ var DataWrapper = React.createClass({
             if (classState === 'demon-hunter' || classState === 'monk') {
                 stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
 
+                if (statsState.strength > 1000) {
+                    stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                }
+                if (statsState.intelligence > 1000) {
+                    stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                }
+
             } else if (classState === 'witch-doctor' || classState === 'wizard') {
                 stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
 
+                if (statsState.strength > 1000) {
+                    stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                }
+                if (statsState.dexterity > 1000) {
+                    stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                }
+
             } else if (classState === 'barbarian' || classState === 'crusader') {
                 stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+
+                if (statsState.dexterity > 1000) {
+                    stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                }
+                if (statsState.intelligence > 1000) {
+                    stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                }
             }
+
             stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
         }
 
@@ -1179,6 +1248,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({id: 'panel-right'}, 'Stats', stats),
+                //React.DOM.div({id: 'panel-right-additional'}, 'More Stats', secondstats),
                 React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
             )
         );
