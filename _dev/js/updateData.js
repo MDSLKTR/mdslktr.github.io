@@ -248,14 +248,28 @@ var DataWrapper = React.createClass({
                 this.state.items.mainHand,
                 this.state.items.offHand,
                 this.state.items.waist,
-                this.state.items.leftFinger,
-                this.state.items.rightFinger
+            ];
+
+            var itemSlotsWithProps = [
+                [this.state.items.leftFinger, 'left'],
+                [this.state.items.rightFinger, 'right']
             ];
 
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i]) {
                     var itemData = itemSlots[i].tooltipParams;
                     this.loadItemData(itemData);
+                }
+            }
+
+            for (i = 0; i < itemSlotsWithProps.length; i++) {
+                if (itemSlotsWithProps[i][0]) {
+                    var itemData = itemSlotsWithProps[i][0].tooltipParams;
+                    if (itemSlotsWithProps[i][1] === 'left') {
+                        this.loadItemDataWithProps(itemData, true);
+                    } else {
+                        this.loadItemDataWithProps(itemData, false);
+                    }
                 }
             }
         }
