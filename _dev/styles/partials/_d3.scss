@@ -571,18 +571,18 @@ select, input {
 
 @keyframes pulse {
   from {
-    transform: scale(0.001);
+    transform: translateZ(0) scale(0.001);
     opacity: 0;
   }
   45% {
     opacity: 1;
   }
   50% {
-    transform: scale(1);
+    transform: translateZ(0) scale(1);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: translateZ(0) scale(1);
     opacity: 0;
   }
 }
