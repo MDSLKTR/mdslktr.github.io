@@ -660,7 +660,10 @@ var DataWrapper = React.createClass({
                 }
                 if (shouldersState.attributes.secondary) {
                     shouldersState.attributes.secondary.forEach(function (secondaryStat) {
-                        shoulders.push(React.DOM.li({key: shouldersState.key, className: 'secondary'}, secondaryStat.text));
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'secondary'
+                        }, secondaryStat.text));
                     });
                 }
                 if (shouldersState.attributes.passive) {
@@ -795,7 +798,10 @@ var DataWrapper = React.createClass({
 
                 if (mainHandState.attributes.secondary) {
                     mainHandState.attributes.secondary.forEach(function (secondaryStat) {
-                        mainHand.push(React.DOM.li({key: mainHandState.key, className: 'secondary'}, secondaryStat.text));
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'secondary'
+                        }, secondaryStat.text));
                     });
                 }
 
@@ -916,7 +922,10 @@ var DataWrapper = React.createClass({
 
                 if (ringStateRight.attributes.secondary) {
                     ringStateRight.attributes.secondary.forEach(function (secondaryStat) {
-                        ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'secondary'}, secondaryStat.text));
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'secondary'
+                        }, secondaryStat.text));
                     });
                 }
 
@@ -972,7 +981,10 @@ var DataWrapper = React.createClass({
                 }
                 if (ringStateLeft.attributes.secondary) {
                     ringStateLeft.attributes.secondary.forEach(function (secondaryStat) {
-                        ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'secondary'}, secondaryStat.text));
+                        ringLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'secondary'
+                        }, secondaryStat.text));
                     });
                 }
 
