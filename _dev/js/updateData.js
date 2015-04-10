@@ -92,7 +92,7 @@ var DataWrapper = React.createClass({
                 dataType: 'jsonp',
                 success: function (data) {
                     switch (data.type.id) {
-                        case 'Helm':
+                        case 'GenericHelm':
                         case 'Helm_Barbarian':
                         case 'Helm_DemonHunter':
                         case 'Helm_WitchDoctor':
@@ -102,7 +102,7 @@ var DataWrapper = React.createClass({
                         case 'VoodooMask':
                             this.setState({helmItem: data});
                             break;
-                        case 'Shoulders':
+                        case 'GenericShoulders':
                         case 'Shoulders_Barbarian':
                         case 'Shoulders_DemonHunter':
                         case 'Shoulders_WitchDoctor':
@@ -114,7 +114,7 @@ var DataWrapper = React.createClass({
                         case 'Bracers':
                             this.setState({bracersItem: data});
                             break;
-                        case 'ChestArmor':
+                        case 'GenericChestArmor':
                         case 'ChestArmor_Barbarian':
                         case 'ChestArmor_DemonHunter':
                         case 'ChestArmor_WitchDoctor':
@@ -123,7 +123,7 @@ var DataWrapper = React.createClass({
                         case 'ChestArmor_Monk':
                             this.setState({chestItem: data});
                             break;
-                        case 'Legs':
+                        case 'GenericLegs':
                         case 'Legs_Barbarian':
                         case 'Legs_DemonHunter':
                         case 'Legs_WitchDoctor':
@@ -132,7 +132,7 @@ var DataWrapper = React.createClass({
                         case 'Legs_Monk':
                             this.setState({legsItem: data});
                             break;
-                        case 'Boots':
+                        case 'GenericBoots':
                         case 'Boots_Barbarian':
                         case 'Boots_DemonHunter':
                         case 'Boots_WitchDoctor':
@@ -166,7 +166,7 @@ var DataWrapper = React.createClass({
                         case 'Mojo':
                             this.setState({offItem: data});
                             break;
-                        case 'Gloves':
+                        case 'GenericGloves':
                         case 'Gloves_Barbarian':
                         case 'Gloves_DemonHunter':
                         case 'Gloves_WitchDoctor':
@@ -289,7 +289,7 @@ var DataWrapper = React.createClass({
         }
     },
 
-    checkStats: function() {
+    collectStats: function () {
         var statPool = ['Resistance_All',
             'Resistance#Fire',
             'Resistance#Arcane',
@@ -367,6 +367,8 @@ var DataWrapper = React.createClass({
             skillIconBaseUrl = this.state.skillIconBase,
             itemIconBaseUrl = this.state.itemIconBase,
             constructedLink,
+            itemQuality,
+            isAncient,
             gemLink,
             refreshing = this.state.refreshing,
             cdr = [],
@@ -518,7 +520,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.head && helmState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.head.icon, '.png');
 
-            helmet.push(React.DOM.li({key: helmState.key, className: 'name'}, itemsState.head.name));
+            switch (itemsState.head.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (helmState.attributesRaw) {
+                if (helmState.attributesRaw.Ancient_Rank && helmState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            helmet.push(React.DOM.li({key: helmState.key, className: itemQuality + ' name'}, itemsState.head.name));
 
             if (helmState.attributes) {
                 if (helmState.attributes.primary) {
@@ -558,23 +587,51 @@ var DataWrapper = React.createClass({
                         helmet.push(React.DOM.li({key: helmState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
-
-
             }
+
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'head',
+                className: isAncient + ' ' + itemQuality + ' head',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: helmState.key, className: 'desc'}, React.DOM.ul({
                     key: helmState.key,
                     className: 'stats'
                 }, helmet)
             )));
+
         }
 
         if (itemsIconState.torso && torsoState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
-            torso.push(React.DOM.li({key: torsoState.key, className: 'name'}, itemsState.torso.name));
+
+            switch (itemsState.torso.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (torsoState.attributesRaw) {
+                if (torsoState.attributesRaw.Ancient_Rank && torsoState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            torso.push(React.DOM.li({key: torsoState.key, className: itemQuality + ' name'}, itemsState.torso.name));
 
             if (torsoState.attributes) {
                 if (torsoState.attributes.primary) {
@@ -630,7 +687,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'torso',
+                className: isAncient + ' ' + itemQuality + ' torso',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: torsoState.key, className: 'desc'}, React.DOM.ul({
                     key: torsoState.key,
@@ -641,7 +698,35 @@ var DataWrapper = React.createClass({
 
         if (itemsIconState.hands && handsState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
-            hands.push(React.DOM.li({key: handsState.key, className: 'name'}, itemsState.hands.name));
+
+            switch (itemsState.hands.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (handsState.attributesRaw) {
+                if ( handsState.attributesRaw.Ancient_Rank && handsState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            hands.push(React.DOM.li({key: handsState.key, className: itemQuality + ' name'}, itemsState.hands.name));
 
             if (handsState.attributes) {
                 if (handsState.attributes.primary) {
@@ -663,7 +748,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'hands',
+                className: isAncient + ' ' + itemQuality + ' hands',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: handsState.key, className: 'desc'}, React.DOM.ul({
                     key: handsState.key,
@@ -675,7 +760,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.feet && feetState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
 
-            feet.push(React.DOM.li({key: feetState.key, className: 'name'}, itemsState.feet.name));
+            switch (itemsState.feet.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (feetState.attributesRaw) {
+                if (feetState.attributesRaw.Ancient_Rank && feetState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            feet.push(React.DOM.li({key: feetState.key, className: itemQuality + ' name'}, itemsState.feet.name));
 
             if (feetState.attributes) {
                 if (feetState.attributes.primary) {
@@ -695,10 +807,9 @@ var DataWrapper = React.createClass({
                 }
             }
 
-
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'feet',
+                className: isAncient + ' ' + itemQuality + ' feet',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: feetState.key, className: 'desc'}, React.DOM.ul({
                     key: feetState.key,
@@ -710,7 +821,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.shoulders && shouldersState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
 
-            shoulders.push(React.DOM.li({key: shouldersState.key, className: 'name'}, itemsState.shoulders.name));
+            switch (itemsState.shoulders.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (shouldersState.attributesRaw) {
+                if (shouldersState.attributesRaw.Ancient_Rank && shouldersState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            shoulders.push(React.DOM.li({key: shouldersState.key, className: itemQuality + ' name'}, itemsState.shoulders.name));
 
             if (shouldersState.attributes) {
                 if (shouldersState.attributes.primary) {
@@ -735,7 +873,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'shoulders',
+                className: isAncient + ' ' + itemQuality + ' shoulders',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: shouldersState.key, className: 'desc'}, React.DOM.ul({
                     key: shouldersState.key,
@@ -747,7 +885,35 @@ var DataWrapper = React.createClass({
         if (itemsIconState.legs && legsState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
 
-            legs.push(React.DOM.li({key: legsState.key, className: 'name'}, itemsState.legs.name));
+            switch (itemsState.legs.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (legsState.attributesRaw) {
+                if (legsState.attributesRaw.Ancient_Rank && legsState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            legs.push(React.DOM.li({key: legsState.key, className: itemQuality + ' name'}, itemsState.legs.name));
+
             if (legsState.attributes) {
                 if (legsState.attributes.primary) {
                     legsState.attributes.primary.forEach(function (primaryStat) {
@@ -794,7 +960,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'legs',
+                className: isAncient + ' ' + itemQuality + ' legs',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: legsState.key, className: 'desc'}, React.DOM.ul({
                     key: legsState.key,
@@ -806,7 +972,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.bracers && bracersState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
 
-            bracers.push(React.DOM.li({key: bracersState.key, className: 'name'}, itemsState.bracers.name));
+            switch (itemsState.bracers.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (bracersState.attributesRaw) {
+                if (bracersState.attributesRaw.Ancient_Rank && bracersState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            bracers.push(React.DOM.li({key: bracersState.key, className: itemQuality + ' name'}, itemsState.bracers.name));
 
             if (bracersState.attributes) {
                 if (bracersState.attributes.primary) {
@@ -828,7 +1021,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'bracers',
+                className: isAncient + ' ' + itemQuality + ' bracers',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: bracersState.key, className: 'desc'}, React.DOM.ul({
                     key: bracersState.key,
@@ -840,7 +1033,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.mainHand && mainHandState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
 
-            mainHand.push(React.DOM.li({key: mainHandState.key, className: 'name'}, itemsState.mainHand.name));
+            switch (itemsState.mainHand.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (mainHandState.attributesRaw) {
+                if (mainHandState.attributesRaw.Ancient_Rank && mainHandState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            mainHand.push(React.DOM.li({key: mainHandState.key, className: itemQuality + ' name'}, itemsState.mainHand.name));
 
             if (mainHandState.dps) {
                 mainHand.push(React.DOM.li({
@@ -891,7 +1111,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'mainHand',
+                className: isAncient + ' ' + itemQuality + ' mainHand',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: mainHandState.key, className: 'desc'}, React.DOM.ul({
                     key: mainHandState.key,
@@ -903,7 +1123,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.offHand && offHandState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
 
-            offHand.push(React.DOM.li({key: offHandState.key, className: 'name'}, itemsState.offHand.name));
+            switch (itemsState.offHand.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (offHandState.attributesRaw) {
+                if (offHandState.attributesRaw.Ancient_Rank && offHandState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            offHand.push(React.DOM.li({key: offHandState.key, className: itemQuality + ' name'}, itemsState.offHand.name));
 
             if (offHandState.attributes) {
                 if (offHandState.attributes.primary) {
@@ -925,7 +1172,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'offHand',
+                className: isAncient + ' ' + itemQuality + ' offHand',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: offHandState.key, className: 'desc'}, React.DOM.ul({
                     key: offHandState.key,
@@ -937,7 +1184,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.waist && beltState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
 
-            belt.push(React.DOM.li({key: beltState.key, className: 'name'}, itemsState.waist.name));
+            switch (itemsState.waist.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (beltState.attributesRaw) {
+                if (beltState.attributesRaw.Ancient_Rank && beltState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            belt.push(React.DOM.li({key: beltState.key, className: itemQuality + ' name'}, itemsState.waist.name));
 
             if (beltState.attributes) {
                 if (beltState.attributes.primary) {
@@ -959,7 +1233,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'waist',
+                className: isAncient + ' ' + itemQuality + ' waist',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: beltState.key, className: 'desc'}, React.DOM.ul({
                     key: beltState.key,
@@ -971,7 +1245,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.rightFinger && ringStateRight) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
 
-            ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'name'}, itemsState.rightFinger.name));
+            switch (itemsState.rightFinger.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (ringStateRight.attributesRaw) {
+                if (ringStateRight.attributesRaw.Ancient_Rank && ringStateRight.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            ringRight.push(React.DOM.li({key: ringStateRight.key, className: itemQuality + ' name'}, itemsState.rightFinger.name));
 
             if (ringStateRight.attributes) {
                 if (ringStateRight.attributes.primary) {
@@ -1019,7 +1320,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'rightFinger',
+                className: isAncient + ' ' + itemQuality + ' rightFinger',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: ringStateRight.key, className: 'desc'}, React.DOM.ul({
                     key: ringStateRight.key,
@@ -1031,7 +1332,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.leftFinger && ringStateLeft) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
 
-            ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'name'}, itemsState.leftFinger.name));
+            switch (itemsState.leftFinger.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (ringStateLeft.attributesRaw) {
+                if (ringStateLeft.attributesRaw.Ancient_Rank && ringStateLeft.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: itemQuality + ' name'}, itemsState.leftFinger.name));
 
             if (ringStateLeft.attributes) {
                 if (ringStateLeft.attributes.primary) {
@@ -1052,6 +1380,8 @@ var DataWrapper = React.createClass({
                     ringStateLeft.attributes.passive.forEach(function (passiveStat) {
                         ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'passive'}, passiveStat.text));
                     });
+                } else {
+                    isAncient = '';
                 }
             }
 
@@ -1077,7 +1407,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'leftFinger',
+                className: isAncient + ' ' + itemQuality + ' leftFinger',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: ringStateLeft.key, className: 'desc'}, React.DOM.ul({
                     key: ringStateLeft.key,
@@ -1089,7 +1419,34 @@ var DataWrapper = React.createClass({
         if (itemsIconState.neck && neckState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
 
-            neck.push(React.DOM.li({key: neckState.key, className: 'name'}, itemsState.neck.name));
+            switch (itemsState.neck.displayColor) {
+                case 'green':
+                    itemQuality = 'set';
+                    break;
+                case 'orange':
+                    itemQuality = 'unique';
+                    break;
+                case 'blue':
+                    itemQuality = 'magic';
+                    break;
+                case 'yellow':
+                    itemQuality = 'rare';
+                    break;
+                case 'white':
+                    itemQuality = 'common';
+                    break;
+                default:
+            }
+
+            if (neckState.attributesRaw) {
+                if (neckState.attributesRaw.Ancient_Rank && neckState.attributesRaw.Ancient_Rank.min === 1.0) {
+                    isAncient = 'ancient';
+                } else {
+                    isAncient = '';
+                }
+            }
+
+            neck.push(React.DOM.li({key: neckState.key, className: itemQuality + ' name'}, itemsState.neck.name));
 
             if (neckState.attributes) {
                 if (neckState.attributes.primary) {
@@ -1135,7 +1492,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: 'neck',
+                className: isAncient + ' ' + itemQuality + ' neck',
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: neckState.key, className: 'desc'}, React.DOM.ul({
                     key: neckState.key,
