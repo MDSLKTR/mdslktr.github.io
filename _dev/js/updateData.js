@@ -666,26 +666,25 @@ var DataWrapper = React.createClass({
 
             if (torsoState.attributesRaw && torsoState.attributesRaw.Sockets && torsoState.gems[0]) {
                 gemLink = itemIconBaseUrl.concat(torsoState.gems[0].item.icon, '.png');
-                torso.push(React.DOM.li({
-                    key: torsoState.key,
-                    className: 'socket',
-                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
-                torso.push(React.DOM.li({
-                    key: torsoState.key,
-                    className: 'socket',
-                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
-                torso.push(React.DOM.li({
-                    key: torsoState.key,
-                    className: 'socket',
-                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
-
                 if (torsoState.gems[0].attributes.primary) {
                     torsoState.gems[0].attributes.primary.forEach(function (Stat) {
+                        torso.push(React.DOM.li({
+                            key: torsoState.key,
+                            className: 'socket',
+                            style: {backgroundImage: 'url(' + gemLink + ')'}
+                        }));
                         torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
+                        torso.push(React.DOM.li({
+                            key: torsoState.key,
+                            className: 'socket',
+                            style: {backgroundImage: 'url(' + gemLink + ')'}
+                        }));
                         torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
+                        torso.push(React.DOM.li({
+                            key: torsoState.key,
+                            className: 'socket',
+                            style: {backgroundImage: 'url(' + gemLink + ')'}
+                        }));
                         torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
@@ -730,7 +729,7 @@ var DataWrapper = React.createClass({
             }
 
             if (handsState.attributesRaw) {
-                if ( handsState.attributesRaw.Ancient_Rank && handsState.attributesRaw.Ancient_Rank.min === 1.0) {
+                if (handsState.attributesRaw.Ancient_Rank && handsState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
                 } else {
                     isAncient = '';
@@ -859,7 +858,10 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            shoulders.push(React.DOM.li({key: shouldersState.key, className: itemQuality + ' name'}, itemsState.shoulders.name));
+            shoulders.push(React.DOM.li({
+                key: shouldersState.key,
+                className: itemQuality + ' name'
+            }, itemsState.shoulders.name));
 
             if (shouldersState.attributes) {
                 if (shouldersState.attributes.primary) {
@@ -946,24 +948,23 @@ var DataWrapper = React.createClass({
 
             if (legsState.attributesRaw && legsState.attributesRaw.Sockets && legsState.gems[0]) {
                 gemLink = itemIconBaseUrl.concat(legsState.gems[0].item.icon, '.png');
-                legs.push(React.DOM.li({
-                    key: legsState.key,
-                    className: 'socket',
-                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
-                legs.push(React.DOM.li({
-                    key: legsState.key,
-                    className: 'socket',
-                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
 
                 if (legsState.gems[0].attributes.primary) {
                     legsState.gems[0].attributes.primary.forEach(function (Stat) {
+                        legs.push(React.DOM.li({
+                            key: legsState.key,
+                            className: 'socket',
+                            style: {backgroundImage: 'url(' + gemLink + ')'}
+                        }));
                         legs.push(React.DOM.li({key: legsState.key, className: 'gem-passive'}, Stat.text));
+                        legs.push(React.DOM.li({
+                            key: legsState.key,
+                            className: 'socket',
+                            style: {backgroundImage: 'url(' + gemLink + ')'}
+                        }));
                         legs.push(React.DOM.li({key: legsState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
-
             } else if (legsState.attributesRaw && legsState.attributesRaw.Sockets) {
                 legs.push(React.DOM.li({key: legsState.key, className: 'socket'}));
                 legs.push(React.DOM.li({key: legsState.key, className: 'socket'}));
@@ -1010,7 +1011,10 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            bracers.push(React.DOM.li({key: bracersState.key, className: itemQuality + ' name'}, itemsState.bracers.name));
+            bracers.push(React.DOM.li({
+                key: bracersState.key,
+                className: itemQuality + ' name'
+            }, itemsState.bracers.name));
 
             if (bracersState.attributes) {
                 if (bracersState.attributes.primary) {
@@ -1071,7 +1075,10 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            mainHand.push(React.DOM.li({key: mainHandState.key, className: itemQuality + ' name'}, itemsState.mainHand.name));
+            mainHand.push(React.DOM.li({
+                key: mainHandState.key,
+                className: itemQuality + ' name'
+            }, itemsState.mainHand.name));
 
             if (mainHandState.dps) {
                 mainHand.push(React.DOM.li({
@@ -1161,7 +1168,10 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            offHand.push(React.DOM.li({key: offHandState.key, className: itemQuality + ' name'}, itemsState.offHand.name));
+            offHand.push(React.DOM.li({
+                key: offHandState.key,
+                className: itemQuality + ' name'
+            }, itemsState.offHand.name));
 
             if (offHandState.attributes) {
                 if (offHandState.attributes.primary) {
@@ -1283,7 +1293,10 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            ringRight.push(React.DOM.li({key: ringStateRight.key, className: itemQuality + ' name'}, itemsState.rightFinger.name));
+            ringRight.push(React.DOM.li({
+                key: ringStateRight.key,
+                className: itemQuality + ' name'
+            }, itemsState.rightFinger.name));
 
             if (ringStateRight.attributes) {
                 if (ringStateRight.attributes.primary) {
@@ -1314,7 +1327,10 @@ var DataWrapper = React.createClass({
                     key: ringStateRight.key,
                     className: 'socket',
                     style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
+                }, React.DOM.span({
+                    key: ringStateRight.key,
+                    className: 'gem-level'
+                }, ringStateRight.gems[0].attributesRaw.Jewel_Rank.min)));
 
                 ringStateRight.gems[0].attributes.passive.forEach(function (passiveStat) {
                     ringRight.push(React.DOM.li({
@@ -1322,11 +1338,6 @@ var DataWrapper = React.createClass({
                         className: 'gem-passive unique'
                     }, passiveStat.text));
                 });
-
-                ringRight.push(React.DOM.li({
-                    key: ringStateRight.key,
-                    className: 'gem-level'
-                }, ringStateRight.gems[0].attributesRaw.Jewel_Rank.min));
             }
 
             items.push(React.DOM.div({
@@ -1370,7 +1381,10 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: itemQuality + ' name'}, itemsState.leftFinger.name));
+            ringLeft.push(React.DOM.li({
+                key: ringStateLeft.key,
+                className: itemQuality + ' name'
+            }, itemsState.leftFinger.name));
 
             if (ringStateLeft.attributes) {
                 if (ringStateLeft.attributes.primary) {
@@ -1402,18 +1416,16 @@ var DataWrapper = React.createClass({
                     key: ringStateLeft.key,
                     className: 'socket',
                     style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
+                }, React.DOM.span({
+                    key: ringStateLeft.key,
+                    className: 'gem-level'
+                }, ringStateLeft.gems[0].attributesRaw.Jewel_Rank.min)));
                 ringStateLeft.gems[0].attributes.passive.forEach(function (passiveStat) {
                     ringLeft.push(React.DOM.li({
                         key: ringStateLeft.key,
                         className: 'gem-passive unique'
                     }, passiveStat.text));
                 });
-
-                ringLeft.push(React.DOM.li({
-                    key: ringStateLeft.key,
-                    className: 'gem-level'
-                }, ringStateLeft.gems[0].attributesRaw.Jewel_Rank.min));
             }
 
             items.push(React.DOM.div({
@@ -1486,16 +1498,14 @@ var DataWrapper = React.createClass({
                     key: neckState.key,
                     className: 'socket',
                     style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
+                }, React.DOM.span({
+                    key: neckState.key,
+                    className: 'gem-level'
+                }, neckState.gems[0].attributesRaw.Jewel_Rank.min)));
 
                 neckState.gems[0].attributes.passive.forEach(function (passiveStat) {
                     neck.push(React.DOM.li({key: neckState.key, className: 'gem-passive unique'}, passiveStat.text));
                 });
-
-                neck.push(React.DOM.li({
-                    key: neckState.key,
-                    className: 'gem-level'
-                }, neckState.gems[0].attributesRaw.Jewel_Rank.min));
 
             } else if (neckState.attributesRaw && neckState.attributesRaw.Sockets) {
                 neck.push(React.DOM.li({key: neckState.key, className: 'socket'}));

@@ -193,8 +193,8 @@ select, input {
     background-color: rgba(0, 0, 0, 0.5);
   }
   to {
-    width: 354px;
-    height: 286px;
+    width: 400px;
+    height: 300px;
     background-color: rgba(0, 0, 0, 1);
   }
 }
@@ -283,9 +283,15 @@ select, input {
         padding: 0;
         margin: 3% 1.5%;
         list-style: none;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-items: center;
+        align-content: flex-start;
 
         li {
-          margin: 0.15rem;
+          margin: 0.2rem;
+          display: inline-block;
         }
 
         .primary {
@@ -307,6 +313,7 @@ select, input {
         .dps {
           font-size: 16px;
           color: white;
+          flex: 0 100%;
         }
 
         .name {
@@ -334,41 +341,18 @@ select, input {
         }
 
         .gem-level {
-          top: 55%;
-          left: 15%;
+          top: 0;
+          left: 90%;
           background: goldenrod;
           color: black;
           clip-path: circle(50% at 50% 50%);
-          padding: 1%;
+          padding: 5%;
           position: absolute;
         }
 
         .gem-passive {
-          right: 0;
-          width: 70%;
-          bottom: 35%;
-          position: absolute;
           color: goldenrod;
-
-          &.unique {
-            bottom: 20%;
-          }
-
-          & + .gem-passive {
-            bottom: 20%;
-
-            &.unique {
-              bottom: 0;
-            }
-
-            & + .gem-passive {
-              bottom: 5%;
-
-              &.unique {
-                bottom: 0;
-              }
-            }
-          }
+          flex: 0 70%;
         }
 
         .socket {
@@ -377,20 +361,10 @@ select, input {
           background-size: 32px;
           background-position: 50% 50%;
           background-repeat: no-repeat;
-          position: absolute;
           width: 38px;
           border: 2px solid white;
           border-radius: 30%;
-          left: 0;
-          bottom: 30%;
-
-          & + .socket {
-            bottom: 15%;
-
-            & + .socket {
-              bottom: 0;
-            }
-          }
+          position: relative;
         }
       }
     }

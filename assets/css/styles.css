@@ -228,8 +228,8 @@ select, input {
     background-color: rgba(0, 0, 0, 0.5); }
 
   to {
-    width: 354px;
-    height: 286px;
+    width: 400px;
+    height: 300px;
     background-color: black; } }
 
 @keyframes increase {
@@ -239,8 +239,8 @@ select, input {
     background-color: rgba(0, 0, 0, 0.5); }
 
   to {
-    width: 354px;
-    height: 286px;
+    width: 400px;
+    height: 300px;
     background-color: black; } }
 
 @-webkit-keyframes decrease {
@@ -339,9 +339,28 @@ select, input {
         font-size: 12px;
         padding: 0;
         margin: 3% 1.5%;
-        list-style: none; }
+        list-style: none;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-flow: row wrap;
+            -ms-flex-flow: row wrap;
+                flex-flow: row wrap;
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+            -ms-flex-pack: justify;
+                justify-content: space-between;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+            -ms-flex-align: center;
+                align-items: center;
+        -webkit-align-content: flex-start;
+            -ms-flex-line-pack: start;
+                align-content: flex-start; }
         .d3-item-wrapper > div > div > ul li {
-          margin: 0.15rem; }
+          margin: 0.2rem;
+          display: inline-block; }
         .d3-item-wrapper > div > div > ul .primary {
           color: white;
           font-size: 14px;
@@ -354,7 +373,11 @@ select, input {
           width: 100%; }
         .d3-item-wrapper > div > div > ul .dps {
           font-size: 16px;
-          color: white; }
+          color: white;
+          -webkit-box-flex: 0;
+          -webkit-flex: 0 100%;
+              -ms-flex: 0 100%;
+                  flex: 0 100%; }
         .d3-item-wrapper > div > div > ul .name {
           font-size: 18px; }
           .d3-item-wrapper > div > div > ul .name.set {
@@ -368,30 +391,20 @@ select, input {
           .d3-item-wrapper > div > div > ul .name.common {
             color: grey; }
         .d3-item-wrapper > div > div > ul .gem-level {
-          top: 55%;
-          left: 15%;
+          top: 0;
+          left: 90%;
           background: goldenrod;
           color: black;
           -webkit-clip-path: circle(50% at 50% 50%);
                   clip-path: circle(50% at 50% 50%);
-          padding: 1%;
+          padding: 5%;
           position: absolute; }
         .d3-item-wrapper > div > div > ul .gem-passive {
-          right: 0;
-          width: 70%;
-          bottom: 35%;
-          position: absolute;
-          color: goldenrod; }
-          .d3-item-wrapper > div > div > ul .gem-passive.unique {
-            bottom: 20%; }
-          .d3-item-wrapper > div > div > ul .gem-passive + .gem-passive {
-            bottom: 20%; }
-            .d3-item-wrapper > div > div > ul .gem-passive + .gem-passive.unique {
-              bottom: 0; }
-            .d3-item-wrapper > div > div > ul .gem-passive + .gem-passive + .gem-passive {
-              bottom: 5%; }
-              .d3-item-wrapper > div > div > ul .gem-passive + .gem-passive + .gem-passive.unique {
-                bottom: 0; }
+          color: goldenrod;
+          -webkit-box-flex: 0;
+          -webkit-flex: 0 70%;
+              -ms-flex: 0 70%;
+                  flex: 0 70%; }
         .d3-item-wrapper > div > div > ul .socket {
           height: 38px;
           -webkit-filter: drop-shadow(0px 0px 2px white);
@@ -399,16 +412,10 @@ select, input {
           background-size: 32px;
           background-position: 50% 50%;
           background-repeat: no-repeat;
-          position: absolute;
           width: 38px;
           border: 2px solid white;
           border-radius: 30%;
-          left: 0;
-          bottom: 30%; }
-          .d3-item-wrapper > div > div > ul .socket + .socket {
-            bottom: 15%; }
-            .d3-item-wrapper > div > div > ul .socket + .socket + .socket {
-              bottom: 0; }
+          position: relative; }
   .d3-item-wrapper .head {
     left: 50%;
     top: 4.5%;
