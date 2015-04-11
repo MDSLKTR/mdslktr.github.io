@@ -1522,10 +1522,10 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (amuletState && itemsState) {
-            if (amuletState.passive && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
-                var hellfirePassiveLink = amuletState.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase(),
-                    hellfirePassiveDisplay = amuletState.passive[0].text.substring(9).replace(' passive.', '');
+        if (amuletState.attributes && itemsState) {
+            if (amuletState.attributes.passive && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
+                var hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase(),
+                    hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
 
                 switch (classState) {
                     case 'demon-hunter':
