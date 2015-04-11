@@ -22,7 +22,20 @@ select, input {
     text-align: center;
     padding: 0.15rem;
     cursor: pointer;
+}
 
+.time {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  font-size: 12px;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: darkred;
+  width: 15%;
+  color: wheat;
+  text-align: center;
+  padding: 0.15rem;
 }
 
 #d3-bg {

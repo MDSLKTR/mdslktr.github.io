@@ -33,6 +33,20 @@ select, input {
   padding: 0.15rem;
   cursor: pointer; }
 
+.time {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  font-size: 12px;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  z-index: 2;
+  background: darkred;
+  width: 15%;
+  color: wheat;
+  text-align: center;
+  padding: 0.15rem; }
+
 #d3-bg {
   background: transparent url(/assets/images/bg-3.jpg) center center/cover no-repeat;
   -webkit-animation: bg 4s linear forwards;
@@ -434,7 +448,7 @@ select, input {
     bottom: 10%;
     right: 10%; }
 
-#panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon) {
+#panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon), #panel-right-additional > div:not(.hasIcon) {
   padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
@@ -450,7 +464,7 @@ select, input {
   margin-bottom: 1.5vh;
   position: relative; }
 
-#panel-left, #panel-right, #panel-bottom-left, #panel-bottom-right {
+#panel-left, #panel-right, #panel-bottom-left, #panel-bottom-right, #panel-right-additional {
   position: fixed;
   background: rgba(0, 0, 0, 0.5);
   color: sienna;
@@ -466,9 +480,16 @@ select, input {
   border-radius: 7px;
   padding: 1.5vh;
   box-shadow: inset 0 0 10px 1px rgba(255, 0, 0, 0.5); }
-  #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span {
+  #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span, #panel-right-additional > span {
     display: block;
     margin: 0.75vh 0; }
+
+#panel-right-additional {
+  right: -40vw;
+  height: 40vh;
+  top: 1.5vh;
+  width: 35vw;
+  text-align: left; }
 
 #panel-left, #panel-right {
   height: 40vh;

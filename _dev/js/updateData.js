@@ -26,7 +26,7 @@ var DataWrapper = React.createClass({
             bootsItem: [],
             glovesItem: [],
             beltItem: [],
-
+            time: [],
             refreshing: 'on',
             url: '',
             itemUrl: '',
@@ -72,6 +72,7 @@ var DataWrapper = React.createClass({
                     this.setState({passives: data.skills.passive});
                     this.setState({stats: data.stats});
                     this.setState({items: data.items});
+                    this.setState({time: data['last-updated']});
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -121,6 +122,7 @@ var DataWrapper = React.createClass({
                         case 'ChestArmor_Crusader':
                         case 'ChestArmor_Wizard':
                         case 'ChestArmor_Monk':
+                        case 'Cloak':
                             this.setState({chestItem: data});
                             break;
                         case 'GenericLegs':
@@ -386,7 +388,9 @@ var DataWrapper = React.createClass({
             percentDmg = [],
             goldPickUp = [],
             lifePerHit = [],
-            lifePerKill = [];
+            lifePerKill = [],
+            timeStamp = this.state.time,
+            time = [];
 
         switch (classState) {
             case 'demon-hunter':
@@ -1578,6 +1582,11 @@ var DataWrapper = React.createClass({
             stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
         }
 
+        if (timeStamp) {
+            var t = new Date(timeStamp * 1000),
+                formatted = t.toLocaleDateString() + ' ' + t.toLocaleTimeString();
+            time.push(React.DOM.div({key: timeStamp.key, className: 'last-updated'}, 'last-updated on: ' + formatted));
+        }
         return (
             React.DOM.div({className: 'd3-container'},
                 React.DOM.div({className: 'd3-char-bg', style: style}),
@@ -1606,7 +1615,8 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({id: 'panel-right'}, 'Stats', stats),
                 //React.DOM.div({id: 'panel-right-additional'}, 'More Stats', secondstats),
-                React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
+                React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing),
+                React.DOM.div({className: 'time'}, time)
             )
         );
     }
