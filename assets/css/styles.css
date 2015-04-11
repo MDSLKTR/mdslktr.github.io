@@ -302,6 +302,8 @@ select, input {
     height: 128px;
     color: red;
     will-change: initial; }
+    .d3-item-wrapper > div.ancient {
+      border: 1px solid #b8860b; }
     .d3-item-wrapper > div:hover .desc {
       will-change: opacity; }
     .d3-item-wrapper > div:hover {
@@ -354,8 +356,17 @@ select, input {
           font-size: 16px;
           color: white; }
         .d3-item-wrapper > div > div > ul .name {
-          font-size: 18px;
-          color: silver; }
+          font-size: 18px; }
+          .d3-item-wrapper > div > div > ul .name.set {
+            color: green; }
+          .d3-item-wrapper > div > div > ul .name.unique {
+            color: darkorange; }
+          .d3-item-wrapper > div > div > ul .name.magic {
+            color: darkblue; }
+          .d3-item-wrapper > div > div > ul .name.rare {
+            color: yellow; }
+          .d3-item-wrapper > div > div > ul .name.common {
+            color: grey; }
         .d3-item-wrapper > div > div > ul .gem-level {
           top: 55%;
           left: 15%;

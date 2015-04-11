@@ -244,6 +244,10 @@ select, input {
     color: rgba(255, 0, 0, 1);
     will-change: initial;
 
+    &.ancient {
+      border: 1px solid #b8860b;
+    }
+
     &:hover .desc {
         will-change: opacity;
     }
@@ -307,7 +311,26 @@ select, input {
 
         .name {
           font-size: 18px;
-          color: silver;
+
+          &.set {
+            color: green;
+          }
+
+          &.unique {
+            color: darkorange;
+          }
+
+          &.magic {
+            color: darkblue;
+          }
+
+          &.rare {
+            color: yellow;
+          }
+
+          &.common {
+            color: grey;
+          }
         }
 
         .gem-level {

@@ -94,6 +94,7 @@ var DataWrapper = React.createClass({
                 success: function (data) {
                     switch (data.type.id) {
                         case 'GenericHelm':
+                        case 'Helm':
                         case 'Helm_Barbarian':
                         case 'Helm_DemonHunter':
                         case 'Helm_WitchDoctor':
@@ -104,6 +105,7 @@ var DataWrapper = React.createClass({
                             this.setState({helmItem: data});
                             break;
                         case 'GenericShoulders':
+                        case 'Shoulders':
                         case 'Shoulders_Barbarian':
                         case 'Shoulders_DemonHunter':
                         case 'Shoulders_WitchDoctor':
@@ -115,6 +117,7 @@ var DataWrapper = React.createClass({
                         case 'Bracers':
                             this.setState({bracersItem: data});
                             break;
+                        case 'ChestArmor':
                         case 'GenericChestArmor':
                         case 'ChestArmor_Barbarian':
                         case 'ChestArmor_DemonHunter':
@@ -126,6 +129,7 @@ var DataWrapper = React.createClass({
                             this.setState({chestItem: data});
                             break;
                         case 'GenericLegs':
+                        case 'Legs':
                         case 'Legs_Barbarian':
                         case 'Legs_DemonHunter':
                         case 'Legs_WitchDoctor':
@@ -135,6 +139,7 @@ var DataWrapper = React.createClass({
                             this.setState({legsItem: data});
                             break;
                         case 'GenericBoots':
+                        case 'Boots':
                         case 'Boots_Barbarian':
                         case 'Boots_DemonHunter':
                         case 'Boots_WitchDoctor':
@@ -169,6 +174,7 @@ var DataWrapper = React.createClass({
                             this.setState({offItem: data});
                             break;
                         case 'GenericGloves':
+                        case 'Gloves':
                         case 'Gloves_Barbarian':
                         case 'Gloves_DemonHunter':
                         case 'Gloves_WitchDoctor':
@@ -177,6 +183,7 @@ var DataWrapper = React.createClass({
                         case 'Gloves_Monk':
                             this.setState({glovesItem: data});
                             break;
+                        case 'Belt':
                         case 'GenericBelt':
                         case 'Belt_Barbarian':
                             this.setState({beltItem: data});
@@ -537,7 +544,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -621,7 +628,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -716,7 +723,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -777,7 +784,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -838,7 +845,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -902,7 +909,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -989,7 +996,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -1050,7 +1057,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -1140,7 +1147,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -1201,7 +1208,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -1262,7 +1269,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -1349,7 +1356,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
@@ -1436,7 +1443,7 @@ var DataWrapper = React.createClass({
                 case 'yellow':
                     itemQuality = 'rare';
                     break;
-                case 'white':
+                case 'gray':
                     itemQuality = 'common';
                     break;
                 default:
