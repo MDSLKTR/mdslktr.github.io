@@ -36,6 +36,7 @@ var DataWrapper = React.createClass({
             goldPickup: [],
             dmgRedMelee: [],
             dmgRedRanged: [],
+            maxEleDmg: [],
 
             time: [],
             isOpen: [],
@@ -176,6 +177,7 @@ var DataWrapper = React.createClass({
                         case 'Wand':
                         case 'Staff':
                         case 'Staff2H':
+                        case 'CeremonialDagger':
                             this.setState({mainItem: data});
                             break;
                         case 'Quiver':
@@ -331,6 +333,7 @@ var DataWrapper = React.createClass({
                 'Power_Cooldown_Reduction_Percent_All',
                 'Resource_Cost_Reduction_Percent_All',
                 'Damage_Percent_Bonus_Vs_Elites',
+                'Damage_Percent_Reduction_From_Elites',
                 'Splash_Damage_Effect_Percent',
                 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
                 'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
@@ -346,9 +349,6 @@ var DataWrapper = React.createClass({
             areaDmg = 0,
             resRed = 0,
             skillDmg = 0,
-            critDmg = 0,
-            allRes = 0,
-            critChance = 0,
             areaDmg = 0,
             fireDmg = 0,
             coldDmg = 0,
@@ -358,10 +358,7 @@ var DataWrapper = React.createClass({
             atkSpd = 0,
             dmgRedMelee = 0,
             dmgRedRanged = 0,
-            percentDmg = 0,
             goldPickUp = 0,
-            lifePerHit = 0,
-            lifePerKill = 0,
             k;
 
         if (this.state.items) {
@@ -376,7 +373,9 @@ var DataWrapper = React.createClass({
                 this.state.bracersItem,
                 this.state.mainItem,
                 this.state.offItem,
-                this.state.beltItem
+                this.state.beltItem,
+                this.state.ringItemLeft,
+                this.state.ringItemRight
             ];
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].attributesRaw) {
@@ -427,12 +426,44 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
+            // todo set boni
             // increment for cdr gem
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0]) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All) {
-                    cdr += 12.5;
+                    cdr += this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * 100;
                 }
             }
+            var eleDmg = [
+                    fireDmg,
+                    poisonDmg,
+                    lightningDmg,
+                    physicalDmg,
+                    coldDmg
+                ],
+                findElem = eleDmg.reduce(function(max, arr) {
+                    return max >= arr ? max : arr;
+                }, -Infinity),
+                maxElement;
+
+            switch (findElem) {
+                case fireDmg:
+                    maxElement = 'Fire Damage Increase: ' + findElem + '%';
+                    break;
+                case coldDmg:
+                    maxElement = 'Cold Damage Increase: ' + findElem + '%';
+                    break;
+                case physicalDmg:
+                    maxElement = 'Physical Damage Increase: ' + findElem + '%';
+                    break;
+                case lightningDmg:
+                    maxElement = 'Lightning Damage Increase: ' + findElem + '%';
+                    break;
+                case poisonDmg:
+                    maxElement = 'Poison Damage Increase: ' + findElem + '%';
+                    break;
+            }
+
+            this.setState({maxEleDmg: maxElement});
             this.setState({cdrRed: cdr});
             this.setState({resRed: resRed});
             this.setState({atkSpd: atkSpd});
@@ -508,7 +539,8 @@ var DataWrapper = React.createClass({
             areaDmgState = this.state.areaDmg,
             goldPickUpState = this.state.goldPickup,
             dmgRedMeleeState = this.state.dmgRedMelee,
-            dmgRedRangedState = this.state.dmgRedRanged;
+            dmgRedRangedState = this.state.dmgRedRanged,
+            maxElementDmg = this.state.maxEleDmg;
 
         switch (classState) {
             case 'demon-hunter':
@@ -1744,6 +1776,10 @@ var DataWrapper = React.createClass({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
             }, 'Primary Resource: ' + statsState.primaryResource));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, maxElementDmg));
         }
 
         if (additionalStatsDefensive && statsState) {
