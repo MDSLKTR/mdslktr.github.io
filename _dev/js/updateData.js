@@ -299,32 +299,85 @@ var DataWrapper = React.createClass({
     },
 
     collectStats: function () {
-        var statPool = ['Resistance_All',
-            'Resistance#Fire',
-            'Resistance#Arcane',
-            'Resistance#Poison',
-            'Resistance#Physical',
-            'Resistance#Lightning',
-            'Ancient_Rank',
-            'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
-            'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
-            'Crit_Damage_Percent',
-            'Crit_Percent_Bonus_Capped',
-            'Damage_Dealt_Percent_Bonus#Cold',
-            'Damage_Dealt_Percent_Bonus#Physical',
-            'Gold_PickUp_Radius',
-            'Hitpoints_On_Kill',
-            'Splash_Damage_Effect_Percent',
-            'Resource_Max_Bonus#Discipline',
-            'Resource_Max_Bonus#Fury',
-            'Resource_Cost_Reduction_Percent_All',
-            'Damage_Percent_Reduction_From_Melee',
-            'Damage_Percent_Reduction_From_Ranged',
-            'Power_Cooldown_Reduction_Percent_All',
-            'Damage_Percent_Bonus_Vs_Elites',
-            'Attacks_Per_Second_Percent',
-            'Hitpoints_Max_Percent_Bonus_Item'
-        ]
+        var i,
+            statPool = [
+                'Crit_Percent_Bonus_Capped',
+                'Resistance_All',
+                'Resistance#Fire',
+                'Resistance#Arcane',
+                'Resistance#Poison',
+                'Resistance#Physical',
+                'Resistance#Lightning',
+                'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
+                'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
+                'Crit_Damage_Percent',
+                'Damage_Dealt_Percent_Bonus#Cold',
+                'Damage_Dealt_Percent_Bonus#Physical',
+                'Gold_PickUp_Radius',
+                'Hitpoints_On_Kill',
+                'Splash_Damage_Effect_Percent',
+                'Resource_Max_Bonus#Discipline',
+                'Resource_Max_Bonus#Fury',
+                'Resource_Cost_Reduction_Percent_All',
+                'Damage_Percent_Reduction_From_Melee',
+                'Damage_Percent_Reduction_From_Ranged',
+                'Power_Cooldown_Reduction_Percent_All',
+                'Damage_Percent_Bonus_Vs_Elites',
+                'Attacks_Per_Second_Percent',
+                'Hitpoints_Max_Percent_Bonus_Item'
+            ],
+            results = [],
+            cdr = 0,
+            resRed = 0,
+            skillDmg = 0,
+            critDmg = 0,
+            allRes = 0,
+            critChance = 0,
+            areaDmg = 0,
+            fireDmg = 0,
+            coldDmg = 0,
+            lightningDmg = 0,
+            physicalDmg = 0,
+            poisonDmg = 0,
+            atkSpd = 0,
+            percentDmg = 0,
+            goldPickUp = 0,
+            lifePerHit = 0,
+            lifePerKill = 0,
+            k;
+
+        if (this.state.items) {
+            var itemSlots = [
+                this.state.helmItem,
+                this.state.amuletItem,
+                this.state.chestItem,
+                this.state.bootsItem,
+                this.state.glovesItem,
+                this.state.shouldersItem,
+                this.state.legsItem,
+                this.state.bracersItem,
+                this.state.mainItem,
+                this.state.offItem,
+                this.state.beltItem
+            ];
+            for (i = 0; i < itemSlots.length; i++) {
+                if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                    for (k = 0; k < statPool.length; k++) {
+                        if (itemSlots[i].attributesRaw[statPool[k]] && itemSlots[i].attributesRaw[statPool[k]].min) {
+                            if (typeof parseInt(itemSlots[i].attributesRaw[statPool[k]].min === 'number')) {
+                                results[k] = Math.round(itemSlots[i].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                switch (statPool[k]) {
+                                    case 'Crit_Percent_Bonus_Capped':
+                                        critChance += results[k];
+                                        break;
+                                }
+                                console.log(critChance);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     },
 
     render: function () {
@@ -380,24 +433,9 @@ var DataWrapper = React.createClass({
             isAncient,
             gemLink,
             refreshing = this.state.refreshing,
-            cdr = [],
-            resRed = [],
-            skillDmg = [],
-            critDmg = [],
-            critChance = [],
-            areaDmg = [],
-            fireDmg = [],
-            coldDmg = [],
-            lightningDmg = [],
-            physicalDmg = [],
-            poisonDmg = [],
-            atkSpd = [],
-            percentDmg = [],
-            goldPickUp = [],
-            lifePerHit = [],
-            lifePerKill = [],
             timeStamp = this.state.time,
-            time = [];
+            time = [],
+            secondStats = [];
 
         switch (classState) {
             case 'demon-hunter':
@@ -1631,7 +1669,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({id: 'panel-right'}, 'Stats', stats),
-                //React.DOM.div({id: 'panel-right-additional'}, 'More Stats', secondstats),
+                React.DOM.div({id: 'panel-right-additional'}, 'More Stats', this.collectStats()),
                 React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing),
                 React.DOM.div({className: 'time'}, time)
             )
