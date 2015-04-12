@@ -26,10 +26,19 @@ var DataWrapper = React.createClass({
             bootsItem: [],
             glovesItem: [],
             beltItem: [],
+
             additionalStats: [],
-            crit: [],
+            cdrRed: [],
+            resRed: [],
+            atkSpd: [],
+            eliteDmg: [],
+            areaDmg: [],
+            goldPickup: [],
+            dmgRedMelee: [],
+            dmgRedRanged: [],
 
             time: [],
+            isOpen: [],
             refreshing: 'on',
             url: '',
             itemUrl: '',
@@ -258,6 +267,15 @@ var DataWrapper = React.createClass({
         this.getItemData();
     },
 
+    handleClick: function() {
+        if (this.state.isOpen === 'open') {
+            return this.setState({isOpen: ''})
+        } else {
+            return this.setState({isOpen: 'open'})
+        }
+
+    },
+
     getItemData: function () {
         var i,
             itemData;
@@ -305,33 +323,27 @@ var DataWrapper = React.createClass({
     collectStats: function () {
         var i,
             statPool = [
-                'Crit_Percent_Bonus_Capped',
-                'Resistance_All',
-                'Resistance#Fire',
-                'Resistance#Arcane',
-                'Resistance#Poison',
-                'Resistance#Physical',
-                'Resistance#Lightning',
+                'Damage_Dealt_Percent_Bonus#Fire',
+                'Damage_Dealt_Percent_Bonus#Physical',
+                'Damage_Dealt_Percent_Bonus#Cold',
+                'Damage_Dealt_Percent_Bonus#Poison',
+                'Damage_Dealt_Percent_Bonus#Lightning',
+                'Power_Cooldown_Reduction_Percent_All',
+                'Resource_Cost_Reduction_Percent_All',
+                'Damage_Percent_Bonus_Vs_Elites',
+                'Splash_Damage_Effect_Percent',
                 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
                 'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
-                'Crit_Damage_Percent',
-                'Damage_Dealt_Percent_Bonus#Cold',
-                'Damage_Dealt_Percent_Bonus#Physical',
                 'Gold_PickUp_Radius',
                 'Hitpoints_On_Kill',
-                'Splash_Damage_Effect_Percent',
-                'Resource_Max_Bonus#Discipline',
-                'Resource_Max_Bonus#Fury',
-                'Resource_Cost_Reduction_Percent_All',
                 'Damage_Percent_Reduction_From_Melee',
                 'Damage_Percent_Reduction_From_Ranged',
-                'Power_Cooldown_Reduction_Percent_All',
-                'Damage_Percent_Bonus_Vs_Elites',
-                'Attacks_Per_Second_Percent',
                 'Hitpoints_Max_Percent_Bonus_Item'
             ],
             results = [],
             cdr = 0,
+            eliteDmg = 0,
+            areaDmg = 0,
             resRed = 0,
             skillDmg = 0,
             critDmg = 0,
@@ -344,6 +356,8 @@ var DataWrapper = React.createClass({
             physicalDmg = 0,
             poisonDmg = 0,
             atkSpd = 0,
+            dmgRedMelee = 0,
+            dmgRedRanged = 0,
             percentDmg = 0,
             goldPickUp = 0,
             lifePerHit = 0,
@@ -371,8 +385,41 @@ var DataWrapper = React.createClass({
                             if (typeof parseInt(itemSlots[i].attributesRaw[statPool[k]].min === 'number')) {
                                 results[k] = Math.round(itemSlots[i].attributesRaw[statPool[k]].min * 1000) / 1000;
                                 switch (statPool[k]) {
-                                    case 'Crit_Percent_Bonus_Capped':
-                                        critChance += results[k] * 100;
+                                    case 'Damage_Dealt_Percent_Bonus#Fire':
+                                        fireDmg += results[k] * 100;
+                                        break;
+                                    case 'Damage_Dealt_Percent_Bonus#Cold':
+                                        coldDmg += results[k] * 100;
+                                        break;
+                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                        lightningDmg += results[k] * 100;
+                                        break;
+                                    case 'Damage_Dealt_Percent_Bonus#Physical':
+                                        physicalDmg += results[k] * 100;
+                                        break;
+                                    case 'Damage_Dealt_Percent_Bonus#Poison':
+                                        poisonDmg += results[k] * 100;
+                                        break;
+                                    case 'Power_Cooldown_Reduction_Percent_All':
+                                        cdr += results[k] * 100;
+                                        break;
+                                    case 'Resource_Cost_Reduction_Percent_All':
+                                        resRed += results[k] * 100;
+                                        break;
+                                    case 'Damage_Percent_Bonus_Vs_Elites':
+                                        eliteDmg += results[k] * 100;
+                                        break;
+                                    case 'Splash_Damage_Effect_Percent':
+                                        areaDmg += results[k] * 100;
+                                        break;
+                                    case 'Gold_PickUp_Radius':
+                                        goldPickUp += results[k];
+                                        break;
+                                    case 'Damage_Percent_Reduction_From_Melee':
+                                        dmgRedMelee += results[k] * 100;
+                                        break;
+                                    case 'Damage_Percent_Reduction_From_Ranged':
+                                        dmgRedRanged += results[k] * 100;
                                         break;
                                 }
                             }
@@ -380,7 +427,21 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
-            this.setState({crit: critChance});
+            // increment for cdr gem
+            if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0]) {
+                if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All) {
+                    cdr += 12.5;
+                }
+            }
+            this.setState({cdrRed: cdr});
+            this.setState({resRed: resRed});
+            this.setState({atkSpd: atkSpd});
+            this.setState({eliteDmg: eliteDmg});
+            this.setState({areaDmg: areaDmg});
+            this.setState({goldPickup: goldPickUp});
+            this.setState({dmgRedMelee: dmgRedMelee});
+            this.setState({dmgRedRanged: dmgRedRanged});
+
         }
     },
 
@@ -439,8 +500,15 @@ var DataWrapper = React.createClass({
             refreshing = this.state.refreshing,
             timeStamp = this.state.time,
             time = [],
-            additionalStats = [],
-            critChance = this.state.crit;
+            additionalStatsOffensive = [],
+            additionalStatsDefensive = [],
+            cdrState = this.state.cdrRed,
+            resState = this.state.resRed,
+            eliteDmgState = this.state.eliteDmg,
+            areaDmgState = this.state.areaDmg,
+            goldPickUpState = this.state.goldPickup,
+            dmgRedMeleeState = this.state.dmgRedMelee,
+            dmgRedRangedState = this.state.dmgRedRanged;
 
         switch (classState) {
             case 'demon-hunter':
@@ -1642,11 +1710,89 @@ var DataWrapper = React.createClass({
             stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
         }
 
-        if (additionalStats) {
-            additionalStats.push(React.DOM.div({
-                key: additionalStats.key,
+        if (additionalStatsOffensive && statsState) {
+
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Critical Hit Chance: ' + critChance));
+            }, 'Critical Hit Chance: ' + Math.round(statsState.critChance * 1000) / 10 + '%'));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Critical Damage increase: ' + Math.round(statsState.critDamage * 1000) / 10  + '%'));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Cooldown Reduction: ' + cdrState + '%'));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Resource Cost Reduction: ' + resState + '%'));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Attacks per Second: ' +  Math.round(statsState.attackSpeed * 1000) / 1000));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Bonus Dmg to Elite: ' + eliteDmgState + '%'));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Area Damage Bonus: ' + areaDmgState + '%'));
+            additionalStatsOffensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Primary Resource: ' + statsState.primaryResource));
+        }
+
+        if (additionalStatsDefensive && statsState) {
+            if (statsState.secondaryResource !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Secondary Resource: ' + statsState.secondaryResource));
+            }
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Physical Resist: ' + statsState.physicalResist));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Fire Resist: ' + statsState.fireResist));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Cold Resist: ' + statsState.coldResist));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Lighting Resist: ' + statsState.lightningResist));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Poison Resist: ' + statsState.poisonResist));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Gold Pick-up Radius: ' + goldPickUpState));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Melee Damage Reduction: ' + Math.round(dmgRedMeleeState * 1000) / 1000 + '%'));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsOffensive.key,
+                className: 'bonusstat'
+            }, 'Ranged Damage Reduction: ' + Math.round(dmgRedRangedState * 1000) / 1000 + '%'));
         }
 
         if (timeStamp) {
@@ -1680,8 +1826,8 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-left'}, 'General', base),
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({id: 'panel-right'}, 'Stats', stats),
-                React.DOM.div({id: 'panel-right-additional'}, 'More Stats', additionalStats),
+                React.DOM.div({className: this.state.isOpen , id: 'panel-right' ,onClick: this.handleClick}, 'Stats', stats),
+                React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive),
                 React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing),
                 React.DOM.div({className: 'time'}, time)
             )

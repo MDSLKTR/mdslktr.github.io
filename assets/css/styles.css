@@ -466,13 +466,17 @@ select, input {
     bottom: 10%;
     right: 10%; }
 
-#panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon), #panel-right-additional > div:not(.hasIcon) {
+#panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon) {
   padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
   border-radius: 7px;
   background: black;
   border: 1px solid rgba(255, 0, 0, 0.5); }
+
+#panel-right-additional > div:not(.hasIcon) {
+  padding: 0;
+  margin-bottom: 0; }
 
 .hasIcon {
   background: black;
@@ -493,21 +497,25 @@ select, input {
           animation-delay: 500ms;
   -webkit-animation-iteration-count: 1;
           animation-iteration-count: 1;
-  -webkit-animation-fill-mode: forwards;
-          animation-fill-mode: forwards;
+  -webkit-animation-fill-mode: both;
+          animation-fill-mode: both;
   border-radius: 7px;
   padding: 1.5vh;
   box-shadow: inset 0 0 10px 1px rgba(255, 0, 0, 0.5); }
   #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span, #panel-right-additional > span {
     display: block;
-    margin: 0.75vh 0; }
+    margin: 0.75vh 0;
+    width: 100%;
+    height: 5%; }
 
 #panel-right-additional {
   right: -40vw;
   height: 40vh;
-  top: 1.5vh;
+  top: 5.5vh;
   width: 35vw;
-  text-align: left; }
+  text-align: left;
+  z-index: 2;
+  background: black; }
 
 #panel-left, #panel-right {
   height: 40vh;
@@ -524,7 +532,11 @@ select, input {
   right: -40vw;
   -webkit-animation-name: fadein-right;
           animation-name: fadein-right;
-  text-align: left; }
+  text-align: left;
+  cursor: pointer; }
+  #panel-right.open ~ #panel-right-additional {
+    -webkit-animation-name: fadein-right;
+            animation-name: fadein-right; }
 
 #panel-bottom-left {
   text-align: right;
@@ -586,6 +598,24 @@ select, input {
   to {
     -webkit-transform: translateX(-100%);
             transform: translateX(-100%); } }
+
+@-webkit-keyframes fadeout-right {
+  from {
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%); }
+
+  to {
+    -webkit-transform: translateX(0);
+            transform: translateX(0); } }
+
+@keyframes fadeout-right {
+  from {
+    -webkit-transform: translateX(-100%);
+            transform: translateX(-100%); }
+
+  to {
+    -webkit-transform: translateX(0);
+            transform: translateX(0); } }
 
 @-webkit-keyframes fadein-bottom-left {
   from {

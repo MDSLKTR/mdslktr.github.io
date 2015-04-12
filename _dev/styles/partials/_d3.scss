@@ -442,14 +442,18 @@ select, input {
 }
 
 #panel-left > div:not(.hasIcon),
-#panel-right > div:not(.hasIcon),
-#panel-right-additional > div:not(.hasIcon) {
+#panel-right > div:not(.hasIcon) {
   padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
   border-radius: 7px;
   background: rgba(0, 0, 0, 1);
   border: 1px solid rgba(255, 0, 0, 0.5);
+}
+
+#panel-right-additional > div:not(.hasIcon) {
+  padding: 0;
+  margin-bottom: 0;
 }
 
 .hasIcon {
@@ -473,7 +477,7 @@ select, input {
   animation-duration: 5s;
   animation-delay: 500ms;
   animation-iteration-count: 1;
-  animation-fill-mode: forwards;
+  animation-fill-mode: both;
   border-radius: 7px;
   padding: 1.5vh;
   // make pseudo here
@@ -482,15 +486,19 @@ select, input {
   & > span {
     display: block;
     margin: 0.75vh 0;
+    width: 100%;
+    height: 5%;
   }
 }
 
 #panel-right-additional {
   right: -40vw;
   height: 40vh;
-  top: 1.5vh;
+  top: 5.5vh;
   width: 35vw;
   text-align: left;
+  z-index: 2;
+  background: rgba(0, 0, 0, 1);
 }
 
 #panel-left,
@@ -510,6 +518,11 @@ select, input {
   right: -40vw;
   animation-name: fadein-right;
   text-align: left;
+  cursor: pointer;
+
+  &.open ~ #panel-right-additional {
+    animation-name: fadein-right;
+  }
 }
 
 #panel-bottom-left {
@@ -566,6 +579,16 @@ select, input {
 
   to {
     transform: translateX(-100%);
+  }
+}
+
+@keyframes fadeout-right {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
   }
 }
 
