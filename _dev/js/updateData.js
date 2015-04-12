@@ -268,6 +268,7 @@ var DataWrapper = React.createClass({
         this.setState({selected: newValue});
         this.loadProfileData();
         this.getItemData();
+        this.collectStats();
     },
 
     handleClick: function() {
@@ -471,6 +472,8 @@ var DataWrapper = React.createClass({
 
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
+            } else {
+                this.setState({maxEleDmg: ''});
             }
             this.setState({cdrRed: cdr});
             this.setState({resRed: resRed});

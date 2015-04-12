@@ -183,7 +183,7 @@ select, input {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center center;
-  -webkit-filter: drop-shadow(1px 1px 30px white);
+  filter: drop-shadow(1px 1px 30px white);
 }
 
 @keyframes increase {
@@ -228,10 +228,9 @@ select, input {
   transform: translateX(-50%);
   width: 405px;
   height: 750px;
+  backface-visibility: hidden;
 
   & > div {
-    overflow: hidden;
-    transform: translate3d(0,0,0);
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 0, 0, 0.5);
@@ -242,27 +241,22 @@ select, input {
     width: 64px;
     height: 128px;
     color: rgba(255, 0, 0, 1);
-    will-change: initial;
+
+    & .desc {
+      opacity: 0;
+    }
 
     &.ancient {
       border: 1px solid #b8860b;
     }
 
-    &:hover .desc {
-        will-change: opacity;
-    }
-
     &:hover {
       z-index: 1;
-      animation: increase 0.5s linear;
-      animation-fill-mode: both;
-      animation-iteration-count: 1;
+      width: 400px;
+      height: 300px;
 
       & .desc {
-        animation: fade 0.5s linear;
-        animation-delay: 0.5s;
-        animation-fill-mode: both;
-        animation-iteration-count: 1;
+        opacity: 1;
       }
     }
 
@@ -448,7 +442,7 @@ select, input {
   position: relative;
   border-radius: 7px;
   background: rgba(0, 0, 0, 1);
-  border: 1px solid rgba(255, 0, 0, 0.5);
+  filter: drop-shadow(0 0 1px rgba(255, 0, 0, 0.5));
 }
 
 #panel-right-additional > div:not(.hasIcon) {
@@ -458,7 +452,7 @@ select, input {
 
 .hasIcon {
   background: rgba(0, 0, 0, 1);
-  border: 1px solid rgba(255, 0, 0, 0.5);
+  filter: drop-shadow(0 0 1px rgba(255, 0, 0, 0.5));
   padding-top: 1.75vh;
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
@@ -471,7 +465,7 @@ select, input {
 #panel-bottom-right,
 #panel-right-additional {
   position: fixed;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.75);
   color: sienna;
   z-index: 1;
   animation-duration: 5s;
@@ -480,8 +474,7 @@ select, input {
   animation-fill-mode: both;
   border-radius: 7px;
   padding: 1.5vh;
-  // make pseudo here
-  box-shadow: inset 0 0 10px 1px rgba(255, 0, 0, 0.5);
+  filter:  drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
 
   & > span {
     color: wheat;
@@ -583,50 +576,40 @@ select, input {
   }
 }
 
-@keyframes fadeout-right {
-  from {
-    transform: translateX(-100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
 @keyframes fadein-bottom-left {
   from {
-    transform: translateX(0) translateY(0) rotate(-15deg);
+    transform: translateX(0) translateY(0);
   }
 
   to {
-    transform: translateX(50vw) translateY(-50vh) rotate(-15deg);
+    transform: translateX(45vw) translateY(-55vh);
   }
 }
 
 @keyframes fadein-bottom-right {
   from {
-    transform: translateX(0) translateY(0) rotate(15deg);
+    transform: translateX(0) translateY(0);
   }
 
   to {
-    transform: translateX(-50vw) translateY(-50vh) rotate(15deg);
+    transform: translateX(-45vw) translateY(-55vh);
   }
 }
 
 @keyframes pulse {
   from {
-    transform: translateZ(0) scale(0.001);
+    transform: scale(0.001);
     opacity: 0;
   }
   45% {
     opacity: 1;
   }
   50% {
-    transform: translateZ(0) scale(1);
+    transform: scale(1);
     opacity: 0;
   }
   to {
-    transform: translateZ(0) scale(1);
+    transform: scale(1);
     opacity: 0;
   }
 }
