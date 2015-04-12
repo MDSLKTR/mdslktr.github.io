@@ -26,6 +26,9 @@ var DataWrapper = React.createClass({
             bootsItem: [],
             glovesItem: [],
             beltItem: [],
+            additionalStats: [],
+            crit: [],
+
             time: [],
             refreshing: 'on',
             url: '',
@@ -239,6 +242,7 @@ var DataWrapper = React.createClass({
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadProfileData, this.props.pollInterval);
         setInterval(this.getItemData, this.props.pollInterval);
+        setInterval(this.collectStats, this.props.pollInterval);
     },
 
     handleChange: function (e) {
@@ -368,15 +372,15 @@ var DataWrapper = React.createClass({
                                 results[k] = Math.round(itemSlots[i].attributesRaw[statPool[k]].min * 1000) / 1000;
                                 switch (statPool[k]) {
                                     case 'Crit_Percent_Bonus_Capped':
-                                        critChance += results[k];
+                                        critChance += results[k] * 100;
                                         break;
                                 }
-                                console.log(critChance);
                             }
                         }
                     }
                 }
             }
+            this.setState({crit: critChance});
         }
     },
 
@@ -435,7 +439,8 @@ var DataWrapper = React.createClass({
             refreshing = this.state.refreshing,
             timeStamp = this.state.time,
             time = [],
-            secondStats = [];
+            additionalStats = [],
+            critChance = this.state.crit;
 
         switch (classState) {
             case 'demon-hunter':
@@ -1637,6 +1642,13 @@ var DataWrapper = React.createClass({
             stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
         }
 
+        if (additionalStats) {
+            additionalStats.push(React.DOM.div({
+                key: additionalStats.key,
+                className: 'bonusstat'
+            }, 'Critical Hit Chance: ' + critChance));
+        }
+
         if (timeStamp) {
             var t = new Date(timeStamp * 1000),
                 formatted = t.toLocaleDateString() + ' ' + t.toLocaleTimeString();
@@ -1669,7 +1681,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({id: 'panel-right'}, 'Stats', stats),
-                React.DOM.div({id: 'panel-right-additional'}, 'More Stats', this.collectStats()),
+                React.DOM.div({id: 'panel-right-additional'}, 'More Stats', additionalStats),
                 React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing),
                 React.DOM.div({className: 'time'}, time)
             )
