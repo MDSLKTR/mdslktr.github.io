@@ -509,9 +509,9 @@ select, input {
     height: 5%; }
 
 #panel-right-additional {
-  right: -40vw;
+  right: -55vw;
   height: 40vh;
-  top: 5.5vh;
+  top: 1.5vh;
   width: 35vw;
   text-align: left;
   z-index: 2;
