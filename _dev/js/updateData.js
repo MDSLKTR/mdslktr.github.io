@@ -37,6 +37,7 @@ var DataWrapper = React.createClass({
             dmgRedMelee: [],
             dmgRedRanged: [],
             maxEleDmg: [],
+            maxHealth: [],
 
             time: [],
             isOpen: [],
@@ -44,7 +45,7 @@ var DataWrapper = React.createClass({
             url: '',
             itemUrl: '',
             battleTag: localStorage.getItem('battleTag'),
-            apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
+            apiKey: '?locale=en_GB&apikey=65d63bvh7spjgmce3gjq2mv5nzjfsggy',
             profile: 'https://eu.api.battle.net/d3/profile/',
             itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
             skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/',
@@ -338,7 +339,6 @@ var DataWrapper = React.createClass({
                 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
                 'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
                 'Gold_PickUp_Radius',
-                'Hitpoints_On_Kill',
                 'Damage_Percent_Reduction_From_Melee',
                 'Damage_Percent_Reduction_From_Ranged',
                 'Hitpoints_Max_Percent_Bonus_Item'
@@ -349,7 +349,6 @@ var DataWrapper = React.createClass({
             areaDmg = 0,
             resRed = 0,
             skillDmg = 0,
-            areaDmg = 0,
             fireDmg = 0,
             coldDmg = 0,
             lightningDmg = 0,
@@ -359,6 +358,7 @@ var DataWrapper = React.createClass({
             dmgRedMelee = 0,
             dmgRedRanged = 0,
             goldPickUp = 0,
+            maxHealth = 0,
             k;
 
         if (this.state.items) {
@@ -420,6 +420,9 @@ var DataWrapper = React.createClass({
                                     case 'Damage_Percent_Reduction_From_Ranged':
                                         dmgRedRanged += results[k] * 100;
                                         break;
+                                    case 'Hitpoints_Max_Percent_Bonus_Item':
+                                        maxHealth += results[k] * 100;
+                                        break;
                                 }
                             }
                         }
@@ -431,6 +434,9 @@ var DataWrapper = React.createClass({
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0]) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All) {
                     cdr += this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * 100;
+                }
+                if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item) {
+                    maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
                 }
             }
             var eleDmg = [
@@ -463,7 +469,9 @@ var DataWrapper = React.createClass({
                     break;
             }
 
-            this.setState({maxEleDmg: maxElement});
+            if (findElem !== 0) {
+                this.setState({maxEleDmg: maxElement});
+            }
             this.setState({cdrRed: cdr});
             this.setState({resRed: resRed});
             this.setState({atkSpd: atkSpd});
@@ -472,6 +480,7 @@ var DataWrapper = React.createClass({
             this.setState({goldPickup: goldPickUp});
             this.setState({dmgRedMelee: dmgRedMelee});
             this.setState({dmgRedRanged: dmgRedRanged});
+            this.setState({maxHealth: maxHealth});
 
         }
     },
@@ -540,7 +549,8 @@ var DataWrapper = React.createClass({
             goldPickUpState = this.state.goldPickup,
             dmgRedMeleeState = this.state.dmgRedMelee,
             dmgRedRangedState = this.state.dmgRedRanged,
-            maxElementDmg = this.state.maxEleDmg;
+            maxElementDmg = this.state.maxEleDmg,
+            maxHealthState = this.state.maxHealth;
 
         switch (classState) {
             case 'demon-hunter':
@@ -1791,44 +1801,49 @@ var DataWrapper = React.createClass({
             }
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Physical Resist: ' + statsState.physicalResist));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Fire Resist: ' + statsState.fireResist));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Cold Resist: ' + statsState.coldResist));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Lighting Resist: ' + statsState.lightningResist));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Poison Resist: ' + statsState.poisonResist));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Gold Pick-up Radius: ' + goldPickUpState));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Melee Damage Reduction: ' + Math.round(dmgRedMeleeState * 1000) / 1000 + '%'));
 
             additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
+                key: additionalStatsDefensive.key,
                 className: 'bonusstat'
             }, 'Ranged Damage Reduction: ' + Math.round(dmgRedRangedState * 1000) / 1000 + '%'));
+
+            additionalStatsDefensive.push(React.DOM.div({
+                key: additionalStatsDefensive.key,
+                className: 'bonusstat'
+            }, 'Max Health: ' + maxHealthState + '%'));
         }
 
         if (timeStamp) {

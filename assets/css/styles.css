@@ -503,8 +503,9 @@ select, input {
   padding: 1.5vh;
   box-shadow: inset 0 0 10px 1px rgba(255, 0, 0, 0.5); }
   #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span, #panel-right-additional > span {
+    color: wheat;
     display: block;
-    margin: 0.75vh 0;
+    margin: 0.35vh 0;
     width: 100%;
     height: 5%; }
 
