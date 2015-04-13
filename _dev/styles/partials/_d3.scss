@@ -238,6 +238,7 @@ select, input {
     background-size: 64px auto;
     background-position: 0 50%;
     background-repeat: no-repeat;
+    transition: width 1s;
     width: 64px;
     height: 128px;
     color: rgba(255, 0, 0, 1);
@@ -252,11 +253,15 @@ select, input {
 
     &:hover {
       z-index: 1;
-      width: 400px;
-      height: 300px;
+      transition: width 1s;
+      background-color: rgba(0, 0, 0, 1);
+      width: 85%;
+      height: 50%;
 
       & .desc {
-        opacity: 1;
+        animation: fade 2s;
+        animation-delay: 1s;
+        animation-fill-mode: forwards;
       }
     }
 
@@ -266,7 +271,6 @@ select, input {
       right: 0;
       width: 75%;
       height: 100%;
-      opacity: 0;
 
       & > ul {
         top: 50%;
@@ -445,7 +449,7 @@ select, input {
   filter: drop-shadow(0 0 1px rgba(255, 0, 0, 0.5));
 }
 
-#panel-right-additional > div:not(.hasIcon) {
+#panel-right-additional > div {
   padding: 0;
   margin-bottom: 0;
 }
@@ -467,14 +471,14 @@ select, input {
   position: fixed;
   background: rgba(0, 0, 0, 0.75);
   color: sienna;
-  z-index: 1;
   animation-duration: 5s;
   animation-delay: 500ms;
   animation-iteration-count: 1;
-  animation-fill-mode: both;
+  animation-fill-mode: forwards;
   border-radius: 7px;
   padding: 1.5vh;
   filter:  drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
+  backface-visibility: hidden;
 
   & > span {
     color: wheat;
@@ -491,7 +495,6 @@ select, input {
   top: 1.5vh;
   width: 35vw;
   text-align: left;
-  z-index: 2;
   background: rgba(0, 0, 0, 1);
 }
 
@@ -562,7 +565,7 @@ select, input {
   }
 
   to {
-    transform: translateX(100%);
+    transform: translateX(37.5vw);
   }
 }
 
@@ -572,7 +575,7 @@ select, input {
   }
 
   to {
-    transform: translateX(-100%);
+    transform: translateX(-37.5vw);
   }
 }
 
