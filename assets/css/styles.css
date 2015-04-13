@@ -222,50 +222,6 @@ select, input {
   -webkit-filter: drop-shadow(1px 1px 30px white);
           filter: drop-shadow(1px 1px 30px white); }
 
-@-webkit-keyframes increase {
-  from {
-    width: 64px;
-    height: 128px;
-    background-color: rgba(0, 0, 0, 0.5); }
-
-  to {
-    width: 400px;
-    height: 300px;
-    background-color: black; } }
-
-@keyframes increase {
-  from {
-    width: 64px;
-    height: 128px;
-    background-color: rgba(0, 0, 0, 0.5); }
-
-  to {
-    width: 400px;
-    height: 300px;
-    background-color: black; } }
-
-@-webkit-keyframes decrease {
-  from {
-    width: 328px;
-    height: 286px;
-    background-color: black; }
-
-  to {
-    width: 64px;
-    height: 128px;
-    background-color: rgba(0, 0, 0, 0.5); } }
-
-@keyframes decrease {
-  from {
-    width: 328px;
-    height: 286px;
-    background-color: black; }
-
-  to {
-    width: 64px;
-    height: 128px;
-    background-color: rgba(0, 0, 0, 0.5); } }
-
 @-webkit-keyframes fade {
   from {
     opacity: 0; }

@@ -1279,6 +1279,13 @@ var DataWrapper = React.createClass({
                         mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
+
+                if (mainHandState.gems[0].attributes.passive) {
+                    mainHandState.gems[0].attributes.passive.forEach(function (Stat) {
+                        mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
+                    });
+                }
+
             } else if (mainHandState.attributesRaw && mainHandState.attributesRaw.Sockets) {
                 mainHand.push(React.DOM.li({key: mainHandState.key, className: 'socket'}));
             }

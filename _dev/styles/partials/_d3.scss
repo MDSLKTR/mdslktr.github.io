@@ -163,7 +163,6 @@ select, input {
     transition: opacity 0.5s;
     opacity: 1;
   }
-
 }
 
 .icon-back {
@@ -184,32 +183,6 @@ select, input {
   background-repeat: no-repeat;
   background-position: center center;
   filter: drop-shadow(1px 1px 30px white);
-}
-
-@keyframes increase {
-  from {
-    width: 64px;
-    height: 128px;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  to {
-    width: 400px;
-    height: 300px;
-    background-color: rgba(0, 0, 0, 1);
-  }
-}
-
-@keyframes decrease {
-  from {
-    width: 328px;
-    height: 286px;
-    background-color: rgba(0, 0, 0, 1);
-  }
-  to {
-    width: 64px;
-    height: 128px;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
 }
 
 @keyframes fade {
