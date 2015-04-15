@@ -60,7 +60,6 @@ body {
   user-select: none;
   font-weight: 600;
   font: $sans;
-  overflow: hidden;
   font-size: 1.1em;
 }
 
@@ -211,6 +210,7 @@ body {
   height: 750px;
 
   & > div {
+    text-transform: capitalize;
     position: absolute;
     border-radius: 7px;
     background-size: 64px auto;

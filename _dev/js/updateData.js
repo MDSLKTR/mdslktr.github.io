@@ -32,12 +32,14 @@ var DataWrapper = React.createClass({
             resRed: [],
             atkSpd: [],
             eliteDmg: [],
+            eliteDmgRed: [],
             areaDmg: [],
             goldPickup: [],
             dmgRedMelee: [],
             dmgRedRanged: [],
             maxEleDmg: [],
             maxHealth: [],
+            interval: true,
 
             invalid: false,
             time: [],
@@ -62,6 +64,7 @@ var DataWrapper = React.createClass({
                 dataType: 'jsonp',
                 success: function (data) {
                     this.setState({heroes: data});
+                    this.setState({interval: clearInterval(this.state.interval)});
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -250,12 +253,15 @@ var DataWrapper = React.createClass({
         }
     },
 
-    componentWillMount: function () {
-        this.loadHeroesData();
-        setInterval(this.loadHeroesData, this.props.pollInterval);
-        setInterval(this.loadProfileData, this.props.pollInterval);
-        setInterval(this.getItemData, this.props.pollInterval);
-        setInterval(this.collectStats, this.props.pollInterval);
+    componentDidMount: function() {
+        console.log(typeof this.state.heroes.keys.length);
+
+        if (this.state.heroes.keys.length === 0) {
+            this.setState({interval: setInterval(this.loadHeroesData, this.props.pollInterval)});
+        }
+        //setInterval(this.loadProfileData, this.props.pollInterval);
+        //setInterval(this.getItemData, this.props.pollInterval);
+        this.collectStats();
     },
 
     handleChange: function (e) {
@@ -274,12 +280,11 @@ var DataWrapper = React.createClass({
         } else {
             this.setState({invalid: false});
         }
-
         this.getItemData();
         this.collectStats();
     },
 
-    handleClick: function() {
+    handleClick: function () {
         if (this.state.isOpen === 'open') {
             return this.setState({isOpen: ''})
         } else {
@@ -346,6 +351,8 @@ var DataWrapper = React.createClass({
                 'Splash_Damage_Effect_Percent',
                 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
                 'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
+                'Power_Damage_Percent_Bonus#Barbarian_SeismicSlam',
+                'Power_Damage_Percent_Bonus#Barbarian_FuriousCharge',
                 'Gold_PickUp_Radius',
                 'Damage_Percent_Reduction_From_Melee',
                 'Damage_Percent_Reduction_From_Ranged',
@@ -354,6 +361,7 @@ var DataWrapper = React.createClass({
             results = [],
             cdr = 0,
             eliteDmg = 0,
+            eliteDmgRed = 0,
             areaDmg = 0,
             resRed = 0,
             skillDmg = 0,
@@ -416,6 +424,9 @@ var DataWrapper = React.createClass({
                                     case 'Damage_Percent_Bonus_Vs_Elites':
                                         eliteDmg += results[k] * 100;
                                         break;
+                                    case 'Damage_Percent_Reduction_From_Elites':
+                                        eliteDmgRed += results[k] * 100;
+                                        break;
                                     case 'Splash_Damage_Effect_Percent':
                                         areaDmg += results[k] * 100;
                                         break;
@@ -431,6 +442,9 @@ var DataWrapper = React.createClass({
                                     case 'Hitpoints_Max_Percent_Bonus_Item':
                                         maxHealth += results[k] * 100;
                                         break;
+                                    case 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow':
+                                        console.log('cat');
+                                        break;
                                 }
                             }
                         }
@@ -438,12 +452,14 @@ var DataWrapper = React.createClass({
                 }
             }
             // todo set boni
-            // increment for cdr gem
+            // ignoring mf,gf,thorns and block since they are useless stats
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0]) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All) {
+                    // increment for cdr gem
                     cdr += this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * 100;
                 }
                 if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item) {
+                    // increment for health gem
                     maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
                 }
             }
@@ -454,7 +470,7 @@ var DataWrapper = React.createClass({
                     physicalDmg,
                     coldDmg
                 ],
-                findElem = eleDmg.reduce(function(max, arr) {
+                findElem = eleDmg.reduce(function (max, arr) {
                     return max >= arr ? max : arr;
                 }, -Infinity),
                 maxElement;
@@ -486,6 +502,7 @@ var DataWrapper = React.createClass({
             this.setState({resRed: resRed});
             this.setState({atkSpd: atkSpd});
             this.setState({eliteDmg: eliteDmg});
+            this.setState({eliteDmgRed: eliteDmgRed});
             this.setState({areaDmg: areaDmg});
             this.setState({goldPickup: goldPickUp});
             this.setState({dmgRedMelee: dmgRedMelee});
@@ -549,12 +566,12 @@ var DataWrapper = React.createClass({
             gemLink,
             refreshing = this.state.refreshing,
             timeStamp = this.state.time,
-            time = [],
             additionalStatsOffensive = [],
             additionalStatsDefensive = [],
             cdrState = this.state.cdrRed,
             resState = this.state.resRed,
             eliteDmgState = this.state.eliteDmg,
+            eliteDmgRedState = this.state.eliteDmgRed,
             areaDmgState = this.state.areaDmg,
             goldPickUpState = this.state.goldPickup,
             dmgRedMeleeState = this.state.dmgRedMelee,
@@ -599,7 +616,11 @@ var DataWrapper = React.createClass({
                 };
         }
         if (heroesState.heroes) {
-            heroes.push(React.DOM.option({key: heroesState.heroes.key, value: '', style: {display: 'none'}}, 'select hero'));
+            heroes.push(React.DOM.option({
+                key: heroesState.heroes.key,
+                value: '',
+                style: {display: 'none'}
+            }, 'click to select hero'));
             heroesState.heroes.forEach(function (heroName) {
                 heroes.push(React.DOM.option({
                     key: heroesState.heroes.key,
@@ -607,9 +628,16 @@ var DataWrapper = React.createClass({
                 }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
             });
         } else if (heroesState.code) {
-            heroes.push(React.DOM.option({key: heroesState.code.key, value: '', style: {display: 'none'}}, 'invalid battleTag'));
+            heroes.push(React.DOM.option({
+                key: heroesState.code.key,
+                value: '',
+                style: {display: 'none'}
+            }, 'invalid battleTag'));
         } else if (this.state.battleTag === null) {
-            heroes.push(React.DOM.option({value: '', style: {display: 'none'}}, 'enter your battleTag in the field below'));
+            heroes.push(React.DOM.option({
+                value: '',
+                style: {display: 'none'}
+            }, 'enter your battleTag in the field below'));
         } else {
             heroes.push(React.DOM.option({value: '', style: {display: 'none'}}, 'loading herolist...'));
         }
@@ -625,7 +653,7 @@ var DataWrapper = React.createClass({
 
         if (timeStamp && timeStamp * 1000 !== 0) {
             var t = new Date(timeStamp * 1000),
-                formatted = t.toLocaleDateString() + ' ' + t.toLocaleTimeString();
+                formatted = t.toLocaleDateString() + ' - ' + t.toLocaleTimeString();
             base.push(React.DOM.div({key: timeStamp.key, className: 'last-updated'}, 'last-updated on: ' + formatted));
         }
 
@@ -727,12 +755,12 @@ var DataWrapper = React.createClass({
             if (helmState.attributesRaw) {
                 if (helmState.attributesRaw.Ancient_Rank && helmState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    helmet.push(React.DOM.li({key: helmState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.head.name));
                 } else {
                     isAncient = '';
+                    helmet.push(React.DOM.li({key: helmState.key, className: itemQuality + ' name'}, itemsState.head.name));
                 }
             }
-
-            helmet.push(React.DOM.li({key: helmState.key, className: itemQuality + ' name'}, itemsState.head.name));
 
             if (helmState.attributes) {
                 if (helmState.attributes.primary) {
@@ -811,12 +839,12 @@ var DataWrapper = React.createClass({
             if (torsoState.attributesRaw) {
                 if (torsoState.attributesRaw.Ancient_Rank && torsoState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    torso.push(React.DOM.li({key: torsoState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.torso.name));
                 } else {
                     isAncient = '';
+                    torso.push(React.DOM.li({key: torsoState.key, className: itemQuality + ' name'}, itemsState.torso.name));
                 }
             }
-
-            torso.push(React.DOM.li({key: torsoState.key, className: itemQuality + ' name'}, itemsState.torso.name));
 
             if (torsoState.attributes) {
                 if (torsoState.attributes.primary) {
@@ -905,12 +933,14 @@ var DataWrapper = React.createClass({
             if (handsState.attributesRaw) {
                 if (handsState.attributesRaw.Ancient_Rank && handsState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    hands.push(React.DOM.li({key: handsState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.hands.name));
                 } else {
                     isAncient = '';
+                    hands.push(React.DOM.li({key: handsState.key, className: itemQuality + ' name'}, itemsState.hands.name));
                 }
             }
 
-            hands.push(React.DOM.li({key: handsState.key, className: itemQuality + ' name'}, itemsState.hands.name));
+
 
             if (handsState.attributes) {
                 if (handsState.attributes.primary) {
@@ -966,12 +996,14 @@ var DataWrapper = React.createClass({
             if (feetState.attributesRaw) {
                 if (feetState.attributesRaw.Ancient_Rank && feetState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    feet.push(React.DOM.li({key: feetState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.feet.name));
                 } else {
                     isAncient = '';
+                    feet.push(React.DOM.li({key: feetState.key, className: itemQuality + ' name'}, itemsState.feet.name));
                 }
             }
 
-            feet.push(React.DOM.li({key: feetState.key, className: itemQuality + ' name'}, itemsState.feet.name));
+
 
             if (feetState.attributes) {
                 if (feetState.attributes.primary) {
@@ -1027,15 +1059,18 @@ var DataWrapper = React.createClass({
             if (shouldersState.attributesRaw) {
                 if (shouldersState.attributesRaw.Ancient_Rank && shouldersState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    shoulders.push(React.DOM.li({
+                        key: shouldersState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.shoulders.name));
                 } else {
                     isAncient = '';
+                    shoulders.push(React.DOM.li({
+                        key: shouldersState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.shoulders.name));
                 }
             }
-
-            shoulders.push(React.DOM.li({
-                key: shouldersState.key,
-                className: itemQuality + ' name'
-            }, itemsState.shoulders.name));
 
             if (shouldersState.attributes) {
                 if (shouldersState.attributes.primary) {
@@ -1094,12 +1129,12 @@ var DataWrapper = React.createClass({
             if (legsState.attributesRaw) {
                 if (legsState.attributesRaw.Ancient_Rank && legsState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    legs.push(React.DOM.li({key: legsState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.legs.name));
                 } else {
                     isAncient = '';
+                    legs.push(React.DOM.li({key: legsState.key, className: itemQuality + ' name'}, itemsState.legs.name));
                 }
             }
-
-            legs.push(React.DOM.li({key: legsState.key, className: itemQuality + ' name'}, itemsState.legs.name));
 
             if (legsState.attributes) {
                 if (legsState.attributes.primary) {
@@ -1180,15 +1215,20 @@ var DataWrapper = React.createClass({
             if (bracersState.attributesRaw) {
                 if (bracersState.attributesRaw.Ancient_Rank && bracersState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    bracers.push(React.DOM.li({
+                        key: bracersState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.bracers.name));
                 } else {
                     isAncient = '';
+
+                    bracers.push(React.DOM.li({
+                        key: bracersState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.bracers.name));
                 }
             }
 
-            bracers.push(React.DOM.li({
-                key: bracersState.key,
-                className: itemQuality + ' name'
-            }, itemsState.bracers.name));
 
             if (bracersState.attributes) {
                 if (bracersState.attributes.primary) {
@@ -1244,15 +1284,18 @@ var DataWrapper = React.createClass({
             if (mainHandState.attributesRaw) {
                 if (mainHandState.attributesRaw.Ancient_Rank && mainHandState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    mainHand.push(React.DOM.li({
+                        key: mainHandState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.mainHand.name));
                 } else {
                     isAncient = '';
+                    mainHand.push(React.DOM.li({
+                        key: mainHandState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.mainHand.name));
                 }
             }
-
-            mainHand.push(React.DOM.li({
-                key: mainHandState.key,
-                className: itemQuality + ' name'
-            }, itemsState.mainHand.name));
 
             if (mainHandState.dps) {
                 mainHand.push(React.DOM.li({
@@ -1297,7 +1340,7 @@ var DataWrapper = React.createClass({
                         mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
                     });
                 }
-
+                // exception for the new unique gem
                 if (mainHandState.gems[0].attributes.passive) {
                     mainHandState.gems[0].attributes.passive.forEach(function (Stat) {
                         mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
@@ -1344,15 +1387,18 @@ var DataWrapper = React.createClass({
             if (offHandState.attributesRaw) {
                 if (offHandState.attributesRaw.Ancient_Rank && offHandState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    offHand.push(React.DOM.li({
+                        key: offHandState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.offHand.name));
                 } else {
                     isAncient = '';
+                    offHand.push(React.DOM.li({
+                        key: offHandState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.offHand.name));
                 }
             }
-
-            offHand.push(React.DOM.li({
-                key: offHandState.key,
-                className: itemQuality + ' name'
-            }, itemsState.offHand.name));
 
             if (offHandState.attributes) {
                 if (offHandState.attributes.primary) {
@@ -1408,12 +1454,12 @@ var DataWrapper = React.createClass({
             if (beltState.attributesRaw) {
                 if (beltState.attributesRaw.Ancient_Rank && beltState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    belt.push(React.DOM.li({key: beltState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.waist.name));
                 } else {
                     isAncient = '';
+                    belt.push(React.DOM.li({key: beltState.key, className: itemQuality + ' name'}, itemsState.waist.name));
                 }
             }
-
-            belt.push(React.DOM.li({key: beltState.key, className: itemQuality + ' name'}, itemsState.waist.name));
 
             if (beltState.attributes) {
                 if (beltState.attributes.primary) {
@@ -1469,15 +1515,20 @@ var DataWrapper = React.createClass({
             if (ringStateRight.attributesRaw) {
                 if (ringStateRight.attributesRaw.Ancient_Rank && ringStateRight.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    ringRight.push(React.DOM.li({
+                        key: ringStateRight.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.rightFinger.name));
                 } else {
                     isAncient = '';
+                    ringRight.push(React.DOM.li({
+                        key: ringStateRight.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.rightFinger.name));
                 }
             }
 
-            ringRight.push(React.DOM.li({
-                key: ringStateRight.key,
-                className: itemQuality + ' name'
-            }, itemsState.rightFinger.name));
+
 
             if (ringStateRight.attributes) {
                 if (ringStateRight.attributes.primary) {
@@ -1519,6 +1570,8 @@ var DataWrapper = React.createClass({
                         className: 'gem-passive unique'
                     }, passiveStat.text));
                 });
+            } else if (ringStateRight.attributesRaw && ringStateRight.attributesRaw.Sockets) {
+                ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'socket'}));
             }
 
             items.push(React.DOM.div({
@@ -1557,15 +1610,18 @@ var DataWrapper = React.createClass({
             if (ringStateLeft.attributesRaw) {
                 if (ringStateLeft.attributesRaw.Ancient_Rank && ringStateLeft.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    ringLeft.push(React.DOM.li({
+                        key: ringStateLeft.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.leftFinger.name));
                 } else {
                     isAncient = '';
+                    ringLeft.push(React.DOM.li({
+                        key: ringStateLeft.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.leftFinger.name));
                 }
             }
-
-            ringLeft.push(React.DOM.li({
-                key: ringStateLeft.key,
-                className: itemQuality + ' name'
-            }, itemsState.leftFinger.name));
 
             if (ringStateLeft.attributes) {
                 if (ringStateLeft.attributes.primary) {
@@ -1607,6 +1663,8 @@ var DataWrapper = React.createClass({
                         className: 'gem-passive unique'
                     }, passiveStat.text));
                 });
+            } else if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets) {
+                ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'socket'}));
             }
 
             items.push(React.DOM.div({
@@ -1645,12 +1703,12 @@ var DataWrapper = React.createClass({
             if (neckState.attributesRaw) {
                 if (neckState.attributesRaw.Ancient_Rank && neckState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
+                    neck.push(React.DOM.li({key: neckState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.neck.name));
                 } else {
                     isAncient = '';
+                    neck.push(React.DOM.li({key: neckState.key, className: itemQuality + ' name'}, itemsState.neck.name));
                 }
             }
-
-            neck.push(React.DOM.li({key: neckState.key, className: itemQuality + ' name'}, itemsState.neck.name));
 
             if (neckState.attributes) {
                 if (neckState.attributes.primary) {
@@ -1789,7 +1847,7 @@ var DataWrapper = React.createClass({
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Critical Damage increase: ' + Math.round(statsState.critDamage * 1000) / 10  + '%'));
+            }, 'Critical Damage increase: ' + Math.round(statsState.critDamage * 1000) / 10 + '%'));
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
@@ -1801,23 +1859,32 @@ var DataWrapper = React.createClass({
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Attacks per Second: ' +  Math.round(statsState.attackSpeed * 1000) / 1000));
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Bonus Dmg to Elite: ' + eliteDmgState + '%'));
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Area Damage Bonus: ' + areaDmgState + '%'));
+            }, 'Attacks per Second: ' + Math.round(statsState.attackSpeed * 1000) / 1000));
+
+            if (eliteDmgState !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Bonus Dmg to Elites: ' + eliteDmgState + '%'));
+            }
+            if (areaDmgState !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Area Damage Bonus: ' + areaDmgState + '%'));
+            }
+
+            if (maxElementDmg !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, maxElementDmg));
+            }
+
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
             }, 'Primary Resource: ' + statsState.primaryResource));
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, maxElementDmg));
         }
 
         if (additionalStatsDefensive && statsState) {
@@ -1856,22 +1923,34 @@ var DataWrapper = React.createClass({
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Gold Pick-up Radius: ' + goldPickUpState));
+            }, 'Gold Pick-up Radius: ' + goldPickUpState + ' yards'));
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Melee Damage Reduction: ' + Math.round(dmgRedMeleeState * 1000) / 1000 + '%'));
+            if (dmgRedMeleeState !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Melee Damage Reduction: ' + Math.round(dmgRedMeleeState * 1000) / 1000 + '%'));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Ranged Damage Reduction: ' + Math.round(dmgRedRangedState * 1000) / 1000 + '%'));
+            if (dmgRedRangedState !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Ranged Damage Reduction: ' + Math.round(dmgRedRangedState * 1000) / 1000 + '%'));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Bonus Max Health: ' + maxHealthState + '%'));
+            if (eliteDmgRedState !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Damage Reduction from Elites: ' + eliteDmgRedState + '%'));
+            }
+            if (maxHealthState !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Bonus Max Health: ' + maxHealthState + '%'));
+            }
         }
 
         return (
@@ -1900,7 +1979,11 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-left'}, 'General', base),
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({className: this.state.isOpen , id: 'panel-right' ,onClick: this.handleClick}, 'Stats', stats),
+                React.DOM.div({
+                    className: this.state.isOpen,
+                    id: 'panel-right',
+                    onClick: this.handleClick
+                }, 'Stats', stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive),
                 React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
             )

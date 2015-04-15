@@ -96,7 +96,6 @@ body {
           user-select: none;
   font-weight: 600;
   font: 'Titillium Web', sans-serif;
-  overflow: hidden;
   font-size: 1.1em; }
 
 .d3-api-url {
@@ -252,6 +251,7 @@ body {
   width: 405px;
   height: 750px; }
   .d3-item-wrapper > div {
+    text-transform: capitalize;
     position: absolute;
     border-radius: 7px;
     background-size: 64px auto;
