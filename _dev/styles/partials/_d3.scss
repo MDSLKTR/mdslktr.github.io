@@ -75,7 +75,7 @@ body {
     background: black;
     color: wheat;
     outline: none;
-    border: 3px solid darkred;
+    border: 2px solid darkred;
     text-align: center;
   }
 }
@@ -90,15 +90,16 @@ body {
   transform: translateX(-50%);
 
   select {
+    cursor: pointer;
+    background: black;
     position: absolute;
     left: 50%;
     top: 5%;
     transform: translateX(-50%);
     width: 90%;
-    background: darkred;
+    border: 2px solid darkred;
     color: wheat;
     outline: none;
-    border: 1px solid black;
   }
 }
 
@@ -200,6 +201,7 @@ body {
 }
 
 .d3-item-wrapper {
+  z-index: 3;
   position: fixed;
   left: 50%;
   top: 0;
@@ -211,13 +213,12 @@ body {
   & > div {
     transform: translateZ(0);
     position: absolute;
-    border: 1px solid darkred;
     border-radius: 7px;
     background-size: 64px auto;
     background-color: rgba(0,0,0,0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
-    transition: width 1s;
+    transition: width 1.5s;
     width: 64px;
     height: 128px;
     color: rgba(255, 0, 0, 1);
@@ -226,33 +227,54 @@ body {
       opacity: 0;
     }
 
-    &.ancient {
-      border: 1px solid #b8860b;
-    }
-
     &.unique {
       filter: drop-shadow(0px 0px 5px darkorange);
+      border: 1px solid darkorange;
+
+      &.ancient {
+        border: 1px solid #b8860b;
+      }
     }
 
     &.set {
       filter: drop-shadow(0px 0px 5px green);
+      border: 1px solid green;
+
+      &.ancient {
+        border: 1px solid #b8860b;
+      }
     }
 
     &.magic {
       filter: drop-shadow(0px 0px 5px darkblue);
+      border: 1px solid darkblue;
+
+      &.ancient {
+        border: 1px solid #b8860b;
+      }
     }
 
     &.rare {
       filter: drop-shadow(0px 0px 5px yellow);
+      border: 1px solid yellow;
+
+      &.ancient {
+        border: 1px solid #b8860b;
+      }
     }
 
     &.common {
       filter: drop-shadow(0px 0px 5px grey);
+      border: 1px solid grey;
+
+      &.ancient {
+        border: 1px solid #b8860b;
+      }
     }
 
     &:hover {
       z-index: 1;
-      transition: width 1s;
+      transition: width 1.5s;
       width: 100%;
       height: 45%;
       background-color: rgba(0,0,0,1);

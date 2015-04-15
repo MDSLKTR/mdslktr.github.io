@@ -110,7 +110,7 @@ body {
     background: black;
     color: wheat;
     outline: none;
-    border: 3px solid darkred;
+    border: 2px solid darkred;
     text-align: center; }
 
 .d3-char-wrapper {
@@ -123,16 +123,17 @@ body {
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%); }
   .d3-char-wrapper select {
+    cursor: pointer;
+    background: black;
     position: absolute;
     left: 50%;
     top: 5%;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
     width: 90%;
-    background: darkred;
+    border: 2px solid darkred;
     color: wheat;
-    outline: none;
-    border: 1px solid black; }
+    outline: none; }
 
 .icon {
   position: absolute;
@@ -241,6 +242,7 @@ body {
     opacity: 1; } }
 
 .d3-item-wrapper {
+  z-index: 3;
   position: fixed;
   left: 50%;
   top: 0;
@@ -254,40 +256,52 @@ body {
     -webkit-transform: translateZ(0);
             transform: translateZ(0);
     position: absolute;
-    border: 1px solid darkred;
     border-radius: 7px;
     background-size: 64px auto;
     background-color: rgba(0, 0, 0, 0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
-    -webkit-transition: width 1s;
-            transition: width 1s;
+    -webkit-transition: width 1.5s;
+            transition: width 1.5s;
     width: 64px;
     height: 128px;
     color: red; }
     .d3-item-wrapper > div .desc {
       opacity: 0; }
-    .d3-item-wrapper > div.ancient {
-      border: 1px solid #b8860b; }
     .d3-item-wrapper > div.unique {
       -webkit-filter: drop-shadow(0px 0px 5px darkorange);
-              filter: drop-shadow(0px 0px 5px darkorange); }
+              filter: drop-shadow(0px 0px 5px darkorange);
+      border: 1px solid darkorange; }
+      .d3-item-wrapper > div.unique.ancient {
+        border: 1px solid #b8860b; }
     .d3-item-wrapper > div.set {
       -webkit-filter: drop-shadow(0px 0px 5px green);
-              filter: drop-shadow(0px 0px 5px green); }
+              filter: drop-shadow(0px 0px 5px green);
+      border: 1px solid green; }
+      .d3-item-wrapper > div.set.ancient {
+        border: 1px solid #b8860b; }
     .d3-item-wrapper > div.magic {
       -webkit-filter: drop-shadow(0px 0px 5px darkblue);
-              filter: drop-shadow(0px 0px 5px darkblue); }
+              filter: drop-shadow(0px 0px 5px darkblue);
+      border: 1px solid darkblue; }
+      .d3-item-wrapper > div.magic.ancient {
+        border: 1px solid #b8860b; }
     .d3-item-wrapper > div.rare {
       -webkit-filter: drop-shadow(0px 0px 5px yellow);
-              filter: drop-shadow(0px 0px 5px yellow); }
+              filter: drop-shadow(0px 0px 5px yellow);
+      border: 1px solid yellow; }
+      .d3-item-wrapper > div.rare.ancient {
+        border: 1px solid #b8860b; }
     .d3-item-wrapper > div.common {
       -webkit-filter: drop-shadow(0px 0px 5px grey);
-              filter: drop-shadow(0px 0px 5px grey); }
+              filter: drop-shadow(0px 0px 5px grey);
+      border: 1px solid grey; }
+      .d3-item-wrapper > div.common.ancient {
+        border: 1px solid #b8860b; }
     .d3-item-wrapper > div:hover {
       z-index: 1;
-      -webkit-transition: width 1s;
-              transition: width 1s;
+      -webkit-transition: width 1.5s;
+              transition: width 1.5s;
       width: 100%;
       height: 45%;
       background-color: black;
