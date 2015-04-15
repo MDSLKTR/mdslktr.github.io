@@ -5,8 +5,8 @@ var DataWrapper = React.createClass({
             skills: [],
             passives: [],
             stats: [],
-            heroes: [],
-            items: [],
+            heroes: {},
+            items: {},
             attributes: [],
             class: {},
             name: {},
@@ -39,7 +39,8 @@ var DataWrapper = React.createClass({
             dmgRedRanged: [],
             maxEleDmg: [],
             maxHealth: [],
-            interval: true,
+            trigger: false,
+            count: 0,
 
             invalid: false,
             time: [],
@@ -63,8 +64,9 @@ var DataWrapper = React.createClass({
                 url: this.state.url,
                 dataType: 'jsonp',
                 success: function (data) {
-                    this.setState({heroes: data});
-                    this.setState({interval: clearInterval(this.state.interval)});
+                    this.setState({
+                        heroes: data
+                    });
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -75,22 +77,26 @@ var DataWrapper = React.createClass({
         }
     },
 
-    loadProfileData: function () {
+    loadHeroData: function () {
         if (this.state.selected && this.state.refreshing === 'on') {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
                 dataType: 'jsonp',
                 success: function (data) {
-                    this.setState({name: data.name});
-                    this.setState({class: data.class});
-                    this.setState({level: data.level});
-                    this.setState({paragon: data.paragonLevel});
-                    this.setState({skills: data.skills.active});
-                    this.setState({passives: data.skills.passive});
-                    this.setState({stats: data.stats});
-                    this.setState({items: data.items});
-                    this.setState({time: data['last-updated']});
+                    if (this.isMounted()) {
+                        this.setState({
+                            name: data.name,
+                            class: data.class,
+                            level: data.level,
+                            paragon: data.paragonLevel,
+                            skills: data.skills.active,
+                            passives: data.skills.passive,
+                            stats: data.stats,
+                            items: data.items,
+                            time: data['last-updated']
+                        });
+                    }
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -216,6 +222,7 @@ var DataWrapper = React.createClass({
                     console.error(this.state.url, status, err.toString());
                 }.bind(this)
             });
+
             //console.log('updated item');
             //console.log(this.state.itemUrl);
         }
@@ -253,15 +260,27 @@ var DataWrapper = React.createClass({
         }
     },
 
-    componentDidMount: function() {
-        console.log(typeof this.state.heroes.keys.length);
-
-        if (this.state.heroes.keys.length === 0) {
-            this.setState({interval: setInterval(this.loadHeroesData, this.props.pollInterval)});
+    checkTrigger: function () {
+        if (this.state.trigger === true && this.state.count < 3) {
+            this.loadHeroesData();
+            this.loadHeroData();
+            this.getItemData();
+            this.collectStats();
+            this.setState({count: this.state.count + 1});
+            console.log(this.state.count);
         }
-        //setInterval(this.loadProfileData, this.props.pollInterval);
-        //setInterval(this.getItemData, this.props.pollInterval);
-        this.collectStats();
+    },
+
+    componentDidMount: function () {
+
+        if (this.state.battleTag !== '') {
+            this.setState({trigger: true});
+        }
+        // only called on initial render
+        setInterval(this.checkTrigger, 2000);
+        setInterval(this.loadHeroesData, this.props.pollInterval);
+        setInterval(this.loadHeroData, this.props.pollInterval);
+        setInterval(this.getItemData, this.props.pollInterval);
     },
 
     handleChange: function (e) {
@@ -273,15 +292,14 @@ var DataWrapper = React.createClass({
     setSelect: function () {
         var newValue = this.refs.select.getDOMNode().value;
         this.setState({selected: newValue});
-        this.loadProfileData();
+        this.setState({trigger: true});
+        this.setState({count: 0});
 
         if (this.state.heroes.code) {
             this.setState({invalid: true});
         } else {
             this.setState({invalid: false});
         }
-        this.getItemData();
-        this.collectStats();
     },
 
     handleClick: function () {
@@ -755,10 +773,16 @@ var DataWrapper = React.createClass({
             if (helmState.attributesRaw) {
                 if (helmState.attributesRaw.Ancient_Rank && helmState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    helmet.push(React.DOM.li({key: helmState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.head.name));
+                    helmet.push(React.DOM.li({
+                        key: helmState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.head.name));
                 } else {
                     isAncient = '';
-                    helmet.push(React.DOM.li({key: helmState.key, className: itemQuality + ' name'}, itemsState.head.name));
+                    helmet.push(React.DOM.li({
+                        key: helmState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.head.name));
                 }
             }
 
@@ -839,10 +863,16 @@ var DataWrapper = React.createClass({
             if (torsoState.attributesRaw) {
                 if (torsoState.attributesRaw.Ancient_Rank && torsoState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    torso.push(React.DOM.li({key: torsoState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.torso.name));
+                    torso.push(React.DOM.li({
+                        key: torsoState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.torso.name));
                 } else {
                     isAncient = '';
-                    torso.push(React.DOM.li({key: torsoState.key, className: itemQuality + ' name'}, itemsState.torso.name));
+                    torso.push(React.DOM.li({
+                        key: torsoState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.torso.name));
                 }
             }
 
@@ -933,13 +963,18 @@ var DataWrapper = React.createClass({
             if (handsState.attributesRaw) {
                 if (handsState.attributesRaw.Ancient_Rank && handsState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    hands.push(React.DOM.li({key: handsState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.hands.name));
+                    hands.push(React.DOM.li({
+                        key: handsState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.hands.name));
                 } else {
                     isAncient = '';
-                    hands.push(React.DOM.li({key: handsState.key, className: itemQuality + ' name'}, itemsState.hands.name));
+                    hands.push(React.DOM.li({
+                        key: handsState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.hands.name));
                 }
             }
-
 
 
             if (handsState.attributes) {
@@ -996,13 +1031,18 @@ var DataWrapper = React.createClass({
             if (feetState.attributesRaw) {
                 if (feetState.attributesRaw.Ancient_Rank && feetState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    feet.push(React.DOM.li({key: feetState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.feet.name));
+                    feet.push(React.DOM.li({
+                        key: feetState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.feet.name));
                 } else {
                     isAncient = '';
-                    feet.push(React.DOM.li({key: feetState.key, className: itemQuality + ' name'}, itemsState.feet.name));
+                    feet.push(React.DOM.li({
+                        key: feetState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.feet.name));
                 }
             }
-
 
 
             if (feetState.attributes) {
@@ -1129,10 +1169,16 @@ var DataWrapper = React.createClass({
             if (legsState.attributesRaw) {
                 if (legsState.attributesRaw.Ancient_Rank && legsState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    legs.push(React.DOM.li({key: legsState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.legs.name));
+                    legs.push(React.DOM.li({
+                        key: legsState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.legs.name));
                 } else {
                     isAncient = '';
-                    legs.push(React.DOM.li({key: legsState.key, className: itemQuality + ' name'}, itemsState.legs.name));
+                    legs.push(React.DOM.li({
+                        key: legsState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.legs.name));
                 }
             }
 
@@ -1454,10 +1500,16 @@ var DataWrapper = React.createClass({
             if (beltState.attributesRaw) {
                 if (beltState.attributesRaw.Ancient_Rank && beltState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    belt.push(React.DOM.li({key: beltState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.waist.name));
+                    belt.push(React.DOM.li({
+                        key: beltState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.waist.name));
                 } else {
                     isAncient = '';
-                    belt.push(React.DOM.li({key: beltState.key, className: itemQuality + ' name'}, itemsState.waist.name));
+                    belt.push(React.DOM.li({
+                        key: beltState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.waist.name));
                 }
             }
 
@@ -1527,7 +1579,6 @@ var DataWrapper = React.createClass({
                     }, itemsState.rightFinger.name));
                 }
             }
-
 
 
             if (ringStateRight.attributes) {
@@ -1703,10 +1754,16 @@ var DataWrapper = React.createClass({
             if (neckState.attributesRaw) {
                 if (neckState.attributesRaw.Ancient_Rank && neckState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
-                    neck.push(React.DOM.li({key: neckState.key, className: itemQuality + ' name'}, isAncient + ' ' + itemsState.neck.name));
+                    neck.push(React.DOM.li({
+                        key: neckState.key,
+                        className: itemQuality + ' name'
+                    }, isAncient + ' ' + itemsState.neck.name));
                 } else {
                     isAncient = '';
-                    neck.push(React.DOM.li({key: neckState.key, className: itemQuality + ' name'}, itemsState.neck.name));
+                    neck.push(React.DOM.li({
+                        key: neckState.key,
+                        className: itemQuality + ' name'
+                    }, itemsState.neck.name));
                 }
             }
 
@@ -1992,7 +2049,7 @@ var DataWrapper = React.createClass({
 });
 
 React.render(React.createElement(DataWrapper, {
-        pollInterval: 2000
+        pollInterval: 600000
     }),
     document.getElementById('profile-data'));
 
@@ -2000,12 +2057,9 @@ React.render(React.createElement(DataWrapper, {
 // McleodNUS#2608
 
 
-// todos
+// todo fix ajax
 // save url to localStorage - done
-// item colors
-// ancient state
 // offhand weapons dont work
-// fallback if socket is empty
 // find out how animations triggers work
 // correct stats
 // <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>
