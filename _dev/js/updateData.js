@@ -1876,8 +1876,8 @@ var DataWrapper = React.createClass({
 
         return (
             React.DOM.div({className: 'd3-container'},
-                React.DOM.div({className: 'd3-char-bg', style: style}),
                 React.DOM.div({className: 'd3-item-wrapper'}, items),
+                React.DOM.div({className: 'd3-char-bg', style: style}),
                 React.DOM.div({className: 'd3-api-url'},
                     React.DOM.input(
                         {
@@ -1902,8 +1902,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({className: this.state.isOpen , id: 'panel-right' ,onClick: this.handleClick}, 'Stats', stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive),
-                React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing),
-                React.DOM.div({className: 'time'}, time)
+                React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
             )
         );
     }

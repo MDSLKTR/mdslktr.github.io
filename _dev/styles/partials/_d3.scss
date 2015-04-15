@@ -181,7 +181,10 @@ body {
 }
 
 .d3-char-bg {
-  position: relative;
+  position: fixed;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
   margin: 7.5vh auto;
   width: 405px;
   height: 615px;
@@ -202,23 +205,19 @@ body {
 
 .d3-item-wrapper {
   z-index: 3;
-  position: fixed;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
+  margin: 0 auto;
+  position: relative;
   width: 405px;
   height: 750px;
-  backface-visibility: hidden;
 
   & > div {
-    transform: translateZ(0);
     position: absolute;
     border-radius: 7px;
     background-size: 64px auto;
     background-color: rgba(0,0,0,0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
-    transition: width 1.5s;
+    transition: width 1s, height 1s, background-color 0.5s;
     width: 64px;
     height: 128px;
     color: rgba(255, 0, 0, 1);
@@ -274,14 +273,14 @@ body {
 
     &:hover {
       z-index: 1;
-      transition: width 1.5s;
-      width: 100%;
-      height: 45%;
-      background-color: rgba(0,0,0,1);
-      filter: none;
+      transition: width 1s, height 1s, background-color 0.5s;
+      width: 400px;
+      height: 360px;
+      filter: drop-shadow(0px 0px 5px black);
+      background-color: rgba(0,0,0,0.85);
 
       & .desc {
-        animation: fade 2s;
+        animation: fade 1.5s;
         animation-delay: 1s;
         animation-fill-mode: forwards;
       }
@@ -393,25 +392,25 @@ body {
   .head {
     left: 50%;
     top: 4.5%;
-    transform: translateX(-50%) translateZ(0);
+    transform: translateX(-50%);
   }
 
   .torso {
     left: 50%;
     top: 22.5%;
-    transform: translateX(-50%) translateZ(0);
+    transform: translateX(-50%);
   }
 
   .legs {
     left: 50%;
     top: 60%;
-    transform: translateX(-50%) translateZ(0);
+    transform: translateX(-50%);
   }
 
   .feet {
     left: 50%;
     bottom: 5%;
-    transform: translateX(-50%) translateZ(0);
+    transform: translateX(-50%);
   }
 
   .hands {
@@ -447,7 +446,7 @@ body {
   .waist {
     top: 41.5%;
     left: 50%;
-    transform: translateX(-50%) translateZ(0);
+    transform: translateX(-50%);
   }
 
   .mainHand {
