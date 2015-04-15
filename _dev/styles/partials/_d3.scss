@@ -3,25 +3,18 @@ body {
   overflow: hidden;
 }
 
-select, input {
-  background: darkred;
-  color: wheat;
-  outline: none;
-  border: 1px solid black;
-}
-
 .setButton {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    background: darkred;
-    width: 8.5%;
-    color: wheat;
-    text-align: center;
-    padding: 0.15rem;
-    cursor: pointer;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: darkred;
+  width: 8.5%;
+  color: wheat;
+  text-align: center;
+  padding: 0.15rem;
+  cursor: pointer;
 }
 
 .time {
@@ -77,6 +70,14 @@ select, input {
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
+
+  input {
+    background: black;
+    color: wheat;
+    outline: none;
+    border: 3px solid darkred;
+    text-align: center;
+  }
 }
 
 .d3-char-wrapper {
@@ -94,6 +95,10 @@ select, input {
     top: 5%;
     transform: translateX(-50%);
     width: 90%;
+    background: darkred;
+    color: wheat;
+    outline: none;
+    border: 1px solid black;
   }
 }
 
@@ -204,11 +209,12 @@ select, input {
   backface-visibility: hidden;
 
   & > div {
+    transform: translateZ(0);
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 0, 0, 0.5);
+    border: 1px solid darkred;
     border-radius: 7px;
     background-size: 64px auto;
+    background-color: rgba(0,0,0,0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
     transition: width 1s;
@@ -224,12 +230,33 @@ select, input {
       border: 1px solid #b8860b;
     }
 
+    &.unique {
+      filter: drop-shadow(0px 0px 5px darkorange);
+    }
+
+    &.set {
+      filter: drop-shadow(0px 0px 5px green);
+    }
+
+    &.magic {
+      filter: drop-shadow(0px 0px 5px darkblue);
+    }
+
+    &.rare {
+      filter: drop-shadow(0px 0px 5px yellow);
+    }
+
+    &.common {
+      filter: drop-shadow(0px 0px 5px grey);
+    }
+
     &:hover {
       z-index: 1;
       transition: width 1s;
-      background-color: rgba(0, 0, 0, 1);
-      width: 85%;
-      height: 50%;
+      width: 100%;
+      height: 45%;
+      background-color: rgba(0,0,0,1);
+      filter: none;
 
       & .desc {
         animation: fade 2s;
@@ -344,25 +371,25 @@ select, input {
   .head {
     left: 50%;
     top: 4.5%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
   }
 
   .torso {
     left: 50%;
     top: 22.5%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
   }
 
   .legs {
     left: 50%;
     top: 60%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
   }
 
   .feet {
     left: 50%;
     bottom: 5%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
   }
 
   .hands {
@@ -398,7 +425,7 @@ select, input {
   .waist {
     top: 41.5%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateZ(0);
   }
 
   .mainHand {
@@ -463,6 +490,8 @@ select, input {
 }
 
 #panel-right-additional {
+  font-size: 1.05rem;
+  filter: none;
   right: -55vw;
   height: 40vh;
   top: 1.5vh;

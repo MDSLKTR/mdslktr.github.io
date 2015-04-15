@@ -13,12 +13,6 @@ body {
   background: black;
   overflow: hidden; }
 
-select, input {
-  background: darkred;
-  color: wheat;
-  outline: none;
-  border: 1px solid black; }
-
 .setButton {
   position: fixed;
   bottom: 0;
@@ -112,6 +106,12 @@ select, input {
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   cursor: pointer; }
+  .d3-api-url input {
+    background: black;
+    color: wheat;
+    outline: none;
+    border: 3px solid darkred;
+    text-align: center; }
 
 .d3-char-wrapper {
   height: 15vh;
@@ -128,7 +128,11 @@ select, input {
     top: 5%;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
-    width: 90%; }
+    width: 90%;
+    background: darkred;
+    color: wheat;
+    outline: none;
+    border: 1px solid black; }
 
 .icon {
   position: absolute;
@@ -247,11 +251,13 @@ select, input {
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden; }
   .d3-item-wrapper > div {
+    -webkit-transform: translateZ(0);
+            transform: translateZ(0);
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 0, 0, 0.5);
+    border: 1px solid darkred;
     border-radius: 7px;
     background-size: 64px auto;
+    background-color: rgba(0, 0, 0, 0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
     -webkit-transition: width 1s;
@@ -263,13 +269,30 @@ select, input {
       opacity: 0; }
     .d3-item-wrapper > div.ancient {
       border: 1px solid #b8860b; }
+    .d3-item-wrapper > div.unique {
+      -webkit-filter: drop-shadow(0px 0px 5px darkorange);
+              filter: drop-shadow(0px 0px 5px darkorange); }
+    .d3-item-wrapper > div.set {
+      -webkit-filter: drop-shadow(0px 0px 5px green);
+              filter: drop-shadow(0px 0px 5px green); }
+    .d3-item-wrapper > div.magic {
+      -webkit-filter: drop-shadow(0px 0px 5px darkblue);
+              filter: drop-shadow(0px 0px 5px darkblue); }
+    .d3-item-wrapper > div.rare {
+      -webkit-filter: drop-shadow(0px 0px 5px yellow);
+              filter: drop-shadow(0px 0px 5px yellow); }
+    .d3-item-wrapper > div.common {
+      -webkit-filter: drop-shadow(0px 0px 5px grey);
+              filter: drop-shadow(0px 0px 5px grey); }
     .d3-item-wrapper > div:hover {
       z-index: 1;
       -webkit-transition: width 1s;
               transition: width 1s;
+      width: 100%;
+      height: 45%;
       background-color: black;
-      width: 85%;
-      height: 50%; }
+      -webkit-filter: none;
+              filter: none; }
       .d3-item-wrapper > div:hover .desc {
         -webkit-animation: fade 2s;
                 animation: fade 2s;
@@ -372,23 +395,23 @@ select, input {
   .d3-item-wrapper .head {
     left: 50%;
     top: 4.5%;
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%); }
+    -webkit-transform: translateX(-50%) translateZ(0);
+            transform: translateX(-50%) translateZ(0); }
   .d3-item-wrapper .torso {
     left: 50%;
     top: 22.5%;
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%); }
+    -webkit-transform: translateX(-50%) translateZ(0);
+            transform: translateX(-50%) translateZ(0); }
   .d3-item-wrapper .legs {
     left: 50%;
     top: 60%;
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%); }
+    -webkit-transform: translateX(-50%) translateZ(0);
+            transform: translateX(-50%) translateZ(0); }
   .d3-item-wrapper .feet {
     left: 50%;
     bottom: 5%;
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%); }
+    -webkit-transform: translateX(-50%) translateZ(0);
+            transform: translateX(-50%) translateZ(0); }
   .d3-item-wrapper .hands {
     left: 0;
     top: 45%; }
@@ -410,8 +433,8 @@ select, input {
   .d3-item-wrapper .waist {
     top: 41.5%;
     left: 50%;
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%); }
+    -webkit-transform: translateX(-50%) translateZ(0);
+            transform: translateX(-50%) translateZ(0); }
   .d3-item-wrapper .mainHand {
     bottom: 10%;
     left: 10%; }
@@ -467,6 +490,9 @@ select, input {
     height: 5%; }
 
 #panel-right-additional {
+  font-size: 1.05rem;
+  -webkit-filter: none;
+          filter: none;
   right: -55vw;
   height: 40vh;
   top: 1.5vh;

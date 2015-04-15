@@ -39,6 +39,7 @@ var DataWrapper = React.createClass({
             maxEleDmg: [],
             maxHealth: [],
 
+            invalid: false,
             time: [],
             isOpen: [],
             refreshing: 'on',
@@ -60,7 +61,7 @@ var DataWrapper = React.createClass({
                 url: this.state.url,
                 dataType: 'jsonp',
                 success: function (data) {
-                    this.setState({heroes: data.heroes});
+                    this.setState({heroes: data});
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -267,6 +268,13 @@ var DataWrapper = React.createClass({
         var newValue = this.refs.select.getDOMNode().value;
         this.setState({selected: newValue});
         this.loadProfileData();
+
+        if (this.state.heroes.code) {
+            this.setState({invalid: true});
+        } else {
+            this.setState({invalid: false});
+        }
+
         this.getItemData();
         this.collectStats();
     },
@@ -277,7 +285,6 @@ var DataWrapper = React.createClass({
         } else {
             return this.setState({isOpen: 'open'})
         }
-
     },
 
     getItemData: function () {
@@ -591,15 +598,20 @@ var DataWrapper = React.createClass({
                     backgroundImage: 'url("../../assets/images/empty.svg)'
                 };
         }
-
-        if (heroesState) {
-            heroes.push(React.DOM.option({key: heroesState.key, value: '', style: {display: 'none'}}, 'select hero'));
-            heroesState.forEach(function (heroName) {
+        if (heroesState.heroes) {
+            heroes.push(React.DOM.option({key: heroesState.heroes.key, value: '', style: {display: 'none'}}, 'select hero'));
+            heroesState.heroes.forEach(function (heroName) {
                 heroes.push(React.DOM.option({
-                    key: heroesState.key,
+                    key: heroesState.heroes.key,
                     value: heroName.id
                 }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
             });
+        } else if (heroesState.code) {
+            heroes.push(React.DOM.option({key: heroesState.code.key, value: '', style: {display: 'none'}}, 'invalid battleTag'));
+        } else if (this.state.battleTag === null) {
+            heroes.push(React.DOM.option({value: '', style: {display: 'none'}}, 'enter your battleTag in the field below'));
+        } else {
+            heroes.push(React.DOM.option({value: '', style: {display: 'none'}}, 'loading herolist...'));
         }
 
         if (nameState && classState && levelState) {
@@ -609,6 +621,12 @@ var DataWrapper = React.createClass({
             if (paragonState) {
                 base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
             }
+        }
+
+        if (timeStamp && timeStamp * 1000 !== 0) {
+            var t = new Date(timeStamp * 1000),
+                formatted = t.toLocaleDateString() + ' ' + t.toLocaleTimeString();
+            base.push(React.DOM.div({key: timeStamp.key, className: 'last-updated'}, 'last-updated on: ' + formatted));
         }
 
         if (skillsState !== []) {
@@ -1853,14 +1871,9 @@ var DataWrapper = React.createClass({
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Max Health: ' + maxHealthState + '%'));
+            }, 'Bonus Max Health: ' + maxHealthState + '%'));
         }
 
-        if (timeStamp) {
-            var t = new Date(timeStamp * 1000),
-                formatted = t.toLocaleDateString() + ' ' + t.toLocaleTimeString();
-            time.push(React.DOM.div({key: timeStamp.key, className: 'last-updated'}, 'last-updated on: ' + formatted));
-        }
         return (
             React.DOM.div({className: 'd3-container'},
                 React.DOM.div({className: 'd3-char-bg', style: style}),
