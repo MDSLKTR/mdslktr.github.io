@@ -99,6 +99,7 @@ body {
   font-size: 1.1em; }
 
 .d3-api-url {
+  z-index: 5;
   position: fixed;
   bottom: 5vh;
   left: 50%;
@@ -113,6 +114,7 @@ body {
     text-align: center; }
 
 .d3-char-wrapper {
+  z-index: 5;
   height: 15vh;
   width: 15%;
   text-align: center;
@@ -251,6 +253,8 @@ body {
   width: 405px;
   height: 750px; }
   .d3-item-wrapper > div {
+    -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
     text-transform: capitalize;
     position: absolute;
     border-radius: 7px;
@@ -509,7 +513,11 @@ body {
   top: 1.5vh;
   width: 35vw;
   text-align: left;
-  background: black; }
+  background: black;
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+  -webkit-transition: -webkit-transform 0.75s;
+          transition: transform 0.75s; }
 
 #panel-left, #panel-right {
   height: 40vh;
@@ -529,8 +537,10 @@ body {
   text-align: left;
   cursor: pointer; }
   #panel-right.open ~ #panel-right-additional {
-    -webkit-animation-name: fadein-right;
-            animation-name: fadein-right; }
+    -webkit-transform: translateX(-37.5vw);
+            transform: translateX(-37.5vw);
+    -webkit-transition: -webkit-transform 0.75s;
+            transition: transform 0.75s; }
 
 #panel-bottom-left {
   text-align: right;

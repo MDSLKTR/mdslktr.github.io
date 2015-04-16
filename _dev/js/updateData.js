@@ -28,18 +28,18 @@ var DataWrapper = React.createClass({
             beltItem: [],
 
             additionalStats: [],
-            cdrRed: [],
-            resRed: [],
-            atkSpd: [],
-            eliteDmg: [],
-            eliteDmgRed: [],
-            areaDmg: [],
-            goldPickup: [],
-            dmgRedMelee: [],
-            dmgRedRanged: [],
-            maxEleDmg: [],
-            maxHealth: [],
-            trigger: false,
+            cdrRed: 0,
+            resRed: 0,
+            atkSpd: 0,
+            eliteDmg: 0,
+            eliteDmgRed: 0,
+            areaDmg: 0,
+            goldPickup: 0,
+            dmgRedMelee: 0,
+            dmgRedRanged: 0,
+            maxEleDmg: 0,
+            maxHealth: 0,
+            trigger: true,
             count: 0,
 
             invalid: false,
@@ -84,7 +84,6 @@ var DataWrapper = React.createClass({
                 url: this.state.url,
                 dataType: 'jsonp',
                 success: function (data) {
-                    if (this.isMounted()) {
                         this.setState({
                             name: data.name,
                             class: data.class,
@@ -96,7 +95,6 @@ var DataWrapper = React.createClass({
                             items: data.items,
                             time: data['last-updated']
                         });
-                    }
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -272,21 +270,19 @@ var DataWrapper = React.createClass({
     },
 
     componentDidMount: function () {
-
-        if (this.state.battleTag !== '') {
-            this.setState({trigger: true});
-        }
         // only called on initial render
         setInterval(this.checkTrigger, 2000);
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadHeroData, this.props.pollInterval);
         setInterval(this.getItemData, this.props.pollInterval);
+        setInterval(this.collectStats,this.props.pollInterval);
     },
 
     handleChange: function (e) {
         var input = e.target.value;
         this.setState({battleTag: input});
         localStorage.setItem('battleTag', input);
+        this.setState({count: 0});
     },
 
     setSelect: function () {
@@ -413,6 +409,7 @@ var DataWrapper = React.createClass({
             ];
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                    console.log(itemSlots[i]);
                     for (k = 0; k < statPool.length; k++) {
                         if (itemSlots[i].attributesRaw[statPool[k]] && itemSlots[i].attributesRaw[statPool[k]].min) {
                             if (typeof parseInt(itemSlots[i].attributesRaw[statPool[k]].min === 'number')) {
@@ -1905,14 +1902,21 @@ var DataWrapper = React.createClass({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
             }, 'Critical Damage increase: ' + Math.round(statsState.critDamage * 1000) / 10 + '%'));
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Cooldown Reduction: ' + cdrState + '%'));
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Resource Cost Reduction: ' + resState + '%'));
+
+            if (cdrState !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Cooldown Reduction: ' + Math.round(cdrState * 1000) / 1000  + '%'));
+            }
+
+            if (resState !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Resource Cost Reduction: ' + Math.round(resState * 1000) / 1000  + '%'));
+            }
+
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
@@ -2058,6 +2062,8 @@ React.render(React.createElement(DataWrapper, {
 
 
 // todo fix ajax
+// show rolled stat
+// clear old bonusstat values
 // save url to localStorage - done
 // offhand weapons dont work
 // find out how animations triggers work

@@ -64,6 +64,7 @@ body {
 }
 
 .d3-api-url {
+  z-index: 5;
   position: fixed;
   bottom: 5vh;
   left: 50%;
@@ -80,6 +81,7 @@ body {
 }
 
 .d3-char-wrapper {
+  z-index: 5;
   height: 15vh;
   width: 15%;
   text-align: center;
@@ -210,6 +212,7 @@ body {
   height: 750px;
 
   & > div {
+    backface-visibility: hidden;
     text-transform: capitalize;
     position: absolute;
     border-radius: 7px;
@@ -519,6 +522,8 @@ body {
   width: 35vw;
   text-align: left;
   background: rgba(0, 0, 0, 1);
+  transform: translateX(0);
+  transition: transform 0.75s;
 }
 
 #panel-left,
@@ -541,7 +546,8 @@ body {
   cursor: pointer;
 
   &.open ~ #panel-right-additional {
-    animation-name: fadein-right;
+    transform: translateX(-37.5vw);
+    transition: transform 0.75s;
   }
 }
 
