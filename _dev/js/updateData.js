@@ -272,7 +272,7 @@ var DataWrapper = React.createClass({
             this.loadHeroesData();
             this.loadHeroData();
             this.getItemData();
-            this.collectStats();
+            //this.collectStats();
             this.setState({count: this.state.count + 1});
             console.log(this.state.count);
         }
@@ -284,7 +284,7 @@ var DataWrapper = React.createClass({
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadHeroData, this.props.pollInterval);
         setInterval(this.getItemData, this.props.pollInterval);
-        setInterval(this.collectStats, this.props.pollInterval);
+        setInterval(this.collectStats, 2000);
     },
 
     handleChange: function (e) {
@@ -315,7 +315,7 @@ var DataWrapper = React.createClass({
         }
     },
 
-    handleItemClick: function(e) {
+    handleItemClick: function (e) {
         if (!$(e.target).hasClass('open') && $(e.target).hasClass('toggle')) {
             $(e.target).addClass('open');
 
@@ -327,86 +327,141 @@ var DataWrapper = React.createClass({
         }
     },
 
-    handleParagon : function(e) {
+    handleParagon: function (e) {
         var parent = $(e.target).parent(),
             el = $(e.target);
 
         if (parent.hasClass('cdr')) {
             if (el.hasClass('paragon-stat-increment')) {
-
                 if (this.state.paragonCdr < 10) {
-                    this.setState({
-                        paragonCdr: Math.round((this.state.paragonCdr + 0.2) * 10) / 10
-                    });
+                    this.setState({paragonCdr: Math.round((this.state.paragonCdr + 0.2) * 10) / 10});
                 }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                    el.addClass('maxed');
+                    this.setState({paragonCdr: 10});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonCdr: 0});
             } else {
                 if (this.state.paragonCdr > 0) {
-                    this.setState({
-                        paragonCdr: Math.round((this.state.paragonCdr - 0.2) * 10) / 10
-                    });
+                    this.setState({paragonCdr: Math.round((this.state.paragonCdr - 0.2) * 10) / 10});
                 }
             }
         } else if (parent.hasClass('resred')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonResRed <= 50)
-                    this.setState({paragonResRed: this.state.paragonResRed + 0.2});
-            } else {
-                if (this.state.paragonResRed > 0)
-                this.setState({paragonResRed: this.state.paragonResRed - 0.2});
+                if (this.state.paragonResRed < 10) {
+                    this.setState({paragonResRed: Math.round((this.state.paragonResRed + 0.2) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonResRed: 10});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonResRed: 0});
+            }  else {
+                if (this.state.paragonResRed > 0) {
+                    this.setState({paragonResRed: Math.round((this.state.paragonResRed - 0.2) * 10) / 10});
+                }
             }
         } else if (parent.hasClass('atkspd')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonAtkSpd <= 50)
-                this.setState({paragonAtkSpd: this.state.paragonAtkSpd + 0.1});
+                if (this.state.paragonAtkSpd < 5) {
+                    this.setState({paragonAtkSpd: Math.round((this.state.paragonAtkSpd + 0.1) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonAtkSpd: 5});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonAtkSpd: 0});
             } else {
-                if (this.state.paragonAtkSpd > 0)
-                this.setState({paragonAtkSpd: this.state.paragonAtkSpd - 0.1});
+                if (this.state.paragonAtkSpd > 0) {
+                    this.setState({paragonAtkSpd: Math.round((this.state.paragonAtkSpd - 0.1) * 10) / 10});
+                }
             }
         } else if (parent.hasClass('critdmg')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonCritDmg <= 50)
-                this.setState({paragonCritDmg: this.state.paragonCritDmg + 1});
+                if (this.state.paragonCritDmg < 50) {
+                    this.setState({paragonCritDmg: Math.round((this.state.paragonCritDmg + 1) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonCritDmg: 50});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonCritDmg: 0});
             } else {
-                if (this.state.paragonCritDmg > 0)
-                this.setState({paragonCritDmg: this.state.paragonCritDmg - 1});
+                if (this.state.paragonCritDmg > 0) {
+                    this.setState({paragonCritDmg: Math.round((this.state.paragonCritDmg - 1) * 10) / 10});
+                }
             }
         } else if (parent.hasClass('critchance')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonCritChance <= 50)
-                this.setState({paragonCritChance: this.state.paragonCritChance + 0.1});
+                if (this.state.paragonCritChance < 5) {
+                    this.setState({paragonCritChance: Math.round((this.state.paragonCritChance + 0.1) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonCritChance: 5});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonCritChance: 0});
             } else {
-                if (this.state.paragonCritChance > 0)
-                this.setState({paragonCritChance: this.state.paragonCritChance - 0.1});
+                if (this.state.paragonCritChance > 0) {
+                    this.setState({paragonCritChance: Math.round((this.state.paragonCritChance - 0.1) * 10) / 10});
+                }
             }
         } else if (parent.hasClass('areadmg')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonAreaDmg <= 50)
-                this.setState({paragonAreaDmg: this.state.paragonAreaDmg + 1});
+                if (this.state.paragonAreaDmg < 50) {
+                    this.setState({paragonAreaDmg: Math.round((this.state.paragonAreaDmg + 1) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonAreaDmg: 50});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonAreaDmg: 0});
             } else {
-                if (this.state.paragonAreaDmg > 0)
-                this.setState({paragonAreaDmg: this.state.paragonAreaDmg - 1});
+                if (this.state.paragonAreaDmg > 0) {
+                    this.setState({paragonAreaDmg: Math.round((this.state.paragonAreaDmg - 1) * 10) / 10});
+                }
             }
         } else if (parent.hasClass('resource')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonResource <= 25)
-                this.setState({paragonResource: this.state.paragonResource + 0.5});
+                if (this.state.paragonResource < 25) {
+                    this.setState({paragonResource: Math.round((this.state.paragonResource + 0.5) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonResource: 25});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonResource: 0});
             } else {
-                if (this.state.paragonResource > 0)
-                this.setState({paragonResource: this.state.paragonResource - 0.5});
+                if (this.state.paragonResource > 0) {
+                    this.setState({paragonResource: Math.round((this.state.paragonResource - 0.5) * 10) / 10});
+                }
             }
         } else if (parent.hasClass('resistall')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonResistAll <= 250)
-                this.setState({paragonResistAll: this.state.paragonResistAll + 5});
+                if (this.state.paragonResistAll < 250) {
+                    this.setState({paragonResistAll: Math.round((this.state.paragonResistAll + 5) * 10) / 10});
+                }
+            } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
+                el.addClass('maxed');
+                this.setState({paragonResistAll: 250});
+            } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
+                el.removeClass('maxed');
+                this.setState({paragonResistAll: 0});
             } else {
-                if (this.state.paragonResistAll > 0)
-                this.setState({paragonResistAll: this.state.paragonResistAll - 5});
+                if (this.state.paragonResistAll > 0) {
+                    this.setState({paragonResistAll: Math.round((this.state.paragonResistAll - 5) * 10) / 10});
+                }
             }
         }
-
-        this.collectStats();
     },
-    
+
     getItemData: function () {
         var i,
             itemData;
@@ -487,14 +542,13 @@ var DataWrapper = React.createClass({
             lightningDmg = 0,
             physicalDmg = 0,
             poisonDmg = 0,
-            atkSpd = 0,
             dmgRedMelee = 0,
             dmgRedRanged = 0,
             goldPickUp = 0,
             maxHealth = 0,
             k;
 
-        if (this.state.items) {
+        if (this.state.items && !this.state.items.offHand) {
             var itemSlots = [
                 this.state.helmItem,
                 this.state.amuletItem,
@@ -612,6 +666,7 @@ var DataWrapper = React.createClass({
             }
 
             cdr *= (1 - this.state.paragonCdr / 100);
+            resRed *= (1 - this.state.paragonResRed / 100);
 
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
@@ -620,7 +675,6 @@ var DataWrapper = React.createClass({
             }
             this.setState({cdrRed: cdr});
             this.setState({resRed: resRed});
-            this.setState({atkSpd: atkSpd});
             this.setState({eliteDmg: eliteDmg});
             this.setState({eliteDmgRed: eliteDmgRed});
             this.setState({areaDmg: areaDmg});
@@ -940,7 +994,7 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: toggle + ' ' +  isAncient + ' ' + itemQuality + ' head',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' head',
                 onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: helmState.key, className: 'desc'}, React.DOM.ul({
@@ -2041,11 +2095,11 @@ var DataWrapper = React.createClass({
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Critical Hit Chance: ' + Math.round(statsState.critChance * 1000) / 10 + '%'));
+            }, 'Critical Hit Chance: ' + Math.round((statsState.critChance + pCritChance / 100) * 1000) / 10 + '%'));
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Critical Damage increase: ' + Math.round(statsState.critDamage * 1000) / 10 + '%'));
+            }, 'Critical Damage increase: ' + Math.round((statsState.critDamage + pCritDmg / 100) * 1000) / 10 + '%'));
 
             if (cdrState !== 1) {
                 additionalStatsOffensive.push(React.DOM.div({
@@ -2065,7 +2119,7 @@ var DataWrapper = React.createClass({
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Attacks per Second: ' + Math.round(statsState.attackSpeed * 1000) / 1000));
+            }, 'Attacks per Second: ' + Math.round((statsState.attackSpeed + pAtkSpd / 100) * 1000) / 1000));
 
             if (eliteDmgState !== 0) {
                 additionalStatsOffensive.push(React.DOM.div({
@@ -2077,7 +2131,7 @@ var DataWrapper = React.createClass({
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Area Damage Bonus: ' + areaDmgState + '%'));
+                }, 'Area Damage Bonus: ' + (areaDmgState + pAreaDmg) + '%'));
             }
 
             if (maxElementDmg !== 0) {
@@ -2090,7 +2144,7 @@ var DataWrapper = React.createClass({
             additionalStatsOffensive.push(React.DOM.div({
                 key: additionalStatsOffensive.key,
                 className: 'bonusstat'
-            }, 'Primary Resource: ' + statsState.primaryResource));
+            }, 'Primary Resource: ' + (statsState.primaryResource + pResource)));
         }
 
         if (additionalStatsDefensive && statsState) {
@@ -2104,27 +2158,27 @@ var DataWrapper = React.createClass({
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Physical Resist: ' + statsState.physicalResist));
+            }, 'Physical Resist: ' + (statsState.physicalResist + pResistAll)));
 
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Fire Resist: ' + statsState.fireResist));
+            }, 'Fire Resist: ' + (statsState.fireResist + pResistAll)));
 
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Cold Resist: ' + statsState.coldResist));
+            }, 'Cold Resist: ' + (statsState.coldResist + pResistAll)));
 
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Lighting Resist: ' + statsState.lightningResist));
+            }, 'Lighting Resist: ' + (statsState.lightningResist + pResistAll)));
 
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
                 className: 'bonusstat'
-            }, 'Poison Resist: ' + statsState.poisonResist));
+            }, 'Poison Resist: ' + (statsState.poisonResist + pResistAll)));
 
             additionalStatsDefensive.push(React.DOM.div({
                 key: additionalStatsDefensive.key,
@@ -2160,51 +2214,60 @@ var DataWrapper = React.createClass({
         }
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat cdr'},
-            'cdr: ' + Math.round(pCdr * 10) / 10  + '%',
+            'cdr: ' + Math.round(pCdr * 10) / 10 + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resred'},
             'res: ' + Math.round(pResRed * 10) / 10 + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat atkspd'},
             'atkspd: ' + Math.round(pAtkSpd * 10) / 10 + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critdmg'},
             'critdmg: ' + Math.round(pCritDmg) + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critchance'},
             'critchance: ' + Math.round(pCritChance * 10) / 10 + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat areadmg'},
             'areadmg: ' + Math.round(pAreaDmg) + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resource'},
             'resource: ' + Math.round(pResource),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resistall'},
             'allres: ' + Math.round(pResistAll),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
-            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         return (
@@ -2230,7 +2293,7 @@ var DataWrapper = React.createClass({
                         }, heroes
                     )
                 ),
-                React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, paragon)),
+                React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({

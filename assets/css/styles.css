@@ -248,19 +248,38 @@ body {
   to {
     opacity: 1; } }
 
-.d3-paragon-selector {
-  height: 10vh; }
+.d3-paragon-selector span {
+  display: block; }
 
-.paragon-stat span {
-  margin-bottom: 0.125rem;
-  width: 7.5%;
-  background: white;
-  border-radius: 7px; }
-.paragon-stat span:first-child {
-  width: 7.5%;
-  height: 5vh; }
-.paragon-stat span:not(:first-child) {
-  cursor: pointer; }
+.paragon-stat {
+  margin: 0.25rem;
+  text-align: center;
+  width: 22.5%;
+  display: inline-block; }
+  .paragon-stat .paragon-stat-increment {
+    float: left; }
+  .paragon-stat .paragon-stat-decrement {
+    float: right; }
+  .paragon-stat .paragon-stat-max:after {
+    content: 'max';
+    position: relative; }
+  .paragon-stat .paragon-stat-max.maxed:after {
+    content: 'clear';
+    position: relative; }
+  .paragon-stat span {
+    background: black;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+    color: sienna;
+    border: 1px solid darkred;
+    border-radius: 7px; }
+  .paragon-stat span:first-child {
+    width: 100%; }
+  .paragon-stat span:not(:first-child) {
+    width: 31%;
+    cursor: pointer; }
+    .paragon-stat span:not(:first-child):hover {
+      color: wheat; }
 
 .d3-item-wrapper {
   z-index: 3;

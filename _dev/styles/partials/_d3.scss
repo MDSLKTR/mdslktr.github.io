@@ -206,24 +206,59 @@ body {
 }
 
 .d3-paragon-selector {
-  height: 10vh;
+
+  span {
+    display: block;
+  }
 }
 
 .paragon-stat {
+  margin: 0.25rem;
+  text-align: center;
+  width: 22.5%;
+  display: inline-block;
+
+  .paragon-stat-increment {
+    float: left;
+  }
+
+  .paragon-stat-decrement {
+    float: right;
+  }
+
+  .paragon-stat-max {
+    &:after {
+      content: 'max';
+      position: relative;
+    }
+    &.maxed {
+      &:after {
+        content: 'clear';
+        position: relative;
+      }
+    }
+  }
+
   span {
-    margin-bottom: 0.125rem;
-    width: 7.5%;
-    background: white;
+    background: black;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+    color: sienna;
+    border: 1px solid darkred;
     border-radius: 7px;
   }
 
   span:first-child {
-    width: 7.5%;
-    height: 5vh;
+    width: 100%;
   }
 
   span:not(:first-child) {
+    width: 31%;
     cursor: pointer;
+
+    &:hover {
+      color: wheat;
+    }
   }
 }
 
