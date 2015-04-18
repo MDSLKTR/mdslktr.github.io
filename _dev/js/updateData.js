@@ -41,17 +41,16 @@ var DataWrapper = React.createClass({
             count: 0,
             toggleItem: 'toggle',
 
-            paragonCdr: 0,
-            paragonResRed: 0,
-            paragonAtkSpd: 0,
-            paragonCritDmg: 0,
-            paragonCritChance: 0,
-            paragonAreaDmg: 0,
-            paragonResource: 0,
-            paragonResistAll: 0,
-            paragonArmor: 0,
-            paragonMaxHealth: 0,
-
+            paragonCdr: parseInt(localStorage.getItem('paragonCdr')),
+            paragonResRed: parseInt(localStorage.getItem('paragonResRed')),
+            paragonAtkSpd: parseInt(localStorage.getItem('paragonAtkSpd')),
+            paragonCritDmg: parseInt(localStorage.getItem('paragonCritChance')),
+            paragonCritChance: parseInt(localStorage.getItem('paragonCritDmg')),
+            paragonAreaDmg: parseInt(localStorage.getItem('paragonAreaDmg')),
+            paragonResource: parseInt(localStorage.getItem('paragonResource')),
+            paragonResistAll: parseInt(localStorage.getItem('paragonResistAll')),
+            paragonArmor: parseInt(localStorage.getItem('paragonArmor')),
+            paragonMaxHealth: parseInt(localStorage.getItem('paragonMaxHealth')),
 
             invalid: false,
             time: [],
@@ -281,6 +280,46 @@ var DataWrapper = React.createClass({
         setInterval(this.loadHeroData, this.props.pollInterval);
         setInterval(this.getItemData, this.props.pollInterval);
         setInterval(this.collectStats, 2000);
+
+        if (!parseInt(localStorage.getItem('paragonCdr'))) {
+            this.setState({paragonCdr: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonResRed'))) {
+            this.setState({paragonResRed: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonAtkSpd'))) {
+            this.setState({paragonAtkSpd: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonCritChance'))) {
+            this.setState({paragonCritChance: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonCritDmg'))) {
+            this.setState({paragonCritDmg: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonAreaDmg'))) {
+            this.setState({paragonAreaDmg: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonResource'))) {
+            this.setState({paragonResource: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonResistAll'))) {
+            this.setState({paragonResistAll: 0});
+        }
+
+        if (!parseInt(localStorage.getItem('paragonArmor'))) {
+            this.setState({paragonArmor: 0});
+        }
+        if (!parseInt(localStorage.getItem('paragonMaxHealth'))) {
+            this.setState({paragonMaxHealth: 0});
+        }
+
     },
 
     handleChange: function (e) {
@@ -333,8 +372,8 @@ var DataWrapper = React.createClass({
                     this.setState({paragonCdr: Math.round((this.state.paragonCdr + 0.2) * 10) / 10});
                 }
             } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
-                    this.setState({paragonCdr: 10});
+                el.addClass('maxed');
+                this.setState({paragonCdr: 10});
             } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
                 el.removeClass('maxed');
                 this.setState({paragonCdr: 0});
@@ -2115,9 +2154,9 @@ var DataWrapper = React.createClass({
         }
 
         if (statsState.life && statsState.damage && statsState.toughness && statsState.vitality) {
-            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', statsState.life.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
-            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', statsState.damage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
-            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', statsState.toughness.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', Math.round(statsState.life).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', Math.round(statsState.damage).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', Math.round(statsState.toughness).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
 
             if (classState === 'demon-hunter' || classState === 'monk') {
                 stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
@@ -2353,6 +2392,7 @@ var DataWrapper = React.createClass({
             React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
+
 
         return (
             React.DOM.div({className: 'd3-container'},

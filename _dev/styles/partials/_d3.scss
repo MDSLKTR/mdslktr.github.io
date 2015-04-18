@@ -657,7 +657,8 @@ body {
   &:after {
     content: 'More Stats';
     position: absolute;
-    bottom: 2.5%;
+    bottom: -7.5%;
+    left: 0;
     padding: 5px;
     filter: drop-shadow(0 0 3px darkred);
     border-radius: 7px;
