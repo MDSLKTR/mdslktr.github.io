@@ -254,8 +254,9 @@ body {
 .paragon-stat {
   margin: 0.25rem;
   text-align: center;
-  width: 22.5%;
-  display: inline-block; }
+  width: 6.1vw;
+  display: inline-block;
+  font-size: 0.8rem; }
   .paragon-stat .paragon-stat-increment {
     float: left; }
   .paragon-stat .paragon-stat-decrement {
@@ -267,12 +268,11 @@ body {
     content: 'clear';
     position: relative; }
   .paragon-stat span {
-    background: black;
+    background: sienna;
     display: inline-block;
     margin-bottom: 0.25rem;
-    color: sienna;
-    border: 1px solid darkred;
-    border-radius: 7px; }
+    color: black;
+    border-radius: 5px; }
   .paragon-stat span:first-child {
     width: 100%; }
   .paragon-stat span:not(:first-child) {
@@ -297,8 +297,8 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
-    -webkit-transition: width 1s, height 1s, background-color 0.5s;
-            transition: width 1s, height 1s, background-color 0.5s;
+    -webkit-transition: width 1s, height 1s, background-color 0.5s, -webkit-filter 0.5s;
+            transition: width 1s, height 1s, background-color 0.5s, -webkit-filter 0.5s;
     width: 64px;
     height: 128px;
     color: red;
@@ -315,32 +315,48 @@ body {
       -webkit-filter: drop-shadow(0px 0px 5px darkorange);
               filter: drop-shadow(0px 0px 5px darkorange);
       border: 1px solid darkorange; }
+      .d3-item-wrapper > div.unique:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px darkorange);
+                filter: drop-shadow(0px 0px 20px darkorange); }
       .d3-item-wrapper > div.unique.ancient {
         border: 1px solid #b8860b; }
     .d3-item-wrapper > div.set {
       -webkit-filter: drop-shadow(0px 0px 5px green);
               filter: drop-shadow(0px 0px 5px green);
       border: 1px solid green; }
+      .d3-item-wrapper > div.set:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px green);
+                filter: drop-shadow(0px 0px 20px green); }
       .d3-item-wrapper > div.set.ancient {
         border: 1px solid #b8860b; }
     .d3-item-wrapper > div.magic {
       -webkit-filter: drop-shadow(0px 0px 5px blue);
               filter: drop-shadow(0px 0px 5px blue);
       border: 1px solid blue; }
-      .d3-item-wrapper > div.magic.ancient {
-        border: 1px solid #b8860b; }
+      .d3-item-wrapper > div.magic:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px blue);
+                filter: drop-shadow(0px 0px 20px blue); }
     .d3-item-wrapper > div.rare {
       -webkit-filter: drop-shadow(0px 0px 5px yellow);
               filter: drop-shadow(0px 0px 5px yellow);
       border: 1px solid yellow; }
-      .d3-item-wrapper > div.rare.ancient {
-        border: 1px solid #b8860b; }
+      .d3-item-wrapper > div.rare:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px yellow);
+                filter: drop-shadow(0px 0px 20px yellow); }
+    .d3-item-wrapper > div.white {
+      -webkit-filter: drop-shadow(0px 0px 5px white);
+              filter: drop-shadow(0px 0px 5px white);
+      border: 1px solid white; }
+      .d3-item-wrapper > div.white:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px white);
+                filter: drop-shadow(0px 0px 20px white); }
     .d3-item-wrapper > div.common {
       -webkit-filter: drop-shadow(0px 0px 5px grey);
               filter: drop-shadow(0px 0px 5px grey);
       border: 1px solid grey; }
-      .d3-item-wrapper > div.common.ancient {
-        border: 1px solid #b8860b; }
+      .d3-item-wrapper > div.common:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px grey);
+                filter: drop-shadow(0px 0px 20px grey); }
     .d3-item-wrapper > div.open {
       z-index: 1;
       -webkit-transition: width 1s, height 1s, background-color 0.5s;
@@ -448,6 +464,8 @@ body {
             color: yellow; }
           .d3-item-wrapper > div > div > ul .name.common {
             color: grey; }
+          .d3-item-wrapper > div > div > ul .name.white {
+            color: white; }
         .d3-item-wrapper > div > div > ul .gem-level {
           top: 0;
           left: 90%;
@@ -603,11 +621,22 @@ body {
           animation-name: fadein-right;
   text-align: left;
   cursor: pointer; }
+  #panel-right:after {
+    content: 'More Stats';
+    position: absolute;
+    bottom: 2.5%;
+    padding: 5px;
+    -webkit-filter: drop-shadow(0 0 3px darkred);
+            filter: drop-shadow(0 0 3px darkred);
+    border-radius: 7px;
+    background: black; }
   #panel-right.open ~ #panel-right-additional {
     -webkit-transform: translateX(-37.5vw);
             transform: translateX(-37.5vw);
     -webkit-transition: -webkit-transform 0.75s;
             transition: transform 0.75s; }
+  #panel-right.open:after {
+    content: 'Close'; }
 
 #panel-bottom-left {
   text-align: right;

@@ -215,8 +215,9 @@ body {
 .paragon-stat {
   margin: 0.25rem;
   text-align: center;
-  width: 22.5%;
+  width: 6.1vw;
   display: inline-block;
+  font-size: 0.8rem;
 
   .paragon-stat-increment {
     float: left;
@@ -240,12 +241,11 @@ body {
   }
 
   span {
-    background: black;
+    background: sienna;
     display: inline-block;
     margin-bottom: 0.25rem;
-    color: sienna;
-    border: 1px solid darkred;
-    border-radius: 7px;
+    color: black;
+    border-radius: 5px;
   }
 
   span:first-child {
@@ -278,7 +278,7 @@ body {
     background-color: rgba(0,0,0,0.5);
     background-position: 0 50%;
     background-repeat: no-repeat;
-    transition: width 1s, height 1s, background-color 0.5s;
+    transition: width 1s, height 1s, background-color 0.5s, -webkit-filter 0.5s;
     width: 64px;
     height: 128px;
     color: rgba(255, 0, 0, 1);
@@ -300,6 +300,10 @@ body {
       filter: drop-shadow(0px 0px 5px darkorange);
       border: 1px solid darkorange;
 
+      &:hover {
+        filter: drop-shadow(0px 0px 20px darkorange);
+      }
+
       &.ancient {
         border: 1px solid #b8860b;
       }
@@ -308,6 +312,10 @@ body {
     &.set {
       filter: drop-shadow(0px 0px 5px green);
       border: 1px solid green;
+
+      &:hover {
+        filter: drop-shadow(0px 0px 20px green);
+      }
 
       &.ancient {
         border: 1px solid #b8860b;
@@ -318,8 +326,8 @@ body {
       filter: drop-shadow(0px 0px 5px blue);
       border: 1px solid blue;
 
-      &.ancient {
-        border: 1px solid #b8860b;
+      &:hover {
+        filter: drop-shadow(0px 0px 20px blue);
       }
     }
 
@@ -327,8 +335,17 @@ body {
       filter: drop-shadow(0px 0px 5px yellow);
       border: 1px solid yellow;
 
-      &.ancient {
-        border: 1px solid #b8860b;
+      &:hover {
+        filter: drop-shadow(0px 0px 20px yellow);
+      }
+    }
+
+    &.white {
+      filter: drop-shadow(0px 0px 5px white);
+      border: 1px solid white;
+
+      &:hover {
+        filter: drop-shadow(0px 0px 20px white);
       }
     }
 
@@ -336,8 +353,8 @@ body {
       filter: drop-shadow(0px 0px 5px grey);
       border: 1px solid grey;
 
-      &.ancient {
-        border: 1px solid #b8860b;
+      &:hover {
+        filter: drop-shadow(0px 0px 20px grey);
       }
     }
 
@@ -447,6 +464,10 @@ body {
 
           &.common {
             color: grey;
+          }
+
+          &.white {
+            color: white;
           }
         }
 
@@ -633,9 +654,25 @@ body {
   text-align: left;
   cursor: pointer;
 
+  &:after {
+    content: 'More Stats';
+    position: absolute;
+    bottom: 2.5%;
+    padding: 5px;
+    filter: drop-shadow(0 0 3px darkred);
+    border-radius: 7px;
+    background: black;
+  }
+
   &.open ~ #panel-right-additional {
     transform: translateX(-37.5vw);
     transition: transform 0.75s;
+  }
+
+  &.open {
+    &:after {
+      content: 'Close';
+    }
   }
 }
 
