@@ -13,19 +13,19 @@ var DataWrapper = React.createClass({
             level: {},
             paragon: {},
 
-            helmItem: [],
-            amuletItem: [],
-            shouldersItem: [],
-            bracersItem: [],
-            chestItem: [],
-            ringItemLeft: [],
-            ringItemRight: [],
-            mainItem: [],
-            offItem: [],
-            legsItem: [],
-            bootsItem: [],
-            glovesItem: [],
-            beltItem: [],
+            helmItem: {},
+            amuletItem: {},
+            shouldersItem: {},
+            bracersItem: {},
+            chestItem: {},
+            ringItemLeft: {},
+            ringItemRight: {},
+            mainItem: {},
+            offItem: {},
+            legsItem: {},
+            bootsItem: {},
+            glovesItem: {},
+            beltItem: {},
 
             additionalStats: [],
             atkSpd: 0,
@@ -533,6 +533,23 @@ var DataWrapper = React.createClass({
         var i,
             itemData;
 
+        // clear fucking items
+        this.setState({
+            helmItem: {},
+            amuletItem: {},
+            chestItem: {},
+            bootsItem: {},
+            glovesItem: {},
+            shouldersItem: {},
+            legsItem: {},
+            bracersItem: {},
+            mainItem: {},
+            offItem: {},
+            beltItem: {},
+            ringItemLeft: {},
+            ringItemRight: {}
+        });
+
         if (this.state.items) {
             var itemSlots = [
                 this.state.items.neck,
@@ -557,6 +574,7 @@ var DataWrapper = React.createClass({
                 if (itemSlots[i]) {
                     itemData = itemSlots[i].tooltipParams;
                     this.loadItemData(itemData);
+                    console.log(itemData);
                 }
             }
 
