@@ -393,7 +393,7 @@ var DataWrapper = React.createClass({
             } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
                 el.removeClass('maxed');
                 this.setState({paragonResRed: 0});
-            }  else {
+            } else {
                 if (this.state.paragonResRed > 0) {
                     this.setState({paragonResRed: Math.round((this.state.paragonResRed - 0.2) * 10) / 10});
                 }
@@ -2334,7 +2334,6 @@ var DataWrapper = React.createClass({
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
-
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat atkspd'},
