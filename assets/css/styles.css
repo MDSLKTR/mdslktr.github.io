@@ -221,8 +221,8 @@ body {
   position: fixed;
   left: 50%;
   top: 0;
-  -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
+  -webkit-transform: translateX(-50%) translateZ(0);
+          transform: translateX(-50%) translateZ(0);
   margin: 7.5vh auto;
   width: 405px;
   height: 615px;
@@ -230,7 +230,9 @@ body {
   background-repeat: no-repeat;
   background-position: center center;
   -webkit-filter: drop-shadow(1px 1px 30px white);
-          filter: drop-shadow(1px 1px 30px white); }
+          filter: drop-shadow(1px 1px 30px white);
+  -webkit-transition: background-image 1s;
+          transition: background-image 1s; }
 
 @-webkit-keyframes fade {
   from {
@@ -245,6 +247,20 @@ body {
 
   to {
     opacity: 1; } }
+
+.d3-paragon-selector {
+  height: 10vh; }
+
+.paragon-stat span {
+  margin-bottom: 0.125rem;
+  width: 7.5%;
+  background: white;
+  border-radius: 7px; }
+.paragon-stat span:first-child {
+  width: 7.5%;
+  height: 5vh; }
+.paragon-stat span:not(:first-child) {
+  cursor: pointer; }
 
 .d3-item-wrapper {
   z-index: 3;
@@ -266,9 +282,16 @@ body {
             transition: width 1s, height 1s, background-color 0.5s;
     width: 64px;
     height: 128px;
-    color: red; }
+    color: red;
+    cursor: pointer; }
+    .d3-item-wrapper > div:after {
+      opacity: 0;
+      content: 'x';
+      visibility: hidden;
+      cursor: pointer; }
     .d3-item-wrapper > div .desc {
-      opacity: 0; }
+      opacity: 0;
+      visibility: hidden; }
     .d3-item-wrapper > div.unique {
       -webkit-filter: drop-shadow(0px 0px 5px darkorange);
               filter: drop-shadow(0px 0px 5px darkorange);
@@ -282,9 +305,9 @@ body {
       .d3-item-wrapper > div.set.ancient {
         border: 1px solid #b8860b; }
     .d3-item-wrapper > div.magic {
-      -webkit-filter: drop-shadow(0px 0px 5px darkblue);
-              filter: drop-shadow(0px 0px 5px darkblue);
-      border: 1px solid darkblue; }
+      -webkit-filter: drop-shadow(0px 0px 5px blue);
+              filter: drop-shadow(0px 0px 5px blue);
+      border: 1px solid blue; }
       .d3-item-wrapper > div.magic.ancient {
         border: 1px solid #b8860b; }
     .d3-item-wrapper > div.rare {
@@ -299,7 +322,7 @@ body {
       border: 1px solid grey; }
       .d3-item-wrapper > div.common.ancient {
         border: 1px solid #b8860b; }
-    .d3-item-wrapper > div:hover {
+    .d3-item-wrapper > div.open {
       z-index: 1;
       -webkit-transition: width 1s, height 1s, background-color 0.5s;
               transition: width 1s, height 1s, background-color 0.5s;
@@ -307,8 +330,29 @@ body {
       height: 360px;
       -webkit-filter: drop-shadow(0px 0px 5px black);
               filter: drop-shadow(0px 0px 5px black);
-      background-color: rgba(0, 0, 0, 0.85); }
-      .d3-item-wrapper > div:hover .desc {
+      background-color: rgba(0, 0, 0, 0.85);
+      cursor: default; }
+      .d3-item-wrapper > div.open:after {
+        content: 'x';
+        font-size: 1.5rem;
+        text-align: center;
+        position: absolute;
+        color: white;
+        background: black;
+        border: 1px solid white;
+        width: 25px;
+        height: 25px;
+        right: -1px;
+        top: -1px;
+        visibility: visible;
+        -webkit-animation: fade 1.5s;
+                animation: fade 1.5s;
+        -webkit-animation-delay: 1s;
+                animation-delay: 1s;
+        -webkit-animation-fill-mode: forwards;
+                animation-fill-mode: forwards; }
+      .d3-item-wrapper > div.open .desc {
+        visibility: visible;
         -webkit-animation: fade 1.5s;
                 animation: fade 1.5s;
         -webkit-animation-delay: 1s;
@@ -370,13 +414,17 @@ body {
               -ms-flex: 0 100%;
                   flex: 0 100%; }
         .d3-item-wrapper > div > div > ul .name {
-          font-size: 18px; }
+          font-size: 18px;
+          -webkit-box-flex: 0;
+          -webkit-flex: 0 90%;
+              -ms-flex: 0 90%;
+                  flex: 0 90%; }
           .d3-item-wrapper > div > div > ul .name.set {
             color: green; }
           .d3-item-wrapper > div > div > ul .name.unique {
             color: darkorange; }
           .d3-item-wrapper > div > div > ul .name.magic {
-            color: darkblue; }
+            color: blue; }
           .d3-item-wrapper > div > div > ul .name.rare {
             color: yellow; }
           .d3-item-wrapper > div > div > ul .name.common {

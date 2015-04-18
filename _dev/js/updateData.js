@@ -41,6 +41,17 @@ var DataWrapper = React.createClass({
             maxHealth: 0,
             trigger: true,
             count: 0,
+            toggleItem: 'toggle',
+
+            paragonCdr: 0,
+            paragonResRed: 0,
+            paragonAtkSpd: 0,
+            paragonCritDmg: 0,
+            paragonCritChance: 0,
+            paragonAreaDmg: 0,
+            paragonResource: 0,
+            paragonResistAll: 0,
+
 
             invalid: false,
             time: [],
@@ -84,17 +95,17 @@ var DataWrapper = React.createClass({
                 url: this.state.url,
                 dataType: 'jsonp',
                 success: function (data) {
-                        this.setState({
-                            name: data.name,
-                            class: data.class,
-                            level: data.level,
-                            paragon: data.paragonLevel,
-                            skills: data.skills.active,
-                            passives: data.skills.passive,
-                            stats: data.stats,
-                            items: data.items,
-                            time: data['last-updated']
-                        });
+                    this.setState({
+                        name: data.name,
+                        class: data.class,
+                        level: data.level,
+                        paragon: data.paragonLevel,
+                        skills: data.skills.active,
+                        passives: data.skills.passive,
+                        stats: data.stats,
+                        items: data.items,
+                        time: data['last-updated']
+                    });
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -275,7 +286,7 @@ var DataWrapper = React.createClass({
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadHeroData, this.props.pollInterval);
         setInterval(this.getItemData, this.props.pollInterval);
-        setInterval(this.collectStats,this.props.pollInterval);
+        setInterval(this.collectStats, this.props.pollInterval);
     },
 
     handleChange: function (e) {
@@ -298,7 +309,7 @@ var DataWrapper = React.createClass({
         }
     },
 
-    handleClick: function () {
+    handleBonusStatsClick: function () {
         if (this.state.isOpen === 'open') {
             return this.setState({isOpen: ''})
         } else {
@@ -306,6 +317,97 @@ var DataWrapper = React.createClass({
         }
     },
 
+    handleItemClick: function(e) {
+        if (!$(e.target).hasClass('open') && $(e.target).hasClass('toggle')) {
+            $(e.target).addClass('open');
+
+            if ($(e.target).parent().children().hasClass('open')) {
+                $(e.target).parent().children().not($(e.target)).removeClass('open');
+            }
+        } else {
+            $(e.target).removeClass('open');
+        }
+    },
+
+    handleParagon : function(e) {
+        var parent = $(e.target).parent(),
+            el = $(e.target);
+
+        if (parent.hasClass('cdr')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                console.log(this.state.paragonCdr);
+                if (this.state.paragonCdr < 10)
+                    this.setState({
+                        paragonCdr: Math.round((this.state.paragonCdr + 0.2) * 10) / 10
+                    });
+            } else {
+                if (this.state.paragonCdr > 0)
+                    console.log(this.state.cdrRed);
+                    this.setState({
+                        paragonCdr: Math.round((this.state.paragonCdr - 0.2) * 10) / 10
+                    });
+            }
+        } else if (parent.hasClass('resred')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonResRed <= 50)
+                    this.setState({paragonResRed: this.state.paragonResRed + 0.2});
+            } else {
+                if (this.state.paragonResRed > 0)
+                this.setState({paragonResRed: this.state.paragonResRed - 0.2});
+            }
+        } else if (parent.hasClass('atkspd')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonAtkSpd <= 50)
+                this.setState({paragonAtkSpd: this.state.paragonAtkSpd + 0.1});
+            } else {
+                if (this.state.paragonAtkSpd > 0)
+                this.setState({paragonAtkSpd: this.state.paragonAtkSpd - 0.1});
+            }
+        } else if (parent.hasClass('critdmg')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonCritDmg <= 50)
+                this.setState({paragonCritDmg: this.state.paragonCritDmg + 1});
+            } else {
+                if (this.state.paragonCritDmg > 0)
+                this.setState({paragonCritDmg: this.state.paragonCritDmg - 1});
+            }
+        } else if (parent.hasClass('critchance')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonCritChance <= 50)
+                this.setState({paragonCritChance: this.state.paragonCritChance + 0.1});
+            } else {
+                if (this.state.paragonCritChance > 0)
+                this.setState({paragonCritChance: this.state.paragonCritChance - 0.1});
+            }
+        } else if (parent.hasClass('areadmg')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonAreaDmg <= 50)
+                this.setState({paragonAreaDmg: this.state.paragonAreaDmg + 1});
+            } else {
+                if (this.state.paragonAreaDmg > 0)
+                this.setState({paragonAreaDmg: this.state.paragonAreaDmg - 1});
+            }
+        } else if (parent.hasClass('resource')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonResource <= 25)
+                this.setState({paragonResource: this.state.paragonResource + 0.5});
+            } else {
+                if (this.state.paragonResource > 0)
+                this.setState({paragonResource: this.state.paragonResource - 0.5});
+            }
+        } else if (parent.hasClass('resistall')) {
+            if (el.hasClass('paragon-stat-increment')) {
+                if (this.state.paragonResistAll <= 250)
+                this.setState({paragonResistAll: this.state.paragonResistAll + 5});
+            } else {
+                if (this.state.paragonResistAll > 0)
+                this.setState({paragonResistAll: this.state.paragonResistAll - 5});
+            }
+        }
+
+        this.collectStats();
+    },
+    
     getItemData: function () {
         var i,
             itemData;
@@ -373,11 +475,13 @@ var DataWrapper = React.createClass({
                 'Hitpoints_Max_Percent_Bonus_Item'
             ],
             results = [],
+        // stats that add multiplicatively
             cdr = 1,
+            resRed = 1,
+        // stats that add additively
             eliteDmg = 0,
             eliteDmgRed = 0,
             areaDmg = 0,
-            resRed = 1,
             skillDmg = 0,
             fireDmg = 0,
             coldDmg = 0,
@@ -508,6 +612,8 @@ var DataWrapper = React.createClass({
                     break;
             }
 
+            cdr *= (1 - this.state.paragonCdr / 100);
+
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
             } else {
@@ -579,6 +685,7 @@ var DataWrapper = React.createClass({
             itemQuality,
             isAncient,
             gemLink,
+            toggle = this.state.toggleItem,
             refreshing = this.state.refreshing,
             timeStamp = this.state.time,
             additionalStatsOffensive = [],
@@ -592,7 +699,16 @@ var DataWrapper = React.createClass({
             dmgRedMeleeState = this.state.dmgRedMelee,
             dmgRedRangedState = this.state.dmgRedRanged,
             maxElementDmg = this.state.maxEleDmg,
-            maxHealthState = this.state.maxHealth;
+            maxHealthState = this.state.maxHealth,
+            paragon = [],
+            pCdr = this.state.paragonCdr,
+            pAtkSpd = this.state.paragonAtkSpd,
+            pResRed = this.state.paragonResRed,
+            pCritDmg = this.state.paragonCritDmg,
+            pCritChance = this.state.paragonCritChance,
+            pAreaDmg = this.state.paragonAreaDmg,
+            pResource = this.state.paragonResource,
+            pResistAll = this.state.paragonResistAll;
 
         switch (classState) {
             case 'demon-hunter':
@@ -825,7 +941,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' head',
+                className: toggle + ' ' +  isAncient + ' ' + itemQuality + ' head',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: helmState.key, className: 'desc'}, React.DOM.ul({
                     key: helmState.key,
@@ -926,7 +1043,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' torso',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' torso',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: torsoState.key, className: 'desc'}, React.DOM.ul({
                     key: torsoState.key,
@@ -994,7 +1112,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' hands',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' hands',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: handsState.key, className: 'desc'}, React.DOM.ul({
                     key: handsState.key,
@@ -1062,7 +1181,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' feet',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' feet',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: feetState.key, className: 'desc'}, React.DOM.ul({
                     key: feetState.key,
@@ -1132,7 +1252,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' shoulders',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' shoulders',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: shouldersState.key, className: 'desc'}, React.DOM.ul({
                     key: shouldersState.key,
@@ -1224,7 +1345,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' legs',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' legs',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: legsState.key, className: 'desc'}, React.DOM.ul({
                     key: legsState.key,
@@ -1293,7 +1415,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' bracers',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' bracers',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: bracersState.key, className: 'desc'}, React.DOM.ul({
                     key: bracersState.key,
@@ -1396,7 +1519,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' mainHand',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' mainHand',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: mainHandState.key, className: 'desc'}, React.DOM.ul({
                     key: mainHandState.key,
@@ -1463,7 +1587,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' offHand',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' offHand',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: offHandState.key, className: 'desc'}, React.DOM.ul({
                     key: offHandState.key,
@@ -1530,7 +1655,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' waist',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' waist',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: beltState.key, className: 'desc'}, React.DOM.ul({
                     key: beltState.key,
@@ -1587,10 +1713,18 @@ var DataWrapper = React.createClass({
 
                 if (ringStateRight.attributes.secondary) {
                     ringStateRight.attributes.secondary.forEach(function (secondaryStat) {
-                        ringRight.push(React.DOM.li({
-                            key: ringStateRight.key,
-                            className: 'secondary'
-                        }, secondaryStat.text));
+                        if (secondaryStat.color !== 'orange') {
+                            ringRight.push(React.DOM.li({
+                                key: ringStateRight.key,
+                                className: 'secondary'
+                            }, secondaryStat.text));
+                        } else {
+                            // handle a dumb exception for the wrongly entered ring of royal grandeur passive
+                            ringRight.push(React.DOM.li({
+                                key: ringStateRight.key,
+                                className: 'passive'
+                            }, secondaryStat.text));
+                        }
                     });
                 }
 
@@ -1624,7 +1758,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' rightFinger',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' rightFinger',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: ringStateRight.key, className: 'desc'}, React.DOM.ul({
                     key: ringStateRight.key,
@@ -1717,7 +1852,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' leftFinger',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' leftFinger',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: ringStateLeft.key, className: 'desc'}, React.DOM.ul({
                     key: ringStateLeft.key,
@@ -1806,7 +1942,8 @@ var DataWrapper = React.createClass({
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
-                className: isAncient + ' ' + itemQuality + ' neck',
+                className: toggle + ' ' + isAncient + ' ' + itemQuality + ' neck',
+                onClick: this.handleItemClick,
                 style: {backgroundImage: 'url(' + constructedLink + ')'}
             }, React.DOM.div({key: neckState.key, className: 'desc'}, React.DOM.ul({
                     key: neckState.key,
@@ -1890,6 +2027,14 @@ var DataWrapper = React.createClass({
             }
 
             stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Armor: ', statsState.armor.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            if (statsState.damageIncrease !== 0.0) {
+                stats.push(React.DOM.div({key: statsState.key}, 'Damage Increase: ', statsState.damageIncrease));
+            }
+
+            if (statsState.damageReduction !== 0.0) {
+                stats.push(React.DOM.div({key: statsState.key}, 'Damage Increase: ', statsState.damageReduction));
+            }
         }
 
         if (additionalStatsOffensive && statsState) {
@@ -2014,6 +2159,55 @@ var DataWrapper = React.createClass({
             }
         }
 
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat cdr'},
+            'cdr: ' + Math.round(pCdr * 10) / 10  + '%',
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resred'},
+            'res: ' + Math.round(pResRed * 10) / 10 + '%',
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat atkspd'},
+            'atkspd: ' + Math.round(pAtkSpd * 10) / 10 + '%',
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critdmg'},
+            'critdmg: ' + Math.round(pCritDmg) + '%',
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critchance'},
+            'critchance: ' + Math.round(pCritChance * 10) / 10 + '%',
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat areadmg'},
+            'areadmg: ' + Math.round(pAreaDmg) + '%',
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resource'},
+            'resource: ' + Math.round(pResource),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+        paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resistall'},
+            'allres: ' + Math.round(pResistAll),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
+            React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
+        ));
+
+
         return (
             React.DOM.div({className: 'd3-container'},
                 React.DOM.div({className: 'd3-item-wrapper'}, items),
@@ -2037,13 +2231,13 @@ var DataWrapper = React.createClass({
                         }, heroes
                     )
                 ),
-                React.DOM.div({id: 'panel-left'}, 'General', base),
+                React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, paragon)),
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
                 React.DOM.div({
                     className: this.state.isOpen,
                     id: 'panel-right',
-                    onClick: this.handleClick
+                    onClick: this.handleBonusStatsClick
                 }, 'Stats', stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive),
                 React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
