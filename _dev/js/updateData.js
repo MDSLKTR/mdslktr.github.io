@@ -373,11 +373,11 @@ var DataWrapper = React.createClass({
                 'Hitpoints_Max_Percent_Bonus_Item'
             ],
             results = [],
-            cdr = 0,
+            cdr = 1,
             eliteDmg = 0,
             eliteDmgRed = 0,
             areaDmg = 0,
-            resRed = 0,
+            resRed = 1,
             skillDmg = 0,
             fireDmg = 0,
             coldDmg = 0,
@@ -431,10 +431,10 @@ var DataWrapper = React.createClass({
                                         poisonDmg += results[k] * 100;
                                         break;
                                     case 'Power_Cooldown_Reduction_Percent_All':
-                                        cdr += results[k] * 100;
+                                        cdr *= (1 - results[k]);
                                         break;
                                     case 'Resource_Cost_Reduction_Percent_All':
-                                        resRed += results[k] * 100;
+                                        resRed *= (1 - results[k]);
                                         break;
                                     case 'Damage_Percent_Bonus_Vs_Elites':
                                         eliteDmg += results[k] * 100;
@@ -471,7 +471,7 @@ var DataWrapper = React.createClass({
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0]) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All) {
                     // increment for cdr gem
-                    cdr += this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * 100;
+                    cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min);
                 }
                 if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item) {
                     // increment for health gem
@@ -1816,7 +1816,7 @@ var DataWrapper = React.createClass({
         }
 
         if (amuletState.attributes && itemsState) {
-            if (amuletState.attributes.passive && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
+            if (amuletState.attributes.passive[0] && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
                 var hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase(),
                     hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
 
@@ -1907,14 +1907,14 @@ var DataWrapper = React.createClass({
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Cooldown Reduction: ' + Math.round(cdrState * 1000) / 1000  + '%'));
+                }, 'Cooldown Reduction: ' + Math.round((1 - cdrState) * 100 * 100) / 100 + '%'));
             }
 
             if (resState !== 0) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Resource Cost Reduction: ' + Math.round(resState * 1000) / 1000  + '%'));
+                }, 'Resource Cost Reduction: ' + Math.round((1 - resState) * 100 * 100) / 100 + '%'));
             }
 
             additionalStatsOffensive.push(React.DOM.div({
