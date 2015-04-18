@@ -28,8 +28,6 @@ var DataWrapper = React.createClass({
             beltItem: [],
 
             additionalStats: [],
-            cdrRed: 0,
-            resRed: 0,
             atkSpd: 0,
             eliteDmg: 0,
             eliteDmgRed: 0,
@@ -335,17 +333,18 @@ var DataWrapper = React.createClass({
 
         if (parent.hasClass('cdr')) {
             if (el.hasClass('paragon-stat-increment')) {
-                console.log(this.state.paragonCdr);
-                if (this.state.paragonCdr < 10)
+
+                if (this.state.paragonCdr < 10) {
                     this.setState({
                         paragonCdr: Math.round((this.state.paragonCdr + 0.2) * 10) / 10
                     });
+                }
             } else {
-                if (this.state.paragonCdr > 0)
-                    console.log(this.state.cdrRed);
+                if (this.state.paragonCdr > 0) {
                     this.setState({
                         paragonCdr: Math.round((this.state.paragonCdr - 0.2) * 10) / 10
                     });
+                }
             }
         } else if (parent.hasClass('resred')) {
             if (el.hasClass('paragon-stat-increment')) {
@@ -2048,14 +2047,15 @@ var DataWrapper = React.createClass({
                 className: 'bonusstat'
             }, 'Critical Damage increase: ' + Math.round(statsState.critDamage * 1000) / 10 + '%'));
 
-            if (cdrState !== 0) {
+            if (cdrState !== 1) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
                 }, 'Cooldown Reduction: ' + Math.round((1 - cdrState) * 100 * 100) / 100 + '%'));
             }
 
-            if (resState !== 0) {
+            if (resState !== 1) {
+                console.log(resState);
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
@@ -2206,7 +2206,6 @@ var DataWrapper = React.createClass({
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-')
         ));
-
 
         return (
             React.DOM.div({className: 'd3-container'},
