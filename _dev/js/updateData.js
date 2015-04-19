@@ -707,17 +707,30 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
+            var checkSave = [];
             // set bonus iterator
             // todo find out how to detect amount of set items
             for (i = 0; i < itemSlots.length; i++) {
+
                 if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
                     for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
-                        console.log(itemSlots[i].set.ranks.length);
                         for (k = 0; k < statPool.length; k++) {
                             if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                console.log(checkSave);
+
+                                // this is not only a fix but potentially how i can count the amount of set items
+                                if (itemSlots[i].set.name && checkSave[k] === itemSlots[i].set.name) {
+                                    console.log('plllease');
+                                    break;
+                                }
+
+                                if (itemSlots[i].set.name) {
+                                    checkSave[k] = itemSlots[i].set.name;
+                                }
+
+                                console.log(checkSave);
                                 if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
                                     results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                    console.log(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min);
                                     switch (statPool[k]) {
                                         case 'Damage_Dealt_Percent_Bonus#Fire':
                                             fireDmg += results[k] * 100;
