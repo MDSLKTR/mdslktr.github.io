@@ -574,7 +574,6 @@ var DataWrapper = React.createClass({
                 if (itemSlots[i]) {
                     itemData = itemSlots[i].tooltipParams;
                     this.loadItemData(itemData);
-                    console.log(itemData);
                 }
             }
 
@@ -631,7 +630,8 @@ var DataWrapper = React.createClass({
             poisonDmg = 0,
             goldPickUp = 0,
             maxHealth = 0,
-            k;
+            k,
+            j;
 
         if (this.state.items) {
             var itemSlots = [
@@ -651,7 +651,6 @@ var DataWrapper = React.createClass({
             ];
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].attributesRaw) {
-                    console.log(itemSlots[i]);
                     for (k = 0; k < statPool.length; k++) {
                         if (itemSlots[i].attributesRaw[statPool[k]] && itemSlots[i].attributesRaw[statPool[k]].min) {
                             if (typeof parseInt(itemSlots[i].attributesRaw[statPool[k]].min === 'number')) {
@@ -705,6 +704,72 @@ var DataWrapper = React.createClass({
                                 }
                             }
                         }
+                    }
+                }
+            }
+            // set bonus iterator
+            // todo find out how to detect amount of set items
+            for (i = 0; i < itemSlots.length; i++) {
+                if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
+                    for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                        console.log(itemSlots[i].set.ranks.length);
+                        for (k = 0; k < statPool.length; k++) {
+                            if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                    results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                    console.log(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min);
+                                    switch (statPool[k]) {
+                                        case 'Damage_Dealt_Percent_Bonus#Fire':
+                                            fireDmg += results[k] * 100;
+                                            break;
+                                        case 'Damage_Dealt_Percent_Bonus#Cold':
+                                            coldDmg += results[k] * 100;
+                                            break;
+                                        case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                            lightningDmg += results[k] * 100;
+                                            break;
+                                        case 'Damage_Dealt_Percent_Bonus#Physical':
+                                            physicalDmg += results[k] * 100;
+                                            break;
+                                        case 'Damage_Dealt_Percent_Bonus#Poison':
+                                            poisonDmg += results[k] * 100;
+                                            break;
+                                        case 'Power_Cooldown_Reduction_Percent_All':
+                                            cdr *= (1 - results[k]);
+                                            break;
+                                        case 'Resource_Cost_Reduction_Percent_All':
+                                            resRed *= (1 - results[k]);
+                                            break;
+                                        case 'Damage_Percent_Bonus_Vs_Elites':
+                                            eliteDmg += results[k] * 100;
+                                            break;
+                                        case 'Damage_Percent_Reduction_From_Elites':
+                                            console.log('fired');
+                                            eliteDmgRed += results[k] * 100;
+                                            break;
+                                        case 'Splash_Damage_Effect_Percent':
+                                            areaDmg += results[k] * 100;
+                                            break;
+                                        case 'Gold_PickUp_Radius':
+                                            goldPickUp += results[k];
+                                            break;
+                                        case 'Damage_Percent_Reduction_From_Melee':
+                                            dmgRedMelee *= (1 - results[k]);
+                                            break;
+                                        case 'Damage_Percent_Reduction_From_Ranged':
+                                            dmgRedRanged *= (1 - results[k]);
+                                            break;
+                                        case 'Hitpoints_Max_Percent_Bonus_Item':
+                                            maxHealth += results[k] * 100;
+                                            break;
+                                        case 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow':
+                                            console.log('cat');
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             }
@@ -1063,6 +1128,62 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (helmState.set && helmState.set.ranks) {
+                if (helmState.set.ranks[0]) {
+                    helmState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (helmState.set.ranks[1]) {
+                    helmState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (helmState.set.ranks[2]) {
+                    helmState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (helmState.set.ranks[0]) {
+                    helmState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (helmState.set.ranks[1]) {
+                    helmState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        helmet.push(React.DOM.li({
+                            key: helmState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (helmState.set.ranks[2]) {
+                    helmState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (helmState.set.ranks[0]) {
+                    helmState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (helmState.set.ranks[1]) {
+                    helmState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (helmState.set.ranks[2]) {
+                    helmState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        helmet.push(React.DOM.li({key: helmState.key, className: 'set-bonus-six'}, passiveStat.text));
+                    });
+                }
+            }
+
             if (helmState.attributesRaw && helmState.attributesRaw.Sockets && helmState.gems[0]) {
                 gemLink = itemIconBaseUrl.concat(helmState.gems[0].item.icon, '.png');
                 helmet.push(React.DOM.li({
@@ -1154,6 +1275,62 @@ var DataWrapper = React.createClass({
                 if (torsoState.attributes.passive) {
                     torsoState.attributes.passive.forEach(function (passiveStat) {
                         torso.push(React.DOM.li({key: torsoState.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (torsoState.set && torsoState.set.ranks) {
+                if (torsoState.set.ranks[0]) {
+                    torsoState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (torsoState.set.ranks[1]) {
+                    torsoState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (torsoState.set.ranks[2]) {
+                    torsoState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (torsoState.set.ranks[0]) {
+                    torsoState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (torsoState.set.ranks[1]) {
+                    torsoState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        torso.push(React.DOM.li({
+                            key: torsoState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (torsoState.set.ranks[2]) {
+                    torsoState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (torsoState.set.ranks[0]) {
+                    torsoState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (torsoState.set.ranks[1]) {
+                    torsoState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (torsoState.set.ranks[2]) {
+                    torsoState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        torso.push(React.DOM.li({key: torsoState.key, className: 'set-bonus-six'}, passiveStat.text));
                     });
                 }
             }
@@ -1261,6 +1438,62 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (handsState.set && handsState.set.ranks) {
+                if (handsState.set.ranks[0]) {
+                    handsState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (handsState.set.ranks[1]) {
+                    handsState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (handsState.set.ranks[2]) {
+                    handsState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (handsState.set.ranks[0]) {
+                    handsState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (handsState.set.ranks[1]) {
+                    handsState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        hands.push(React.DOM.li({
+                            key: handsState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (handsState.set.ranks[2]) {
+                    handsState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (handsState.set.ranks[0]) {
+                    handsState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (handsState.set.ranks[1]) {
+                    handsState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (handsState.set.ranks[2]) {
+                    handsState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        hands.push(React.DOM.li({key: handsState.key, className: 'set-bonus-six'}, passiveStat.text));
+                    });
+                }
+            }
+
             items.push(React.DOM.div({
                 key: itemsIconState.key,
                 className: toggle + ' ' + isAncient + ' ' + itemQuality + ' hands',
@@ -1329,6 +1562,59 @@ var DataWrapper = React.createClass({
                 if (feetState.attributes.passive) {
                     feetState.attributes.passive.forEach(function (passiveStat) {
                         feet.push(React.DOM.li({key: feetState.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (feetState.set && feetState.set.ranks) {
+                if (feetState.set.ranks[0]) {
+                    feetState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (feetState.set.ranks[1]) {
+                    feetState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (feetState.set.ranks[2]) {
+                    feetState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (feetState.set.ranks[0]) {
+                    feetState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (feetState.set.ranks[1]) {
+                    feetState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-four'}, secondaryStat.text));
+                    });
+                }
+                if (feetState.set.ranks[2]) {
+                    feetState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (feetState.set.ranks[0]) {
+                    feetState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (feetState.set.ranks[1]) {
+                    feetState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (feetState.set.ranks[2]) {
+                    feetState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        feet.push(React.DOM.li({key: feetState.key, className: 'set-bonus-six'}, passiveStat.text));
                     });
                 }
             }
@@ -1407,6 +1693,86 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (shouldersState.set && shouldersState.set.ranks) {
+                if (shouldersState.set.ranks[0]) {
+                    shouldersState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-two'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (shouldersState.set.ranks[1]) {
+                    shouldersState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-four'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (shouldersState.set.ranks[2]) {
+                    shouldersState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-six'
+                        }, primaryStat.text));
+                    });
+                }
+                if (shouldersState.set.ranks[0]) {
+                    shouldersState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-two'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (shouldersState.set.ranks[1]) {
+                    shouldersState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (shouldersState.set.ranks[2]) {
+                    shouldersState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-six'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (shouldersState.set.ranks[0]) {
+                    shouldersState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-two'
+                        }, passiveStat.text));
+                    });
+                }
+
+                if (shouldersState.set.ranks[1]) {
+                    shouldersState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-four'
+                        }, passiveStat.text));
+                    });
+                }
+                if (shouldersState.set.ranks[2]) {
+                    shouldersState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        shoulders.push(React.DOM.li({
+                            key: shouldersState.key,
+                            className: 'set-bonus-six'
+                        }, passiveStat.text));
+                    });
+                }
+            }
+
             items.push(React.DOM.div({
                 key: itemsIconState.key,
                 className: toggle + ' ' + isAncient + ' ' + itemQuality + ' shoulders',
@@ -1474,6 +1840,59 @@ var DataWrapper = React.createClass({
                 if (legsState.attributes.passive) {
                     legsState.attributes.passive.forEach(function (passiveStat) {
                         legs.push(React.DOM.li({key: legsState.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (legsState.set && legsState.set.ranks) {
+                if (legsState.set.ranks[0]) {
+                    legsState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (legsState.set.ranks[1]) {
+                    legsState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (legsState.set.ranks[2]) {
+                    legsState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (legsState.set.ranks[0]) {
+                    legsState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (legsState.set.ranks[1]) {
+                    legsState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-four'}, secondaryStat.text));
+                    });
+                }
+                if (legsState.set.ranks[2]) {
+                    legsState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (legsState.set.ranks[0]) {
+                    legsState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (legsState.set.ranks[1]) {
+                    legsState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (legsState.set.ranks[2]) {
+                    legsState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        legs.push(React.DOM.li({key: legsState.key, className: 'set-bonus-six'}, passiveStat.text));
                     });
                 }
             }
@@ -1576,6 +1995,86 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (bracersState.set && bracersState.set.ranks) {
+                if (bracersState.set.ranks[0]) {
+                    bracersState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-two'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (bracersState.set.ranks[1]) {
+                    bracersState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-four'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (bracersState.set.ranks[2]) {
+                    bracersState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-six'
+                        }, primaryStat.text));
+                    });
+                }
+                if (bracersState.set.ranks[0]) {
+                    bracersState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-two'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (bracersState.set.ranks[1]) {
+                    bracersState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (bracersState.set.ranks[2]) {
+                    bracersState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-six'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (bracersState.set.ranks[0]) {
+                    bracersState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-two'
+                        }, passiveStat.text));
+                    });
+                }
+
+                if (bracersState.set.ranks[1]) {
+                    bracersState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-four'
+                        }, passiveStat.text));
+                    });
+                }
+                if (bracersState.set.ranks[2]) {
+                    bracersState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        bracers.push(React.DOM.li({
+                            key: bracersState.key,
+                            className: 'set-bonus-six'
+                        }, passiveStat.text));
+                    });
+                }
+            }
+
             items.push(React.DOM.div({
                 key: itemsIconState.key,
                 className: toggle + ' ' + isAncient + ' ' + itemQuality + ' bracers',
@@ -1655,6 +2154,86 @@ var DataWrapper = React.createClass({
                 if (mainHandState.attributes.passive) {
                     mainHandState.attributes.passive.forEach(function (passiveStat) {
                         mainHand.push(React.DOM.li({key: mainHandState.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (mainHandState.set && mainHandState.set.ranks) {
+                if (mainHandState.set.ranks[0]) {
+                    mainHandState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-two'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (mainHandState.set.ranks[1]) {
+                    mainHandState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-four'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (mainHandState.set.ranks[2]) {
+                    mainHandState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-six'
+                        }, primaryStat.text));
+                    });
+                }
+                if (mainHandState.set.ranks[0]) {
+                    mainHandState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-two'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (mainHandState.set.ranks[1]) {
+                    mainHandState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (mainHandState.set.ranks[2]) {
+                    mainHandState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-six'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (mainHandState.set.ranks[0]) {
+                    mainHandState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-two'
+                        }, passiveStat.text));
+                    });
+                }
+
+                if (mainHandState.set.ranks[1]) {
+                    mainHandState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-four'
+                        }, passiveStat.text));
+                    });
+                }
+                if (mainHandState.set.ranks[2]) {
+                    mainHandState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        mainHand.push(React.DOM.li({
+                            key: mainHandState.key,
+                            className: 'set-bonus-six'
+                        }, passiveStat.text));
                     });
                 }
             }
@@ -1754,6 +2333,86 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (offHandState.set && offHandState.set.ranks) {
+                if (offHandState.set.ranks[0]) {
+                    offHandState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-two'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (offHandState.set.ranks[1]) {
+                    offHandState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-four'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (offHandState.set.ranks[2]) {
+                    offHandState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-six'
+                        }, primaryStat.text));
+                    });
+                }
+                if (offHandState.set.ranks[0]) {
+                    offHandState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-two'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (offHandState.set.ranks[1]) {
+                    offHandState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (offHandState.set.ranks[2]) {
+                    offHandState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-six'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (offHandState.set.ranks[0]) {
+                    offHandState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-two'
+                        }, passiveStat.text));
+                    });
+                }
+
+                if (offHandState.set.ranks[1]) {
+                    offHandState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-four'
+                        }, passiveStat.text));
+                    });
+                }
+                if (offHandState.set.ranks[2]) {
+                    offHandState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        offHand.push(React.DOM.li({
+                            key: offHandState.key,
+                            className: 'set-bonus-six'
+                        }, passiveStat.text));
+                    });
+                }
+            }
+
             items.push(React.DOM.div({
                 key: itemsIconState.key,
                 className: toggle + ' ' + isAncient + ' ' + itemQuality + ' offHand',
@@ -1821,6 +2480,59 @@ var DataWrapper = React.createClass({
                 if (beltState.attributes.passive) {
                     beltState.attributes.passive.forEach(function (passiveStat) {
                         belt.push(React.DOM.li({key: beltState.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (beltState.set && beltState.set.ranks) {
+                if (beltState.set.ranks[0]) {
+                    beltState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (beltState.set.ranks[1]) {
+                    beltState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (beltState.set.ranks[2]) {
+                    beltState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (beltState.set.ranks[0]) {
+                    beltState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (beltState.set.ranks[1]) {
+                    beltState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-four'}, secondaryStat.text));
+                    });
+                }
+                if (beltState.set.ranks[2]) {
+                    beltState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (beltState.set.ranks[0]) {
+                    beltState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (beltState.set.ranks[1]) {
+                    beltState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (beltState.set.ranks[2]) {
+                    beltState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        belt.push(React.DOM.li({key: beltState.key, className: 'set-bonus-six'}, passiveStat.text));
                     });
                 }
             }
@@ -1906,6 +2618,86 @@ var DataWrapper = React.createClass({
                 if (ringStateRight.attributes.passive) {
                     ringStateRight.attributes.passive.forEach(function (passiveStat) {
                         ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (ringStateRight.set && ringStateRight.set.ranks) {
+                if (ringStateRight.set.ranks[0]) {
+                    ringStateRight.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-two'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (ringStateRight.set.ranks[1]) {
+                    ringStateRight.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-four'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (ringStateRight.set.ranks[2]) {
+                    ringStateRight.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-six'
+                        }, primaryStat.text));
+                    });
+                }
+                if (ringStateRight.set.ranks[0]) {
+                    ringStateRight.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-two'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (ringStateRight.set.ranks[1]) {
+                    ringStateRight.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (ringStateRight.set.ranks[2]) {
+                    ringStateRight.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-six'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (ringStateRight.set.ranks[0]) {
+                    ringStateRight.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-two'
+                        }, passiveStat.text));
+                    });
+                }
+
+                if (ringStateRight.set.ranks[1]) {
+                    ringStateRight.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-four'
+                        }, passiveStat.text));
+                    });
+                }
+                if (ringStateRight.set.ranks[2]) {
+                    ringStateRight.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        ringRight.push(React.DOM.li({
+                            key: ringStateRight.key,
+                            className: 'set-bonus-six'
+                        }, passiveStat.text));
                     });
                 }
             }
@@ -2008,6 +2800,86 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (ringStateLeft.set && ringStateLeft.set.ranks) {
+                if (ringStateLeft.set.ranks[0]) {
+                    ringStateLeft.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-two'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (ringStateLeft.set.ranks[1]) {
+                    ringStateLeft.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-four'
+                        }, primaryStat.text));
+                    });
+                }
+
+                if (ringStateLeft.set.ranks[2]) {
+                    ringStateLeft.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-six'
+                        }, primaryStat.text));
+                    });
+                }
+                if (ringStateLeft.set.ranks[0]) {
+                    ringStateLeft.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-two'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (ringStateLeft.set.ranks[1]) {
+                    ringStateLeft.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-four'
+                        }, secondaryStat.text));
+                    });
+                }
+                if (ringStateLeft.set.ranks[2]) {
+                    ringStateLeft.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-six'
+                        }, secondaryStat.text));
+                    });
+                }
+
+                if (ringStateLeft.set.ranks[0]) {
+                    ringStateLeft.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-two'
+                        }, passiveStat.text));
+                    });
+                }
+
+                if (ringStateLeft.set.ranks[1]) {
+                    ringStateLeft.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-four'
+                        }, passiveStat.text));
+                    });
+                }
+                if (ringStateLeft.set.ranks[2]) {
+                    ringStateLeft.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        rightLeft.push(React.DOM.li({
+                            key: ringStateLeft.key,
+                            className: 'set-bonus-six'
+                        }, passiveStat.text));
+                    });
+                }
+            }
+
             if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets && ringStateLeft.gems[0]) {
                 gemLink = itemIconBaseUrl.concat(ringStateLeft.gems[0].item.icon, '.png');
                 ringLeft.push(React.DOM.li({
@@ -2097,6 +2969,59 @@ var DataWrapper = React.createClass({
                 if (neckState.attributes.passive) {
                     neckState.attributes.passive.forEach(function (passiveStat) {
                         neck.push(React.DOM.li({key: neckState.key, className: 'passive'}, passiveStat.text));
+                    });
+                }
+            }
+
+            if (neckState.set && neckState.set.ranks) {
+                if (neckState.set.ranks[0]) {
+                    neckState.set.ranks[0].attributes.primary.forEach(function (primaryStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-two'}, primaryStat.text));
+                    });
+                }
+
+                if (neckState.set.ranks[1]) {
+                    neckState.set.ranks[1].attributes.primary.forEach(function (primaryStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-four'}, primaryStat.text));
+                    });
+                }
+
+                if (neckState.set.ranks[2]) {
+                    neckState.set.ranks[2].attributes.primary.forEach(function (primaryStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-six'}, primaryStat.text));
+                    });
+                }
+                if (neckState.set.ranks[0]) {
+                    neckState.set.ranks[0].attributes.secondary.forEach(function (secondaryStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-two'}, secondaryStat.text));
+                    });
+                }
+
+                if (neckState.set.ranks[1]) {
+                    neckState.set.ranks[1].attributes.secondary.forEach(function (secondaryStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-four'}, secondaryStat.text));
+                    });
+                }
+                if (neckState.set.ranks[2]) {
+                    neckState.set.ranks[2].attributes.secondary.forEach(function (secondaryStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-six'}, secondaryStat.text));
+                    });
+                }
+
+                if (neckState.set.ranks[0]) {
+                    neckState.set.ranks[0].attributes.passive.forEach(function (passiveStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-two'}, passiveStat.text));
+                    });
+                }
+
+                if (neckState.set.ranks[1]) {
+                    neckState.set.ranks[1].attributes.passive.forEach(function (passiveStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-four'}, passiveStat.text));
+                    });
+                }
+                if (neckState.set.ranks[2]) {
+                    neckState.set.ranks[2].attributes.passive.forEach(function (passiveStat) {
+                        neck.push(React.DOM.li({key: neckState.key, className: 'set-bonus-six'}, passiveStat.text));
                     });
                 }
             }
@@ -2219,15 +3144,31 @@ var DataWrapper = React.createClass({
         }
 
         if (additionalStatsOffensive && statsState) {
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Critical Hit Chance: ' + Math.round((statsState.critChance * 100 + pCritChance) * 1000) / 1000 + '%'));
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-                // - 100 because for some reason the crit dmg from the ajax call responds with 100 too much, maybe paragon bug?
-            }, 'Critical Damage increase: ' + Math.round(((statsState.critDamage * 100 + pCritDmg) - 100) * 1000) / 1000 + '%'));
+
+            if (statsState.critChance) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Critical Hit Chance: ' + Math.round((statsState.critChance * 100 + pCritChance) * 1000) / 1000 + '%'));
+            } else if (pCritChance !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Critical Hit Chance: ' + Math.round(pCritChance * 1000) / 1000 + '%'));
+            }
+
+            if (statsState.critDamage) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                    // - 100 because for some reason the crit dmg from the ajax call responds with 100 too much, maybe paragon bug?
+                }, 'Critical Damage increase: ' + Math.round(((statsState.critDamage * 100 + pCritDmg) - 100) * 1000) / 1000 + '%'));
+            } else if (pCritDmg !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Critical Damage increase: ' + Math.round((pCritDmg - 100) * 1000) / 1000 + '%'));
+            }
 
             if (cdrState !== 1) {
                 additionalStatsOffensive.push(React.DOM.div({
@@ -2243,22 +3184,35 @@ var DataWrapper = React.createClass({
                 }, 'Resource Cost Reduction: ' + Math.round((1 - resState) * 100 * 100) / 100 + '%'));
             }
 
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Attacks per Second: ' + Math.round((statsState.attackSpeed + pAtkSpd / 100) * 1000) / 1000));
+            if (statsState.attackSpeed) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Attacks per Second: ' + Math.round((statsState.attackSpeed + pAtkSpd / 100) * 1000) / 1000));
+            } else if (pAtkSpd !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Attacks per Second: ' + Math.round((pAtkSpd / 100) * 1000) / 1000));
+            }
 
             if (eliteDmgState !== 0) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Bonus Dmg to Elites: ' + eliteDmgState + '%'));
+                }, 'Bonus Damage to Elites: ' + eliteDmgState + '%'));
             }
+
             if (areaDmgState !== 0) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Area Damage Bonus: ' + (areaDmgState + pAreaDmg) + '%'));
+                }, 'Area Bonus Damage: ' + (areaDmgState + pAreaDmg) + '%'));
+            } else if (pAreaDmg !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Area Bonus Damage: ' + pAreaDmg + '%'));
             }
 
             if (maxElementDmg !== 0) {
@@ -2268,49 +3222,93 @@ var DataWrapper = React.createClass({
                 }, maxElementDmg));
             }
 
-            additionalStatsOffensive.push(React.DOM.div({
-                key: additionalStatsOffensive.key,
-                className: 'bonusstat'
-            }, 'Primary Resource: ' + (statsState.primaryResource + pResource)));
+            if (statsState.primaryResource) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Primary Resource: ' + (statsState.primaryResource + pResource)));
+            } else if (pResource !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }, 'Primary Resource: ' + pResource));
+            }
         }
 
         if (additionalStatsDefensive && statsState) {
-            if (statsState.secondaryResource !== 0) {
+            if (statsState.secondaryResource) {
                 additionalStatsDefensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
                 }, 'Secondary Resource: ' + statsState.secondaryResource));
             }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Physical Resist: ' + (statsState.physicalResist + pResistAll)));
+            if (statsState.physicalResist) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Physical Resist: ' + (statsState.physicalResist + pResistAll)));
+            } else if (pResistAll !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Physical Resist: ' + pResistAll));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Fire Resist: ' + (statsState.fireResist + pResistAll)));
+            if (statsState.fireResist) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Fire Resist: ' + (statsState.fireResist + pResistAll)));
+            } else if (pResistAll !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Fire Resist: ' + pResistAll));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Cold Resist: ' + (statsState.coldResist + pResistAll)));
+            if (statsState.coldResist) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Cold Resist: ' + (statsState.coldResist + pResistAll)));
+            } else if (pResistAll !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Cold Resist: ' + pResistAll));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Lighting Resist: ' + (statsState.lightningResist + pResistAll)));
+            if (statsState.lightningResist) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Lighting Resist: ' + (statsState.lightningResist + pResistAll)));
+            } else if (pResistAll !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Lighting Resist: ' + pResistAll));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Poison Resist: ' + (statsState.poisonResist + pResistAll)));
+            if (statsState.poisonResist) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Poison Resist: ' + (statsState.poisonResist + pResistAll)));
+            } else if (pResistAll !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Poison Resist: ' + pResistAll));
+            }
 
-            additionalStatsDefensive.push(React.DOM.div({
-                key: additionalStatsDefensive.key,
-                className: 'bonusstat'
-            }, 'Gold Pick-up Radius: ' + goldPickUpState + ' yards'));
+            if (goldPickUpState !== 0) {
+                additionalStatsDefensive.push(React.DOM.div({
+                    key: additionalStatsDefensive.key,
+                    className: 'bonusstat'
+                }, 'Gold Pick-up Radius: ' + goldPickUpState + ' yards'));
+            }
 
             if (dmgRedMeleeState !== 1) {
                 additionalStatsDefensive.push(React.DOM.div({
@@ -2397,19 +3395,29 @@ var DataWrapper = React.createClass({
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat armor'},
-            'armor: ' + Math.round(pArmor) + '%',
+            'armor: ' + Math.round(pArmor * 10) / 10 + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
         paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat maxlife'},
-            'maxlife: ' + Math.round(pLife) + '%',
+            'maxlife: ' + Math.round(pLife * 10) / 10 + '%',
             React.DOM.span({key: paragon.key, className: 'paragon-stat-increment', onClick: this.handleParagon}, '+'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-decrement', onClick: this.handleParagon}, '-'),
             React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
         ));
 
+        localStorage.setItem('paragonCdr', this.state.paragonCdr);
+        localStorage.setItem('paragonResRed', this.state.paragonResRed);
+        localStorage.setItem('paragonAtkSpd', this.state.paragonAtkSpd);
+        localStorage.setItem('paragonCritDmg', this.state.paragonCritDmg);
+        localStorage.setItem('paragonCritChance', this.state.paragonCritChance);
+        localStorage.setItem('paragonAreaDmg', this.state.paragonAreaDmg);
+        localStorage.setItem('paragonResource', this.state.paragonResource);
+        localStorage.setItem('paragonResistAll', this.state.paragonResistAll);
+        localStorage.setItem('paragonArmor', this.state.paragonArmor);
+        localStorage.setItem('paragonMaxHealth', this.state.paragonMaxHealth);
 
         return (
             React.DOM.div({className: 'd3-container'},
@@ -2459,12 +3467,12 @@ React.render(React.createElement(DataWrapper, {
 
 
 // todo fix ajax
-// show rolled stat
+// todo show rolled stat -> not possible, fuuu blizzard
 // clear old bonusstat values
-// save url to localStorage - done
+// todo save url to localStorage - done
 // offhand weapons dont work
 // find out how animations triggers work
-// correct stats
+// todo correct stats -> done
 // <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>
 // https://eu.api.battle.net/d3/data/item/CmII7uHdNRIHCAQVtjA30B0yicdaHYQDodYdYJ4mRx29VYTTHT_yCdgdB16d0zCLGjiaA0AASANQElgEYJoDgAFGjQGfRZt_pQG9VYTTrQHegvzltQGgRZt_uAG6wuKqC8ABEhiTvcb8BVAAWAKgAdWb4uwOoAGVnfLhDqABk73G_AWgAcyPgPcBoAG-wY2rDw?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
 // http://media.blizzard.com/d3/icons/items/large/unique_chest_set_07_x1_demonhunter_male.png
