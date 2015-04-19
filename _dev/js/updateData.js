@@ -707,7 +707,8 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
-            var checkSave = [];
+            var checkSave = [],
+                setCount = 0;
             // set bonus iterator
             // todo find out how to detect amount of set items
             for (i = 0; i < itemSlots.length; i++) {
@@ -721,12 +722,15 @@ var DataWrapper = React.createClass({
                                 // this is not only a fix but potentially how i can count the amount of set items
                                 if (itemSlots[i].set.name && checkSave[k] === itemSlots[i].set.name) {
                                     console.log('plllease');
+                                    setCount++;
+                                    console.log(setCount);
                                     break;
                                 }
 
                                 if (itemSlots[i].set.name) {
                                     checkSave[k] = itemSlots[i].set.name;
                                 }
+
 
                                 console.log(checkSave);
                                 if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
