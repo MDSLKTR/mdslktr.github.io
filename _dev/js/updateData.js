@@ -183,6 +183,7 @@ var DataWrapper = React.createClass({
                         case 'Sword':
                         case 'Mace':
                         case 'Axe':
+                        case 'FistWeapon':
                         case 'CeremonialKnife':
                         case 'MightyWeapon':
                         case 'Flail2H':
@@ -195,14 +196,6 @@ var DataWrapper = React.createClass({
                         case 'Staff2H':
                         case 'CeremonialDagger':
                             this.setState({mainItem: data});
-                            break;
-                        case 'Quiver':
-                        case 'CrusaderShield':
-                        case 'Shield':
-                        case 'Orb':
-                        case 'Source':
-                        case 'Mojo':
-                            this.setState({offItem: data});
                             break;
                         case 'GenericGloves':
                         case 'Gloves':
@@ -245,6 +238,30 @@ var DataWrapper = React.createClass({
                         this.setState({ringItemLeft: data});
                     } else {
                         this.setState({ringItemRight: data});
+                    }
+
+                    switch (data.type.id) {
+                        case 'Quiver':
+                        case 'CrusaderShield':
+                        case 'Shield':
+                        case 'Orb':
+                        case 'Source':
+                        case 'Mojo':
+                            this.setState({offItem: data});
+                            break;
+                        case 'Dagger':
+                        case 'Sword':
+                        case 'Mace':
+                        case 'Axe':
+                        case 'FistWeapon':
+                        case 'MightyWeapon':
+                        case 'Flail1H':
+                        case 'HandXbow':
+                        case 'Bow':
+                        case 'Wand':
+                        case 'Staff':
+                            this.setState({offItem: data});
+                            break;
                     }
                 }.bind(this),
                 error: function (xhr, status, err) {
@@ -561,13 +578,13 @@ var DataWrapper = React.createClass({
                 this.state.items.legs,
                 this.state.items.bracers,
                 this.state.items.mainHand,
-                this.state.items.offHand,
                 this.state.items.waist
             ];
 
             var itemSlotsWithProps = [
                 [this.state.items.leftFinger, 'left'],
-                [this.state.items.rightFinger, 'right']
+                [this.state.items.rightFinger, 'right'],
+                [this.state.items.offHand, null]
             ];
 
             for (i = 0; i < itemSlots.length; i++) {
@@ -2089,6 +2106,13 @@ var DataWrapper = React.createClass({
                 }
             }
 
+            if (offHandState.dps) {
+                offHand.push(React.DOM.li({
+                    key: offHandState.key,
+                    className: 'dps'
+                }, offHandState.dps.max.toString().substring(0, 8) + ' DPS'));
+            }
+
             if (offHandState.attributes) {
                 if (offHandState.attributes.primary) {
                     offHandState.attributes.primary.forEach(function (primaryStat) {
@@ -3054,17 +3078,16 @@ React.render(React.createElement(DataWrapper, {
     }),
     document.getElementById('profile-data'));
 
+// Test Profiles
 // Ferdi#1763
 // McleodNUS#2608
 
 
 // todo fix ajax
 // todo show rolled stat -> not possible, fuuu blizzard
-// clear old bonusstat values
+// todo clear old bonusstat values - done
 // todo save url to localStorage - done
 // offhand weapons dont work
 // find out how animations triggers work
 // todo correct stats -> done
 // <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>
-// https://eu.api.battle.net/d3/data/item/CmII7uHdNRIHCAQVtjA30B0yicdaHYQDodYdYJ4mRx29VYTTHT_yCdgdB16d0zCLGjiaA0AASANQElgEYJoDgAFGjQGfRZt_pQG9VYTTrQHegvzltQGgRZt_uAG6wuKqC8ABEhiTvcb8BVAAWAKgAdWb4uwOoAGVnfLhDqABk73G_AWgAcyPgPcBoAG-wY2rDw?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm
-// http://media.blizzard.com/d3/icons/items/large/unique_chest_set_07_x1_demonhunter_male.png
