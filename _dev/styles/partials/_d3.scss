@@ -64,7 +64,7 @@ body {
 }
 
 .d3-api-url {
-  z-index: 5;
+  z-index: 6;
   position: fixed;
   bottom: 5vh;
   left: 50%;
@@ -217,7 +217,7 @@ body {
   text-align: center;
   width: 6.1vw;
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 
   .paragon-stat-increment {
     float: left;
@@ -436,26 +436,40 @@ body {
           width: 100%;
         }
 
-        .set-bonus-two,
-        .set-bonus-four,
-        .set-bonus-six {
+        .set-bonus-2,
+        .set-bonus-3,
+        .set-bonus-4,
+        .set-bonus-5,
+        .set-bonus-6 {
           flex: 1 100%;
           color: green;
         }
 
-        .set-bonus-two {
+        .set-bonus-2 {
           &:before {
             content: '[ 2 ] ';
           }
         }
 
-        .set-bonus-four {
+        .set-bonus-3 {
+          &:before {
+            content: '[ 3 ] ';
+          }
+        }
+
+        .set-bonus-4 {
           &:before {
             content: '[ 4 ] ';
           }
         }
 
-        .set-bonus-six {
+        .set-bonus-5 {
+          &:before {
+            content: '[ 5 ] ';
+          }
+        }
+
+        .set-bonus-6 {
           &:before {
             content: '[ 6 ] ';
           }
@@ -497,18 +511,18 @@ body {
         }
 
         .gem-level {
-          top: 0;
-          left: 90%;
+          top: -15%;
+          left: 85%;
           background: goldenrod;
           color: black;
-          clip-path: circle(50% at 50% 50%);
+          border-radius: 50%;
           padding: 5%;
           position: absolute;
         }
 
         .gem-passive {
           color: goldenrod;
-          flex: 0 70%;
+          flex: 0 75%;
         }
 
         .socket {
