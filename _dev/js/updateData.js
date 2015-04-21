@@ -234,13 +234,14 @@ var DataWrapper = React.createClass({
                 url: this.state.itemUrl,
                 dataType: 'jsonp',
                 success: function (data) {
-                    if (left === true) {
-                        this.setState({ringItemLeft: data});
-                    } else {
-                        this.setState({ringItemRight: data});
-                    }
-
                     switch (data.type.id) {
+                        case 'Ring':
+                            if (left === true) {
+                                this.setState({ringItemLeft: data});
+                            } else {
+                                this.setState({ringItemRight: data});
+                            }
+                            break;
                         case 'Quiver':
                         case 'CrusaderShield':
                         case 'Shield':
