@@ -2256,12 +2256,24 @@ var DataWrapper = React.createClass({
             }
 
             if (mainHandState.attributesRaw && mainHandState.attributesRaw.Sockets && mainHandState.gems[0]) {
-                gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
-                mainHand.push(React.DOM.li({
-                    key: mainHandState.key,
-                    className: 'socket',
-                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                }));
+                if (!mainHandState.gems[0].attributesRaw.Jewel_Rank) {
+                    gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
+                    mainHand.push(React.DOM.li({
+                        key: mainHandState.key,
+                        className: 'socket',
+                        style: {backgroundImage: 'url(' + gemLink + ')'}
+                    }));
+                } else if (mainHandState.gems[0].attributesRaw.Jewel_Rank) {
+                    gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
+                    mainHand.push(React.DOM.li({
+                        key: mainHandState.key,
+                        className: 'socket',
+                        style: {backgroundImage: 'url(' + gemLink + ')'}
+                    }, React.DOM.span({
+                        key: mainHandState.key,
+                        className: 'gem-level'
+                    }, mainHandState.gems[0].attributesRaw.Jewel_Rank.min)));
+                }
 
                 if (mainHandState.gems[0].attributes.primary) {
                     mainHandState.gems[0].attributes.primary.forEach(function (Stat) {
