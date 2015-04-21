@@ -207,6 +207,11 @@ body {
     -webkit-transition: opacity 0.5s;
             transition: opacity 0.5s;
     opacity: 1; }
+  .icon-front:not(.no-rune):hover ~ .description {
+    opacity: 1; }
+
+.icon-front:hover ~ .description {
+  opacity: 1; }
 
 .icon-back {
   background: url('/assets/images/runes.jpg');
@@ -578,6 +583,21 @@ body {
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative; }
+  .hasIcon .description {
+    opacity: 0;
+    z-index: 5;
+    font-size: 0.9rem;
+    height: auto;
+    width: 50%;
+    position: absolute;
+    right: calc(0% + 61px);
+    margin: 0;
+    bottom: 100%;
+    list-style: none;
+    background: black;
+    padding: 5px;
+    text-align: left;
+    border: 1px solid darkred; }
 
 #panel-left, #panel-right, #panel-bottom-left, #panel-bottom-right, #panel-right-additional {
   position: fixed;

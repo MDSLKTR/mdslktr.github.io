@@ -170,6 +170,16 @@ body {
     transition: opacity 0.5s;
     opacity: 1;
   }
+
+  &:hover ~ .description {
+    opacity: 1;
+  }
+}
+
+.icon-front {
+  &:hover ~ .description {
+    opacity: 1;
+  }
 }
 
 .icon-back {
@@ -633,6 +643,23 @@ body {
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
   position: relative;
+
+  .description {
+    opacity: 0;
+    z-index: 5;
+    font-size: 0.9rem;
+    height: auto;
+    width: 50%;
+    position: absolute;
+    right: calc(0% + 61px);
+    margin: 0;
+    bottom: 100%;
+    list-style: none;
+    background: black;
+    padding: 5px;
+    text-align: left;
+    border: 1px solid darkred;
+  }
 }
 
 #panel-left,

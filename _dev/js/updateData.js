@@ -1065,7 +1065,16 @@ var DataWrapper = React.createClass({
                                 className: 'icon-front',
                                 style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                             }),
-                            React.DOM.div({key: skillsState.key, className: 'icon-back', style: runeType}))
+                            React.DOM.div({key: skillsState.key, className: 'icon-back', style: runeType}),
+                            React.DOM.div({key: skillsState.key, className: 'description'},
+                                React.DOM.p({key: skillsState.key, className: 'skill-desc'},
+                                    skillName.skill.description), React.DOM.p({
+                                        key: skillsState.key,
+                                        className: 'rune-desc'
+                                    },
+                                    'Rune: ' + skillName.rune.description)
+                            )
+                        )
                     );
                 } else if (skillName.skill) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
@@ -1073,10 +1082,14 @@ var DataWrapper = React.createClass({
                         key: skillsState.key,
                         className: 'hasIcon'
                     }, skillName.skill.name, React.DOM.div({
-                        key: skillsState.key,
-                        className: 'icon-front no-rune',
-                        style: {backgroundImage: 'url(' + constructedLink + '.png)'}
-                    })));
+                            key: skillsState.key,
+                            className: 'icon-front no-rune',
+                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                        }), React.DOM.div({key: skillsState.key, className: 'description'},
+                            React.DOM.p({key: skillsState.key, className: 'skill-desc'}, skillName.skill.description
+                            )
+                        )
+                    ));
                 }
             });
         }
@@ -3087,7 +3100,7 @@ React.render(React.createElement(DataWrapper, {
 // todo show rolled stat -> not possible, fuuu blizzard
 // todo clear old bonusstat values - done
 // todo save url to localStorage - done
-// offhand weapons dont work
+// todo offHand weapons - done
 // find out how animations triggers work
 // todo correct stats -> done
 // <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>
