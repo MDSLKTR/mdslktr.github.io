@@ -285,10 +285,10 @@ var DataWrapper = React.createClass({
     },
 
     checkTrigger: function () {
-        if (this.state.trigger === true && this.state.count < 3) {
-            this.loadHeroesData();
-            this.loadHeroData();
-            this.getItemData();
+        if (this.state.trigger === true && this.state.count < 2) {
+            setTimeout(this.loadHeroesData(), 200);
+            setTimeout(this.loadHeroData(), 200);
+            setTimeout(this.getItemData(), 200);
             //this.collectStats();
             this.setState({count: this.state.count + 1});
         }
