@@ -63,7 +63,8 @@ var DataWrapper = React.createClass({
             profile: 'https://eu.api.battle.net/d3/profile/',
             itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
             skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/',
-            itemToolTipBase: 'https://eu.api.battle.net/d3/data/'
+            itemToolTipBase: 'https://eu.api.battle.net/d3/data/',
+            toolTipBase: 'http://eu.battle.net/d3/en/tooltip/skill/barbarian/brawler'
         };
     },
 
@@ -870,8 +871,10 @@ var DataWrapper = React.createClass({
     render: function () {
         var skillsState = this.state.skills,
             skills = [],
+            skillsDesc = [],
             passivesState = this.state.passives,
             passives = [],
+            passivesDesc = [],
             statsState = this.state.stats,
             stats = [],
             nameState = this.state.name,
@@ -1066,30 +1069,37 @@ var DataWrapper = React.createClass({
                                 className: 'icon-front',
                                 style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                             }),
-                            React.DOM.div({key: skillsState.key, className: 'icon-back', style: runeType}),
-                            React.DOM.div({key: skillsState.key, className: 'description'},
-                                React.DOM.p({key: skillsState.key, className: 'skill-desc'},
-                                    skillName.skill.description), React.DOM.p({
-                                        key: skillsState.key,
-                                        className: 'rune-desc'
-                                    },
-                                    'Rune: ' + skillName.rune.description)
-                            )
+                            React.DOM.div({key: skillsState.key, className: 'icon-back', style: runeType})
                         )
                     );
+                    skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
+                        React.DOM.p({
+                            dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
+                            key: skillsState.key,
+                            className: 'skill-desc'
+                        }),
+                        React.DOM.p({
+                            dangerouslySetInnerHTML: {__html: skillName.rune.description.replace(/\n/g, '<br/>')},
+                            key: skillsState.key,
+                            className: 'rune-desc'
+                        })
+                    ));
                 } else if (skillName.skill) {
                     constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
                     skills.push(React.DOM.div({
                         key: skillsState.key,
                         className: 'hasIcon'
                     }, skillName.skill.name, React.DOM.div({
+                        key: skillsState.key,
+                        className: 'icon-front no-rune',
+                        style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                    })));
+                    skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
+                        React.DOM.p({
+                            dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
                             key: skillsState.key,
-                            className: 'icon-front no-rune',
-                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
-                        }), React.DOM.div({key: skillsState.key, className: 'description'},
-                            React.DOM.p({key: skillsState.key, className: 'skill-desc'}, skillName.skill.description
-                            )
-                        )
+                            className: 'skill-desc'
+                        })
                     ));
                 }
             });
@@ -1107,6 +1117,13 @@ var DataWrapper = React.createClass({
                         className: 'icon',
                         style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                     })));
+                    passivesDesc.push(React.DOM.div({key: passivesState.key, className: 'description'},
+                        React.DOM.p({
+                            dangerouslySetInnerHTML: {__html: passiveName.skill.description.replace(/\n/g, '<br/>')},
+                            key: passivesState.key,
+                            className: 'passive-desc'
+                        })
+                    ));
                 }
             });
         }
@@ -3074,7 +3091,9 @@ var DataWrapper = React.createClass({
                 ),
                 React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
                 React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
+                React.DOM.div({id: 'panel-bottom-left-desc'}, skillsDesc),
                 React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
+                React.DOM.div({id: 'panel-bottom-right-desc'}, passivesDesc),
                 React.DOM.div({
                     className: this.state.isOpen,
                     id: 'panel-right',

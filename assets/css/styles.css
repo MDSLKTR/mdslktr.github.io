@@ -207,11 +207,15 @@ body {
     -webkit-transition: opacity 0.5s;
             transition: opacity 0.5s;
     opacity: 1; }
-  .icon-front:not(.no-rune):hover ~ .description {
-    opacity: 1; }
 
-.icon-front:hover ~ .description {
-  opacity: 1; }
+.skill-desc {
+  color: burlywood; }
+
+.rune-desc {
+  color: wheat; }
+
+.passive-desc {
+  color: wheat; }
 
 .icon-back {
   background: url('/assets/images/runes.jpg');
@@ -584,15 +588,13 @@ body {
   margin-bottom: 1.5vh;
   position: relative; }
   .hasIcon .description {
-    opacity: 0;
     z-index: 5;
     font-size: 0.9rem;
     height: auto;
-    width: 50%;
+    width: calc(100% - 80px);
     position: absolute;
-    right: calc(0% + 61px);
     margin: 0;
-    bottom: 100%;
+    bottom: 0;
     list-style: none;
     background: black;
     padding: 5px;
