@@ -653,10 +653,6 @@ var DataWrapper = React.createClass({
                 'Damage_Percent_Bonus_Vs_Elites',
                 'Damage_Percent_Reduction_From_Elites',
                 'Splash_Damage_Effect_Percent',
-                'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow',
-                'Power_Damage_Percent_Bonus#DemonHunter_Sentry',
-                'Power_Damage_Percent_Bonus#Barbarian_SeismicSlam',
-                'Power_Damage_Percent_Bonus#Barbarian_FuriousCharge',
                 'Gold_PickUp_Radius',
                 'Damage_Percent_Reduction_From_Melee',
                 'Damage_Percent_Reduction_From_Ranged',
@@ -672,7 +668,6 @@ var DataWrapper = React.createClass({
             eliteDmg = 0,
             eliteDmgRed = 0,
             areaDmg = 0,
-            skillDmg = 0,
             fireDmg = 0,
             coldDmg = 0,
             lightningDmg = 0,
@@ -681,7 +676,36 @@ var DataWrapper = React.createClass({
             goldPickUp = 0,
             maxHealth = 0,
             k,
-            j;
+            j,
+            m,
+            skillsDmg = [];
+
+        if (this.state.class && this.state.skills && this.state.skills.length) {
+            var saveArr = [];
+            for (m = 0; m < this.state.skills.length; m++) {
+                switch(this.state.class) {
+                    case 'demon-hunter':
+                        saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                        break;
+                    case 'witch-doctor':
+                        saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                        break;
+                    case 'barbarian':
+                        saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                        break;
+                    case 'crusader':
+                        saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                        break;
+                    case 'monk':
+                        saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                        break;
+                    case 'wizard':
+                        saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                        break;
+                    default:
+                }
+            }
+        }
 
         if (this.state.items) {
             var itemSlots = [
@@ -748,8 +772,6 @@ var DataWrapper = React.createClass({
                                     case 'Hitpoints_Max_Percent_Bonus_Item':
                                         maxHealth += results[k] * 100;
                                         break;
-                                    case 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow':
-                                        break;
                                     default:
                                         console.log('default');
                                 }
@@ -758,6 +780,20 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
+            for (i = 0; i < itemSlots.length; i++) {
+                if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                    for (k = 0; k < saveArr.length; k++) {
+                        if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
+                            if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
+                                results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
+                                skillsDmg.push(saveArr[k], results[k]);
+                                console.log(skillsDmg);
+                            }
+                        }
+                    }
+                }
+            }
+            
             var checkSave = [],
                 setCount = 0;
             // set bonus iterator
@@ -821,9 +857,6 @@ var DataWrapper = React.createClass({
                                             break;
                                         case 'Hitpoints_Max_Percent_Bonus_Item':
                                             maxHealth += results[k] * 100;
-                                            break;
-                                        case 'Power_Damage_Percent_Bonus#DemonHunter_ClusterArrow':
-                                            console.log('cat');
                                             break;
                                     }
                                 }
