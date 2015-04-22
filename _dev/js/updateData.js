@@ -3129,7 +3129,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({className: this.state.skillDescOpen, onClick: this.handleSkillDescClick, id: 'panel-bottom-left'}, 'Skills', skills),
                 React.DOM.div({className: this.state.skillDescOpen, onClick: this.handleSkillDescClick,id: 'panel-bottom-left-desc'}, skillsDesc),
                 React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick, id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick,id: 'panel-bottom-right-desc'}, passivesDesc, 'Note your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
+                React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick,id: 'panel-bottom-right-desc'}, passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
                     className: this.state.isOpen,
                     id: 'panel-right',
@@ -3152,11 +3152,12 @@ React.render(React.createElement(DataWrapper, {
 // McleodNUS#2608
 
 
-// todo fix ajax
+// todo fix ajax -> sort of done
 // todo show rolled stat -> not possible, fuuu blizzard
 // todo clear old bonusstat values - done
 // todo save url to localStorage - done
 // todo offHand weapons - done
+// todo show hellfire passive description -> impossible,
+// todo find out how the set count can be done
 // find out how animations triggers work
 // todo correct stats -> done
-// <script src="http://us.battle.net/d3/static/js/tooltips.js"></script>
