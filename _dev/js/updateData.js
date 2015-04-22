@@ -54,7 +54,9 @@ var DataWrapper = React.createClass({
 
             invalid: false,
             time: [],
-            isOpen: [],
+            isOpen: '',
+            skillDescOpen: '',
+            passiveDescOpen: '',
             refreshing: 'on',
             url: '',
             itemUrl: '',
@@ -366,6 +368,22 @@ var DataWrapper = React.createClass({
             return this.setState({isOpen: ''})
         } else {
             return this.setState({isOpen: 'open'})
+        }
+    },
+
+    handleSkillDescClick: function () {
+        if (this.state.skillDescOpen === 'open') {
+            return this.setState({skillDescOpen: ''})
+        } else {
+            return this.setState({skillDescOpen: 'open'})
+        }
+    },
+
+    handlePassiveDescClick: function () {
+        if (this.state.passiveDescOpen === 'open') {
+            return this.setState({passiveDescOpen: ''})
+        } else {
+            return this.setState({passiveDescOpen: 'open'})
         }
     },
 
@@ -1073,6 +1091,12 @@ var DataWrapper = React.createClass({
                         )
                     );
                     skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
+                        React.DOM.div({
+                            key: skillsState.key,
+                            className: 'desc-icon',
+                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                        }),
+                        skillName.skill.name + ' with ' +skillName.rune.name,
                         React.DOM.p({
                             dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
                             key: skillsState.key,
@@ -1095,6 +1119,12 @@ var DataWrapper = React.createClass({
                         style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                     })));
                     skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
+                        React.DOM.div({
+                            key: skillsState.key,
+                            className: 'desc-icon',
+                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                        }),
+                        skillName.skill.name,
                         React.DOM.p({
                             dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
                             key: skillsState.key,
@@ -1118,6 +1148,12 @@ var DataWrapper = React.createClass({
                         style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                     })));
                     passivesDesc.push(React.DOM.div({key: passivesState.key, className: 'description'},
+                        React.DOM.div({
+                            key: passivesState.key,
+                            className: 'desc-icon',
+                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                        }),
+                        passiveName.skill.name,
                         React.DOM.p({
                             dangerouslySetInnerHTML: {__html: passiveName.skill.description.replace(/\n/g, '<br/>')},
                             key: passivesState.key,
@@ -3090,10 +3126,10 @@ var DataWrapper = React.createClass({
                     )
                 ),
                 React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
-                React.DOM.div({id: 'panel-bottom-left'}, 'Skills', skills),
-                React.DOM.div({id: 'panel-bottom-left-desc'}, skillsDesc),
-                React.DOM.div({id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({id: 'panel-bottom-right-desc'}, passivesDesc),
+                React.DOM.div({className: this.state.skillDescOpen, onClick: this.handleSkillDescClick, id: 'panel-bottom-left'}, 'Skills', skills),
+                React.DOM.div({className: this.state.skillDescOpen, onClick: this.handleSkillDescClick,id: 'panel-bottom-left-desc'}, skillsDesc),
+                React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick, id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
+                React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick,id: 'panel-bottom-right-desc'}, passivesDesc, 'Note your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
                     className: this.state.isOpen,
                     id: 'panel-right',
