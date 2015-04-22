@@ -966,7 +966,8 @@ var DataWrapper = React.createClass({
             pResistAll = this.state.paragonResistAll,
             pArmor = this.state.paragonArmor,
             pLife = this.state.paragonMaxHealth,
-            i;
+            i,
+            k;
 
         switch (classState) {
             case 'demon-hunter':
@@ -1096,7 +1097,7 @@ var DataWrapper = React.createClass({
                             className: 'desc-icon',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         }),
-                        skillName.skill.name + ' with ' +skillName.rune.name,
+                        skillName.skill.name + ' with ' + skillName.rune.name,
                         React.DOM.p({
                             dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
                             key: skillsState.key,
@@ -3126,10 +3127,26 @@ var DataWrapper = React.createClass({
                     )
                 ),
                 React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
-                React.DOM.div({className: this.state.skillDescOpen, onClick: this.handleSkillDescClick, id: 'panel-bottom-left'}, 'Skills', skills),
-                React.DOM.div({className: this.state.skillDescOpen, onClick: this.handleSkillDescClick,id: 'panel-bottom-left-desc'}, skillsDesc),
-                React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick, id: 'panel-bottom-right'}, 'Passives', passives, specialPassive),
-                React.DOM.div({className: this.state.passiveDescOpen, onClick: this.handlePassiveDescClick,id: 'panel-bottom-right-desc'}, passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
+                React.DOM.div({
+                    className: this.state.skillDescOpen,
+                    onClick: this.handleSkillDescClick,
+                    id: 'panel-bottom-left'
+                }, 'Skills', skills),
+                React.DOM.div({
+                    className: this.state.skillDescOpen,
+                    onClick: this.handleSkillDescClick,
+                    id: 'panel-bottom-left-desc'
+                }, skillsDesc),
+                React.DOM.div({
+                    className: this.state.passiveDescOpen,
+                    onClick: this.handlePassiveDescClick,
+                    id: 'panel-bottom-right'
+                }, 'Passives', passives, specialPassive),
+                React.DOM.div({
+                    className: this.state.passiveDescOpen,
+                    onClick: this.handlePassiveDescClick,
+                    id: 'panel-bottom-right-desc'
+                }, passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
                     className: this.state.isOpen,
                     id: 'panel-right',

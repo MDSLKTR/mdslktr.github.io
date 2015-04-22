@@ -300,8 +300,6 @@ body {
   width: 405px;
   height: 750px; }
   .d3-item-wrapper > div {
-    -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
     text-transform: capitalize;
     position: absolute;
     border-radius: 7px;
@@ -374,7 +372,7 @@ body {
       -webkit-transition: width 1s, height 1s, background-color 0.5s;
               transition: width 1s, height 1s, background-color 0.5s;
       width: 400px;
-      height: 420px;
+      height: 425px;
       -webkit-filter: drop-shadow(0px 0px 5px black);
               filter: drop-shadow(0px 0px 5px black);
       background-color: rgba(0, 0, 0, 0.85);
@@ -647,12 +645,11 @@ body {
 
 #panel-bottom-left-desc, #panel-bottom-right-desc {
   cursor: pointer;
-  box-sizing: border-box;
   z-index: 10;
   position: fixed;
   width: 45%;
   height: 100%;
-  bottom: -100vh;
+  bottom: -103vh;
   font-size: 10px;
   padding: 1.5vh;
   background: rgba(0, 0, 0, 0.85);
@@ -715,10 +712,10 @@ body {
     border-radius: 7px;
     background: black; }
   #panel-right.open ~ #panel-right-additional {
-    -webkit-transform: translateX(-37.5vw);
-            transform: translateX(-37.5vw);
-    -webkit-transition: -webkit-transform 0.75s;
-            transition: transform 0.75s; }
+    -webkit-transform: translateX(-37.5vw) translateZ(0);
+            transform: translateX(-37.5vw) translateZ(0);
+    -webkit-transition: -webkit-transform 0.5s;
+            transition: transform 0.5s; }
   #panel-right.open:after {
     content: 'Close'; }
 
@@ -731,13 +728,25 @@ body {
   left: -60vw;
   -webkit-animation-name: fadein-bottom-left;
           animation-name: fadein-bottom-left; }
+  #panel-bottom-left:before {
+    content: 'Details';
+    position: absolute;
+    top: -7.5%;
+    right: 0;
+    padding: 5px;
+    -webkit-filter: drop-shadow(0 0 3px darkred);
+            filter: drop-shadow(0 0 3px darkred);
+    border-radius: 7px;
+    background: black; }
   #panel-bottom-left .icon-front, #panel-bottom-left .icon-back, #panel-bottom-left .icon {
     right: -5px; }
   #panel-bottom-left > div {
     padding-right: 70px; }
   #panel-bottom-left.open ~ #panel-bottom-left-desc {
-    -webkit-transform: translateY(-100vh);
-            transform: translateY(-100vh); }
+    -webkit-transform: translateY(-100vh) translateZ(0);
+            transform: translateY(-100vh) translateZ(0);
+    -webkit-transition: -webkit-transform 1s;
+            transition: transform 1s; }
 
 #panel-bottom-right {
   cursor: pointer;
@@ -747,13 +756,25 @@ body {
   right: -60vw;
   -webkit-animation-name: fadein-bottom-right;
           animation-name: fadein-bottom-right; }
+  #panel-bottom-right:before {
+    content: 'Details';
+    position: absolute;
+    top: -7.5%;
+    left: 0;
+    padding: 5px;
+    -webkit-filter: drop-shadow(0 0 3px darkred);
+            filter: drop-shadow(0 0 3px darkred);
+    border-radius: 7px;
+    background: black; }
   #panel-bottom-right .icon-front, #panel-bottom-right .icon-back, #panel-bottom-right .icon {
     left: -5px; }
   #panel-bottom-right > div {
     padding-left: 70px; }
   #panel-bottom-right.open ~ #panel-bottom-right-desc {
-    -webkit-transform: translateY(-100vh);
-            transform: translateY(-100vh); }
+    -webkit-transform: translateY(-100vh) translateZ(0);
+            transform: translateY(-100vh) translateZ(0);
+    -webkit-transition: -webkit-transform 1s;
+            transition: transform 1s; }
 
 @-webkit-keyframes fadein-left {
   from {
