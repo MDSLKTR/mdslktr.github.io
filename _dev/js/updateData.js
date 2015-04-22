@@ -53,7 +53,7 @@ var DataWrapper = React.createClass({
             paragonMaxHealth: parseInt(localStorage.getItem('paragonMaxHealth')),
 
             invalid: false,
-            time: [],
+            time: 0,
             isOpen: '',
             skillDescOpen: '',
             passiveDescOpen: '',
@@ -65,8 +65,7 @@ var DataWrapper = React.createClass({
             profile: 'https://eu.api.battle.net/d3/profile/',
             itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
             skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/',
-            itemToolTipBase: 'https://eu.api.battle.net/d3/data/',
-            toolTipBase: 'http://eu.battle.net/d3/en/tooltip/skill/barbarian/brawler'
+            itemToolTipBase: 'https://eu.api.battle.net/d3/data/'
         };
     },
 
@@ -347,7 +346,21 @@ var DataWrapper = React.createClass({
         var input = e.target.value;
         this.setState({battleTag: input});
         localStorage.setItem('battleTag', input);
-        this.setState({count: 0});
+        // clear old values and call ajax
+        this.setState({
+            count: 0,
+            items: {},
+            skills: [],
+            passives: [],
+            stats: [],
+            heroes: {},
+            attributes: [],
+            class: {},
+            name: {},
+            level: {},
+            paragon: {},
+            time: 0
+        });
     },
 
     setSelect: function () {
@@ -792,7 +805,6 @@ var DataWrapper = React.createClass({
                                             eliteDmg += results[k] * 100;
                                             break;
                                         case 'Damage_Percent_Reduction_From_Elites':
-                                            console.log('fired');
                                             eliteDmgRed += results[k] * 100;
                                             break;
                                         case 'Splash_Damage_Effect_Percent':
@@ -1002,7 +1014,7 @@ var DataWrapper = React.createClass({
                 break;
             default:
                 style = {
-                    backgroundImage: 'url("../../assets/images/empty.svg)'
+                    backgroundImage: 'none'
                 };
         }
         if (heroesState.heroes) {
@@ -2006,19 +2018,28 @@ var DataWrapper = React.createClass({
                 default:
             }
 
+            if (mainHandState.type) {
+                var mainHanded = '';
+                if (mainHandState.type.twoHanded === true) {
+                    mainHanded = '(2h)';
+                } else {
+                    mainHanded = '(1h)';
+                }
+            }
+
             if (mainHandState.attributesRaw) {
                 if (mainHandState.attributesRaw.Ancient_Rank && mainHandState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
                     mainHand.push(React.DOM.li({
                         key: mainHandState.key,
                         className: itemQuality + ' name'
-                    }, isAncient + ' ' + itemsState.mainHand.name));
+                    }, isAncient + ' ' + itemsState.mainHand.name + ' ' + mainHanded));
                 } else {
                     isAncient = '';
                     mainHand.push(React.DOM.li({
                         key: mainHandState.key,
                         className: itemQuality + ' name'
-                    }, itemsState.mainHand.name));
+                    }, itemsState.mainHand.name + ' ' + mainHanded));
                 }
             }
 
@@ -2158,19 +2179,30 @@ var DataWrapper = React.createClass({
                 default:
             }
 
+            if (offHandState.type) {
+                var offHanded = '';
+                if (offHandState.type.twoHanded === true) {
+                    offHanded = '(2h)';
+                } else if (offHandState.type.twoHanded !== true && offHandState.dps) {
+                    offHanded = '(1h)';
+                } else {
+                    offHanded = '';
+                }
+            }
+
             if (offHandState.attributesRaw) {
                 if (offHandState.attributesRaw.Ancient_Rank && offHandState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
                     offHand.push(React.DOM.li({
                         key: offHandState.key,
                         className: itemQuality + ' name'
-                    }, isAncient + ' ' + itemsState.offHand.name));
+                    }, isAncient + ' ' + itemsState.offHand.name + ' ' + offHanded));
                 } else {
                     isAncient = '';
                     offHand.push(React.DOM.li({
                         key: offHandState.key,
                         className: itemQuality + ' name'
-                    }, itemsState.offHand.name));
+                    }, itemsState.offHand.name + ' ' + offHanded));
                 }
             }
 
