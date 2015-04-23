@@ -780,14 +780,17 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
+
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].attributesRaw) {
                     for (k = 0; k < saveArr.length; k++) {
                         if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
                             if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
                                 results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
-                                skillsDmg.push(saveArr[k], results[k]);
-                                console.log(skillsDmg);
+                                console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
+                                if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw) === saveArr[k]) {
+                                    console.log('match');
+                                }
                             }
                         }
                     }
