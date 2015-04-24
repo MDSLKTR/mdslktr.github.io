@@ -712,7 +712,8 @@ body {
     background: rgba(0, 0, 0, 0.85);
     backface-visibility: hidden;
     transition: transform 0.5s;
-    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
+    box-shadow: inset 0 0 10px 2px rgba(255, 0, 0, 0.65);
+//    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
 
     span {
         color: wheat;
@@ -737,7 +738,7 @@ body {
     width: 35vw;
     text-align: left;
     background: rgba(0, 0, 0, 1);
-    transform: translateX(0);
+    transform: translateZ(0);
     transition: transform 0.75s;
 }
 
@@ -766,7 +767,8 @@ body {
         bottom: -7.5%;
         left: 0;
         padding: 5px;
-        filter: drop-shadow(0 0 3px darkred);
+//        filter: drop-shadow(0 0 3px darkred);
+        box-shadow: inset 0 0 5px 2px darkred;
         border-radius: 7px;
         background: black;
     }
@@ -798,7 +800,8 @@ body {
         top: -7.5%;
         right: 0;
         padding: 5px;
-        filter: drop-shadow(0 0 3px darkred);
+//        filter: drop-shadow(0 0 3px darkred);
+        box-shadow: inset 0 0 5px 2px darkred;
         border-radius: 7px;
         background: black;
     }
@@ -833,7 +836,8 @@ body {
         top: -7.5%;
         left: 0;
         padding: 5px;
-        filter: drop-shadow(0 0 3px darkred);
+        box-shadow: inset 0 0 5px 2px darkred;
+//        filter: drop-shadow(0 0 3px darkred);
         border-radius: 7px;
         background: black;
     }

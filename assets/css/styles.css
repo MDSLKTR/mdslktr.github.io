@@ -658,8 +658,7 @@ body {
           backface-visibility: hidden;
   -webkit-transition: -webkit-transform 0.5s;
           transition: transform 0.5s;
-  -webkit-filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
-          filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65)); }
+  box-shadow: inset 0 0 10px 2px rgba(255, 0, 0, 0.65); }
   #panel-bottom-left-desc span, #panel-bottom-right-desc span {
     color: wheat;
     font-size: 1.2rem; }
@@ -680,8 +679,8 @@ body {
   width: 35vw;
   text-align: left;
   background: black;
-  -webkit-transform: translateX(0);
-          transform: translateX(0);
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
   -webkit-transition: -webkit-transform 0.75s;
           transition: transform 0.75s; }
 
@@ -708,8 +707,7 @@ body {
     bottom: -7.5%;
     left: 0;
     padding: 5px;
-    -webkit-filter: drop-shadow(0 0 3px darkred);
-            filter: drop-shadow(0 0 3px darkred);
+    box-shadow: inset 0 0 5px 2px darkred;
     border-radius: 7px;
     background: black; }
   #panel-right.open ~ #panel-right-additional {
@@ -735,8 +733,7 @@ body {
     top: -7.5%;
     right: 0;
     padding: 5px;
-    -webkit-filter: drop-shadow(0 0 3px darkred);
-            filter: drop-shadow(0 0 3px darkred);
+    box-shadow: inset 0 0 5px 2px darkred;
     border-radius: 7px;
     background: black; }
   #panel-bottom-left .icon-front, #panel-bottom-left .icon-back, #panel-bottom-left .icon {
@@ -763,8 +760,7 @@ body {
     top: -7.5%;
     left: 0;
     padding: 5px;
-    -webkit-filter: drop-shadow(0 0 3px darkred);
-            filter: drop-shadow(0 0 3px darkred);
+    box-shadow: inset 0 0 5px 2px darkred;
     border-radius: 7px;
     background: black; }
   #panel-bottom-right .icon-front, #panel-bottom-right .icon-back, #panel-bottom-right .icon {
