@@ -3010,7 +3010,7 @@ var DataWrapper = React.createClass({
                 }, 'Primary Resource: ' + pResource));
             }
 
-            if (skillDmgState !== 0) {
+            if (skillDmgState) {
                 additionalStatsOffensive.push(React.DOM.div({
                     dangerouslySetInnerHTML: {__html: 'Skill Damage: ' + skillDmgState},
                     key: additionalStatsOffensive.key,
