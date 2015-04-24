@@ -634,7 +634,7 @@ body {
   padding: 1.5vh;
   -webkit-transform: translateZ(0);
           transform: translateZ(0);
-  box-shadow: inset 0 0 5px 2px darkred;
+  box-shadow: inset 0 0 5px 1px darkred;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden; }
   #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span, #panel-right-additional > span {
@@ -663,7 +663,7 @@ body {
           backface-visibility: hidden;
   -webkit-transition: -webkit-transform 0.5s;
           transition: transform 0.5s;
-  box-shadow: inset 0 0 10px 2px rgba(255, 0, 0, 0.65); }
+  box-shadow: inset 0 0 5px 1px rgba(255, 0, 0, 0.65); }
   #panel-bottom-left-desc span, #panel-bottom-right-desc span {
     color: wheat;
     font-size: 1.2rem; }

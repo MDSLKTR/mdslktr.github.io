@@ -686,7 +686,7 @@ body {
     // filter seems to have a horrible performance when combined with different filters in animations
     // filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
     transform: translateZ(0);
-    box-shadow: inset 0 0 5px 2px darkred;
+    box-shadow: inset 0 0 5px 1px darkred;
     backface-visibility: hidden;
 
     & > span {
@@ -718,7 +718,7 @@ body {
     background: rgba(0, 0, 0, 0.85);
     backface-visibility: hidden;
     transition: transform 0.5s;
-    box-shadow: inset 0 0 10px 2px rgba(255, 0, 0, 0.65);
+    box-shadow: inset 0 0 5px 1px rgba(255, 0, 0, 0.65);
 //    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
 
     span {

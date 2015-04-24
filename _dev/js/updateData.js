@@ -44,8 +44,8 @@ var DataWrapper = React.createClass({
             paragonCdr: parseInt(localStorage.getItem('paragonCdr')),
             paragonResRed: parseInt(localStorage.getItem('paragonResRed')),
             paragonAtkSpd: parseInt(localStorage.getItem('paragonAtkSpd')),
-            paragonCritDmg: parseInt(localStorage.getItem('paragonCritChance')),
-            paragonCritChance: parseInt(localStorage.getItem('paragonCritDmg')),
+            paragonCritDmg: parseInt(localStorage.getItem('paragonCritDmg')),
+            paragonCritChance: parseInt(localStorage.getItem('paragonCritChance')),
             paragonAreaDmg: parseInt(localStorage.getItem('paragonAreaDmg')),
             paragonResource: parseInt(localStorage.getItem('paragonResource')),
             paragonResistAll: parseInt(localStorage.getItem('paragonResistAll')),
@@ -644,6 +644,16 @@ var DataWrapper = React.createClass({
         }
     },
 
+    objToString: function(obj) {
+    var str = '';
+    for (var p in obj) {
+        if (obj.hasOwnProperty(p)) {
+            str += p  + ' x' + obj[p] + '</br>';
+        }
+    }
+    return str;
+    },
+
     collectStats: function () {
         var i,
             statPool = [
@@ -786,17 +796,26 @@ var DataWrapper = React.createClass({
                     }
                 }
 
-                // todo make this not total crap
+                // works so far but todo make this not total crap
+                var saveValues = [];
                 for (i = 0; i < itemSlots.length; i++) {
                     if (itemSlots[i] && itemSlots[i].attributesRaw) {
                         for (k = 0; k < saveArr.length; k++) {
                             if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
                                 if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
                                     results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
-                                    //console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
-                                    //if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw) === saveArr[k]) {
-                                    //    console.log('match');
-                                    //}
+                                    console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
+                                    if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
+                                        saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
+                                        var countedValues = saveValues.reduce(function(p, c){
+                                            if (c in p) {
+                                                p[c]++;
+                                            } else {
+                                                p[c]=1;
+                                            }
+                                            return p;
+                                        }, {});
+                                    }
                                 }
                             }
                         }
@@ -804,32 +823,17 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            var checkSave = [],
-                saveArray = [];
+            var checkSave = [];
             // set bonus iterator
             // todo find out how to detect amount of set items
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
-
-                    //var reduceUniques = checkSave.reduce(function(p, c){
-                    //    if (c in p) {
-                    //        p[c]++;
-                    //    } else {
-                    //        p[c]=1;
-                    //    }
-                    //    return p;
-                    //}, {});
-                    //console.log(reduceUniques);
-                    //
-                    //var converted = JSON.stringify(reduceUniques);
-                    //console.log(converted);
-                    //if (itemSlots[i].set.name.indexOf(converted)) {
-                    //    console.log('match');
-                    //}
+                    // todo count unique set amount and calc stats
+                    // each unique itemSlots[i].set.name should be counted and saved in an array
 
                     // break loop iteration if set is already found
+
                     if (checkSave.indexOf(itemSlots[i].set.name) > -1) {
-                        console.log('true');
                         continue;
                     }
                     checkSave.push(itemSlots[i].set.name);
@@ -953,6 +957,7 @@ var DataWrapper = React.createClass({
             this.setState({dmgRedMelee: dmgRedMelee});
             this.setState({dmgRedRanged: dmgRedRanged});
             this.setState({maxHealth: maxHealth});
+            this.setState({skillDmg: this.objToString(countedValues)});
 
         }
     },
@@ -1026,6 +1031,7 @@ var DataWrapper = React.createClass({
             dmgRedRangedState = this.state.dmgRedRanged,
             maxElementDmg = this.state.maxEleDmg,
             maxHealthState = this.state.maxHealth,
+            skillDmgState = this.state.skillDmg,
             paragon = [],
             pCdr = this.state.paragonCdr,
             pAtkSpd = this.state.paragonAtkSpd,
@@ -3002,6 +3008,14 @@ var DataWrapper = React.createClass({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
                 }, 'Primary Resource: ' + pResource));
+            }
+
+            if (skillDmgState !== 0) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    dangerouslySetInnerHTML: {__html: 'Skill Damage: ' + skillDmgState},
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                }));
             }
         }
 
