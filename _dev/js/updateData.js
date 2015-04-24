@@ -683,26 +683,28 @@ var DataWrapper = React.createClass({
         if (this.state.class && this.state.skills && this.state.skills.length) {
             var saveArr = [];
             for (m = 0; m < this.state.skills.length; m++) {
-                switch(this.state.class) {
-                    case 'demon-hunter':
-                        saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                        break;
-                    case 'witch-doctor':
-                        saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                        break;
-                    case 'barbarian':
-                        saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                        break;
-                    case 'crusader':
-                        saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                        break;
-                    case 'monk':
-                        saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                        break;
-                    case 'wizard':
-                        saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                        break;
-                    default:
+                if (this.state.skills[m].skill) {
+                    switch(this.state.class) {
+                        case 'demon-hunter':
+                            saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                            break;
+                        case 'witch-doctor':
+                            saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                            break;
+                        case 'barbarian':
+                            saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                            break;
+                        case 'crusader':
+                            saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                            break;
+                        case 'monk':
+                            saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                            break;
+                        case 'wizard':
+                            saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                            break;
+                        default:
+                    }
                 }
             }
         }
@@ -2522,7 +2524,7 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            if (ringStateRight.attributesRaw && ringStateRight.attributesRaw.Sockets && ringStateRight.gems[0]) {
+            if (ringStateRight.attributesRaw && ringStateRight.attributesRaw.Sockets && ringStateRight.gems[0] && ringStateRight.gems[0].attributesRaw.Jewel_Rank) {
                 gemLink = itemIconBaseUrl.concat(ringStateRight.gems[0].item.icon, '.png');
                 ringRight.push(React.DOM.li({
                     key: ringStateRight.key,
@@ -2653,7 +2655,7 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets && ringStateLeft.gems[0]) {
+            if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets && ringStateLeft.gems[0] && ringStateLeft.gems[0].attributesRaw.Jewel_Rank) {
                 gemLink = itemIconBaseUrl.concat(ringStateLeft.gems[0].item.icon, '.png');
                 ringLeft.push(React.DOM.li({
                     key: ringStateLeft.key,
