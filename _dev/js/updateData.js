@@ -183,6 +183,7 @@ var DataWrapper = React.createClass({
                         case 'Crossbow':
                         case 'Dagger':
                         case 'Sword':
+                        case 'Sword2H':
                         case 'Mace':
                         case 'Axe':
                         case 'FistWeapon':
@@ -897,19 +898,19 @@ var DataWrapper = React.createClass({
 
             switch (findElem) {
                 case fireDmg:
-                    maxElement = 'Fire Damage Increase: ' + findElem + '%';
+                    maxElement = 'Fire Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
                     break;
                 case coldDmg:
-                    maxElement = 'Cold Damage Increase: ' + findElem + '%';
+                    maxElement = 'Cold Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
                     break;
                 case physicalDmg:
-                    maxElement = 'Physical Damage Increase: ' + findElem + '%';
+                    maxElement = 'Physical Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
                     break;
                 case lightningDmg:
-                    maxElement = 'Lightning Damage Increase: ' + findElem + '%';
+                    maxElement = 'Lightning Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
                     break;
                 case poisonDmg:
-                    maxElement = 'Poison Damage Increase: ' + findElem + '%';
+                    maxElement = 'Poison Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
                     break;
             }
 

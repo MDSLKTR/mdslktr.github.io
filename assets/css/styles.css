@@ -644,11 +644,16 @@ body {
     width: 100%;
     height: 5%; }
 
+#panel-bottom-left-desc {
+  width: 64vw; }
+
+#panel-bottom-right-desc {
+  width: 32.5vw; }
+
 #panel-bottom-left-desc, #panel-bottom-right-desc {
   cursor: pointer;
   z-index: 10;
   position: fixed;
-  width: 45%;
   height: 100%;
   bottom: -103vh;
   font-size: 10px;
