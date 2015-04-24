@@ -624,8 +624,8 @@ body {
   color: sienna;
   -webkit-animation-duration: 5s;
           animation-duration: 5s;
-  -webkit-animation-delay: 3s;
-          animation-delay: 3s;
+  -webkit-animation-delay: 1.5s;
+          animation-delay: 1.5s;
   -webkit-animation-iteration-count: 1;
           animation-iteration-count: 1;
   -webkit-animation-fill-mode: forwards;

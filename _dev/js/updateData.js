@@ -360,7 +360,10 @@ var DataWrapper = React.createClass({
             name: {},
             level: {},
             paragon: {},
-            time: 0
+            time: 0,
+            isOpen: '',
+            skillDescOpen: '',
+            passiveDescOpen: ''
         });
     },
 
@@ -379,25 +382,25 @@ var DataWrapper = React.createClass({
 
     handleBonusStatsClick: function () {
         if (this.state.isOpen === 'open') {
-            return this.setState({isOpen: ''})
+            return this.setState({isOpen: ''});
         } else {
-            return this.setState({isOpen: 'open'})
+            return this.setState({isOpen: 'open'});
         }
     },
 
     handleSkillDescClick: function () {
         if (this.state.skillDescOpen === 'open') {
-            return this.setState({skillDescOpen: ''})
+            return this.setState({skillDescOpen: ''});
         } else {
-            return this.setState({skillDescOpen: 'open'})
+            return this.setState({skillDescOpen: 'open'});
         }
     },
 
     handlePassiveDescClick: function () {
         if (this.state.passiveDescOpen === 'open') {
-            return this.setState({passiveDescOpen: ''})
+            return this.setState({passiveDescOpen: ''});
         } else {
-            return this.setState({passiveDescOpen: 'open'})
+            return this.setState({passiveDescOpen: 'open'});
         }
     },
 
@@ -681,35 +684,6 @@ var DataWrapper = React.createClass({
             m,
             skillsDmg = [];
 
-        if (this.state.class && this.state.skills && this.state.skills.length) {
-            var saveArr = [];
-            for (m = 0; m < this.state.skills.length; m++) {
-                if (this.state.skills[m].skill) {
-                    switch(this.state.class) {
-                        case 'demon-hunter':
-                            saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                            break;
-                        case 'witch-doctor':
-                            saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                            break;
-                        case 'barbarian':
-                            saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                            break;
-                        case 'crusader':
-                            saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                            break;
-                        case 'monk':
-                            saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                            break;
-                        case 'wizard':
-                            saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                            break;
-                        default:
-                    }
-                }
-            }
-        }
-
         if (this.state.items) {
             var itemSlots = [
                 this.state.helmItem,
@@ -784,15 +758,45 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            for (i = 0; i < itemSlots.length; i++) {
-                if (itemSlots[i] && itemSlots[i].attributesRaw) {
-                    for (k = 0; k < saveArr.length; k++) {
-                        if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
-                            if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
-                                results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
-                                console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
-                                if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw) === saveArr[k]) {
-                                    console.log('match');
+            if (this.state.class && this.state.skills && this.state.skills.length) {
+                var saveArr = [];
+                for (m = 0; m < this.state.skills.length; m++) {
+                    if (this.state.skills[m].skill) {
+                        switch(this.state.class) {
+                            case 'demon-hunter':
+                                saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                break;
+                            case 'witch-doctor':
+                                saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                break;
+                            case 'barbarian':
+                                saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                break;
+                            case 'crusader':
+                                saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                break;
+                            case 'monk':
+                                saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                break;
+                            case 'wizard':
+                                saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                break;
+                            default:
+                        }
+                    }
+                }
+
+                // todo make this not total crap
+                for (i = 0; i < itemSlots.length; i++) {
+                    if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                        for (k = 0; k < saveArr.length; k++) {
+                            if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
+                                if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
+                                    results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
+                                    //console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
+                                    //if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw) === saveArr[k]) {
+                                    //    console.log('match');
+                                    //}
                                 }
                             }
                         }
@@ -801,24 +805,40 @@ var DataWrapper = React.createClass({
             }
 
             var checkSave = [],
-                setCount = 0;
+                saveArray = [];
             // set bonus iterator
             // todo find out how to detect amount of set items
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
+
+                    //var reduceUniques = checkSave.reduce(function(p, c){
+                    //    if (c in p) {
+                    //        p[c]++;
+                    //    } else {
+                    //        p[c]=1;
+                    //    }
+                    //    return p;
+                    //}, {});
+                    //console.log(reduceUniques);
+                    //
+                    //var converted = JSON.stringify(reduceUniques);
+                    //console.log(converted);
+                    //if (itemSlots[i].set.name.indexOf(converted)) {
+                    //    console.log('match');
+                    //}
+
+                    // break loop iteration if set is already found
+                    if (checkSave.indexOf(itemSlots[i].set.name) > -1) {
+                        console.log('true');
+                        continue;
+                    }
+                    checkSave.push(itemSlots[i].set.name);
+                    console.log(checkSave);
+
                     for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
                         for (k = 0; k < statPool.length; k++) {
+                            // check if the stats are releveant for stat building
                             if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                console.log(checkSave);
-                                // this is not only a fix but potentially how i can count the amount of set items
-                                if (itemSlots[i].set.name && checkSave[k] === itemSlots[i].set.name) {
-                                    console.log('plllease');
-                                    setCount++;
-                                    console.log(setCount);
-                                    break;
-                                }
-                                checkSave[k] = itemSlots[i].set.name;
-                                console.log(checkSave);
                                 if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
                                     results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
                                     switch (statPool[k]) {
@@ -898,19 +918,19 @@ var DataWrapper = React.createClass({
 
             switch (findElem) {
                 case fireDmg:
-                    maxElement = 'Fire Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
+                    maxElement = 'Fire Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
                     break;
                 case coldDmg:
-                    maxElement = 'Cold Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
+                    maxElement = 'Cold Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
                     break;
                 case physicalDmg:
-                    maxElement = 'Physical Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
+                    maxElement = 'Physical Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
                     break;
                 case lightningDmg:
-                    maxElement = 'Lightning Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
+                    maxElement = 'Lightning Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
                     break;
                 case poisonDmg:
-                    maxElement = 'Poison Damage Increase: ' + Math.round(findElem * 10) / 10 + '%';
+                    maxElement = 'Poison Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
                     break;
             }
 
@@ -2057,16 +2077,14 @@ var DataWrapper = React.createClass({
                 default:
             }
 
-            if (mainHandState.type) {
+            if (mainHandState.attributesRaw && mainHandState.type) {
                 var mainHanded = '';
                 if (mainHandState.type.twoHanded === true) {
                     mainHanded = '(2h)';
                 } else {
                     mainHanded = '(1h)';
                 }
-            }
 
-            if (mainHandState.attributesRaw) {
                 if (mainHandState.attributesRaw.Ancient_Rank && mainHandState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
                     mainHand.push(React.DOM.li({
@@ -2218,7 +2236,7 @@ var DataWrapper = React.createClass({
                 default:
             }
 
-            if (offHandState.type) {
+            if (offHandState.attributesRaw && offHandState.type) {
                 var offHanded = '';
                 if (offHandState.type.twoHanded === true) {
                     offHanded = '(2h)';
@@ -2227,9 +2245,6 @@ var DataWrapper = React.createClass({
                 } else {
                     offHanded = '';
                 }
-            }
-
-            if (offHandState.attributesRaw) {
                 if (offHandState.attributesRaw.Ancient_Rank && offHandState.attributesRaw.Ancient_Rank.min === 1.0) {
                     isAncient = 'ancient';
                     offHand.push(React.DOM.li({
@@ -2852,42 +2867,42 @@ var DataWrapper = React.createClass({
         }
 
         if (statsState.life && statsState.damage && statsState.toughness && statsState.vitality) {
-            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', Math.round(statsState.life).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
-            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', Math.round(statsState.damage).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
-            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', Math.round(statsState.toughness).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', Math.round(statsState.life).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', Math.round(statsState.damage).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+            stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', Math.round(statsState.toughness).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
 
             if (classState === 'demon-hunter' || classState === 'monk') {
-                stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
 
                 if (statsState.strength > 1000) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                    stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
                 }
                 if (statsState.intelligence > 1000) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                    stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
                 }
 
             } else if (classState === 'witch-doctor' || classState === 'wizard') {
-                stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
 
                 if (statsState.strength > 1000) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                    stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
                 }
                 if (statsState.dexterity > 1000) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                    stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
                 }
 
             } else if (classState === 'barbarian' || classState === 'crusader') {
-                stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                stats.push(React.DOM.div({key: statsState.key}, 'Strength: ', statsState.strength.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
 
                 if (statsState.dexterity > 1000) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                    stats.push(React.DOM.div({key: statsState.key}, 'Dexterity: ', statsState.dexterity.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
                 }
                 if (statsState.intelligence > 1000) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+                    stats.push(React.DOM.div({key: statsState.key}, 'Intelligence: ', statsState.intelligence.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
                 }
             }
 
-            stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")));
+            stats.push(React.DOM.div({key: statsState.key}, 'Vitality: ', statsState.vitality.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
             stats.push(React.DOM.div({key: statsState.key}, 'Armor: ', Math.round(statsState.armor + statsState.armor * pArmor / 100)));
             if (statsState.damageIncrease !== 0.0) {
                 stats.push(React.DOM.div({key: statsState.key}, 'Damage Increase: ', statsState.damageIncrease));
