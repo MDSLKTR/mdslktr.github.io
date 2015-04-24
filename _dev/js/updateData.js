@@ -187,7 +187,7 @@ var DataWrapper = React.createClass({
                         case 'Axe':
                         case 'FistWeapon':
                         case 'CeremonialKnife':
-                        case 'MightyWeapon':
+                        case 'MightyWeapon1H':
                         case 'Flail2H':
                         case 'Flail1H':
                         case 'HandXbow':
@@ -257,7 +257,7 @@ var DataWrapper = React.createClass({
                         case 'Mace':
                         case 'Axe':
                         case 'FistWeapon':
-                        case 'MightyWeapon':
+                        case 'MightyWeapon1H':
                         case 'Flail1H':
                         case 'HandXbow':
                         case 'Bow':
@@ -796,7 +796,7 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
-            
+
             var checkSave = [],
                 setCount = 0;
             // set bonus iterator
