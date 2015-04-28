@@ -3248,7 +3248,7 @@ var DataWrapper = React.createClass({
                     id: 'panel-right',
                     title: 'click to show/hide more stats',
                     onClick: this.handleBonusStatsClick
-                }, 'Stats', stats),
+                }, 'Stats (without amplification by skills)', stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive)
             )
         );
