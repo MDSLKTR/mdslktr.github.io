@@ -1004,7 +1004,6 @@ var DataWrapper = React.createClass({
             isAncient,
             gemLink,
             toggle = this.state.toggleItem,
-            refreshing = this.state.refreshing,
             timeStamp = this.state.time,
             additionalStatsOffensive = [],
             additionalStatsDefensive = [],
@@ -2861,9 +2860,8 @@ var DataWrapper = React.createClass({
                 })));
             }
         }
-
         if (statsState.life && statsState.damage && statsState.toughness && statsState.vitality) {
-            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', Math.round(statsState.life).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+            stats.push(React.DOM.div({key: statsState.key}, 'Life: ', Math.round(statsState.life + statsState.life * pLife / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
             stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', Math.round(statsState.damage).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
             stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', Math.round(statsState.toughness).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
 
