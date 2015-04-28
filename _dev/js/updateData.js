@@ -3266,13 +3266,5 @@ React.render(React.createElement(DataWrapper, {
 // Mephir#2101
 // MazlSan#2233
 
-
-// todo fix ajax -> sort of done
-// todo show rolled stat -> not possible, fuuu blizzard
-// todo clear old bonusstat values - done
-// todo save url to localStorage - done
-// todo offHand weapons - done
-// todo show hellfire passive description -> impossible,
-// todo find out how the set count can be done
-// find out how animations triggers work
-// todo correct stats -> done
+// todo find formula for min-max dmg calculation
+// todo fix set count
