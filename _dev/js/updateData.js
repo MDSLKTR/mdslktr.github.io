@@ -691,8 +691,7 @@ var DataWrapper = React.createClass({
             maxHealth = 0,
             k,
             j,
-            m,
-            skillsDmg = [];
+            m;
 
         if (this.state.items) {
             var itemSlots = [
@@ -1111,7 +1110,7 @@ var DataWrapper = React.createClass({
 
         if (nameState && classState && levelState) {
             base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
-            base.push(React.DOM.div({key: classState.key}, 'Class: ', classState));
+            base.push(React.DOM.div({key: classState.key}, 'Class: ', classState.toString().replace(/-/g, '').charAt(0).toUpperCase() + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
             base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
             if (paragonState) {
                 base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
