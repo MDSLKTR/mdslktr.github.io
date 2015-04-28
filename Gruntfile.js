@@ -12,6 +12,16 @@ module.exports = function (grunt) {
     });
 
     grunt.initConfig({
+        appcache: {
+            options: {
+                basePath: '*/assets'
+            },
+            all: {
+                dest: 'manifest.appcache',
+                cache: 'assets/**/*',
+                network: '*'
+            }
+        },
         scsslint: {
             all: [
                 '_dev/**/*.scss'
