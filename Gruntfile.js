@@ -92,7 +92,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/scripts.min.js': [
-                        '_dev/js/*.js'
+                        '_dev/js/updateData.js'
                     ]
                 }
             }
@@ -168,12 +168,13 @@ module.exports = function (grunt) {
     grunt.registerTask('css', [
         'libsass',
         'autoprefixer',
-        //'cssmin',
+        'cssmin',
         'lineending:css'
     ]);
     grunt.registerTask('js', [
         'jshint',
         'uglify:vendor',
+        'uglify:scripts',
         'lineending:js'
     ]);
     grunt.registerTask('browsersync', [

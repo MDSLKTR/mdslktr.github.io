@@ -13,6 +13,7 @@ html {
   height: 100%; }
 
 body {
+  overflow: hidden;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -23,10 +24,6 @@ main {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; }
-
-body {
-  background: black;
-  overflow: hidden; }
 
 .setButton {
   position: fixed;
@@ -315,7 +312,7 @@ body {
     border-radius: 7px;
     background-size: 64px auto;
     background-color: rgba(0, 0, 0, 0.5);
-    background-position: 0 50%;
+    background-position: 5% 50%;
     background-repeat: no-repeat;
     -webkit-transition: width 1s, height 1s, background-color 0.5s, -webkit-filter 0.5s;
             transition: width 1s, height 1s, background-color 0.5s, -webkit-filter 0.5s;
