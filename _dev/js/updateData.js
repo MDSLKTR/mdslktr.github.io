@@ -1115,7 +1115,6 @@ var DataWrapper = React.createClass({
                 base.push(React.DOM.div({key: classState.key}, 'Class: ', classState.toString().replace(/-/g, '').charAt(0).toUpperCase() + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
             } else {
                 base.push(React.DOM.div({key: classState.key}, 'Class: ', classState));
-
             }
             base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
             if (paragonState) {
