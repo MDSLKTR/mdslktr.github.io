@@ -115,159 +115,159 @@ var DataWrapper = React.createClass({
     },
 
     loadItemData: function (itemKey) {
-            this.setState({item: itemKey});
-            this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
-            $.ajax({
-                url: this.state.itemUrl,
-                dataType: 'jsonp',
-                success: function (data) {
-                    switch (data.type.id) {
-                        case 'GenericHelm':
-                        case 'Helm':
-                        case 'Helm_Barbarian':
-                        case 'Helm_DemonHunter':
-                        case 'Helm_WitchDoctor':
-                        case 'Helm_Crusader':
-                        case 'Helm_Wizard':
-                        case 'Helm_Monk':
-                        case 'VoodooMask':
-                            this.setState({helmItem: data});
-                            break;
-                        case 'GenericShoulders':
-                        case 'Shoulders':
-                        case 'Shoulders_Barbarian':
-                        case 'Shoulders_DemonHunter':
-                        case 'Shoulders_WitchDoctor':
-                        case 'Shoulders_Crusader':
-                        case 'Shoulders_Wizard':
-                        case 'Shoulders_Monk':
-                            this.setState({shouldersItem: data});
-                            break;
-                        case 'Bracers':
-                            this.setState({bracersItem: data});
-                            break;
-                        case 'ChestArmor':
-                        case 'GenericChestArmor':
-                        case 'ChestArmor_Barbarian':
-                        case 'ChestArmor_DemonHunter':
-                        case 'ChestArmor_WitchDoctor':
-                        case 'ChestArmor_Crusader':
-                        case 'ChestArmor_Wizard':
-                        case 'ChestArmor_Monk':
-                        case 'Cloak':
-                            this.setState({chestItem: data});
-                            break;
-                        case 'GenericLegs':
-                        case 'Legs':
-                        case 'Legs_Barbarian':
-                        case 'Legs_DemonHunter':
-                        case 'Legs_WitchDoctor':
-                        case 'Legs_Crusader':
-                        case 'Legs_Wizard':
-                        case 'Legs_Monk':
-                            this.setState({legsItem: data});
-                            break;
-                        case 'GenericBoots':
-                        case 'Boots':
-                        case 'Boots_Barbarian':
-                        case 'Boots_DemonHunter':
-                        case 'Boots_WitchDoctor':
-                        case 'Boots_Crusader':
-                        case 'Boots_Wizard':
-                        case 'Boots_Monk':
-                            this.setState({bootsItem: data});
-                            break;
-                        case 'Polearm':
-                        case 'Crossbow':
-                        case 'Dagger':
-                        case 'Sword':
-                        case 'Sword2H':
-                        case 'Mace':
-                        case 'Axe':
-                        case 'FistWeapon':
-                        case 'CeremonialKnife':
-                        case 'MightyWeapon1H':
-                        case 'Flail2H':
-                        case 'Flail1H':
-                        case 'HandXbow':
-                        case 'Bow2H':
-                        case 'Bow':
-                        case 'Wand':
-                        case 'Staff':
-                        case 'Staff2H':
-                        case 'CeremonialDagger':
-                            this.setState({mainItem: data});
-                            break;
-                        case 'GenericGloves':
-                        case 'Gloves':
-                        case 'Gloves_Barbarian':
-                        case 'Gloves_DemonHunter':
-                        case 'Gloves_WitchDoctor':
-                        case 'Gloves_Crusader':
-                        case 'Gloves_Wizard':
-                        case 'Gloves_Monk':
-                            this.setState({glovesItem: data});
-                            break;
-                        case 'Belt':
-                        case 'GenericBelt':
-                        case 'Belt_Barbarian':
-                            this.setState({beltItem: data});
-                            break;
-                        case 'Amulet':
-                            this.setState({amuletItem: data});
-                            break;
-                    }
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(this.state.url, status, err.toString());
-                }.bind(this)
-            });
-            console.log(this.state.itemUrl);
+        this.setState({item: itemKey});
+        this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+        $.ajax({
+            url: this.state.itemUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                switch (data.type.id) {
+                    case 'GenericHelm':
+                    case 'Helm':
+                    case 'Helm_Barbarian':
+                    case 'Helm_DemonHunter':
+                    case 'Helm_WitchDoctor':
+                    case 'Helm_Crusader':
+                    case 'Helm_Wizard':
+                    case 'Helm_Monk':
+                    case 'VoodooMask':
+                        this.setState({helmItem: data});
+                        break;
+                    case 'GenericShoulders':
+                    case 'Shoulders':
+                    case 'Shoulders_Barbarian':
+                    case 'Shoulders_DemonHunter':
+                    case 'Shoulders_WitchDoctor':
+                    case 'Shoulders_Crusader':
+                    case 'Shoulders_Wizard':
+                    case 'Shoulders_Monk':
+                        this.setState({shouldersItem: data});
+                        break;
+                    case 'Bracers':
+                        this.setState({bracersItem: data});
+                        break;
+                    case 'ChestArmor':
+                    case 'GenericChestArmor':
+                    case 'ChestArmor_Barbarian':
+                    case 'ChestArmor_DemonHunter':
+                    case 'ChestArmor_WitchDoctor':
+                    case 'ChestArmor_Crusader':
+                    case 'ChestArmor_Wizard':
+                    case 'ChestArmor_Monk':
+                    case 'Cloak':
+                        this.setState({chestItem: data});
+                        break;
+                    case 'GenericLegs':
+                    case 'Legs':
+                    case 'Legs_Barbarian':
+                    case 'Legs_DemonHunter':
+                    case 'Legs_WitchDoctor':
+                    case 'Legs_Crusader':
+                    case 'Legs_Wizard':
+                    case 'Legs_Monk':
+                        this.setState({legsItem: data});
+                        break;
+                    case 'GenericBoots':
+                    case 'Boots':
+                    case 'Boots_Barbarian':
+                    case 'Boots_DemonHunter':
+                    case 'Boots_WitchDoctor':
+                    case 'Boots_Crusader':
+                    case 'Boots_Wizard':
+                    case 'Boots_Monk':
+                        this.setState({bootsItem: data});
+                        break;
+                    case 'Polearm':
+                    case 'Crossbow':
+                    case 'Dagger':
+                    case 'Sword':
+                    case 'Sword2H':
+                    case 'Mace':
+                    case 'Axe':
+                    case 'FistWeapon':
+                    case 'CeremonialKnife':
+                    case 'MightyWeapon1H':
+                    case 'Flail2H':
+                    case 'Flail1H':
+                    case 'HandXbow':
+                    case 'Bow2H':
+                    case 'Bow':
+                    case 'Wand':
+                    case 'Staff':
+                    case 'Staff2H':
+                    case 'CeremonialDagger':
+                        this.setState({mainItem: data});
+                        break;
+                    case 'GenericGloves':
+                    case 'Gloves':
+                    case 'Gloves_Barbarian':
+                    case 'Gloves_DemonHunter':
+                    case 'Gloves_WitchDoctor':
+                    case 'Gloves_Crusader':
+                    case 'Gloves_Wizard':
+                    case 'Gloves_Monk':
+                        this.setState({glovesItem: data});
+                        break;
+                    case 'Belt':
+                    case 'GenericBelt':
+                    case 'Belt_Barbarian':
+                        this.setState({beltItem: data});
+                        break;
+                    case 'Amulet':
+                        this.setState({amuletItem: data});
+                        break;
+                }
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.state.url, status, err.toString());
+            }.bind(this)
+        });
+        console.log(this.state.itemUrl);
     },
 
     loadItemDataWithProps: function (itemKey, left) {
-            this.setState({item: itemKey});
-            this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
-            $.ajax({
-                url: this.state.itemUrl,
-                dataType: 'jsonp',
-                success: function (data) {
-                    switch (data.type.id) {
-                        case 'Ring':
-                            if (left === true) {
-                                this.setState({ringItemLeft: data});
-                            } else {
-                                this.setState({ringItemRight: data});
-                            }
-                            break;
-                        case 'Quiver':
-                        case 'CrusaderShield':
-                        case 'Shield':
-                        case 'Orb':
-                        case 'Source':
-                        case 'Mojo':
-                            this.setState({offItem: data});
-                            break;
-                        case 'Dagger':
-                        case 'Sword':
-                        case 'Mace':
-                        case 'Axe':
-                        case 'FistWeapon':
-                        case 'MightyWeapon1H':
-                        case 'Flail1H':
-                        case 'HandXbow':
-                        case 'Bow':
-                        case 'Wand':
-                        case 'Staff':
-                            this.setState({offItem: data});
-                            break;
-                    }
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(this.state.url, status, err.toString());
-                }.bind(this)
-            });
-            console.log(this.state.itemUrl);
+        this.setState({item: itemKey});
+        this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+        $.ajax({
+            url: this.state.itemUrl,
+            dataType: 'jsonp',
+            success: function (data) {
+                switch (data.type.id) {
+                    case 'Ring':
+                        if (left === true) {
+                            this.setState({ringItemLeft: data});
+                        } else {
+                            this.setState({ringItemRight: data});
+                        }
+                        break;
+                    case 'Quiver':
+                    case 'CrusaderShield':
+                    case 'Shield':
+                    case 'Orb':
+                    case 'Source':
+                    case 'Mojo':
+                        this.setState({offItem: data});
+                        break;
+                    case 'Dagger':
+                    case 'Sword':
+                    case 'Mace':
+                    case 'Axe':
+                    case 'FistWeapon':
+                    case 'MightyWeapon1H':
+                    case 'Flail1H':
+                    case 'HandXbow':
+                    case 'Bow':
+                    case 'Wand':
+                    case 'Staff':
+                        this.setState({offItem: data});
+                        break;
+                }
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.state.url, status, err.toString());
+            }.bind(this)
+        });
+        console.log(this.state.itemUrl);
     },
 
     checkTrigger: function () {
@@ -630,14 +630,14 @@ var DataWrapper = React.createClass({
         }
     },
 
-    objToString: function(obj) {
-    var str = '';
-    for (var p in obj) {
-        if (obj.hasOwnProperty(p)) {
-            str += p  + ' x' + obj[p] + '</br>';
+    objToString: function (obj) {
+        var str = '';
+        for (var p in obj) {
+            if (obj.hasOwnProperty(p)) {
+                str += p + ' x' + obj[p] + '</br>';
+            }
         }
-    }
-    return str;
+        return str;
     },
 
     collectStats: function () {
@@ -677,7 +677,9 @@ var DataWrapper = React.createClass({
             maxHealth = 0,
             k,
             j,
-            m;
+            m,
+            skillDmgToString,
+            countedValues;
 
         if (this.state.items) {
             var itemSlots = [
@@ -757,7 +759,7 @@ var DataWrapper = React.createClass({
                 var saveArr = [];
                 for (m = 0; m < this.state.skills.length; m++) {
                     if (this.state.skills[m].skill) {
-                        switch(this.state.class) {
+                        switch (this.state.class) {
                             case 'demon-hunter':
                                 saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
                                 break;
@@ -792,11 +794,11 @@ var DataWrapper = React.createClass({
                                     console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
                                     if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
                                         saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
-                                        var countedValues = saveValues.reduce(function(p, c){
+                                        countedValues = saveValues.reduce(function (p, c) {
                                             if (c in p) {
                                                 p[c]++;
                                             } else {
-                                                p[c]=1;
+                                                p[c] = 1;
                                             }
                                             return p;
                                         }, {});
@@ -928,6 +930,8 @@ var DataWrapper = React.createClass({
             resRed *= (1 - this.state.paragonResRed / 100);
             maxHealth += this.state.paragonMaxHealth;
 
+            skillDmgToString = this.objToString(countedValues);
+
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
             } else {
@@ -942,7 +946,7 @@ var DataWrapper = React.createClass({
             this.setState({dmgRedMelee: dmgRedMelee});
             this.setState({dmgRedRanged: dmgRedRanged});
             this.setState({maxHealth: maxHealth});
-            this.setState({skillDmg: this.objToString(countedValues)});
+            this.setState({skillDmg: skillDmgToString});
 
         }
     },
@@ -1096,7 +1100,10 @@ var DataWrapper = React.createClass({
 
         if (nameState && classState && levelState) {
             base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
-            base.push(React.DOM.div({key: classState.key}, 'Class: ', classState.toString().replace(/-/g, '').charAt(0).toUpperCase() + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
+            base.push(React.DOM.div({key: classState.key},
+                'Class: ',
+                classState.toString().replace(/-/g, '').charAt(0).toUpperCase()
+                + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
             base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
             if (paragonState) {
                 base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
