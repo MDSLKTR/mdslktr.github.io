@@ -791,7 +791,6 @@ var DataWrapper = React.createClass({
                             if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
                                 if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
                                     results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
-                                    console.log(Object.getOwnPropertyNames(itemSlots[i].attributesRaw));
                                     if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
                                         saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
                                         countedValues = saveValues.reduce(function (p, c) {
@@ -824,7 +823,6 @@ var DataWrapper = React.createClass({
                         continue;
                     }
                     checkSave.push(itemSlots[i].set.name);
-                    console.log(checkSave);
 
                     for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
                         for (k = 0; k < statPool.length; k++) {
@@ -3224,26 +3222,31 @@ var DataWrapper = React.createClass({
                 React.DOM.div({
                     className: this.state.skillDescOpen,
                     onClick: this.handleSkillDescClick,
+                    title: 'click to open detailed description',
                     id: 'panel-bottom-left'
                 }, 'Skills', skills),
                 React.DOM.div({
                     className: this.state.skillDescOpen,
                     onClick: this.handleSkillDescClick,
+                    title: 'click to close',
                     id: 'panel-bottom-left-desc'
                 }, skillsDesc),
                 React.DOM.div({
                     className: this.state.passiveDescOpen,
                     onClick: this.handlePassiveDescClick,
+                    title: 'click to open detailed description',
                     id: 'panel-bottom-right'
                 }, 'Passives', passives, specialPassive),
                 React.DOM.div({
                     className: this.state.passiveDescOpen,
                     onClick: this.handlePassiveDescClick,
-                    id: 'panel-bottom-right-desc'
+                    id: 'panel-bottom-right-desc',
+                    title: 'click to close'
                 }, passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
                     className: this.state.isOpen,
                     id: 'panel-right',
+                    title: 'click to show/hide more stats',
                     onClick: this.handleBonusStatsClick
                 }, 'Stats', stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive)

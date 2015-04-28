@@ -1,6 +1,6 @@
 <?php snippet('header') ?>
 <div id="d3-bg"></div>
-<div class="d3">
+<main class="main" role="main">
     <div id="profile-data"></div>
-</div>
+</main>
 <?php snippet('footer') ?>

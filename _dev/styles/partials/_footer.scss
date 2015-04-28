@@ -1,0 +1,11 @@
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  font-size: 0.75rem;
+  transform: translateX(-50%);
+
+  span {
+    color: wheat;
+  }
+}
