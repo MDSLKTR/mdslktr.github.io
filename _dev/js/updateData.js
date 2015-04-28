@@ -8,10 +8,10 @@ var DataWrapper = React.createClass({
             heroes: {},
             items: {},
             attributes: [],
-            class: {},
-            name: {},
-            level: {},
-            paragon: {},
+            class: '',
+            name: '',
+            level: '',
+            paragon: '',
 
             helmItem: {},
             amuletItem: {},
@@ -1096,12 +1096,7 @@ var DataWrapper = React.createClass({
 
         if (nameState && classState && levelState) {
             base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
-
-            if (classState.toString() !== '[object Object]' ) {
-                base.push(React.DOM.div({key: classState.key}, 'Class: ', classState.toString().replace(/-/g, '').charAt(0).toUpperCase() + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
-            } else {
-                base.push(React.DOM.div({key: classState.key}, 'Class: ', classState));
-            }
+            base.push(React.DOM.div({key: classState.key}, 'Class: ', classState.toString().replace(/-/g, '').charAt(0).toUpperCase() + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
             base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
             if (paragonState) {
                 base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
