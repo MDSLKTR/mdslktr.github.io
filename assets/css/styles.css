@@ -99,14 +99,17 @@ body {
   font-size: 1.1em; }
 
 .d3-api-url {
+  width: 10%;
   z-index: 6;
   position: fixed;
   bottom: 5vh;
   left: 50%;
   -webkit-transform: translateX(-50%);
-          transform: translateX(-50%);
-  cursor: pointer; }
+          transform: translateX(-50%); }
+  .d3-api-url span {
+    color: wheat; }
   .d3-api-url input {
+    margin-top: 0.25rem;
     background: black;
     color: wheat;
     outline: none;
@@ -123,14 +126,11 @@ body {
   bottom: 2.5vh;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%); }
+  .d3-char-wrapper span {
+    color: wheat; }
   .d3-char-wrapper select {
     cursor: pointer;
     background: black;
-    position: absolute;
-    left: 50%;
-    top: 5%;
-    -webkit-transform: translateX(-50%);
-            transform: translateX(-50%);
     width: 90%;
     border: 2px solid darkred;
     color: wheat;
@@ -573,8 +573,7 @@ body {
   position: relative;
   border-radius: 7px;
   background: black;
-  -webkit-filter: drop-shadow(0 0 1px #ff0000);
-          filter: drop-shadow(0 0 1px #ff0000); }
+  box-shadow: inset 0 0 0 1px darkred; }
 
 #panel-right-additional > div {
   padding: 0;
@@ -582,12 +581,11 @@ body {
 
 .hasIcon {
   background: black;
-  -webkit-filter: drop-shadow(0 0 1px #ff0000);
-          filter: drop-shadow(0 0 1px #ff0000);
   padding-top: 1.75vh;
   padding-bottom: 1.75vh;
   margin-bottom: 1.5vh;
-  position: relative; }
+  position: relative;
+  box-shadow: inset 0 0 0 1px darkred; }
 
 .description {
   display: -webkit-box;
@@ -620,7 +618,7 @@ body {
 
 #panel-left, #panel-right, #panel-bottom-left, #panel-bottom-right, #panel-right-additional {
   position: fixed;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(255, 0, 0, 0.25);
   color: sienna;
   -webkit-animation-duration: 5s;
           animation-duration: 5s;
@@ -634,7 +632,6 @@ body {
   padding: 1.5vh;
   -webkit-transform: translateZ(0);
           transform: translateZ(0);
-  box-shadow: inset 0 0 5px 1px darkred;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden; }
   #panel-left > span, #panel-right > span, #panel-bottom-left > span, #panel-bottom-right > span, #panel-right-additional > span {
@@ -679,7 +676,8 @@ body {
   -webkit-filter: none;
           filter: none;
   right: -55vw;
-  height: 40vh;
+  height: auto;
+  box-shadow: inset 0 0 1px 1px darkred;
   top: 1.5vh;
   width: 35vw;
   text-align: left;
@@ -707,14 +705,15 @@ body {
   text-align: left;
   cursor: pointer; }
   #panel-right:after {
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred;
     content: 'More Stats';
     position: absolute;
     bottom: -7.5%;
+    color: wheat;
     left: 0;
     padding: 5px;
-    box-shadow: inset 0 0 5px 2px darkred;
-    border-radius: 7px;
-    background: black; }
+    border-radius: 7px; }
   #panel-right.open ~ #panel-right-additional {
     -webkit-transform: translateX(-37.5vw) translateZ(0);
             transform: translateX(-37.5vw) translateZ(0);
@@ -736,11 +735,12 @@ body {
     content: 'Details';
     position: absolute;
     top: -7.5%;
+    color: wheat;
     right: 0;
     padding: 5px;
-    box-shadow: inset 0 0 5px 2px darkred;
     border-radius: 7px;
-    background: black; }
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred; }
   #panel-bottom-left .icon-front, #panel-bottom-left .icon-back, #panel-bottom-left .icon {
     right: -5px; }
   #panel-bottom-left > div {
@@ -763,11 +763,12 @@ body {
     content: 'Details';
     position: absolute;
     top: -7.5%;
+    color: wheat;
     left: 0;
     padding: 5px;
-    box-shadow: inset 0 0 5px 2px darkred;
     border-radius: 7px;
-    background: black; }
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred; }
   #panel-bottom-right .icon-front, #panel-bottom-right .icon-back, #panel-bottom-right .icon {
     left: -5px; }
   #panel-bottom-right > div {

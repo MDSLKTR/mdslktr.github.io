@@ -57,7 +57,6 @@ var DataWrapper = React.createClass({
             isOpen: '',
             skillDescOpen: '',
             passiveDescOpen: '',
-            refreshing: 'on',
             url: '',
             itemUrl: '',
             battleTag: localStorage.getItem('battleTag'),
@@ -70,7 +69,7 @@ var DataWrapper = React.createClass({
     },
 
     loadHeroesData: function () {
-        if (this.state.battleTag && this.state.refreshing === 'on') {
+        if (this.state.battleTag) {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
@@ -89,7 +88,7 @@ var DataWrapper = React.createClass({
     },
 
     loadHeroData: function () {
-        if (this.state.selected && this.state.refreshing === 'on') {
+        if (this.state.selected) {
             this.setState({url: this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
             $.ajax({
                 url: this.state.url,
@@ -116,7 +115,6 @@ var DataWrapper = React.createClass({
     },
 
     loadItemData: function (itemKey) {
-        if (this.state.refreshing === 'on') {
             this.setState({item: itemKey});
             this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
             $.ajax({
@@ -224,13 +222,10 @@ var DataWrapper = React.createClass({
                     console.error(this.state.url, status, err.toString());
                 }.bind(this)
             });
-
             console.log(this.state.itemUrl);
-        }
     },
 
     loadItemDataWithProps: function (itemKey, left) {
-        if (this.state.refreshing === 'on') {
             this.setState({item: itemKey});
             this.setState({itemUrl: this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
             $.ajax({
@@ -273,15 +268,6 @@ var DataWrapper = React.createClass({
                 }.bind(this)
             });
             console.log(this.state.itemUrl);
-        }
-    },
-
-    setPolling: function () {
-        if (this.state.refreshing === 'off') {
-            this.setState({refreshing: 'on'});
-        } else {
-            this.setState({refreshing: 'off'});
-        }
     },
 
     checkTrigger: function () {
@@ -3212,6 +3198,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({className: 'd3-item-wrapper'}, items),
                 React.DOM.div({className: 'd3-char-bg', style: style}),
                 React.DOM.div({className: 'd3-api-url'},
+                    'Enter your BattleTag: ',
                     React.DOM.input(
                         {
                             value: this.state.battleTag,
@@ -3221,6 +3208,7 @@ var DataWrapper = React.createClass({
                     )
                 ),
                 React.DOM.div({className: 'd3-char-wrapper'},
+                    'Click below to select your hero: ',
                     React.DOM.select(
                         {
                             className: 'd3-chars',
@@ -3256,8 +3244,7 @@ var DataWrapper = React.createClass({
                     id: 'panel-right',
                     onClick: this.handleBonusStatsClick
                 }, 'Stats', stats),
-                React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive),
-                React.DOM.div({className: 'setButton', onClick: this.setPolling}, 'refreshing is: ' + refreshing)
+                React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive)
             )
         );
     }
