@@ -3198,7 +3198,7 @@ var DataWrapper = React.createClass({
                 React.DOM.div({className: 'd3-item-wrapper'}, items),
                 React.DOM.div({className: 'd3-char-bg', style: style}),
                 React.DOM.div({className: 'd3-api-url'},
-                    'Enter your BattleTag: ',
+                    '1 - Enter your BattleTag: ',
                     React.DOM.input(
                         {
                             value: this.state.battleTag,
@@ -3208,7 +3208,7 @@ var DataWrapper = React.createClass({
                     )
                 ),
                 React.DOM.div({className: 'd3-char-wrapper'},
-                    'Click below to select your hero: ',
+                    '2 - Click below to select your hero: ',
                     React.DOM.select(
                         {
                             className: 'd3-chars',
