@@ -440,7 +440,7 @@ var DataWrapper = React.createClass({
             }
         } else if (parent.hasClass('atkspd')) {
             if (el.hasClass('paragon-stat-increment')) {
-                if (this.state.paragonAtkSpd < 5) {
+                if (this.state.paragonAtkSpd < 10) {
                     this.setState({paragonAtkSpd: Math.round((this.state.paragonAtkSpd + 0.2) * 10) / 10});
                 }
             } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
