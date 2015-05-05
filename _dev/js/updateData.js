@@ -196,6 +196,8 @@ var DataWrapper = React.createClass({
                     case 'Staff':
                     case 'Staff2H':
                     case 'CeremonialDagger':
+                    case 'MightyWeapon2H':
+                    case 'Mace2H':
                         this.setState({mainItem: data});
                         break;
                     case 'GenericGloves':
@@ -1030,7 +1032,19 @@ var DataWrapper = React.createClass({
             pArmor = this.state.paragonArmor,
             pLife = this.state.paragonMaxHealth,
             i,
-            k;
+            k,
+            weaponElementsMin = [
+                'Damage_Weapon_Min#Arcane',
+                'Damage_Weapon_Min#Fire',
+                'Damage_Weapon_Min#Lightning',
+                'Damage_Weapon_Min#Cold'
+            ],
+            weaponElementsDelta = [
+                'Damage_Weapon_Delta#Arcane',
+                'Damage_Weapon_Delta#Fire',
+                'Damage_Weapon_Delta#Lightning',
+                'Damage_Weapon_Delta#Cold'
+            ];
 
         switch (classState) {
             case 'demon-hunter':
@@ -2099,7 +2113,39 @@ var DataWrapper = React.createClass({
                 mainHand.push(React.DOM.li({
                     key: mainHandState.key,
                     className: 'dps'
-                }, mainHandState.dps.max.toString().substring(0, 8) + ' DPS'));
+                }, mainHandState.dps.max.toString().substring(0, 7) + ' DPS'));
+            }
+
+            if (mainHandState.minDamage && mainHandState.maxDamage && mainHandState.attributesRaw) {
+                for (i = 0; i < weaponElementsMin.length; i++) {
+                    if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
+                        if (mainHandState.attributesRaw['Damage_Weapon_Percent_All']) {
+                            mainHand.push(React.DOM.li({
+                                    key: mainHandState.key,
+                                    className: 'raw-damage'
+                                }, Math.round(mainHandState.minDamage.max +
+                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                                (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
+                                ' - ' +
+                            Math.round(mainHandState.maxDamage.max +
+                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                                mainHandState.attributesRaw[weaponElementsDelta[i]].max +
+                                ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)
+                            ) + ' Damage'));
+                        } else {
+                            mainHand.push(React.DOM.li({
+                                key: mainHandState.key,
+                                className: 'raw-damage'
+                            }, Math.round(mainHandState.minDamage.max +
+                            mainHandState.attributesRaw[weaponElementsMin[i]].max) +
+                            ' - ' +
+                            Math.round(mainHandState.maxDamage.max +
+                            mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                            mainHandState.attributesRaw[weaponElementsDelta[i]].max)
+                            + ' Damage'));
+                        }
+                    }
+                }
             }
 
             if (mainHandState.attributes) {
@@ -2260,6 +2306,38 @@ var DataWrapper = React.createClass({
                     key: offHandState.key,
                     className: 'dps'
                 }, offHandState.dps.max.toString().substring(0, 8) + ' DPS'));
+            }
+
+            if (offHandState.minDamage && offHandState.maxDamage && offHandState.attributesRaw) {
+                for (i = 0; i < weaponElementsMin.length; i++) {
+                    if (offHandState.attributesRaw[weaponElementsMin[i]]) {
+                        if (offHandState.attributesRaw['Damage_Weapon_Percent_All']) {
+                            offHand.push(React.DOM.li({
+                                key: offHandState.key,
+                                className: 'raw-damage'
+                            }, Math.round(offHandState.minDamage.max +
+                            offHandState.attributesRaw[weaponElementsMin[i]].max +
+                            (offHandState.attributesRaw[weaponElementsMin[i]].max * offHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
+                            ' - ' +
+                            Math.round(offHandState.maxDamage.max +
+                                offHandState.attributesRaw[weaponElementsMin[i]].max +
+                                offHandState.attributesRaw[weaponElementsDelta[i]].max +
+                                ((offHandState.attributesRaw[weaponElementsMin[i]].max + offHandState.attributesRaw[weaponElementsDelta[i]].max) * offHandState.attributesRaw['Damage_Weapon_Percent_All'].max)
+                            ) + ' Damage'));
+                        } else {
+                            offHand.push(React.DOM.li({
+                                key: offHandState.key,
+                                className: 'raw-damage'
+                            },  Math.round(offHandState.minDamage.max +
+                            offHandState.attributesRaw[weaponElementsMin[i]].max) +
+                            ' - ' +
+                            Math.round(offHandState.maxDamage.max +
+                            offHandState.attributesRaw[weaponElementsMin[i]].max +
+                            offHandState.attributesRaw[weaponElementsDelta[i]].max)
+                            + ' Damage'));
+                        }
+                    }
+                }
             }
 
             if (offHandState.attributes) {

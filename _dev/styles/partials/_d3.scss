@@ -491,6 +491,12 @@
           flex: 0 100%;
         }
 
+        .raw-damage {
+          font-size: 15px;
+          color: white;
+          flex: 0 100%;
+        }
+
         .name {
           font-size: 18px;
           flex: 0 90%;
@@ -532,7 +538,7 @@
 
         .gem-passive {
           color: goldenrod;
-          flex: 0 75%;
+          flex: 0 80%;
         }
 
         .socket {

@@ -481,6 +481,13 @@ main {
           -webkit-flex: 0 100%;
               -ms-flex: 0 100%;
                   flex: 0 100%; }
+        .d3-item-wrapper > div > div > ul .raw-damage {
+          font-size: 15px;
+          color: white;
+          -webkit-box-flex: 0;
+          -webkit-flex: 0 100%;
+              -ms-flex: 0 100%;
+                  flex: 0 100%; }
         .d3-item-wrapper > div > div > ul .name {
           font-size: 18px;
           -webkit-box-flex: 0;
@@ -510,9 +517,9 @@ main {
         .d3-item-wrapper > div > div > ul .gem-passive {
           color: goldenrod;
           -webkit-box-flex: 0;
-          -webkit-flex: 0 75%;
-              -ms-flex: 0 75%;
-                  flex: 0 75%; }
+          -webkit-flex: 0 80%;
+              -ms-flex: 0 80%;
+                  flex: 0 80%; }
         .d3-item-wrapper > div > div > ul .socket {
           height: 38px;
           -webkit-filter: drop-shadow(0px 0px 2px white);
