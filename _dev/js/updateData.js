@@ -53,6 +53,7 @@ var DataWrapper = React.createClass({
             paragonMaxHealth: parseInt(localStorage.getItem('paragonMaxHealth')),
 
             invalid: false,
+            setRing: false,
             time: 0,
             toggle: 'more',
             skillDescOpen: '',
@@ -352,7 +353,8 @@ var DataWrapper = React.createClass({
             time: 0,
             toggle: '',
             skillDescOpen: '',
-            passiveDescOpen: ''
+            passiveDescOpen: '',
+            setRing: false
         });
     },
 
@@ -683,7 +685,61 @@ var DataWrapper = React.createClass({
             j,
             m,
             skillDmgToString,
-            countedValues;
+            countedValues,
+            setPool = [
+                ['Cain\'s Fate',0],
+                ['Bastions of Will',0],
+                ['Aughild\'s Victory',0],
+                ['Aughild\'s Authority',0],
+                ['Guardian\'s Contingency',0],
+                ['Immortal King\'s Call',0],
+                ['Natalya\'s Vengeance',0],
+                ['Tal Rasha\'s Elements',0],
+                ['Sage\'s Plight',0],
+                ['Sage\'s Journey',0],
+                ['Born\'s Defiance',0],
+                ['Born\'s Command',0],
+                ['Unhallowed Essence',0],
+                ['Aughild\'s Authority',0],
+                ['Cain\'s Destiny',0],
+                ['Thorns of the Invoker',0],
+                ['Might of the Earth',0],
+                ['Firebird\'s Finery',0],
+                ['Guardian\'s Jeopardy',0],
+                ['Helltooth Harness',0],
+                ['Armor of Akkhan',0],
+                ['Wrath of the Wastes',0],
+                ['Raiment of the Jade Harvester',0],
+                ['Embodiment of the Marauder',0],
+                ['Raiment of a Thousand Storms',0],
+                ['The Legacy of Raekor',0],
+                ['Roland\'s Legacy',0],
+                ['Delsere\'s Magnum Opus',0],
+                ['Monkey King\'s Garb',0],
+                ['Asheara\'s Uniform',0],
+                ['Demon\'s Skin',0],
+                ['Demon\'s Hide',0],
+                ['Asheara\'s Vestments',0],
+                ['Thorns of the Invoker',0],
+                ['Delsere\'s Magnum Opus',0],
+                ['Blackthorne\'s Battlegear',0],
+                ['Inna\'s Mantra',0],
+                ['Vyr\'s Amazing Arcana',0],
+                ['Krelm\'s Buff Bulwark',0],
+                ['The Shadow’s Mantle',0],
+                ['Endless Walk',0],
+                ['Legacy of Nightmares',0],
+                ['Hallowed Defenders',0],
+                ['Hallowed Protectors',0],
+                ['Manajuma\'s Way',0],
+                ['Zunimassa\'s Haunt',0],
+                ['Chantodo\'s Resolve',0],
+                ['Istvan\'s Paired Blades',0],
+                ['Shenlong\'s Spirit',0],
+                ['Bul-Kathos\'s Oath',0],
+                ['Danetta\'s Hatred',0],
+                ['Captain Crimson\'s Trimmings',0]
+            ];
 
         if (this.state.items) {
             var itemSlots = [
@@ -813,9 +869,19 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            var checkSave = [];
+            var checkSave = [],
+                minSets = 2;
             // set bonus iterator
             // todo find out how to detect amount of set items
+            for (i = 0; i < itemSlots.length; i++) {
+                if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
+                    this.setState({setRing: true});
+                } else {
+                    this.setState({setRing: false});
+                }
+                checkSave.push(itemSlots[i].name);
+            }
+
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
                     // todo count unique set amount and calc stats
@@ -823,60 +889,78 @@ var DataWrapper = React.createClass({
 
                     // break loop iteration if set is already found
 
-                    if (checkSave.indexOf(itemSlots[i].set.name) > -1) {
-                        continue;
-                    }
-                    checkSave.push(itemSlots[i].set.name);
+                    //if (checkSave.indexOf(itemSlots[i].set.name) > -1) {
+                    //    continue;
+                    //}
+                    //checkSave.push(itemSlots[i].set.name);
 
-                    for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
-                        for (k = 0; k < statPool.length; k++) {
-                            // check if the stats are releveant for stat building
-                            if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-                                    results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                    switch (statPool[k]) {
-                                        case 'Damage_Dealt_Percent_Bonus#Fire':
-                                            fireDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Cold':
-                                            coldDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                            lightningDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Physical':
-                                            physicalDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Poison':
-                                            poisonDmg += results[k] * 100;
-                                            break;
-                                        case 'Power_Cooldown_Reduction_Percent_All':
-                                            cdr *= (1 - results[k]);
-                                            break;
-                                        case 'Resource_Cost_Reduction_Percent_All':
-                                            resRed *= (1 - results[k]);
-                                            break;
-                                        case 'Damage_Percent_Bonus_Vs_Elites':
-                                            eliteDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Percent_Reduction_From_Elites':
-                                            eliteDmgRed += results[k] * 100;
-                                            break;
-                                        case 'Splash_Damage_Effect_Percent':
-                                            areaDmg += results[k] * 100;
-                                            break;
-                                        case 'Gold_PickUp_Radius':
-                                            goldPickUp += results[k];
-                                            break;
-                                        case 'Damage_Percent_Reduction_From_Melee':
-                                            dmgRedMelee *= (1 - results[k]);
-                                            break;
-                                        case 'Damage_Percent_Reduction_From_Ranged':
-                                            dmgRedRanged *= (1 - results[k]);
-                                            break;
-                                        case 'Hitpoints_Max_Percent_Bonus_Item':
-                                            maxHealth += results[k] * 100;
-                                            break;
+                    for (m = 0; m < setPool.length; m++) {
+                        if (itemSlots[i].set.name === setPool[m][0]) {
+                            setPool[m][1]++;
+                            console.log(setPool[m][0] + setPool[m][1]);
+                        }
+
+                        for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                            if (this.state.setRing === true && itemSlots[i].set.ranks[j].required - 1 > setPool[m][1]) {
+                                console.log('setRing');
+                                continue;
+                            } else if (this.state.setRing === false && itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required > setPool[m][1]) {
+                                console.log('no setRing');
+                                continue;
+                            }
+                            console.log('trough');
+                            for (k = 0; k < statPool.length; k++) {
+
+                                // check if the stats are releveant for stat building
+                                if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                    if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                        results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                        switch (statPool[k]) {
+                                            case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                fireDmg += results[k] * 100;
+                                                break;
+                                            case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                coldDmg += results[k] * 100;
+                                                break;
+                                            case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                lightningDmg += results[k] * 100;
+                                                break;
+                                            case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                physicalDmg += results[k] * 100;
+                                                break;
+                                            case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                poisonDmg += results[k] * 100;
+                                                break;
+                                            case 'Power_Cooldown_Reduction_Percent_All':
+                                                cdr *= (1 - results[k]);
+                                                console.log('applied');
+                                                break;
+                                            case 'Resource_Cost_Reduction_Percent_All':
+                                                resRed *= (1 - results[k]);
+                                                break;
+                                            case 'Damage_Percent_Bonus_Vs_Elites':
+                                                eliteDmg += results[k] * 100;
+                                                break;
+                                            case 'Damage_Percent_Reduction_From_Elites':
+                                                eliteDmgRed += results[k] * 100;
+                                                break;
+                                            case 'Splash_Damage_Effect_Percent':
+                                                areaDmg += results[k] * 100;
+                                                break;
+                                            case 'Gold_PickUp_Radius':
+                                                goldPickUp += results[k];
+                                                break;
+                                            case 'Damage_Percent_Reduction_From_Melee':
+                                                dmgRedMelee *= (1 - results[k]);
+                                                break;
+                                            case 'Damage_Percent_Reduction_From_Ranged':
+                                                dmgRedRanged *= (1 - results[k]);
+                                                break;
+                                            case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                maxHealth += results[k] * 100;
+                                                console.log('fired');
+                                                break;
+                                        }
                                     }
                                 }
                             }
@@ -2127,12 +2211,12 @@ var DataWrapper = React.createClass({
                     if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
                         if (mainHandState.attributesRaw['Damage_Weapon_Percent_All']) {
                             mainHand.push(React.DOM.li({
-                                    key: mainHandState.key,
-                                    className: 'raw-damage'
-                                }, Math.round(mainHandState.minDamage.max +
-                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                                (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
-                                ' - ' +
+                                key: mainHandState.key,
+                                className: 'raw-damage'
+                            }, Math.round(mainHandState.minDamage.max +
+                            mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                            (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
+                            ' - ' +
                             Math.round(mainHandState.maxDamage.max +
                                 mainHandState.attributesRaw[weaponElementsMin[i]].max +
                                 mainHandState.attributesRaw[weaponElementsDelta[i]].max +
@@ -3305,8 +3389,8 @@ var DataWrapper = React.createClass({
                     title: 'click to open detailed description',
                     id: 'panel-bottom-left'
                 },React.DOM.button({
-                        onClick: this.handleSkillDescClick
-                    }, 'show details'), 'Skills', skills),
+                    onClick: this.handleSkillDescClick
+                }, 'show details'), 'Skills', skills),
                 React.DOM.div({
                     className: this.state.skillDescOpen,
                     id: 'panel-bottom-left-desc'
@@ -3319,8 +3403,8 @@ var DataWrapper = React.createClass({
                     title: 'click to open detailed description',
                     id: 'panel-bottom-right'
                 },React.DOM.button({
-                        onClick: this.handlePassiveDescClick
-                    }, 'show details'), 'Passives', passives, specialPassive),
+                    onClick: this.handlePassiveDescClick
+                }, 'show details'), 'Passives', passives, specialPassive),
                 React.DOM.div({
                     className: this.state.passiveDescOpen,
                     id: 'panel-bottom-right-desc'
@@ -3329,11 +3413,11 @@ var DataWrapper = React.createClass({
                     title: 'click to close'
                 }, 'close details'), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
-                    className: this.state.toggle + ' ' + this.state.panels,
-                    id: 'panel-right'
-                }, React.DOM.button({
-                    onClick: this.handleBonusStatsClick,
-                    title: 'click to show/hide more stats'
+                        className: this.state.toggle + ' ' + this.state.panels,
+                        id: 'panel-right'
+                    }, React.DOM.button({
+                        onClick: this.handleBonusStatsClick,
+                        title: 'click to show/hide more stats'
                     }, 'show ' + this.state.toggle),
                     'Stats (without amplification by skills)',
                     stats),
