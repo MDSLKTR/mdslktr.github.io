@@ -711,7 +711,6 @@
 
 #panel-bottom-left-desc,
 #panel-bottom-right-desc {
-  cursor: pointer;
   z-index: 10;
   position: fixed;
   height: 100%;
@@ -723,6 +722,17 @@
   transition: transform 0.5s;
   box-shadow: inset 0 0 5px 1px rgba(255, 0, 0, 0.65);
   //    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
+
+  button {
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred;
+    position: absolute;
+    top: 2.5%;
+    color: wheat;
+    right: 2.5%;
+    padding: 5px;
+    border-radius: 7px;
+  }
 
   span {
     color: wheat;
@@ -769,12 +779,10 @@
   right: -40vw;
   animation-name: fadein-right;
   text-align: left;
-  cursor: pointer;
 
-  &:after {
+  button {
     background: rgba(255, 0, 0, 0.2);
     box-shadow: inset 0 0 0 1px darkred;
-    content: 'More Stats';
     position: absolute;
     bottom: -7.5%;
     color: wheat;
@@ -783,20 +791,13 @@
     border-radius: 7px;
   }
 
-  &.open ~ #panel-right-additional {
+  &.less ~ #panel-right-additional {
     transform: translateX(-37.5vw) translateZ(0);
     transition: transform 0.5s;
-  }
-
-  &.open {
-    &:after {
-      content: 'Close';
-    }
   }
 }
 
 #panel-bottom-left {
-  cursor: pointer;
   text-align: right;
   height: 45vh;
   width: 45%;
@@ -804,8 +805,7 @@
   left: -60vw;
   animation-name: fadein-bottom-left;
 
-  &:before {
-    content: 'Details';
+  button {
     position: absolute;
     top: -7.5%;
     color: wheat;
@@ -833,15 +833,13 @@
 }
 
 #panel-bottom-right {
-  cursor: pointer;
   height: 45vh;
   width: 45%;
   bottom: -55vh;
   right: -60vw;
   animation-name: fadein-bottom-right;
 
-  &:before {
-    content: 'Details';
+  button {
     position: absolute;
     top: -7.5%;
     color: wheat;

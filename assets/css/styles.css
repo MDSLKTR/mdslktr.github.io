@@ -3,7 +3,7 @@ html {
   font-family: 'Oxygen', sans-serif;
   font-size: 1em; }
 
-select, input {
+select, input, button {
   font-family: 'Arial';
   font-family: 'Oxygen', sans-serif;
   font-size: 0.8rem; }
@@ -24,6 +24,12 @@ main {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+
+button {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  cursor: pointer; }
 
 .setButton {
   position: fixed;
@@ -662,7 +668,6 @@ main {
   width: 32.5vw; }
 
 #panel-bottom-left-desc, #panel-bottom-right-desc {
-  cursor: pointer;
   z-index: 10;
   position: fixed;
   height: 100%;
@@ -675,6 +680,15 @@ main {
   -webkit-transition: -webkit-transform 0.5s;
           transition: transform 0.5s;
   box-shadow: inset 0 0 5px 1px rgba(255, 0, 0, 0.65); }
+  #panel-bottom-left-desc button, #panel-bottom-right-desc button {
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred;
+    position: absolute;
+    top: 2.5%;
+    color: wheat;
+    right: 2.5%;
+    padding: 5px;
+    border-radius: 7px; }
   #panel-bottom-left-desc span, #panel-bottom-right-desc span {
     color: wheat;
     font-size: 1.2rem; }
@@ -716,28 +730,23 @@ main {
   right: -40vw;
   -webkit-animation-name: fadein-right;
           animation-name: fadein-right;
-  text-align: left;
-  cursor: pointer; }
-  #panel-right:after {
+  text-align: left; }
+  #panel-right button {
     background: rgba(255, 0, 0, 0.2);
     box-shadow: inset 0 0 0 1px darkred;
-    content: 'More Stats';
     position: absolute;
     bottom: -7.5%;
     color: wheat;
     left: 0;
     padding: 5px;
     border-radius: 7px; }
-  #panel-right.open ~ #panel-right-additional {
+  #panel-right.less ~ #panel-right-additional {
     -webkit-transform: translateX(-37.5vw) translateZ(0);
             transform: translateX(-37.5vw) translateZ(0);
     -webkit-transition: -webkit-transform 0.5s;
             transition: transform 0.5s; }
-  #panel-right.open:after {
-    content: 'Close'; }
 
 #panel-bottom-left {
-  cursor: pointer;
   text-align: right;
   height: 45vh;
   width: 45%;
@@ -745,8 +754,7 @@ main {
   left: -60vw;
   -webkit-animation-name: fadein-bottom-left;
           animation-name: fadein-bottom-left; }
-  #panel-bottom-left:before {
-    content: 'Details';
+  #panel-bottom-left button {
     position: absolute;
     top: -7.5%;
     color: wheat;
@@ -766,15 +774,13 @@ main {
             transition: transform 1s; }
 
 #panel-bottom-right {
-  cursor: pointer;
   height: 45vh;
   width: 45%;
   bottom: -55vh;
   right: -60vw;
   -webkit-animation-name: fadein-bottom-right;
           animation-name: fadein-bottom-right; }
-  #panel-bottom-right:before {
-    content: 'Details';
+  #panel-bottom-right button {
     position: absolute;
     top: -7.5%;
     color: wheat;

@@ -54,7 +54,7 @@ var DataWrapper = React.createClass({
 
             invalid: false,
             time: 0,
-            isOpen: '',
+            toggle: 'more',
             skillDescOpen: '',
             passiveDescOpen: '',
             url: '',
@@ -349,7 +349,7 @@ var DataWrapper = React.createClass({
             level: {},
             paragon: {},
             time: 0,
-            isOpen: '',
+            toggle: '',
             skillDescOpen: '',
             passiveDescOpen: ''
         });
@@ -369,10 +369,10 @@ var DataWrapper = React.createClass({
     },
 
     handleBonusStatsClick: function () {
-        if (this.state.isOpen === 'open') {
-            return this.setState({isOpen: ''});
+        if (this.state.toggle !== 'more') {
+            return this.setState({toggle: 'more'});
         } else {
-            return this.setState({isOpen: 'open'});
+            return this.setState({toggle: 'less'});
         }
     },
 
@@ -1037,13 +1037,15 @@ var DataWrapper = React.createClass({
                 'Damage_Weapon_Min#Arcane',
                 'Damage_Weapon_Min#Fire',
                 'Damage_Weapon_Min#Lightning',
-                'Damage_Weapon_Min#Cold'
+                'Damage_Weapon_Min#Cold',
+                'Damage_Weapon_Min#Poison'
             ],
             weaponElementsDelta = [
                 'Damage_Weapon_Delta#Arcane',
                 'Damage_Weapon_Delta#Fire',
                 'Damage_Weapon_Delta#Lightning',
-                'Damage_Weapon_Delta#Cold'
+                'Damage_Weapon_Delta#Cold',
+                'Damage_Weapon_Delta#Poison'
             ];
 
         switch (classState) {
@@ -3297,34 +3299,41 @@ var DataWrapper = React.createClass({
                 React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
                 React.DOM.div({
                     className: this.state.skillDescOpen,
-                    onClick: this.handleSkillDescClick,
                     title: 'click to open detailed description',
                     id: 'panel-bottom-left'
-                }, 'Skills', skills),
+                },React.DOM.button({
+                        onClick: this.handleSkillDescClick
+                    }, 'show details'), 'Skills', skills),
                 React.DOM.div({
                     className: this.state.skillDescOpen,
-                    onClick: this.handleSkillDescClick,
-                    title: 'click to close',
                     id: 'panel-bottom-left-desc'
-                }, skillsDesc),
+                },React.DOM.button({
+                    onClick: this.handleSkillDescClick,
+                    title: 'click to close'
+                }, 'close details'), skillsDesc),
                 React.DOM.div({
                     className: this.state.passiveDescOpen,
-                    onClick: this.handlePassiveDescClick,
                     title: 'click to open detailed description',
                     id: 'panel-bottom-right'
-                }, 'Passives', passives, specialPassive),
+                },React.DOM.button({
+                        onClick: this.handlePassiveDescClick
+                    }, 'show details'), 'Passives', passives, specialPassive),
                 React.DOM.div({
                     className: this.state.passiveDescOpen,
+                    id: 'panel-bottom-right-desc'
+                },React.DOM.button({
                     onClick: this.handlePassiveDescClick,
-                    id: 'panel-bottom-right-desc',
                     title: 'click to close'
-                }, passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
+                }, 'close details'), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
-                    className: this.state.isOpen,
-                    id: 'panel-right',
-                    title: 'click to show/hide more stats',
-                    onClick: this.handleBonusStatsClick
-                }, 'Stats (without amplification by skills)', stats),
+                    className: this.state.toggle,
+                    id: 'panel-right'
+                }, React.DOM.button({
+                    onClick: this.handleBonusStatsClick,
+                    title: 'click to show/hide more stats'
+                    }, 'show ' + this.state.toggle),
+                    'Stats (without amplification by skills)',
+                    stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive)
             )
         );

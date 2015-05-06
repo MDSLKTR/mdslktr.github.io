@@ -4,7 +4,7 @@ html{
   font-size: 1em;
 }
 
-select, input {
+select, input, button {
   font-family: 'Arial';
   font-family: 'Oxygen', sans-serif;
   font-size: 0.8rem;
@@ -25,4 +25,11 @@ body {
 
 main {
   user-select: none;
+}
+
+button {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
