@@ -33,3 +33,12 @@ button {
   outline: none;
   cursor: pointer;
 }
+
+@keyframes fader {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

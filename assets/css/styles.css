@@ -31,6 +31,20 @@ button {
   outline: none;
   cursor: pointer; }
 
+@-webkit-keyframes fader {
+  from {
+    opacity: 0; }
+
+  to {
+    opacity: 1; } }
+
+@keyframes fader {
+  from {
+    opacity: 0; }
+
+  to {
+    opacity: 1; } }
+
 .setButton {
   position: fixed;
   bottom: 0;
@@ -588,6 +602,8 @@ button {
     right: 10%; }
 
 #panel-left > div:not(.hasIcon), #panel-right > div:not(.hasIcon) {
+  -webkit-animation: fader 2s both linear;
+          animation: fader 2s both linear;
   padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
@@ -596,10 +612,14 @@ button {
   box-shadow: inset 0 0 0 1px darkred; }
 
 #panel-right-additional > div {
+  -webkit-animation: fader 2s both linear;
+          animation: fader 2s both linear;
   padding: 0;
   margin-bottom: 0; }
 
 .hasIcon {
+  -webkit-animation: fader 2s both linear;
+          animation: fader 2s both linear;
   background: black;
   padding-top: 1.75vh;
   padding-bottom: 1.75vh;

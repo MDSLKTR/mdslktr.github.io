@@ -57,6 +57,7 @@ var DataWrapper = React.createClass({
             toggle: 'more',
             skillDescOpen: '',
             passiveDescOpen: '',
+            hellfire_clear: '',
             url: '',
             itemUrl: '',
             battleTag: localStorage.getItem('battleTag'),
@@ -1047,7 +1048,9 @@ var DataWrapper = React.createClass({
                 'Damage_Weapon_Delta#Lightning',
                 'Damage_Weapon_Delta#Cold',
                 'Damage_Weapon_Delta#Poison'
-            ];
+            ],
+            hellfirePassiveDisplay,
+            hellfirePassiveLink;
 
         switch (classState) {
             case 'demon-hunter':
@@ -2905,10 +2908,9 @@ var DataWrapper = React.createClass({
         }
 
         if (amuletState.attributes && itemsState) {
-            if (amuletState.attributes.passive[0] && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
-                var hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase(),
-                    hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
-
+            if (amuletState.attributes.passive[0] && amuletState.attributes.passive[0].text.search('passive') !== -1 && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
+                hellfirePassiveLink  = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase();
+                hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
                 switch (classState) {
                     case 'demon-hunter':
                         constructedLink = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
