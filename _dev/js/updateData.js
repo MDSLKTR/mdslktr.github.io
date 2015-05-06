@@ -360,6 +360,7 @@ var DataWrapper = React.createClass({
         this.setState({selected: newValue});
         this.setState({trigger: true});
         this.setState({count: 0});
+        this.setState({panels: 'visible'});
 
         if (this.state.heroes.code) {
             this.setState({invalid: true});
@@ -3296,9 +3297,9 @@ var DataWrapper = React.createClass({
                         }, heroes
                     )
                 ),
-                React.DOM.div({id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
+                React.DOM.div({className: this.state.panels, id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
                 React.DOM.div({
-                    className: this.state.skillDescOpen,
+                    className: this.state.skillDescOpen + ' ' + this.state.panels,
                     title: 'click to open detailed description',
                     id: 'panel-bottom-left'
                 },React.DOM.button({
@@ -3312,7 +3313,7 @@ var DataWrapper = React.createClass({
                     title: 'click to close'
                 }, 'close details'), skillsDesc),
                 React.DOM.div({
-                    className: this.state.passiveDescOpen,
+                    className: this.state.passiveDescOpen + ' ' + this.state.panels,
                     title: 'click to open detailed description',
                     id: 'panel-bottom-right'
                 },React.DOM.button({
@@ -3326,7 +3327,7 @@ var DataWrapper = React.createClass({
                     title: 'click to close'
                 }, 'close details'), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                 React.DOM.div({
-                    className: this.state.toggle,
+                    className: this.state.toggle + ' ' + this.state.panels,
                     id: 'panel-right'
                 }, React.DOM.button({
                     onClick: this.handleBonusStatsClick,

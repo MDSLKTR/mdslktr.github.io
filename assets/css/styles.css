@@ -691,7 +691,9 @@ button {
     border-radius: 7px; }
   #panel-bottom-left-desc span, #panel-bottom-right-desc span {
     color: wheat;
-    font-size: 1.2rem; }
+    font-size: 1rem;
+    width: 75%;
+    display: inline-block; }
 
 #panel-bottom-left-desc {
   left: 0; }
@@ -721,15 +723,19 @@ button {
   width: 35vw; }
 
 #panel-left {
-  left: -40vw;
+  text-align: right;
+  left: -40vw; }
+
+#panel-left.visible {
   -webkit-animation-name: fadein-left;
-          animation-name: fadein-left;
-  text-align: right; }
+          animation-name: fadein-left; }
+
+#panel-right.visible {
+  -webkit-animation-name: fadein-right;
+          animation-name: fadein-right; }
 
 #panel-right {
   right: -40vw;
-  -webkit-animation-name: fadein-right;
-          animation-name: fadein-right;
   text-align: left; }
   #panel-right button {
     background: rgba(255, 0, 0, 0.2);
@@ -746,14 +752,16 @@ button {
     -webkit-transition: -webkit-transform 0.5s;
             transition: transform 0.5s; }
 
+#panel-bottom-left.visible {
+  -webkit-animation-name: fadein-bottom-left;
+          animation-name: fadein-bottom-left; }
+
 #panel-bottom-left {
   text-align: right;
   height: 45vh;
   width: 45%;
   bottom: -55vh;
-  left: -60vw;
-  -webkit-animation-name: fadein-bottom-left;
-          animation-name: fadein-bottom-left; }
+  left: -60vw; }
   #panel-bottom-left button {
     position: absolute;
     top: -7.5%;
@@ -773,13 +781,15 @@ button {
     -webkit-transition: -webkit-transform 1s;
             transition: transform 1s; }
 
+#panel-bottom-right.visible {
+  -webkit-animation-name: fadein-bottom-right;
+          animation-name: fadein-bottom-right; }
+
 #panel-bottom-right {
   height: 45vh;
   width: 45%;
   bottom: -55vh;
-  right: -60vw;
-  -webkit-animation-name: fadein-bottom-right;
-          animation-name: fadein-bottom-right; }
+  right: -60vw; }
   #panel-bottom-right button {
     position: absolute;
     top: -7.5%;
