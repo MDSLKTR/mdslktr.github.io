@@ -869,10 +869,8 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            var checkSave = [],
-                minSets = 2;
-            // set bonus iterator
-            // todo find out how to detect amount of set items
+            var checkSave = [];
+            // detect Set -1 ring
             for (i = 0; i < itemSlots.length; i++) {
                 if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
                     this.setState({setRing: true});
@@ -881,89 +879,128 @@ var DataWrapper = React.createClass({
                 }
                 checkSave.push(itemSlots[i].name);
             }
-
+            // set bonus iterator
             for (i = 0; i < itemSlots.length; i++) {
                 if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
-                    // todo count unique set amount and calc stats
-                    // each unique itemSlots[i].set.name should be counted and saved in an array
-
-                    // break loop iteration if set is already found
-
-                    //if (checkSave.indexOf(itemSlots[i].set.name) > -1) {
-                    //    continue;
-                    //}
-                    //checkSave.push(itemSlots[i].set.name);
-
                     for (m = 0; m < setPool.length; m++) {
                         if (itemSlots[i].set.name === setPool[m][0]) {
                             setPool[m][1]++;
                             console.log(setPool[m][0] + setPool[m][1]);
                         }
-
                         for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
-                            if (this.state.setRing === true && itemSlots[i].set.ranks[j].required - 1 > setPool[m][1]) {
+                            if (this.state.setRing === true && itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1) {
                                 console.log('setRing');
-                                continue;
-                                // broken
-                            } else if (this.state.setRing === false && itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required > setPool[m][1]) {
-                                console.log('no setRing');
-                                continue;
-                            }
-                            console.log('trough');
-                            for (k = 0; k < statPool.length; k++) {
-
-                                // check if the stats are releveant for stat building
-                                if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                    if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-                                        results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                        switch (statPool[k]) {
-                                            case 'Damage_Dealt_Percent_Bonus#Fire':
-                                                fireDmg += results[k] * 100;
-                                                break;
-                                            case 'Damage_Dealt_Percent_Bonus#Cold':
-                                                coldDmg += results[k] * 100;
-                                                break;
-                                            case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                                lightningDmg += results[k] * 100;
-                                                break;
-                                            case 'Damage_Dealt_Percent_Bonus#Physical':
-                                                physicalDmg += results[k] * 100;
-                                                break;
-                                            case 'Damage_Dealt_Percent_Bonus#Poison':
-                                                poisonDmg += results[k] * 100;
-                                                break;
-                                            case 'Power_Cooldown_Reduction_Percent_All':
-                                                cdr *= (1 - results[k]);
-                                                console.log('applied');
-                                                break;
-                                            case 'Resource_Cost_Reduction_Percent_All':
-                                                resRed *= (1 - results[k]);
-                                                break;
-                                            case 'Damage_Percent_Bonus_Vs_Elites':
-                                                eliteDmg += results[k] * 100;
-                                                break;
-                                            case 'Damage_Percent_Reduction_From_Elites':
-                                                eliteDmgRed += results[k] * 100;
-                                                break;
-                                            case 'Splash_Damage_Effect_Percent':
-                                                areaDmg += results[k] * 100;
-                                                break;
-                                            case 'Gold_PickUp_Radius':
-                                                goldPickUp += results[k];
-                                                break;
-                                            case 'Damage_Percent_Reduction_From_Melee':
-                                                dmgRedMelee *= (1 - results[k]);
-                                                break;
-                                            case 'Damage_Percent_Reduction_From_Ranged':
-                                                dmgRedRanged *= (1 - results[k]);
-                                                break;
-                                            case 'Hitpoints_Max_Percent_Bonus_Item':
-                                                maxHealth += results[k] * 100;
-                                                console.log('fired');
-                                                break;
+                                for (k = 0; k < statPool.length; k++) {
+                                    // check if the stats are releveant for stat building
+                                    if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                        if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                            results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                            switch (statPool[k]) {
+                                                case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                    fireDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                    coldDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                    lightningDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                    physicalDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                    poisonDmg += results[k] * 100;
+                                                    break;
+                                                case 'Power_Cooldown_Reduction_Percent_All':
+                                                    cdr *= (1 - results[k]);
+                                                    console.log('applied');
+                                                    break;
+                                                case 'Resource_Cost_Reduction_Percent_All':
+                                                    resRed *= (1 - results[k]);
+                                                    break;
+                                                case 'Damage_Percent_Bonus_Vs_Elites':
+                                                    eliteDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Percent_Reduction_From_Elites':
+                                                    eliteDmgRed += results[k] * 100;
+                                                    break;
+                                                case 'Splash_Damage_Effect_Percent':
+                                                    areaDmg += results[k] * 100;
+                                                    break;
+                                                case 'Gold_PickUp_Radius':
+                                                    goldPickUp += results[k];
+                                                    break;
+                                                case 'Damage_Percent_Reduction_From_Melee':
+                                                    dmgRedMelee *= (1 - results[k]);
+                                                    break;
+                                                case 'Damage_Percent_Reduction_From_Ranged':
+                                                    dmgRedRanged *= (1 - results[k]);
+                                                    break;
+                                                case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                    maxHealth += results[k] * 100;
+                                                    console.log('fired');
+                                                    break;
+                                            }
                                         }
                                     }
                                 }
+                            } else if (this.state.setRing === false && itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
+                                console.log('no setRing');
+                                for (k = 0; k < statPool.length; k++) {
+                                    // check if the stats are releveant for stat building
+                                    if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                        if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                            results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                            switch (statPool[k]) {
+                                                case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                    fireDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                    coldDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                    lightningDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                    physicalDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                    poisonDmg += results[k] * 100;
+                                                    break;
+                                                case 'Power_Cooldown_Reduction_Percent_All':
+                                                    cdr *= (1 - results[k]);
+                                                    console.log('applied');
+                                                    break;
+                                                case 'Resource_Cost_Reduction_Percent_All':
+                                                    resRed *= (1 - results[k]);
+                                                    break;
+                                                case 'Damage_Percent_Bonus_Vs_Elites':
+                                                    eliteDmg += results[k] * 100;
+                                                    break;
+                                                case 'Damage_Percent_Reduction_From_Elites':
+                                                    eliteDmgRed += results[k] * 100;
+                                                    break;
+                                                case 'Splash_Damage_Effect_Percent':
+                                                    areaDmg += results[k] * 100;
+                                                    break;
+                                                case 'Gold_PickUp_Radius':
+                                                    goldPickUp += results[k];
+                                                    break;
+                                                case 'Damage_Percent_Reduction_From_Melee':
+                                                    dmgRedMelee *= (1 - results[k]);
+                                                    break;
+                                                case 'Damage_Percent_Reduction_From_Ranged':
+                                                    dmgRedRanged *= (1 - results[k]);
+                                                    break;
+                                                case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                    maxHealth += results[k] * 100;
+                                                    console.log('fired');
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                console.log('set-bonus');
                             }
                         }
 
