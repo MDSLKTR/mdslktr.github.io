@@ -687,58 +687,58 @@ var DataWrapper = React.createClass({
             skillDmgToString,
             countedValues,
             setPool = [
-                ['Cain\'s Fate',0],
-                ['Bastions of Will',0],
-                ['Aughild\'s Victory',0],
-                ['Aughild\'s Authority',0],
-                ['Guardian\'s Contingency',0],
-                ['Immortal King\'s Call',0],
-                ['Natalya\'s Vengeance',0],
-                ['Tal Rasha\'s Elements',0],
-                ['Sage\'s Plight',0],
-                ['Sage\'s Journey',0],
-                ['Born\'s Defiance',0],
-                ['Born\'s Command',0],
-                ['Unhallowed Essence',0],
-                ['Aughild\'s Authority',0],
-                ['Cain\'s Destiny',0],
-                ['Thorns of the Invoker',0],
-                ['Might of the Earth',0],
-                ['Firebird\'s Finery',0],
-                ['Guardian\'s Jeopardy',0],
-                ['Helltooth Harness',0],
-                ['Armor of Akkhan',0],
-                ['Wrath of the Wastes',0],
-                ['Raiment of the Jade Harvester',0],
-                ['Embodiment of the Marauder',0],
-                ['Raiment of a Thousand Storms',0],
-                ['The Legacy of Raekor',0],
-                ['Roland\'s Legacy',0],
-                ['Delsere\'s Magnum Opus',0],
-                ['Monkey King\'s Garb',0],
-                ['Asheara\'s Uniform',0],
-                ['Demon\'s Skin',0],
-                ['Demon\'s Hide',0],
-                ['Asheara\'s Vestments',0],
-                ['Thorns of the Invoker',0],
-                ['Delsere\'s Magnum Opus',0],
-                ['Blackthorne\'s Battlegear',0],
-                ['Inna\'s Mantra',0],
-                ['Vyr\'s Amazing Arcana',0],
-                ['Krelm\'s Buff Bulwark',0],
-                ['The Shadow’s Mantle',0],
-                ['Endless Walk',0],
-                ['Legacy of Nightmares',0],
-                ['Hallowed Defenders',0],
-                ['Hallowed Protectors',0],
-                ['Manajuma\'s Way',0],
-                ['Zunimassa\'s Haunt',0],
-                ['Chantodo\'s Resolve',0],
-                ['Istvan\'s Paired Blades',0],
-                ['Shenlong\'s Spirit',0],
-                ['Bul-Kathos\'s Oath',0],
-                ['Danetta\'s Hatred',0],
-                ['Captain Crimson\'s Trimmings',0]
+                ['Cain\'s Fate', 0],
+                ['Bastions of Will', 0],
+                ['Aughild\'s Victory', 0],
+                ['Aughild\'s Authority', 0],
+                ['Guardian\'s Contingency', 0],
+                ['Immortal King\'s Call', 0],
+                ['Natalya\'s Vengeance', 0],
+                ['Tal Rasha\'s Elements', 0],
+                ['Sage\'s Plight', 0],
+                ['Sage\'s Journey', 0],
+                ['Born\'s Defiance', 0],
+                ['Born\'s Command', 0],
+                ['Unhallowed Essence', 0],
+                ['Aughild\'s Authority', 0],
+                ['Cain\'s Destiny', 0],
+                ['Thorns of the Invoker', 0],
+                ['Might of the Earth', 0],
+                ['Firebird\'s Finery', 0],
+                ['Guardian\'s Jeopardy', 0],
+                ['Helltooth Harness', 0],
+                ['Armor of Akkhan', 0],
+                ['Wrath of the Wastes', 0],
+                ['Raiment of the Jade Harvester', 0],
+                ['Embodiment of the Marauder', 0],
+                ['Raiment of a Thousand Storms', 0],
+                ['The Legacy of Raekor', 0],
+                ['Roland\'s Legacy', 0],
+                ['Delsere\'s Magnum Opus', 0],
+                ['Monkey King\'s Garb', 0],
+                ['Asheara\'s Uniform', 0],
+                ['Demon\'s Skin', 0],
+                ['Demon\'s Hide', 0],
+                ['Asheara\'s Vestments', 0],
+                ['Thorns of the Invoker', 0],
+                ['Delsere\'s Magnum Opus', 0],
+                ['Blackthorne\'s Battlegear', 0],
+                ['Inna\'s Mantra', 0],
+                ['Vyr\'s Amazing Arcana', 0],
+                ['Krelm\'s Buff Bulwark', 0],
+                ['The Shadow’s Mantle', 0],
+                ['Endless Walk', 0],
+                ['Legacy of Nightmares', 0],
+                ['Hallowed Defenders', 0],
+                ['Hallowed Protectors', 0],
+                ['Manajuma\'s Way', 0],
+                ['Zunimassa\'s Haunt', 0],
+                ['Chantodo\'s Resolve', 0],
+                ['Istvan\'s Paired Blades', 0],
+                ['Shenlong\'s Spirit', 0],
+                ['Bul-Kathos\'s Oath', 0],
+                ['Danetta\'s Hatred', 0],
+                ['Captain Crimson\'s Trimmings', 0]
             ];
 
         if (this.state.items) {
@@ -2440,7 +2440,7 @@ var DataWrapper = React.createClass({
                             offHand.push(React.DOM.li({
                                 key: offHandState.key,
                                 className: 'raw-damage'
-                            },  Math.round(offHandState.minDamage.max +
+                            }, Math.round(offHandState.minDamage.max +
                             offHandState.attributesRaw[weaponElementsMin[i]].max) +
                             ' - ' +
                             Math.round(offHandState.maxDamage.max +
@@ -3015,7 +3015,7 @@ var DataWrapper = React.createClass({
 
         if (amuletState.attributes && itemsState) {
             if (amuletState.attributes.passive[0] && amuletState.attributes.passive[0].text.search('passive') !== -1 && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
-                hellfirePassiveLink  = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase();
+                hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase();
                 hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
                 switch (classState) {
                     case 'demon-hunter':
@@ -3405,18 +3405,21 @@ var DataWrapper = React.createClass({
                         }, heroes
                     )
                 ),
-                React.DOM.div({className: this.state.panels, id: 'panel-left'}, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
+                React.DOM.div({
+                    className: this.state.panels,
+                    id: 'panel-left'
+                }, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
                 React.DOM.div({
                     className: this.state.skillDescOpen + ' ' + this.state.panels,
                     title: 'click to open detailed description',
                     id: 'panel-bottom-left'
-                },React.DOM.button({
+                }, React.DOM.button({
                     onClick: this.handleSkillDescClick
                 }, 'show details'), 'Skills', skills),
                 React.DOM.div({
                     className: this.state.skillDescOpen,
                     id: 'panel-bottom-left-desc'
-                },React.DOM.button({
+                }, React.DOM.button({
                     onClick: this.handleSkillDescClick,
                     title: 'click to close'
                 }, 'close details'), skillsDesc),
@@ -3424,13 +3427,13 @@ var DataWrapper = React.createClass({
                     className: this.state.passiveDescOpen + ' ' + this.state.panels,
                     title: 'click to open detailed description',
                     id: 'panel-bottom-right'
-                },React.DOM.button({
+                }, React.DOM.button({
                     onClick: this.handlePassiveDescClick
                 }, 'show details'), 'Passives', passives, specialPassive),
                 React.DOM.div({
                     className: this.state.passiveDescOpen,
                     id: 'panel-bottom-right-desc'
-                },React.DOM.button({
+                }, React.DOM.button({
                     onClick: this.handlePassiveDescClick,
                     title: 'click to close'
                 }, 'close details'), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
