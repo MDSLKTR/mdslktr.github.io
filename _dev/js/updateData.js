@@ -843,7 +843,7 @@ var DataWrapper = React.createClass({
                     }
                 }
 
-                // works so far but todo make this not total crap
+                // skill bonus damage iterator
                 var saveValues = [];
                 for (i = 0; i < itemSlots.length; i++) {
                     if (itemSlots[i] && itemSlots[i].attributesRaw) {
@@ -1007,7 +1007,7 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
-            // todo set boni
+
             // ignoring mf,gf,thorns and block since they are useless stats
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0]) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All) {
@@ -1157,6 +1157,7 @@ var DataWrapper = React.createClass({
             pLife = this.state.paragonMaxHealth,
             i,
             k,
+            m,
             weaponElementsMin = [
                 'Damage_Weapon_Min#Arcane',
                 'Damage_Weapon_Min#Fire',
@@ -1174,7 +1175,87 @@ var DataWrapper = React.createClass({
                 'Damage_Weapon_Bonus_Delta_X1#Physical'
             ],
             hellfirePassiveDisplay,
-            hellfirePassiveLink;
+            hellfirePassiveLink,
+            setPool = [
+                ['Cain\'s Fate', 0],
+                ['Bastions of Will', 0],
+                ['Aughild\'s Victory', 0],
+                ['Aughild\'s Authority', 0],
+                ['Guardian\'s Contingency', 0],
+                ['Immortal King\'s Call', 0],
+                ['Natalya\'s Vengeance', 0],
+                ['Tal Rasha\'s Elements', 0],
+                ['Sage\'s Plight', 0],
+                ['Sage\'s Journey', 0],
+                ['Born\'s Defiance', 0],
+                ['Born\'s Command', 0],
+                ['Unhallowed Essence', 0],
+                ['Aughild\'s Authority', 0],
+                ['Cain\'s Destiny', 0],
+                ['Thorns of the Invoker', 0],
+                ['Might of the Earth', 0],
+                ['Firebird\'s Finery', 0],
+                ['Guardian\'s Jeopardy', 0],
+                ['Helltooth Harness', 0],
+                ['Armor of Akkhan', 0],
+                ['Wrath of the Wastes', 0],
+                ['Raiment of the Jade Harvester', 0],
+                ['Embodiment of the Marauder', 0],
+                ['Raiment of a Thousand Storms', 0],
+                ['The Legacy of Raekor', 0],
+                ['Roland\'s Legacy', 0],
+                ['Delsere\'s Magnum Opus', 0],
+                ['Monkey King\'s Garb', 0],
+                ['Asheara\'s Uniform', 0],
+                ['Demon\'s Skin', 0],
+                ['Demon\'s Hide', 0],
+                ['Asheara\'s Vestments', 0],
+                ['Thorns of the Invoker', 0],
+                ['Delsere\'s Magnum Opus', 0],
+                ['Blackthorne\'s Battlegear', 0],
+                ['Inna\'s Mantra', 0],
+                ['Vyr\'s Amazing Arcana', 0],
+                ['Krelm\'s Buff Bulwark', 0],
+                ['The Shadow’s Mantle', 0],
+                ['Endless Walk', 0],
+                ['Legacy of Nightmares', 0],
+                ['Hallowed Defenders', 0],
+                ['Hallowed Protectors', 0],
+                ['Manajuma\'s Way', 0],
+                ['Zunimassa\'s Haunt', 0],
+                ['Chantodo\'s Resolve', 0],
+                ['Istvan\'s Paired Blades', 0],
+                ['Shenlong\'s Spirit', 0],
+                ['Bul-Kathos\'s Oath', 0],
+                ['Danetta\'s Hatred', 0],
+                ['Captain Crimson\'s Trimmings', 0]
+            ],
+            itemSlots = [
+                this.state.helmItem,
+                this.state.amuletItem,
+                this.state.chestItem,
+                this.state.bootsItem,
+                this.state.glovesItem,
+                this.state.shouldersItem,
+                this.state.legsItem,
+                this.state.bracersItem,
+                this.state.mainItem,
+                this.state.offItem,
+                this.state.beltItem,
+                this.state.ringItemLeft,
+                this.state.ringItemRight
+            ];
+
+        for (i = 0; i < itemSlots.length; i++) {
+            for (m = 0; m < setPool.length; m++) {
+                if (itemSlots[i].set) {
+                    if (itemSlots[i].set.name === setPool[m][0]) {
+                        setPool[m][1]++;
+                        console.log(setPool[m][0] + setPool[m][1]);
+                    }
+                }
+            }
+        }
 
         switch (classState) {
             case 'demon-hunter':
@@ -1438,29 +1519,58 @@ var DataWrapper = React.createClass({
             if (helmState.set && helmState.set.ranks) {
                 for (i = 0; i < helmState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
-                        if (helmState.set.ranks[i].required === k) {
+
+                        for (m = 0; m < setPool.length; m++) {
+                            if (helmState.set.name === setPool[m][0]) {
+                                var count =  setPool[m][1];
+                                console.log(count);
+                            }
+                        }
+
+                        if (helmState.set.ranks[i].required === k && helmState.set.ranks[i].required <= count) {
                             helmState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
                                 helmet.push(React.DOM.li({
                                     key: helmState.key,
                                     className: 'set-bonus-' + k
                                 }, primaryStat.text));
                             });
+                        } else if (helmState.set.ranks[i].required === k) {
+                            helmState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
+                                helmet.push(React.DOM.li({
+                                    key: helmState.key,
+                                    className: 'set-bonus-' + k + ' inactive'
+                                }, primaryStat.text));
+                            });
                         }
 
-                        if (helmState.set.ranks[i].required === k) {
+                        if (helmState.set.ranks[i].required === k && helmState.set.ranks[i].required <= count) {
                             helmState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
                                 helmet.push(React.DOM.li({
                                     key: helmState.key,
                                     className: 'set-bonus-' + k
                                 }, secondaryStat.text));
                             });
+                        } else if (helmState.set.ranks[i].required === k) {
+                            helmState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
+                                helmet.push(React.DOM.li({
+                                    key: helmState.key,
+                                    className: 'set-bonus-' + k + ' inactive'
+                                }, secondaryStat.text));
+                            });
                         }
 
-                        if (helmState.set.ranks[i].required === k) {
+                        if (helmState.set.ranks[i].required === k && helmState.set.ranks[i].required <= count) {
                             helmState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
                                 helmet.push(React.DOM.li({
                                     key: helmState.key,
                                     className: 'set-bonus-' + k
+                                }, passiveStat.text));
+                            });
+                        } else if (helmState.set.ranks[i].required === k) {
+                            helmState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
+                                helmet.push(React.DOM.li({
+                                    key: helmState.key,
+                                    className: 'set-bonus-' + k + ' inactive'
                                 }, passiveStat.text));
                             });
                         }
