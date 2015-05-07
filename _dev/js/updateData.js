@@ -1125,14 +1125,16 @@ var DataWrapper = React.createClass({
                 'Damage_Weapon_Min#Fire',
                 'Damage_Weapon_Min#Lightning',
                 'Damage_Weapon_Min#Cold',
-                'Damage_Weapon_Min#Poison'
+                'Damage_Weapon_Min#Poison',
+                'Damage_Weapon_Bonus_Min_X1#Physical'
             ],
             weaponElementsDelta = [
                 'Damage_Weapon_Delta#Arcane',
                 'Damage_Weapon_Delta#Fire',
                 'Damage_Weapon_Delta#Lightning',
                 'Damage_Weapon_Delta#Cold',
-                'Damage_Weapon_Delta#Poison'
+                'Damage_Weapon_Delta#Poison',
+                'Damage_Weapon_Bonus_Delta_X1#Physical'
             ],
             hellfirePassiveDisplay,
             hellfirePassiveLink;
@@ -2206,11 +2208,11 @@ var DataWrapper = React.createClass({
                     className: 'dps'
                 }, mainHandState.dps.max.toString().substring(0, 7) + ' DPS'));
             }
-            // might be broken for physical only weapons
             if (mainHandState.minDamage && mainHandState.maxDamage && mainHandState.attributesRaw) {
                 for (i = 0; i < weaponElementsMin.length; i++) {
                     if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
-                        if (mainHandState.attributesRaw['Damage_Weapon_Percent_All']) {
+                        if (mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                            console.log('%dmg but not physical');
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
@@ -2223,7 +2225,17 @@ var DataWrapper = React.createClass({
                                 mainHandState.attributesRaw[weaponElementsDelta[i]].max +
                                 ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)
                             ) + ' Damage'));
-                        } else {
+                        } else if (mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                            console.log('% damage and only physical');
+                            mainHand.push(React.DOM.li({
+                                key: mainHandState.key,
+                                className: 'raw-damage'
+                            }, Math.round(mainHandState.minDamage.max + (mainHandState.minDamage.max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
+                            ' - ' +
+                            Math.round(mainHandState.maxDamage.max + (mainHandState.minDamage.max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
+                            ' Damage'));
+                        } else if (!mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                            console.log('no percent dmg but not physical');
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
@@ -2234,6 +2246,15 @@ var DataWrapper = React.createClass({
                             mainHandState.attributesRaw[weaponElementsMin[i]].max +
                             mainHandState.attributesRaw[weaponElementsDelta[i]].max)
                             + ' Damage'));
+                        } else {
+                            console.log('no percent damage and only physical');
+                            mainHand.push(React.DOM.li({
+                                key: mainHandState.key,
+                                className: 'raw-damage'
+                            }, Math.round(mainHandState.minDamage.max) +
+                            ' - ' +
+                            Math.round(mainHandState.maxDamage.max) +
+                            ' Damage'));
                         }
                     }
                 }
