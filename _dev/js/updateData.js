@@ -904,6 +904,7 @@ var DataWrapper = React.createClass({
                             if (this.state.setRing === true && itemSlots[i].set.ranks[j].required - 1 > setPool[m][1]) {
                                 console.log('setRing');
                                 continue;
+                                // broken
                             } else if (this.state.setRing === false && itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required > setPool[m][1]) {
                                 console.log('no setRing');
                                 continue;
@@ -2205,7 +2206,7 @@ var DataWrapper = React.createClass({
                     className: 'dps'
                 }, mainHandState.dps.max.toString().substring(0, 7) + ' DPS'));
             }
-
+            // might be broken for physical only weapons
             if (mainHandState.minDamage && mainHandState.maxDamage && mainHandState.attributesRaw) {
                 for (i = 0; i < weaponElementsMin.length; i++) {
                     if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
