@@ -2942,6 +2942,42 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
+            
+            if (offHandState.attributesRaw && offHandState.attributesRaw.Sockets && offHandState.gems[0]) {
+                if (!offHandState.gems[0].attributesRaw.Jewel_Rank) {
+                    gemLink = itemIconBaseUrl.concat(offHandState.gems[0].item.icon, '.png');
+                    offHand.push(React.DOM.li({
+                        key: offHandState.key,
+                        className: 'socket',
+                        style: {backgroundImage: 'url(' + gemLink + ')'}
+                    }));
+                } else if (offHandState.gems[0].attributesRaw.Jewel_Rank) {
+                    gemLink = itemIconBaseUrl.concat(offHandState.gems[0].item.icon, '.png');
+                    offHand.push(React.DOM.li({
+                        key: offHandState.key,
+                        className: 'socket',
+                        style: {backgroundImage: 'url(' + gemLink + ')'}
+                    }, React.DOM.span({
+                        key: offHandState.key,
+                        className: 'gem-level'
+                    }, offHandState.gems[0].attributesRaw.Jewel_Rank.min)));
+                }
+
+                if (offHandState.gems[0].attributes.primary) {
+                    offHandState.gems[0].attributes.primary.forEach(function (Stat) {
+                        offHand.push(React.DOM.li({key: offHandState.key, className: 'gem-passive'}, Stat.text));
+                    });
+                }
+                // exception for the new unique gem
+                if (offHandState.gems[0].attributes.passive) {
+                    offHandState.gems[0].attributes.passive.forEach(function (Stat) {
+                        offHand.push(React.DOM.li({key: offHandState.key, className: 'gem-passive'}, Stat.text));
+                    });
+                }
+
+            } else if (offHandState.attributesRaw && offHandState.attributesRaw.Sockets) {
+                offHand.push(React.DOM.li({key: offHandState.key, className: 'socket'}));
+            }
 
             items.push(React.DOM.div({
                 key: itemsIconState.key,
