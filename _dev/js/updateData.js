@@ -675,7 +675,8 @@ var DataWrapper = React.createClass({
                 'Gold_PickUp_Radius',
                 'Damage_Percent_Reduction_From_Melee',
                 'Damage_Percent_Reduction_From_Ranged',
-                'Hitpoints_Max_Percent_Bonus_Item'
+                'Hitpoints_Max_Percent_Bonus_Item',
+                'Attacks_Per_Second_Percent'
             ],
             results = [],
         // stats that add multiplicatively
@@ -694,6 +695,7 @@ var DataWrapper = React.createClass({
             poisonDmg = 0,
             goldPickUp = 0,
             maxHealth = 0,
+            atkSpd = 0,
             k,
             j,
             m,
@@ -818,6 +820,10 @@ var DataWrapper = React.createClass({
                                         break;
                                     case 'Hitpoints_Max_Percent_Bonus_Item':
                                         maxHealth += results[k] * 100;
+                                        break;
+                                    case 'Attacks_Per_Second_Percent':
+                                        atkSpd += results[k];
+                                        console.log('le speed');
                                         break;
                                     default:
                                         console.log('default');
@@ -957,6 +963,9 @@ var DataWrapper = React.createClass({
                                                 case 'Hitpoints_Max_Percent_Bonus_Item':
                                                     maxHealth += results[k] * 100;
                                                     break;
+                                                case 'Attacks_Per_Second_Percent':
+                                                    atkSpd += results[k];
+                                                    break;
                                             }
                                         }
                                     }
@@ -1009,6 +1018,9 @@ var DataWrapper = React.createClass({
                                                     break;
                                                 case 'Hitpoints_Max_Percent_Bonus_Item':
                                                     maxHealth += results[k] * 100;
+                                                    break;
+                                                case 'Attacks_Per_Second_Percent':
+                                                    atkSpd += results[k];
                                                     break;
                                             }
                                         }
@@ -1092,6 +1104,7 @@ var DataWrapper = React.createClass({
             this.setState({dmgRedRanged: dmgRedRanged});
             this.setState({maxHealth: maxHealth});
             this.setState({skillDmg: skillDmgToString});
+            this.setState({atkSpd: atkSpd});
 
         }
     },
@@ -1165,6 +1178,7 @@ var DataWrapper = React.createClass({
             maxElementDmg = this.state.maxEleDmg,
             maxHealthState = this.state.maxHealth,
             skillDmgState = this.state.skillDmg,
+            itemAtkSpeedState = this.state.atkSpd,
             paragon = [],
             pCdr = this.state.paragonCdr,
             pAtkSpd = this.state.paragonAtkSpd,
@@ -3748,12 +3762,12 @@ var DataWrapper = React.createClass({
                     className: 'bonusstat'
                 }, 'Resource Cost Reduction: ' + Math.round((1 - resState) * 100 * 100) / 100 + '%'));
             }
-
-            if (statsState.attackSpeed) {
+            console.log(statsState.attackSpeed,itemAtkSpeedState,pAtkSpd );
+            if (mainHandState.attacksPerSecond) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Attacks per Second: ' + Math.round((statsState.attackSpeed + pAtkSpd / 100) * 1000) / 1000));
+                }, 'Attacks per Second: ' + Math.round((mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (itemAtkSpeedState + pAtkSpd / 100)) * 100) / 100));
             } else if (pAtkSpd !== 0) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
