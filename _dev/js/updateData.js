@@ -276,9 +276,11 @@ var DataWrapper = React.createClass({
 
     checkTrigger: function () {
         if (this.state.trigger === true && this.state.count < 2) {
-            this.loadHeroesData();
-            this.loadHeroData();
-            this.getItemData();
+            setTimeout(function () {
+                this.loadHeroesData();
+                this.loadHeroData();
+                this.getItemData();
+            }.bind(this), 250);
             this.setState({count: this.state.count + 1});
         }
     },
@@ -929,10 +931,10 @@ var DataWrapper = React.createClass({
                                                     break;
                                                 case 'Power_Cooldown_Reduction_Percent_All':
                                                     cdr *= (1 - results[k]);
+                                                    console.log('poop');
                                                     break;
                                                 case 'Resource_Cost_Reduction_Percent_All':
                                                     resRed *= (1 - results[k]);
-                                                    console.log('poop');
                                                     break;
                                                 case 'Damage_Percent_Bonus_Vs_Elites':
                                                     eliteDmg += results[k] * 100;
@@ -1027,7 +1029,7 @@ var DataWrapper = React.createClass({
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0] && this.state.helmItem.attributesRaw) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                     // increment for cdr gem
-                    cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
+                    cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min - (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min));
                 } else if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                     cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min);
                 }
