@@ -286,19 +286,13 @@ var DataWrapper = React.createClass({
     },
 
     triggerStatCollector: function () {
-        setTimeout(function () {
-            this.collectStats();
-            console.log('stat collection forced');
-        }.bind(this), 75);
+        this.collectStats();
+        console.log('manual stat collector');
     },
 
     componentDidMount: function () {
         // only called on initial render
         setInterval(this.checkTrigger, 2000);
-        setInterval(function () {
-            this.collectStats();
-            console.log('automatic stat collector');
-        }.bind(this), 5000);
         setInterval(this.loadHeroesData, this.props.pollInterval);
         setInterval(this.loadHeroData, this.props.pollInterval);
         setInterval(this.getItemData, this.props.pollInterval);
@@ -381,6 +375,11 @@ var DataWrapper = React.createClass({
         } else {
             this.setState({invalid: false});
         }
+
+        setInterval(function () {
+            this.collectStats();
+            console.log('stat collector worker');
+        }.bind(this), 4000);
     },
 
     handleBonusStatsClick: function () {
@@ -421,7 +420,6 @@ var DataWrapper = React.createClass({
     },
 
     handleParagon: function (e) {
-        this.triggerStatCollector();
         var parent = $(e.target).parent(),
             el = $(e.target);
 
@@ -586,6 +584,7 @@ var DataWrapper = React.createClass({
                 }
             }
         }
+        this.triggerStatCollector();
     },
 
     getItemData: function () {
@@ -823,7 +822,6 @@ var DataWrapper = React.createClass({
                                         break;
                                     case 'Attacks_Per_Second_Percent':
                                         atkSpd += results[k];
-                                        console.log('le speed');
                                         break;
                                     default:
                                         console.log('default');
@@ -937,7 +935,6 @@ var DataWrapper = React.createClass({
                                                     break;
                                                 case 'Power_Cooldown_Reduction_Percent_All':
                                                     cdr *= (1 - results[k]);
-                                                    console.log('poop');
                                                     break;
                                                 case 'Resource_Cost_Reduction_Percent_All':
                                                     resRed *= (1 - results[k]);
@@ -1029,7 +1026,6 @@ var DataWrapper = React.createClass({
                             }
                         }
                     }
-                    console.log(repeatSet);
                     if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
                         continue;
                     }
@@ -2956,7 +2952,7 @@ var DataWrapper = React.createClass({
                     }
                 }
             }
-            
+
             if (offHandState.attributesRaw && offHandState.attributesRaw.Sockets && offHandState.gems[0]) {
                 if (!offHandState.gems[0].attributesRaw.Jewel_Rank) {
                     gemLink = itemIconBaseUrl.concat(offHandState.gems[0].item.icon, '.png');
@@ -3762,8 +3758,13 @@ var DataWrapper = React.createClass({
                     className: 'bonusstat'
                 }, 'Resource Cost Reduction: ' + Math.round((1 - resState) * 100 * 100) / 100 + '%'));
             }
-            console.log(statsState.attackSpeed,itemAtkSpeedState,pAtkSpd );
-            if (mainHandState.attacksPerSecond) {
+            if (mainHandState.attacksPerSecond && offHandState.attacksPerSecond) {
+                additionalStatsOffensive.push(React.DOM.div({
+                    key: additionalStatsOffensive.key,
+                    className: 'bonusstat'
+                    // apparently the second weapon gives you a 15% attackspeed bonus flat
+                }, 'Attacks per Second: ' + Math.round((mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (0.15 + itemAtkSpeedState + pAtkSpd / 100)) * 100) / 100));
+            } else if (mainHandState.attacksPerSecond) {
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
