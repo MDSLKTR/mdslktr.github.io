@@ -13,7 +13,7 @@ var DataWrapper = React.createClass({
             level: '',
             paragon: '',
 
-            handsItem: {},
+            helmItem: {},
             amuletItem: {},
             shouldersItem: {},
             bracersItem: {},
