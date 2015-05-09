@@ -892,7 +892,6 @@ var DataWrapper = React.createClass({
             for (i = 0; i < itemSlots.length; i++) {
                 checkSave.push(itemSlots[i].name);
                 if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
-                    console.log('set ring found');
                     this.setState({setRing: true});
                 } else {
                     this.setState({setRing: false});
@@ -1027,7 +1026,6 @@ var DataWrapper = React.createClass({
                             }
                         }
                     }
-                    console.log(repeatSet);
                     if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
                         continue;
                     }
