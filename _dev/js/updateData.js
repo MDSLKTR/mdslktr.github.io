@@ -356,7 +356,7 @@ var DataWrapper = React.createClass({
             level: {},
             paragon: {},
             time: 0,
-            toggle: '',
+            toggle: 'more',
             skillDescOpen: '',
             passiveDescOpen: '',
             setRing: false
@@ -890,12 +890,13 @@ var DataWrapper = React.createClass({
                 repeatSet = [];
             // detect Set -1 ring
             for (i = 0; i < itemSlots.length; i++) {
+                checkSave.push(itemSlots[i].name);
                 if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
+                    console.log('set ring found');
                     this.setState({setRing: true});
                 } else {
                     this.setState({setRing: false});
                 }
-                checkSave.push(itemSlots[i].name);
             }
             // set bonus iterator
             for (i = 0; i < itemSlots.length; i++) {
@@ -1026,6 +1027,7 @@ var DataWrapper = React.createClass({
                             }
                         }
                     }
+                    console.log(repeatSet);
                     if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
                         continue;
                     }
@@ -1341,7 +1343,7 @@ var DataWrapper = React.createClass({
                 value: '',
                 style: {display: 'none'}
             }, 'invalid battleTag'));
-        } else if (this.state.battleTag === null) {
+        } else if (this.state.battleTag === null || this.state.battleTag === '') {
             heroes.push(React.DOM.option({
                 value: '',
                 style: {display: 'none'}
