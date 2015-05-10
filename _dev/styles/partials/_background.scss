@@ -1,0 +1,40 @@
+#d3-bg {
+  background: transparent url(/assets/images/bg-3.jpg) center center/ cover no-repeat;
+  animation: bg 4s linear forwards;
+  animation-delay: 500ms;
+  position: absolute;
+  height: 120%;
+  width: 100%;
+}
+
+.d3-char-bg {
+  position: fixed;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) translateZ(0);
+  margin: 7.5vh auto;
+  width: 405px;
+  height: 615px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  filter: drop-shadow(1px 1px 30px white);
+  transition: background-image 1s;
+}
+
+@keyframes bg {
+  from {
+    filter: unquote('brightness(0)');
+    transform: translateY(-10%) scale(1);
+  }
+
+  50% {
+    filter: unquote('brightness(1)');
+    transform: translateY(-5%) scale(1.01);
+  }
+
+  to {
+    filter: unquote('brightness(0.25)');
+    transform: translateY(0) scale(1);
+  }
+}

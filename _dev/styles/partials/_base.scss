@@ -42,3 +42,61 @@ button {
     opacity: 1;
   }
 }
+
+@keyframes fadein-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(37.5vw);
+  }
+}
+
+@keyframes fadein-right {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-37.5vw);
+  }
+}
+
+@keyframes fadein-bottom-left {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+
+  to {
+    transform: translateX(45vw) translateY(-55vh);
+  }
+}
+
+@keyframes fadein-bottom-right {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+
+  to {
+    transform: translateX(-45vw) translateY(-55vh);
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.001);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}

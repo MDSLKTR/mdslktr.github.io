@@ -1,0 +1,49 @@
+.paragon-stat {
+  margin: 0.25rem;
+  text-align: center;
+  width: 6.1vw;
+  display: inline-block;
+  font-size: 0.85rem;
+
+  .paragon-stat-increment {
+    float: left;
+  }
+
+  .paragon-stat-decrement {
+    float: right;
+  }
+
+  .paragon-stat-max {
+    &:after {
+      content: 'max';
+      position: relative;
+    }
+    &.maxed {
+      &:after {
+        content: 'clear';
+        position: relative;
+      }
+    }
+  }
+
+  span {
+    background: sienna;
+    display: inline-block;
+    margin-bottom: 0.25rem;
+    color: black;
+    border-radius: 5px;
+  }
+
+  span:first-child {
+    width: 100%;
+  }
+
+  span:not(:first-child) {
+    width: 31%;
+    cursor: pointer;
+
+    &:hover {
+      color: wheat;
+    }
+  }
+}

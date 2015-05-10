@@ -1,0 +1,83 @@
+.setButton {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: darkred;
+  width: 8.5%;
+  color: wheat;
+  text-align: center;
+  padding: 0.15rem;
+  cursor: pointer;
+}
+
+.time {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  font-size: 12px;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: darkred;
+  width: 15%;
+  color: wheat;
+  text-align: center;
+  padding: 0.15rem;
+}
+
+.d3-api-url {
+  width: 17.5%;
+  z-index: 6;
+  position: fixed;
+  bottom: 3.5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+
+  span {
+    color: wheat;
+    display: block;
+  }
+
+  input {
+    margin-top: 0.25rem;
+    background: black;
+    color: wheat;
+    outline: none;
+    border: 2px solid darkred;
+    text-align: center;
+  }
+}
+
+.d3-char-wrapper {
+  z-index: 5;
+  height: 15vh;
+  width: 17.5%;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  bottom: -1.5vh;
+  transform: translateX(-50%);
+
+  span {
+    color: wheat;
+    display: block;
+  }
+
+  select {
+    margin-top: 0.25rem;
+    cursor: pointer;
+    background: black;
+    width: 90%;
+    border: 2px solid darkred;
+    color: wheat;
+    outline: none;
+  }
+}
+
+.d3-paragon-selector {
+  span {
+    display: block;
+  }
+}
