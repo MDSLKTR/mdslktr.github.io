@@ -314,7 +314,8 @@ button {
     width: 64px;
     height: 128px;
     color: red;
-    cursor: pointer; }
+    cursor: pointer;
+    font-size: 0.8rem; }
     .d3-item-wrapper > div:after {
       opacity: 0;
       content: 'x';
@@ -418,7 +419,6 @@ button {
         position: absolute;
         -webkit-transform: translateY(-50%);
                 transform: translateY(-50%);
-        font-size: 12px;
         padding: 0;
         margin: 3% 1.5%;
         list-style: none;
@@ -441,24 +441,27 @@ button {
             -ms-flex-line-pack: start;
                 align-content: flex-start; }
         .d3-item-wrapper > div > div > ul li {
-          margin: 0.2rem;
+          margin: 0.25rem;
           display: inline-block; }
         .d3-item-wrapper > div > div > ul .primary {
           color: white;
-          font-size: 14px;
+          font-size: 0.9rem;
           width: 100%; }
         .d3-item-wrapper > div > div > ul .secondary {
           color: silver;
-          width: 100%; }
+          width: 100%;
+          font-size: 0.8rem; }
         .d3-item-wrapper > div > div > ul .passive {
           color: goldenrod;
-          width: 100%; }
+          width: 100%;
+          font-size: 1rem; }
         .d3-item-wrapper > div > div > ul .set-bonus-2, .d3-item-wrapper > div > div > ul .set-bonus-3, .d3-item-wrapper > div > div > ul .set-bonus-4, .d3-item-wrapper > div > div > ul .set-bonus-5, .d3-item-wrapper > div > div > ul .set-bonus-6 {
           -webkit-box-flex: 1;
           -webkit-flex: 1 100%;
               -ms-flex: 1 100%;
                   flex: 1 100%;
-          color: green; }
+          color: green;
+          font-size: 0.9rem; }
           .d3-item-wrapper > div > div > ul .set-bonus-2.inactive, .d3-item-wrapper > div > div > ul .set-bonus-3.inactive, .d3-item-wrapper > div > div > ul .set-bonus-4.inactive, .d3-item-wrapper > div > div > ul .set-bonus-5.inactive, .d3-item-wrapper > div > div > ul .set-bonus-6.inactive {
             color: grey; }
         .d3-item-wrapper > div > div > ul .set-bonus-2:before {
@@ -472,21 +475,21 @@ button {
         .d3-item-wrapper > div > div > ul .set-bonus-6:before {
           content: '[ 6 ] '; }
         .d3-item-wrapper > div > div > ul .dps {
-          font-size: 16px;
+          font-size: 1.1rem;
           color: white;
           -webkit-box-flex: 0;
           -webkit-flex: 0 100%;
               -ms-flex: 0 100%;
                   flex: 0 100%; }
         .d3-item-wrapper > div > div > ul .raw-damage {
-          font-size: 15px;
+          font-size: 1rem;
           color: white;
           -webkit-box-flex: 0;
           -webkit-flex: 0 100%;
               -ms-flex: 0 100%;
                   flex: 0 100%; }
         .d3-item-wrapper > div > div > ul .name {
-          font-size: 18px;
+          font-size: 1.2rem;
           -webkit-box-flex: 0;
           -webkit-flex: 0 90%;
               -ms-flex: 0 90%;

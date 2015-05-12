@@ -19,6 +19,7 @@
     height: 128px;
     color: rgba(255, 0, 0, 1);
     cursor: pointer;
+    font-size: 0.8rem;
 
     &:after {
       opacity: 0;
@@ -141,7 +142,6 @@
         height: 100%;
         position: absolute;
         transform: translateY(-50%);
-        font-size: 12px;
         padding: 0;
         margin: 3% 1.5%;
         list-style: none;
@@ -152,24 +152,26 @@
         align-content: flex-start;
 
         li {
-          margin: 0.2rem;
+          margin: 0.25rem;
           display: inline-block;
         }
 
         .primary {
           color: white;
-          font-size: 14px;
+          font-size: 0.9rem;
           width: 100%;
         }
 
         .secondary {
           color: silver;
           width: 100%;
+          font-size: 0.8rem;
         }
 
         .passive {
           color: goldenrod;
           width: 100%;
+          font-size: 1rem;
         }
 
         .set-bonus-2,
@@ -179,6 +181,7 @@
         .set-bonus-6 {
           flex: 1 100%;
           color: green;
+          font-size: 0.9rem;
 
           &.inactive {
             color: grey;
@@ -217,19 +220,19 @@
         }
 
         .dps {
-          font-size: 16px;
+          font-size: 1.1rem;
           color: white;
           flex: 0 100%;
         }
 
         .raw-damage {
-          font-size: 15px;
+          font-size: 1rem;
           color: white;
           flex: 0 100%;
         }
 
         .name {
-          font-size: 18px;
+          font-size: 1.2rem;
           flex: 0 90%;
 
           &.set {
