@@ -832,7 +832,7 @@ var DataWrapper = React.createClass({
                 }
             }
 
-            if (this.state.class && this.state.skills && this.state.skills.length) {
+            if (this.state.class && this.state.skills && this.state.skills.length > 0) {
                 var saveArr = [];
                 for (m = 0; m < this.state.skills.length; m++) {
                     if (this.state.skills[m].skill) {
@@ -1087,8 +1087,10 @@ var DataWrapper = React.createClass({
 
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
+                this.setState({maxEleDmgValue: findElem});
             } else {
                 this.setState({maxEleDmg: ''});
+                this.setState({maxEleDmgValue: 0});
             }
             this.setState({cdrRed: cdr});
             this.setState({resRed: resRed});
@@ -1263,6 +1265,10 @@ var DataWrapper = React.createClass({
                 ['Bul-Kathos\'s Oath', 0],
                 ['Danetta\'s Hatred', 0],
                 ['Captain Crimson\'s Trimmings', 0]
+            ],
+            customBuffPool = [
+                ['Steady Aim', 0.2],
+                ['Cull the Weak', 0.2]
             ],
             itemSlots = [
                 this.state.helmItem,
@@ -3830,10 +3836,29 @@ var DataWrapper = React.createClass({
                 minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
                 critChanceCalc = statsState.critChance + (pCritChance / 100),
                 critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
-                sheetDpsCalc = dexCalc * minMaxCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1);
+                sheetDpsCalc = dexCalc * minMaxCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1),
+                buffMult = 0,
+                eleMult = 0,
+                effectiveDpsCalc;
 
-            console.log(calculatedAttackSpeed);
+            for (i = 0; i < customBuffPool.length; i++) {
+                passivesState.forEach(function (passiveName) {
+                    console.log(passiveName.skill);
+                    console.log(customBuffPool[i][0]);
+                    if (passiveName.skill.name === customBuffPool[i][0]) {
+                        buffMult += customBuffPool[i][1];
+                    }
+                });
+            }
+
+            if (this.state.maxEleDmgValue) {
+                eleMult += this.state.maxEleDmgValue / 100;
+            }
+
+            effectiveDpsCalc = sheetDpsCalc * (1 + eleMult) * (1 + buffMult);
+
             stats.push(React.DOM.div({key: statsState.key}, 'DPS: ', Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+            stats.push(React.DOM.div({key: statsState.key}, 'EPS: ', Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
         }
 
         if (additionalStatsDefensive && statsState) {
