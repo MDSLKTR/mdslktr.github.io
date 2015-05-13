@@ -2601,35 +2601,34 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < weaponElementsMin.length; i++) {
                     if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
                         if (mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
-                            minDmgCalc = Math.round(mainHandState.minDamage.max +
+                            minDmgCalc = mainHandState.minDamage.max +
                             mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                            (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max));
-                            maxDmgCalc = Math.round(mainHandState.maxDamage.max +
+                            (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
+                            maxDmgCalc = mainHandState.maxDamage.max +
                                 mainHandState.attributesRaw[weaponElementsMin[i]].max +
                                 mainHandState.attributesRaw[weaponElementsDelta[i]].max +
-                                ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max)
-                            );
+                                ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
-                            }, minDmgCalc + ' - ' + maxDmgCalc +' Damage'));
+                            }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) +' Damage'));
                         } else if (!mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
-                            minDmgCalc = Math.round(mainHandState.minDamage.max +
-                            mainHandState.attributesRaw[weaponElementsMin[i]].max);
-                            maxDmgCalc = Math.round(mainHandState.maxDamage.max +
+                            minDmgCalc = mainHandState.minDamage.max +
+                            mainHandState.attributesRaw[weaponElementsMin[i]].max;
+                            maxDmgCalc = mainHandState.maxDamage.max +
                             mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                            mainHandState.attributesRaw[weaponElementsDelta[i]].max);
+                            mainHandState.attributesRaw[weaponElementsDelta[i]].max;
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
-                            }, minDmgCalc + ' - ' + maxDmgCalc + ' Damage'));
+                            }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                         } else {
-                            minDmgCalc = Math.round(mainHandState.minDamage.max);
-                            maxDmgCalc = Math.round(mainHandState.maxDamage.max);
+                            minDmgCalc = mainHandState.minDamage.max;
+                            maxDmgCalc = mainHandState.maxDamage.max;
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
-                            }, minDmgCalc + ' - ' + maxDmgCalc + ' Damage'));
+                            }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                         }
                     }
                 }
@@ -3759,24 +3758,24 @@ var DataWrapper = React.createClass({
                 }, 'Resource Cost Reduction: ' + Math.round((1 - resState) * 100 * 100) / 100 + '%'));
             }
             if (mainHandState.attacksPerSecond && offHandState.attacksPerSecond) {
-                calculatedAttackSpeed = Math.round((mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (0.15 + itemAtkSpeedState + pAtkSpd / 100)) * 100) / 100;
+                calculatedAttackSpeed = mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (0.15 + itemAtkSpeedState + pAtkSpd / 100);
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
                     // apparently the second weapon gives you a 15% attackspeed bonus flat
-                }, 'Attacks per Second: ' + calculatedAttackSpeed));
+                }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
             } else if (mainHandState.attacksPerSecond) {
-                calculatedAttackSpeed = Math.round((mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (itemAtkSpeedState + pAtkSpd / 100)) * 100) / 100;
+                calculatedAttackSpeed = mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (itemAtkSpeedState + pAtkSpd / 100);
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Attacks per Second: ' + calculatedAttackSpeed));
+                }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
             } else if (pAtkSpd !== 0) {
-                calculatedAttackSpeed = Math.round((pAtkSpd / 100) * 1000) / 1000;
+                calculatedAttackSpeed = pAtkSpd / 100;
                 additionalStatsOffensive.push(React.DOM.div({
                     key: additionalStatsOffensive.key,
                     className: 'bonusstat'
-                }, 'Attacks per Second: ' + calculatedAttackSpeed));
+                }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
             }
 
             if (eliteDmgState !== 0) {
@@ -3826,14 +3825,15 @@ var DataWrapper = React.createClass({
             }
         }
 
-        if (statsState.life && statsState.damage && statsState.toughness && statsState.vitality && mainHandState.dps && calculatedAttackSpeed) {
-            console.log('AtkSpd: ' + calculatedAttackSpeed);
-            console.log('Dex: ' +  statsState.dexterity);
-            console.log('CritChance: ' +  statsState.critChance);
-            console.log('minDmg: ' +  minDmgCalc);
-            console.log('maxDmg: ' +  maxDmgCalc);
-            console.log('paragonCrit' + pCritChance);
-            stats.push(React.DOM.div({key: statsState.key}, 'Damage: ', Math.round(statsState.dexterity * ((minDmgCalc + maxDmgCalc) / 2) * calculatedAttackSpeed * (statsState.critChance * statsState.critDamage))));
+        if (statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
+            var dexCalc = 1 + statsState.dexterity / 100,
+                minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
+                critChanceCalc = statsState.critChance + (pCritChance / 100),
+                critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
+                sheetDpsCalc = dexCalc * minMaxCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1);
+
+            console.log(calculatedAttackSpeed);
+            stats.push(React.DOM.div({key: statsState.key}, 'DPS: ', Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
         }
 
         if (additionalStatsDefensive && statsState) {
