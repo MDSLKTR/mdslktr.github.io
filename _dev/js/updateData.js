@@ -3843,8 +3843,6 @@ var DataWrapper = React.createClass({
 
             for (i = 0; i < customBuffPool.length; i++) {
                 passivesState.forEach(function (passiveName) {
-                    console.log(passiveName.skill);
-                    console.log(customBuffPool[i][0]);
                     if (passiveName.skill.name === customBuffPool[i][0]) {
                         buffMult += customBuffPool[i][1];
                     }
@@ -3857,8 +3855,11 @@ var DataWrapper = React.createClass({
 
             effectiveDpsCalc = sheetDpsCalc * (1 + eleMult) * (1 + buffMult);
 
-            stats.push(React.DOM.div({key: statsState.key}, 'DPS: ', Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
-            stats.push(React.DOM.div({key: statsState.key}, 'EPS: ', Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
+            stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
+                Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                ' | EPS: ',
+                Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+            ));
         }
 
         if (additionalStatsDefensive && statsState) {
@@ -4109,7 +4110,7 @@ var DataWrapper = React.createClass({
                         onClick: this.handleBonusStatsClick,
                         title: 'click to show/hide more stats'
                     }, 'show ' + this.state.toggle),
-                    'Stats (without amplification by skills)',
+                    'Stats',
                     stats),
                 React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive)
             )
