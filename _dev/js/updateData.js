@@ -1270,6 +1270,11 @@ var DataWrapper = React.createClass({
                 ['Steady Aim', 0.2],
                 ['Cull the Weak', 0.2]
             ],
+            gemPool = [
+                ['Zei\'s Stone of Vengeance', 'Item_Power_Passive#ItemPassive_Unique_Gem_012_x1'],
+                ['Bane of the Trapped', 'Item_Power_Passive#ItemPassive_Unique_Gem_002_x1'],
+                ['Gogok of the Swiftness', 'Item_Power_Passive#ItemPassive_Unique_Gem_008U_x1']
+            ],
             itemSlots = [
                 this.state.helmItem,
                 this.state.amuletItem,
@@ -3838,12 +3843,19 @@ var DataWrapper = React.createClass({
                 critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
                 sheetDpsCalc = dexCalc * minMaxCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1),
                 buffMult = 0,
+                gemMult = 0,
                 eleMult = 0,
-                effectiveDpsCalc;
+                effectiveDpsCalc,
+                nativeSkillDamage = 1;
 
             for (i = 0; i < customBuffPool.length; i++) {
                 passivesState.forEach(function (passiveName) {
                     if (passiveName.skill.name === customBuffPool[i][0]) {
+                        buffMult += customBuffPool[i][1];
+                    }
+                });
+                skillsState.forEach(function (skillName) {
+                    if (skillName.skill.name === customBuffPool[i][0]) {
                         buffMult += customBuffPool[i][1];
                     }
                 });
@@ -3853,7 +3865,7 @@ var DataWrapper = React.createClass({
                 eleMult += this.state.maxEleDmgValue / 100;
             }
 
-            effectiveDpsCalc = sheetDpsCalc * (1 + eleMult) * (1 + buffMult);
+            effectiveDpsCalc = sheetDpsCalc * nativeSkillDamage * (1 + eleMult) * (1 + buffMult);
 
             stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
                 Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
