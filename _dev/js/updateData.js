@@ -648,14 +648,29 @@ var DataWrapper = React.createClass({
         }
     },
 
-    objToString: function (obj) {
-        var str = '';
+    skillDmgSanitize: function (obj) {
+        var combined = '',
+            string = '',
+            calc = 0;
         for (var p in obj) {
             if (obj.hasOwnProperty(p)) {
-                str += p + ' x' + obj[p] + '</br>';
+                console.log(p);
+
+                string = p.toString().slice(4);
+
+                if (parseFloat(p)) {
+                    calc = parseFloat(p) * parseFloat(obj[p]);
+                }
+
+                if (calc !== 0) {
+                    combined += string + ' ' + Math.round(calc * 10000) / 100 + '%' + '<br>';
+                }
             }
         }
-        return str;
+        if (combined !== '') {
+            return combined;
+        }
+
     },
 
     collectStats: function () {
@@ -861,7 +876,9 @@ var DataWrapper = React.createClass({
                 }
 
                 // skill bonus damage iterator
-                var saveValues = [];
+                var saveValues = [],
+                    skilldmgArray = [];
+
                 for (i = 0; i < itemSlots.length; i++) {
                     if (itemSlots[i] && itemSlots[i].attributesRaw) {
                         for (k = 0; k < saveArr.length; k++) {
@@ -870,7 +887,10 @@ var DataWrapper = React.createClass({
                                     results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
                                     if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
                                         saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
-                                        countedValues = saveValues.reduce(function (p, c) {
+
+                                        skilldmgArray.push(itemSlots[i].attributesRaw[saveArr[k]].min + this.state.skills[k].skill.name);
+
+                                        countedValues = skilldmgArray.reduce(function (p, c) {
                                             if (c in p) {
                                                 p[c]++;
                                             } else {
@@ -1083,7 +1103,9 @@ var DataWrapper = React.createClass({
             resRed *= (1 - this.state.paragonResRed / 100);
             maxHealth += this.state.paragonMaxHealth;
 
-            skillDmgToString = this.objToString(countedValues);
+
+            console.log(countedValues);
+            skillDmgToString = this.skillDmgSanitize(countedValues);
 
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
@@ -1266,9 +1288,25 @@ var DataWrapper = React.createClass({
                 ['Danetta\'s Hatred', 0],
                 ['Captain Crimson\'s Trimmings', 0]
             ],
-            customBuffPool = [
-                ['Steady Aim', 0.2],
-                ['Cull the Weak', 0.2]
+            passiveBuffPool = [
+                ['Cull the Weak', 'Damage', 0.2],
+                ['Single Out', 'Crit Chance', 0.25],
+                ['Archery', 'Damage', 0.08],
+                ['Archery', 'Crit Damage', 0.5],
+                ['Archery', 'Crit Chance', 0.05],
+                ['Custom Engineering', 'Sentries', 2],
+                ['Ambush', 'Damage', 0.4],
+                ['Ballistics', 'Damage', 1],
+                ['Sharpshooter', 'Crit Chance', 0.04],
+                ['Grenadier', 'Damage', 0.1],
+                ['Steady Aim', 0.2]
+            ],
+            skillBuffPool = [
+                ['Bait the Trap', 'Crit Chance', 0.1],
+                ['Wolf Companion', 'Damage', 0.3]
+            ],
+            debuffPool = [
+                ['Marked for Death', 'Damage', 0.2]
             ],
             gemPool = [
                 ['Zei\'s Stone of Vengeance', 'Item_Power_Passive#ItemPassive_Unique_Gem_012_x1'],
@@ -3848,18 +3886,18 @@ var DataWrapper = React.createClass({
                 effectiveDpsCalc,
                 nativeSkillDamage = 1;
 
-            for (i = 0; i < customBuffPool.length; i++) {
-                passivesState.forEach(function (passiveName) {
-                    if (passiveName.skill.name === customBuffPool[i][0]) {
-                        buffMult += customBuffPool[i][1];
-                    }
-                });
-                skillsState.forEach(function (skillName) {
-                    if (skillName.skill.name === customBuffPool[i][0]) {
-                        buffMult += customBuffPool[i][1];
-                    }
-                });
-            }
+            //for (i = 0; i < customBuffPool.length; i++) {
+            //    passivesState.forEach(function (passiveName) {
+            //        if (passiveName.skill.name === customBuffPool[i][0]) {
+            //            buffMult += customBuffPool[i][1];
+            //        }
+            //    });
+            //    skillsState.forEach(function (skillName) {
+            //        if (skillName.skill.name === customBuffPool[i][0]) {
+            //            buffMult += customBuffPool[i][1];
+            //        }
+            //    });
+            //}
 
             if (this.state.maxEleDmgValue) {
                 eleMult += this.state.maxEleDmgValue / 100;
