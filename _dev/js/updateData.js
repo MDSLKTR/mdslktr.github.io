@@ -654,7 +654,6 @@ var DataWrapper = React.createClass({
             calc = 0;
         for (var p in obj) {
             if (obj.hasOwnProperty(p)) {
-                console.log(p);
 
                 string = p.toString().slice(4);
 
@@ -1068,6 +1067,8 @@ var DataWrapper = React.createClass({
                     maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
                 }
             }
+
+            // reduce is a neat method
             var eleDmg = [
                     fireDmg,
                     poisonDmg,
@@ -1103,10 +1104,10 @@ var DataWrapper = React.createClass({
             resRed *= (1 - this.state.paragonResRed / 100);
             maxHealth += this.state.paragonMaxHealth;
 
-
-            console.log(countedValues);
+            // Format Skill Damage String properly
             skillDmgToString = this.skillDmgSanitize(countedValues);
 
+            // Find max Elemental Damage Bonus
             if (findElem !== 0) {
                 this.setState({maxEleDmg: maxElement});
                 this.setState({maxEleDmgValue: findElem});
@@ -1114,6 +1115,8 @@ var DataWrapper = React.createClass({
                 this.setState({maxEleDmg: ''});
                 this.setState({maxEleDmgValue: 0});
             }
+
+            // set states of other stats
             this.setState({cdrRed: cdr});
             this.setState({resRed: resRed});
             this.setState({eliteDmg: eliteDmg});
@@ -2654,13 +2657,13 @@ var DataWrapper = React.createClass({
                             mainHandState.attributesRaw[weaponElementsMin[i]].max +
                             (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
                             maxDmgCalc = mainHandState.maxDamage.max +
-                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                                mainHandState.attributesRaw[weaponElementsDelta[i]].max +
-                                ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
+                            mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                            mainHandState.attributesRaw[weaponElementsDelta[i]].max +
+                            ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
-                            }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) +' Damage'));
+                            }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                         } else if (!mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
                             minDmgCalc = mainHandState.minDamage.max +
                             mainHandState.attributesRaw[weaponElementsMin[i]].max;
