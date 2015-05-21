@@ -1,14 +1,12 @@
 CACHE MANIFEST
-# rev 11 - 2015-04-29T02:15:34.951Z
+# rev 12 - 2015-05-21T22:30:35.462Z
 
 CACHE:
 ../../assets/css/styles.css
 ../../assets/css/styles.css.map
 ../../assets/css/styles.min.css
-../../assets/fonts/sourcesanspro-300.woff
-../../assets/fonts/sourcesanspro-400-italic.woff
-../../assets/fonts/sourcesanspro-400.woff
-../../assets/fonts/sourcesanspro-600.woff
+../../assets/fonts/oxygen-bold-webfont.eot
+../../assets/fonts/oxygen-bold-webfont.ttf
 ../../assets/images/barbarian.png
 ../../assets/images/bg-2.jpg
 ../../assets/images/bg-3.jpg

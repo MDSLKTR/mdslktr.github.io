@@ -651,7 +651,8 @@ var DataWrapper = React.createClass({
     skillDmgSanitize: function (obj) {
         var combined = '',
             string = '',
-            calc = 0;
+            calc = 0,
+            saveArray = [];
         for (var p in obj) {
             if (obj.hasOwnProperty(p)) {
 
@@ -663,13 +664,14 @@ var DataWrapper = React.createClass({
 
                 if (calc !== 0) {
                     combined += string + ' ' + Math.round(calc * 10000) / 100 + '%' + '<br>';
+                    saveArray.push(calc + ' ' + string);
                 }
             }
         }
         if (combined !== '') {
+            this.setState({skillDmgRaw: saveArray});
             return combined;
         }
-
     },
 
     collectStats: function () {
@@ -1201,6 +1203,7 @@ var DataWrapper = React.createClass({
             maxElementDmg = this.state.maxEleDmg,
             maxHealthState = this.state.maxHealth,
             skillDmgState = this.state.skillDmg,
+            skillDmgStateRaw = this.state.skillDmgRaw,
             itemAtkSpeedState = this.state.atkSpd,
             paragon = [],
             pCdr = this.state.paragonCdr,
@@ -1302,7 +1305,7 @@ var DataWrapper = React.createClass({
                 ['Ballistics', 'Damage', 1],
                 ['Sharpshooter', 'Crit Chance', 0.04],
                 ['Grenadier', 'Damage', 0.1],
-                ['Steady Aim', 0.2]
+                ['Steady Aim', 'Damage', 0.2]
             ],
             skillBuffPool = [
                 ['Bait the Trap', 'Crit Chance', 0.1],
@@ -3884,35 +3887,85 @@ var DataWrapper = React.createClass({
                 critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
                 sheetDpsCalc = dexCalc * minMaxCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1),
                 buffMult = 0,
-                gemMult = 0,
                 eleMult = 0,
                 effectiveDpsCalc,
-                nativeSkillDamage = 1;
+                // test value - to be replaced with skill damage
+                skillDamage = 3,
+                gemMult = 1,
 
-            //for (i = 0; i < customBuffPool.length; i++) {
-            //    passivesState.forEach(function (passiveName) {
-            //        if (passiveName.skill.name === customBuffPool[i][0]) {
-            //            buffMult += customBuffPool[i][1];
-            //        }
-            //    });
-            //    skillsState.forEach(function (skillName) {
-            //        if (skillName.skill.name === customBuffPool[i][0]) {
-            //            buffMult += customBuffPool[i][1];
-            //        }
-            //    });
-            //}
+                maxSkillDmg,
+                nativeSkillDamage,
+                pushedValues = [];
 
+            // Skill Damage
+            if (this.state.skillDmgRaw) {
+                for (i = 0; i < this.state.skillDmgRaw.length; i++) {
+                    skillsState.forEach(function (skillName) {
+                        if (skillName.skill) {
+                            if (skillDmgStateRaw[i].search(skillName.skill.name.toString()) != -1) {
+                                pushedValues.push([skillDamage , skillDmgStateRaw[i]]);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // passive Buffs
+            for (i = 0; i < passiveBuffPool.length; i++) {
+                passivesState.forEach(function (passiveName) {
+                    if (passiveName.skill.name === passiveBuffPool[i][0]) {
+                        if (passiveBuffPool[i][1] === 'Damage') {
+                            buffMult += passiveBuffPool[i][2];
+                        }
+
+                    }
+                });
+            }
+            // active Buffs
+            for (i = 0; i < skillBuffPool.length; i++) {
+                skillsState.forEach(function (skillName) {
+                    if (skillName.skill && skillName.rune) {
+                        if (skillName.skill.name === skillBuffPool[i][0] || skillName.rune.name === skillBuffPool[i][0]) {
+                            if (skillBuffPool[i][1] === 'Damage') {
+                                buffMult += skillBuffPool[i][2];
+                            }
+                        }
+                    } else {
+                        if (skillName.skill.name === skillBuffPool[i][0]) {
+                            if (skillBuffPool[i][1] === 'Damage') {
+                                buffMult += skillBuffPool[i][2];
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Elemental Damage Bonus
             if (this.state.maxEleDmgValue) {
                 eleMult += this.state.maxEleDmgValue / 100;
             }
 
-            effectiveDpsCalc = sheetDpsCalc * nativeSkillDamage * (1 + eleMult) * (1 + buffMult);
+            maxSkillDmg = pushedValues.sort();
 
-            stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
-                Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
-                ' | EPS: ',
-                Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-            ));
+            if (maxSkillDmg[0]) {
+                nativeSkillDamage = maxSkillDmg[0][0] * (1 + parseFloat(maxSkillDmg[0][1])) * (1 + eleMult);
+            }
+
+            effectiveDpsCalc = sheetDpsCalc * nativeSkillDamage* (1 + buffMult) * (1 + gemMult);
+
+            if (!effectiveDpsCalc) {
+                stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
+                    Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                    ' | EPS: ',
+                    'calculating EDPS..'
+                ));
+            } else {
+                stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
+                    Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                    ' | EDPS: ',
+                    Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+                ));
+            }
         }
 
         if (additionalStatsDefensive && statsState) {
