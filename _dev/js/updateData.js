@@ -3885,7 +3885,10 @@ var DataWrapper = React.createClass({
                 minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
                 critChanceCalc = statsState.critChance + (pCritChance / 100),
                 critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
-                sheetDpsCalc = dexCalc * minMaxCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1),
+                sheetDpsCalc = dexCalc * minMaxCalc,
+
+                effectiveCritChance = critChanceCalc,
+                effectiveCritDamage = critDmgCalc,
                 buffMult = 0,
                 eleMult = 0,
                 effectiveDpsCalc,
@@ -3918,6 +3921,10 @@ var DataWrapper = React.createClass({
                             buffMult += passiveBuffPool[i][2];
                         }
 
+                        if (passiveBuffPool[i][1] === 'Crit Chance') {
+                            console.log('ppop');
+                            effectiveCritChance += passiveBuffPool[i][2];
+                        }
                     }
                 });
             }
@@ -3951,17 +3958,17 @@ var DataWrapper = React.createClass({
                 nativeSkillDamage = maxSkillDmg[0][0] * (1 + parseFloat(maxSkillDmg[0][1])) * (1 + eleMult);
             }
 
-            effectiveDpsCalc = sheetDpsCalc * nativeSkillDamage* (1 + buffMult) * (1 + gemMult);
+            effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage* (1 + buffMult) * (1 + gemMult);
 
             if (!effectiveDpsCalc) {
                 stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
-                    Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                    Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                     ' | EPS: ',
                     'calculating EDPS..'
                 ));
             } else {
                 stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
-                    Math.round(sheetDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
+                    Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                     ' | EDPS: ',
                     Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
                 ));
