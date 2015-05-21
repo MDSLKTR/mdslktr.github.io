@@ -3922,7 +3922,6 @@ var DataWrapper = React.createClass({
                         }
 
                         if (passiveBuffPool[i][1] === 'Crit Chance') {
-                            console.log('ppop');
                             effectiveCritChance += passiveBuffPool[i][2];
                         }
                     }
