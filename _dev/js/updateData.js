@@ -1058,13 +1058,15 @@ var DataWrapper = React.createClass({
             if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0] && this.state.helmItem.attributesRaw) {
                 if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                     // increment for cdr gem
-                    cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min - (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min));
+                    cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min -
+                    (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min));
                 } else if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                     cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min);
                 }
                 if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                     // increment for health gem
-                    maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 + (this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
+                    maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 +
+                    (this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
                 } else if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                     maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
                 }
@@ -1216,6 +1218,21 @@ var DataWrapper = React.createClass({
             pResistAll = this.state.paragonResistAll,
             pArmor = this.state.paragonArmor,
             pLife = this.state.paragonMaxHealth,
+            helmCount,
+            torsoCount,
+            handsCount,
+            feetCount,
+            shouldersCount,
+            legsCount,
+            bracersCount,
+            mainCount,
+            offCount,
+            beltCount,
+            ringRCount,
+            ringLCount,
+            neckCount,
+            DamagePercentAll = 'Damage_Weapon_Percent_All',
+            DamageBonusMinPhysical = 'Damage_Weapon_Bonus_Min_X1#Physical',
             i,
             k,
             m,
@@ -1412,8 +1429,8 @@ var DataWrapper = React.createClass({
             base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
             base.push(React.DOM.div({key: classState.key},
                 'Class: ',
-                classState.toString().replace(/-/g, '').charAt(0).toUpperCase()
-                + classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
+                classState.toString().replace(/-/g, '').charAt(0).toUpperCase() +
+                classState.toString().replace(/-/g, '').slice(1).toLowerCase()));
             base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
             if (paragonState) {
                 base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
@@ -1608,7 +1625,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < helmState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var helmCount;
                             if (helmState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     helmCount = setPool[m][1]++;
@@ -1770,7 +1786,7 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < torsoState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var torsoCount;
+
                             if (torsoState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     torsoCount = setPool[m][1]++;
@@ -1940,7 +1956,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < handsState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var handsCount;
                             if (handsState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     handsCount = setPool[m][1]++;
@@ -2079,7 +2094,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < feetState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var feetCount;
                             if (feetState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     feetCount = setPool[m][1]++;
@@ -2220,7 +2234,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < shouldersState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var shouldersCount;
                             if (shouldersState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     shouldersCount = setPool[m][1]++;
@@ -2358,7 +2371,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < legsState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var legsCount;
                             if (legsState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     legsCount = setPool[m][1]++;
@@ -2523,7 +2535,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < bracersState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var bracersCount;
                             if (bracersState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     bracersCount = setPool[m][1]++;
@@ -2652,22 +2663,25 @@ var DataWrapper = React.createClass({
                     className: 'dps'
                 }, mainHandState.dps.max.toString().substring(0, 7) + ' DPS'));
             }
+
             if (mainHandState.minDamage && mainHandState.maxDamage && mainHandState.attributesRaw) {
                 for (i = 0; i < weaponElementsMin.length; i++) {
                     if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
-                        if (mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                        if (mainHandState.attributesRaw[DamagePercentAll] && !mainHandState.attributesRaw[DamageBonusMinPhysical]) {
                             minDmgCalc = mainHandState.minDamage.max +
                             mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                            (mainHandState.attributesRaw[weaponElementsMin[i]].max * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
+                            (mainHandState.attributesRaw[weaponElementsMin[i]].max *
+                            mainHandState.attributesRaw[DamagePercentAll].max);
                             maxDmgCalc = mainHandState.maxDamage.max +
                             mainHandState.attributesRaw[weaponElementsMin[i]].max +
                             mainHandState.attributesRaw[weaponElementsDelta[i]].max +
-                            ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) * mainHandState.attributesRaw['Damage_Weapon_Percent_All'].max);
+                            ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) *
+                            mainHandState.attributesRaw[DamagePercentAll].max);
                             mainHand.push(React.DOM.li({
                                 key: mainHandState.key,
                                 className: 'raw-damage'
                             }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
-                        } else if (!mainHandState.attributesRaw['Damage_Weapon_Percent_All'] && !mainHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                        } else if (!mainHandState.attributesRaw[DamagePercentAll] && !mainHandState.attributesRaw[DamageBonusMinPhysical]) {
                             minDmgCalc = mainHandState.minDamage.max +
                             mainHandState.attributesRaw[weaponElementsMin[i]].max;
                             maxDmgCalc = mainHandState.maxDamage.max +
@@ -2716,7 +2730,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < mainHandState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var mainCount;
                             if (mainHandState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     mainCount = setPool[m][1]++;
@@ -2886,20 +2899,23 @@ var DataWrapper = React.createClass({
             if (offHandState.minDamage && offHandState.maxDamage && offHandState.attributesRaw) {
                 for (i = 0; i < weaponElementsMin.length; i++) {
                     if (offHandState.attributesRaw[weaponElementsMin[i]]) {
-                        if (offHandState.attributesRaw['Damage_Weapon_Percent_All'] && !offHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                        if (offHandState.attributesRaw[DamagePercentAll] && !offHandState.attributesRaw[DamageBonusMinPhysical]) {
                             offHand.push(React.DOM.li({
                                 key: offHandState.key,
                                 className: 'raw-damage'
                             }, Math.round(offHandState.minDamage.max +
                             offHandState.attributesRaw[weaponElementsMin[i]].max +
-                            (offHandState.attributesRaw[weaponElementsMin[i]].max * offHandState.attributesRaw['Damage_Weapon_Percent_All'].max)) +
+                            (offHandState.attributesRaw[weaponElementsMin[i]].max *
+                            offHandState.attributesRaw[DamagePercentAll].max)) +
                             ' - ' +
                             Math.round(offHandState.maxDamage.max +
                                 offHandState.attributesRaw[weaponElementsMin[i]].max +
                                 offHandState.attributesRaw[weaponElementsDelta[i]].max +
-                                ((offHandState.attributesRaw[weaponElementsMin[i]].max + offHandState.attributesRaw[weaponElementsDelta[i]].max) * offHandState.attributesRaw['Damage_Weapon_Percent_All'].max)
+                                ((offHandState.attributesRaw[weaponElementsMin[i]].max +
+                                offHandState.attributesRaw[weaponElementsDelta[i]].max) *
+                                offHandState.attributesRaw[DamagePercentAll].max)
                             ) + ' Damage'));
-                        } else if (!offHandState.attributesRaw['Damage_Weapon_Percent_All'] && !offHandState.attributesRaw['Damage_Weapon_Bonus_Min_X1#Physical']) {
+                        } else if (!offHandState.attributesRaw[DamagePercentAll] && !offHandState.attributesRaw[DamageBonusMinPhysical]) {
                             offHand.push(React.DOM.li({
                                 key: offHandState.key,
                                 className: 'raw-damage'
@@ -2908,8 +2924,8 @@ var DataWrapper = React.createClass({
                             ' - ' +
                             Math.round(offHandState.maxDamage.max +
                             offHandState.attributesRaw[weaponElementsMin[i]].max +
-                            offHandState.attributesRaw[weaponElementsDelta[i]].max)
-                            + ' Damage'));
+                            offHandState.attributesRaw[weaponElementsDelta[i]].max) +
+                            ' Damage'));
                         } else {
                             offHand.push(React.DOM.li({
                                 key: offHandState.key,
@@ -2945,7 +2961,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < offHandState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var offCount;
                             if (offHandState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     offCount = setPool[m][1]++;
@@ -3119,7 +3134,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < beltState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var beltCount;
                             if (beltState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     beltCount = setPool[m][1]++;
@@ -3271,7 +3285,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < ringStateRight.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var ringRCount;
                             if (ringStateRight.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     ringRCount = setPool[m][1]++;
@@ -3436,7 +3449,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < ringStateLeft.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var ringLCount;
                             if (ringStateLeft.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     ringLCount = setPool[m][1]++;
@@ -3596,7 +3608,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < neckState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-                            var neckCount;
                             if (neckState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     neckCount = setPool[m][1]++;
@@ -3892,7 +3903,7 @@ var DataWrapper = React.createClass({
                 buffMult = 0,
                 eleMult = 0,
                 effectiveDpsCalc,
-                // test value - to be replaced with skill damage
+            // test value - to be replaced with skill damage
                 skillDamage = 3,
                 gemMult = 1,
 
@@ -3906,7 +3917,7 @@ var DataWrapper = React.createClass({
                     skillsState.forEach(function (skillName) {
                         if (skillName.skill) {
                             if (skillDmgStateRaw[i].search(skillName.skill.name.toString()) != -1) {
-                                pushedValues.push([skillDamage , skillDmgStateRaw[i]]);
+                                pushedValues.push([skillDamage, skillDmgStateRaw[i]]);
                             }
                         }
                     });
@@ -3957,7 +3968,7 @@ var DataWrapper = React.createClass({
                 nativeSkillDamage = maxSkillDmg[0][0] * (1 + parseFloat(maxSkillDmg[0][1])) * (1 + eleMult);
             }
 
-            effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage* (1 + buffMult) * (1 + gemMult);
+            effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage * (1 + buffMult) * (1 + gemMult);
 
             if (!effectiveDpsCalc) {
                 stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
