@@ -4251,5 +4251,6 @@ React.render(React.createElement(DataWrapper, {
 // Mephir#2101
 // MazlSan#2233
 
-// todo find formula for min-max dmg calculation
-// todo fix set count
+
+// todo find out how the % dmg of the skill can be gathered
+// todo add more buffs
