@@ -15,6 +15,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-libsass": "^0.2.0",
     "grunt-lineending": "^0.2.4",
+    "grunt-sass": "^1.0.0",
     "grunt-scss-lint": "^0.3.3",
     "jit-grunt": "^0.8.0"
   },

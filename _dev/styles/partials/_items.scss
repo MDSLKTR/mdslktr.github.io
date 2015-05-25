@@ -7,7 +7,6 @@
 
   & > div {
     animation: fader 2s both linear;
-    text-transform: capitalize;
     position: absolute;
     border-radius: 7px;
     background-size: 64px auto;
@@ -234,6 +233,7 @@
         .name {
           font-size: 1.2rem;
           flex: 0 90%;
+          text-transform: capitalize;
 
           &.set {
             color: green;

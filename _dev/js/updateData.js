@@ -1786,7 +1786,6 @@ var DataWrapper = React.createClass({
                 for (i = 0; i < torsoState.set.ranks.length; i++) {
                     for (k = 1; k <= 6; k++) {
                         for (m = 0; m < setPool.length; m++) {
-
                             if (torsoState.set.name === setPool[m][0] && this.state.setRing) {
                                 if (setPool[m][1] >= 2) {
                                     torsoCount = setPool[m][1]++;

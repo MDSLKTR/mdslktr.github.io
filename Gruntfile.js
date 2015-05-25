@@ -27,7 +27,7 @@ module.exports = function (grunt) {
                 '_dev/**/*.scss'
             ]
         },
-        libsass: {
+        sass: {
             all: {
                 options: {
                     style: 'compact', // See: http://fettblog.eu/blog/2014/04/10/gulp-sass-autoprefixer-sourcemaps/
@@ -81,7 +81,7 @@ module.exports = function (grunt) {
                 files: {
                     'assets/js/vendor.min.js': [
                         '_vendor/jquery/dist/jquery.js',
-                        '_vendor/react/react-with-addons.js'
+                        '_vendor/react/react.js'
 
                     ]
                 }
@@ -166,7 +166,7 @@ module.exports = function (grunt) {
         'js'
     ]);
     grunt.registerTask('css', [
-        'libsass',
+        'sass',
         'autoprefixer',
         'cssmin',
         'lineending:css'
