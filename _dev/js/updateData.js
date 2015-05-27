@@ -3965,6 +3965,8 @@ var DataWrapper = React.createClass({
 
             if (maxSkillDmg[0]) {
                 nativeSkillDamage = maxSkillDmg[0][0] * (1 + parseFloat(maxSkillDmg[0][1])) * (1 + eleMult);
+            } else {
+                nativeSkillDamage = 1;
             }
 
             effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage * (1 + buffMult) * (1 + gemMult);
@@ -3972,8 +3974,8 @@ var DataWrapper = React.createClass({
             if (!effectiveDpsCalc) {
                 stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
                     Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
-                    ' | EPS: ',
-                    'calculating EDPS..'
+                    ' | EDPS: ',
+                    'Calculating EDPS..'
                 ));
             } else {
                 stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
