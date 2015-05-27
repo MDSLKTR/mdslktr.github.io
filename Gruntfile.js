@@ -166,6 +166,7 @@ module.exports = function (grunt) {
         'js'
     ]);
     grunt.registerTask('css', [
+        'scsslint',
         'sass',
         'autoprefixer',
         'cssmin',
