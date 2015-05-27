@@ -96,17 +96,23 @@ var DataWrapper = React.createClass({
                 url: this.state.url,
                 dataType: 'jsonp',
                 success: function (data) {
-                    this.setState({
-                        name: data.name,
-                        class: data.class,
-                        level: data.level,
-                        paragon: data.paragonLevel,
-                        skills: data.skills.active,
-                        passives: data.skills.passive,
-                        stats: data.stats,
-                        items: data.items,
-                        time: data['last-updated']
-                    });
+                        this.setState({
+                            name: data.name,
+                            class: data.class,
+                            level: data.level,
+                            paragon: data.paragonLevel,
+                            stats: data.stats,
+                            items: data.items,
+                            time: data['last-updated']
+                        });
+
+                    if (data.skills) {
+                        this.setState({
+                            skills: data.skills.active,
+                            passives: data.skills.passive
+                        });
+                    }
+
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -344,12 +350,12 @@ var DataWrapper = React.createClass({
         localStorage.setItem('battleTag', input);
         // clear old values and call ajax
         this.setState({
+            heroes: {},
             count: 0,
             items: {},
             skills: [],
             passives: [],
             stats: [],
-            heroes: {},
             attributes: [],
             class: {},
             name: {},
@@ -1561,7 +1567,7 @@ var DataWrapper = React.createClass({
             });
         }
 
-        if (itemsIconState.head && helmState) {
+        if (itemsIconState && itemsIconState.head && helmState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.head.icon, '.png');
 
             switch (itemsState.head.displayColor) {
@@ -1721,7 +1727,7 @@ var DataWrapper = React.createClass({
 
         }
 
-        if (itemsIconState.torso && torsoState) {
+        if (itemsIconState && itemsIconState.torso && torsoState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
 
             switch (itemsState.torso.displayColor) {
@@ -1891,7 +1897,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.hands && handsState) {
+        if (itemsIconState && itemsIconState.hands && handsState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
 
             switch (itemsState.hands.displayColor) {
@@ -2029,7 +2035,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.feet && feetState) {
+        if (itemsIconState && itemsIconState.feet && feetState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
 
             switch (itemsState.feet.displayColor) {
@@ -2167,7 +2173,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.shoulders && shouldersState) {
+        if (itemsIconState && itemsIconState.shoulders && shouldersState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
 
             switch (itemsState.shoulders.displayColor) {
@@ -2307,7 +2313,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.legs && legsState) {
+        if (itemsIconState && itemsIconState.legs && legsState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
 
             switch (itemsState.legs.displayColor) {
@@ -2469,7 +2475,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.bracers && bracersState) {
+        if (itemsIconState && itemsIconState.bracers && bracersState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
 
             switch (itemsState.bracers.displayColor) {
@@ -2608,7 +2614,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.mainHand && mainHandState) {
+        if (itemsIconState && itemsIconState.mainHand && mainHandState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
 
             switch (itemsState.mainHand.displayColor) {
@@ -2839,7 +2845,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.offHand && offHandState) {
+        if (itemsIconState && itemsIconState.offHand && offHandState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
 
             switch (itemsState.offHand.displayColor) {
@@ -3070,7 +3076,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.waist && beltState) {
+        if (itemsIconState && itemsIconState.waist && beltState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
 
             switch (itemsState.waist.displayColor) {
@@ -3207,7 +3213,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.rightFinger && ringStateRight) {
+        if (itemsIconState && itemsIconState.rightFinger && ringStateRight) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
 
             switch (itemsState.rightFinger.displayColor) {
@@ -3379,7 +3385,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.leftFinger && ringStateLeft) {
+        if (itemsIconState && itemsIconState.leftFinger && ringStateLeft) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
 
             switch (itemsState.leftFinger.displayColor) {
@@ -3542,7 +3548,7 @@ var DataWrapper = React.createClass({
             )));
         }
 
-        if (itemsIconState.neck && neckState) {
+        if (itemsIconState && itemsIconState.neck && neckState) {
             constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
 
             switch (itemsState.neck.displayColor) {
@@ -3736,7 +3742,7 @@ var DataWrapper = React.createClass({
                 })));
             }
         }
-        if (statsState.life && statsState.damage && statsState.toughness && statsState.vitality) {
+        if (statsState && statsState.life && statsState.damage && statsState.toughness && statsState.vitality) {
             stats.push(React.DOM.div({key: statsState.key}, 'Life: ', Math.round(statsState.life + statsState.life * pLife / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
             stats.push(React.DOM.div({key: statsState.key}, 'Toughness: ', Math.round(statsState.toughness).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')));
 
@@ -3890,7 +3896,7 @@ var DataWrapper = React.createClass({
             }
         }
 
-        if (statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
+        if (statsState && statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
             var dexCalc = 1 + statsState.dexterity / 100,
                 minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
                 critChanceCalc = statsState.critChance + (pCritChance / 100),
