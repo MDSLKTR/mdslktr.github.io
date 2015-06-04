@@ -27,11 +27,11 @@
 }
 
 .d3-api-url {
-  width: 17.5%;
+  width: 10%;
   z-index: 6;
   position: fixed;
   bottom: 3.5vh;
-  left: 50%;
+  left: 55%;
   transform: translateX(-50%);
   text-align: center;
 
@@ -47,6 +47,31 @@
     outline: none;
     border: 2px solid darkred;
     text-align: center;
+  }
+}
+
+.d3-realm-wrapper {
+  width: 10%;
+  z-index: 6;
+  position: fixed;
+  bottom: 3.5vh;
+  left: 45%;
+  transform: translateX(-50%);
+  text-align: center;
+
+  span {
+    color: wheat;
+    display: block;
+  }
+
+  select {
+    margin-top: 0.25rem;
+    cursor: pointer;
+    background: black;
+    width: 50%;
+    border: 2px solid darkred;
+    color: wheat;
+    outline: none;
   }
 }
 

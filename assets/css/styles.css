@@ -233,11 +233,11 @@ button {
   padding: 0.15rem; }
 
 .d3-api-url {
-  width: 17.5%;
+  width: 10%;
   z-index: 6;
   position: fixed;
   bottom: 3.5vh;
-  left: 50%;
+  left: 55%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   text-align: center; }
@@ -251,6 +251,27 @@ button {
     outline: none;
     border: 2px solid darkred;
     text-align: center; }
+
+.d3-realm-wrapper {
+  width: 10%;
+  z-index: 6;
+  position: fixed;
+  bottom: 3.5vh;
+  left: 45%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  text-align: center; }
+  .d3-realm-wrapper span {
+    color: wheat;
+    display: block; }
+  .d3-realm-wrapper select {
+    margin-top: 0.25rem;
+    cursor: pointer;
+    background: black;
+    width: 50%;
+    border: 2px solid darkred;
+    color: wheat;
+    outline: none; }
 
 .d3-char-wrapper {
   z-index: 5;
