@@ -361,8 +361,6 @@ var statPool = [
                             this.setState({amuletItem: data});
                             break;
                     }
-                    clearInterval(fetchHeroItems);
-                    clearInterval(updateHeroItems);
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -408,8 +406,6 @@ var statPool = [
                             this.setState({offItem: data});
                             break;
                     }
-                    clearInterval(fetchHeroItems);
-                    clearInterval(updateHeroItems);
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -420,7 +416,7 @@ var statPool = [
 
         changeChar: function () {
             updateHeroData = setInterval(this.loadHeroData, 200);
-            updateHeroItems = setInterval(this.getItemData, 500);
+            updateHeroItems = setInterval(this.getItemData, 750);
         },
 
         changeBattleTag: function () {
@@ -548,7 +544,7 @@ var statPool = [
             setInterval(function () {
                 this.collectStats();
                 console.log('stat collector worker');
-            }.bind(this), 4000);
+            }.bind(this), 3000);
         },
 
         handleBonusStatsClick: function () {
@@ -815,6 +811,9 @@ var statPool = [
                     }
                 }
             }
+
+            clearInterval(updateHeroItems);
+            clearInterval(fetchHeroItems);
         },
 
         skillDmgSanitize: function (obj) {
@@ -867,61 +866,7 @@ var statPool = [
                 j,
                 m,
                 skillDmgToString,
-                countedValues,
-                setPool = [
-                    ['Cain\'s Fate', 0],
-                    ['Bastions of Will', 0],
-                    ['Aughild\'s Victory', 0],
-                    ['Aughild\'s Authority', 0],
-                    ['Guardian\'s Contingency', 0],
-                    ['Immortal King\'s Call', 0],
-                    ['Natalya\'s Vengeance', 0],
-                    ['Tal Rasha\'s Elements', 0],
-                    ['Sage\'s Plight', 0],
-                    ['Sage\'s Journey', 0],
-                    ['Born\'s Defiance', 0],
-                    ['Born\'s Command', 0],
-                    ['Unhallowed Essence', 0],
-                    ['Aughild\'s Authority', 0],
-                    ['Cain\'s Destiny', 0],
-                    ['Thorns of the Invoker', 0],
-                    ['Might of the Earth', 0],
-                    ['Firebird\'s Finery', 0],
-                    ['Guardian\'s Jeopardy', 0],
-                    ['Helltooth Harness', 0],
-                    ['Armor of Akkhan', 0],
-                    ['Wrath of the Wastes', 0],
-                    ['Raiment of the Jade Harvester', 0],
-                    ['Embodiment of the Marauder', 0],
-                    ['Raiment of a Thousand Storms', 0],
-                    ['The Legacy of Raekor', 0],
-                    ['Roland\'s Legacy', 0],
-                    ['Delsere\'s Magnum Opus', 0],
-                    ['Monkey King\'s Garb', 0],
-                    ['Asheara\'s Uniform', 0],
-                    ['Demon\'s Skin', 0],
-                    ['Demon\'s Hide', 0],
-                    ['Asheara\'s Vestments', 0],
-                    ['Thorns of the Invoker', 0],
-                    ['Delsere\'s Magnum Opus', 0],
-                    ['Blackthorne\'s Battlegear', 0],
-                    ['Inna\'s Mantra', 0],
-                    ['Vyr\'s Amazing Arcana', 0],
-                    ['Krelm\'s Buff Bulwark', 0],
-                    ['The Shadow’s Mantle', 0],
-                    ['Endless Walk', 0],
-                    ['Legacy of Nightmares', 0],
-                    ['Hallowed Defenders', 0],
-                    ['Hallowed Protectors', 0],
-                    ['Manajuma\'s Way', 0],
-                    ['Zunimassa\'s Haunt', 0],
-                    ['Chantodo\'s Resolve', 0],
-                    ['Istvan\'s Paired Blades', 0],
-                    ['Shenlong\'s Spirit', 0],
-                    ['Bul-Kathos\'s Oath', 0],
-                    ['Danetta\'s Hatred', 0],
-                    ['Captain Crimson\'s Trimmings', 0]
-                ];
+                countedValues;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -3891,7 +3836,7 @@ var statPool = [
                         key: additionalStatsOffensive.key,
                         className: 'bonusstat'
                     }, 'Critical Hit Chance: ' + Math.round((statsState.critChance * 100 + pCritChance) * 1000) / 1000 + '%'));
-                } else if (pCritChance !== 0) {
+                } else if (!statsState.critChance && pCritChance !== 0) {
                     additionalStatsOffensive.push(React.DOM.div({
                         key: additionalStatsOffensive.key,
                         className: 'bonusstat'
@@ -3904,7 +3849,7 @@ var statPool = [
                         className: 'bonusstat'
                         // - 100 because for some reason the crit dmg from the ajax call responds with 100 too much, maybe paragon bug?
                     }, 'Critical Damage increase: ' + Math.round(((statsState.critDamage * 100 + pCritDmg) - 100) * 1000) / 1000 + '%'));
-                } else if (pCritDmg !== 0) {
+                } else if (!statsState.critDamage && pCritDmg !== 0) {
                     additionalStatsOffensive.push(React.DOM.div({
                         key: additionalStatsOffensive.key,
                         className: 'bonusstat'
@@ -3937,7 +3882,7 @@ var statPool = [
                         key: additionalStatsOffensive.key,
                         className: 'bonusstat'
                     }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
-                } else if (pAtkSpd !== 0) {
+                } else if (!mainHandState.attacksPerSecond && pAtkSpd !== 0) {
                     calculatedAttackSpeed = pAtkSpd / 100;
                     additionalStatsOffensive.push(React.DOM.div({
                         key: additionalStatsOffensive.key,
@@ -3993,11 +3938,11 @@ var statPool = [
             }
 
             if (statsState && statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
-                var dexCalc = 1 + statsState.dexterity / 100,
+                var dexCalc = statsState.dexterity / 100,
                     minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
                     critChanceCalc = statsState.critChance + (pCritChance / 100),
                     critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
-                    sheetDpsCalc = dexCalc * minMaxCalc,
+                    sheetDpsCalc = (1 + dexCalc) * minMaxCalc,
 
                     effectiveCritChance = critChanceCalc,
                     effectiveCritDamage = critDmgCalc,
@@ -4074,13 +4019,13 @@ var statPool = [
                 effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage * (1 + buffMult) * (1 + gemMult);
 
                 if (!effectiveDpsCalc) {
-                    stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
+                    stats.push(React.DOM.div({key: 'dps'}, 'DPS: ',
                         Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                         ' | EDPS: ',
                         'Calculating EDPS..'
                     ));
                 } else {
-                    stats.push(React.DOM.div({key: statsState.key}, 'DPS: ',
+                    stats.push(React.DOM.div({key: 'dps'}, 'DPS: ',
                         Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                         ' | EDPS: ',
                         Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
