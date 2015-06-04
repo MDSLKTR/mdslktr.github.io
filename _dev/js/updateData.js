@@ -361,6 +361,8 @@ var statPool = [
                             this.setState({amuletItem: data});
                             break;
                     }
+
+                    this.triggerStatCollector();
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -406,6 +408,8 @@ var statPool = [
                             this.setState({offItem: data});
                             break;
                     }
+
+                    this.triggerStatCollector();
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.url, status, err.toString());
@@ -540,11 +544,6 @@ var statPool = [
             } else {
                 this.setState({invalid: false});
             }
-
-            setInterval(function () {
-                this.collectStats();
-                console.log('stat collector worker');
-            }.bind(this), 3000);
         },
 
         handleBonusStatsClick: function () {
