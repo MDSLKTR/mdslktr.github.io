@@ -120,6 +120,28 @@ var statPool = [
     updateHerolist,
     updateHeroData,
     updateHeroItems,
+    helmCount,
+    torsoCount,
+    handsCount,
+    feetCount,
+    shouldersCount,
+    legsCount,
+    bracersCount,
+    mainCount,
+    offCount,
+    beltCount,
+    ringRCount,
+    ringLCount,
+    neckCount,
+    i,
+    k,
+    m,
+    constructedLink,
+    itemQuality,
+    isAncient,
+    gemLink,
+    start,
+    end,
     DataWrapper = React.createClass({
         displayName: 'DataWrapper',
         getInitialState: function () {
@@ -186,7 +208,8 @@ var statPool = [
                 skillDescOpen: '',
                 passiveDescOpen: '',
                 hellfire_clear: '',
-                url: '',
+                heroesDataUrl: '',
+                heroDataUrl: '',
                 itemUrl: '',
                 realm: initialRealm,
                 battleTag: localStorage.getItem('battleTag'),
@@ -199,32 +222,36 @@ var statPool = [
         },
 
         loadHeroesData: function () {
+            start = new Date().getTime();
             if (this.state.battleTag) {
-                this.setState({url: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
+                this.setState({heroesDataUrl: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
                 $.ajax({
-                    url: this.state.url,
+                    url: this.state.heroesDataUrl,
                     dataType: 'jsonp',
                     success: function (data) {
                         this.setState({
                             heroes: data
                         });
-
                         clearInterval(fetchHerolist);
                         clearInterval(updateHerolist);
+
+                        end = new Date().getTime();
+                        console.log('Heroes Data fetched in', end - start, 'ms');
                     }.bind(this),
                     error: function (xhr, status, err) {
                         console.error(this.state.url, status, err.toString());
                     }.bind(this)
                 });
-                console.log(this.state.url);
+                console.log(this.state.heroesDataUrl);
             }
         },
 
         loadHeroData: function () {
+            start = new Date().getTime();
             if (this.state.selected) {
-                this.setState({url: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
+                this.setState({heroDataUrl: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
                 $.ajax({
-                    url: this.state.url,
+                    url: this.state.heroDataUrl,
                     dataType: 'jsonp',
                     success: function (data) {
                         this.setState({
@@ -243,20 +270,23 @@ var statPool = [
                                 passives: data.skills.passive
                             });
                         }
-
                         clearInterval(fetchHeroData);
                         clearInterval(updateHeroData);
 
+                        end = new Date().getTime();
+                        console.log('Hero Data fetched in', end - start, 'ms');
+
                     }.bind(this),
                     error: function (xhr, status, err) {
-                        console.error(this.state.url, status, err.toString());
+                        console.error(this.state.heroDataUrl, status, err.toString());
                     }.bind(this)
                 });
-                console.log(this.state.url);
+                console.log(this.state.heroDataUrl);
             }
         },
 
         loadItemData: function (itemKey) {
+            start = new Date().getTime();
             this.setState({item: itemKey});
             this.setState({itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
             $.ajax({
@@ -361,17 +391,19 @@ var statPool = [
                             this.setState({amuletItem: data});
                             break;
                     }
-
+                    end = new Date().getTime();
+                    console.log('Item Data fetched in', end - start, 'ms');
                     this.triggerStatCollector();
                 }.bind(this),
                 error: function (xhr, status, err) {
-                    console.error(this.state.url, status, err.toString());
+                    console.error(this.state.itemUrl, status, err.toString());
                 }.bind(this)
             });
             console.log(this.state.itemUrl);
         },
 
         loadItemDataWithProps: function (itemKey, left) {
+            start = new Date().getTime();
             this.setState({item: itemKey});
             this.setState({itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
             $.ajax({
@@ -408,24 +440,25 @@ var statPool = [
                             this.setState({offItem: data});
                             break;
                     }
-
+                    end = new Date().getTime();
+                    console.log('Item Data fetched in', end - start, 'ms');
                     this.triggerStatCollector();
                 }.bind(this),
                 error: function (xhr, status, err) {
-                    console.error(this.state.url, status, err.toString());
+                    console.error(this.state.itemUrl, status, err.toString());
                 }.bind(this)
             });
             console.log(this.state.itemUrl);
         },
 
         changeChar: function () {
-            updateHeroData = setInterval(this.loadHeroData, 200);
+            updateHeroData = setInterval(this.loadHeroData, 500);
             updateHeroItems = setInterval(this.getItemData, 750);
         },
 
         changeBattleTag: function () {
             clearInterval(updateHerolist);
-            updateHerolist = setInterval(this.loadHeroesData, 200);
+            updateHerolist = setInterval(this.loadHeroesData, 500);
         },
 
         triggerStatCollector: function () {
@@ -434,9 +467,10 @@ var statPool = [
         },
 
         componentDidMount: function () {
-            fetchHerolist = setInterval(this.loadHeroesData, 200);
-            fetchHeroData = setInterval(this.loadHeroData, 200);
-            fetchHeroItems = setInterval(this.getItemData, 500);
+            fetchHerolist = setInterval(this.loadHeroesData, 150);
+            fetchHeroData = setInterval(this.loadHeroData, 500);
+            fetchHeroItems = setInterval(this.getItemData, 750);
+            setInterval(this.collectStats, 2000);
             setInterval(this.loadHeroesData, this.props.pollInterval);
             setInterval(this.loadHeroData, this.props.pollInterval);
             setInterval(this.getItemData, this.props.pollInterval);
@@ -1228,7 +1262,6 @@ var statPool = [
                 this.setState({maxHealth: maxHealth});
                 this.setState({skillDmg: skillDmgToString});
                 this.setState({atkSpd: atkSpd});
-
             }
         },
 
@@ -1283,10 +1316,6 @@ var statPool = [
                 items = [],
                 skillIconBaseUrl = this.state.skillIconBase,
                 itemIconBaseUrl = this.state.itemIconBase,
-                constructedLink,
-                itemQuality,
-                isAncient,
-                gemLink,
                 toggle = this.state.toggleItem,
                 timeStamp = this.state.time,
                 additionalStatsOffensive = [],
@@ -1315,22 +1344,6 @@ var statPool = [
                 pResistAll = this.state.paragonResistAll,
                 pArmor = this.state.paragonArmor,
                 pLife = this.state.paragonMaxHealth,
-                helmCount,
-                torsoCount,
-                handsCount,
-                feetCount,
-                shouldersCount,
-                legsCount,
-                bracersCount,
-                mainCount,
-                offCount,
-                beltCount,
-                ringRCount,
-                ringLCount,
-                neckCount,
-                i,
-                k,
-                m,
                 calculatedAttackSpeed = 0,
                 minDmgCalc = 0,
                 maxDmgCalc = 0,
@@ -4127,11 +4140,16 @@ var statPool = [
                         className: 'bonusstat'
                     }, 'Damage Reduction from Elites: ' + eliteDmgRedState + '%'));
                 }
-                if (maxHealthState !== 0) {
+                if (maxHealthState) {
                     additionalStatsDefensive.push(React.DOM.div({
                         key: additionalStatsDefensive.key,
                         className: 'bonusstat'
                     }, 'Bonus Max Health: ' + maxHealthState + '%'));
+                } else if (pLife !== 0) {
+                    additionalStatsDefensive.push(React.DOM.div({
+                        key: additionalStatsDefensive.key,
+                        className: 'bonusstat'
+                    }, 'Bonus Max Health: ' + pLife + '%'));
                 }
             }
 
