@@ -237,7 +237,7 @@ button {
   z-index: 6;
   position: fixed;
   bottom: 3.5vh;
-  left: 55%;
+  left: 53%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
   text-align: center; }
