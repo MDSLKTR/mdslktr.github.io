@@ -227,6 +227,7 @@ var statPool = [
                 this.setState({heroesDataUrl: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
                 $.ajax({
                     url: this.state.heroesDataUrl,
+                    cache: false,
                     dataType: 'jsonp',
                     success: function (data) {
                         this.setState({
@@ -252,6 +253,7 @@ var statPool = [
                 this.setState({heroDataUrl: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
                 $.ajax({
                     url: this.state.heroDataUrl,
+                    cache: false,
                     dataType: 'jsonp',
                     success: function (data) {
                         this.setState({
@@ -291,6 +293,7 @@ var statPool = [
             this.setState({itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
             $.ajax({
                 url: this.state.itemUrl,
+                cache: false,
                 dataType: 'jsonp',
                 success: function (data) {
                     switch (data.type.id) {
@@ -393,7 +396,6 @@ var statPool = [
                     }
                     end = new Date().getTime();
                     console.log('Item Data fetched in', end - start, 'ms');
-                    this.triggerStatCollector();
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.itemUrl, status, err.toString());
@@ -408,6 +410,7 @@ var statPool = [
             this.setState({itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
             $.ajax({
                 url: this.state.itemUrl,
+                cache: false,
                 dataType: 'jsonp',
                 success: function (data) {
                     switch (data.type.id) {
@@ -442,7 +445,6 @@ var statPool = [
                     }
                     end = new Date().getTime();
                     console.log('Item Data fetched in', end - start, 'ms');
-                    this.triggerStatCollector();
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(this.state.itemUrl, status, err.toString());
@@ -453,12 +455,12 @@ var statPool = [
 
         changeChar: function () {
             updateHeroData = setInterval(this.loadHeroData, 500);
-            updateHeroItems = setInterval(this.getItemData, 750);
+            updateHeroItems = setInterval(this.getItemData, 2500);
         },
 
         changeBattleTag: function () {
             clearInterval(updateHerolist);
-            updateHerolist = setInterval(this.loadHeroesData, 500);
+            updateHerolist = setInterval(this.loadHeroesData, 1000);
         },
 
         triggerStatCollector: function () {
@@ -467,9 +469,9 @@ var statPool = [
         },
 
         componentDidMount: function () {
-            fetchHerolist = setInterval(this.loadHeroesData, 150);
-            fetchHeroData = setInterval(this.loadHeroData, 500);
-            fetchHeroItems = setInterval(this.getItemData, 750);
+            fetchHerolist = setInterval(this.loadHeroesData, 1000);
+            fetchHeroData = setInterval(this.loadHeroData, 1500);
+            fetchHeroItems = setInterval(this.getItemData, 2500);
             setInterval(this.collectStats, 2000);
             setInterval(this.loadHeroesData, this.props.pollInterval);
             setInterval(this.loadHeroData, this.props.pollInterval);
@@ -3950,11 +3952,11 @@ var statPool = [
             }
 
             if (statsState && statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
-                var dexCalc = statsState.dexterity / 100,
+                var statCalc,
                     minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
                     critChanceCalc = statsState.critChance + (pCritChance / 100),
                     critDmgCalc = statsState.critDamage - 1 + (pCritDmg / 100),
-                    sheetDpsCalc = (1 + dexCalc) * minMaxCalc,
+                    sheetDpsCalc,
 
                     effectiveCritChance = critChanceCalc,
                     effectiveCritDamage = critDmgCalc,
@@ -3968,6 +3970,19 @@ var statPool = [
                     maxSkillDmg,
                     nativeSkillDamage,
                     pushedValues = [];
+
+                if (classState === 'demon-hunter' || classState === 'monk') {
+                    statCalc = statsState.dexterity / 100;
+                } else if (classState === 'barbarian' || classState === 'crusader') {
+                    statCalc = statsState.strength / 100;
+                } else if (classState === 'wizard' || classState === 'witch-doctor') {
+                    statCalc = statsState.intelligence / 100;
+                } else {
+                    statCalc = 1;
+                    console.log('new class?');
+                }
+
+                sheetDpsCalc = (1 + statCalc) * minMaxCalc;
 
                 // Skill Damage
                 if (this.state.skillDmgRaw) {
