@@ -63,7 +63,7 @@
   .rune-desc,
   .passive-desc {
     flex: 1 100%;
-    padding-left: (52px + 5px);
+    padding-left: (48px + 10px);
     color: burlywood;
     margin: 0;
   }
@@ -73,9 +73,9 @@
   }
 
   .desc-icon {
-    margin-right: 5px;
-    flex: 0 52px;
-    height: 52px;
+    margin-right: 10px;
+    flex: 0 48px;
+    height: 48px;
     background-repeat: no-repeat;
     background-size: contain;
   }
@@ -94,6 +94,11 @@
 #panel-bottom-right-desc {
   right: 0;
   bottom: 0;
+
+  span {
+    margin: 20px 0;
+    display: inline-block;
+  }
 }
 
 #panel-right-additional {

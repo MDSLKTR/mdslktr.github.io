@@ -573,7 +573,7 @@ button {
     -webkit-flex: 1 100%;
         -ms-flex: 1 100%;
             flex: 1 100%;
-    padding-left: 57px;
+    padding-left: 58px;
     color: burlywood;
     margin: 0; }
   #panel-bottom-left-desc .rune-desc,
@@ -581,12 +581,12 @@ button {
     color: white; }
   #panel-bottom-left-desc .desc-icon,
   #panel-bottom-right-desc .desc-icon {
-    margin-right: 5px;
+    margin-right: 10px;
     -webkit-box-flex: 0;
-    -webkit-flex: 0 52px;
-        -ms-flex: 0 52px;
-            flex: 0 52px;
-    height: 52px;
+    -webkit-flex: 0 48px;
+        -ms-flex: 0 48px;
+            flex: 0 48px;
+    height: 48px;
     background-repeat: no-repeat;
     background-size: contain; }
   #panel-bottom-left-desc span,
@@ -601,6 +601,9 @@ button {
 #panel-bottom-right-desc {
   right: 0;
   bottom: 0; }
+  #panel-bottom-right-desc span {
+    margin: 20px 0;
+    display: inline-block; }
 
 #panel-right-additional {
   z-index: 1;

@@ -536,7 +536,7 @@ var statPool = [
 
         changeChar: function () {
             updateHeroData = setInterval(this.loadHeroData, 500);
-            updateHeroItems = setInterval(this.getItemData, 1500);
+            updateHeroItems = setInterval(this.getItemData, 1000);
         },
 
         changeBattleTag: function () {
