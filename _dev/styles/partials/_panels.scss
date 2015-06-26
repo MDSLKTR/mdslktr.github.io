@@ -2,89 +2,82 @@
 #panel-right,
 #panel-bottom-left,
 #panel-bottom-right,
-#panel-right-additional {
-  position: fixed;
+#panel-right-additional,
+#panel-left-additional {
+  position: absolute;
   background: rgba(255, 0, 0, 0.25);
   color: sienna;
-  animation-duration: 5s;
-  animation-delay: 1.5s;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  border-radius: 7px;
+  border-radius: 5px;
   padding: 1.5vh;
-  // filter seems to have a horrible performance when combined with different filters in animations
-  // filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
-  transform: translateZ(0);
-  backface-visibility: hidden;
+
+  button {
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred;
+    color: wheat;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+  }
 
   & > span {
     color: wheat;
-    display: block;
-    margin: 0.35vh 0;
-    width: 100%;
-    height: 5%;
+    display: inline-block;
+    margin: 5px 0;
   }
 }
 
 #panel-bottom-left-desc {
-  width: 64vw;
+  width: 64%;
 }
 
 #panel-bottom-right-desc {
-  width: 32.5vw;
+  width: 32%;
 }
 
 #panel-bottom-left-desc,
 #panel-bottom-right-desc {
-  z-index: 10;
-  position: fixed;
-  height: 100%;
-  bottom: -103vh;
-  font-size: 10px;
-  padding: 1.5vh;
-  background: rgba(0, 0, 0, 0.85);
-  backface-visibility: hidden;
-  transition: transform 0.5s;
-  box-shadow: inset 0 0 5px 1px rgba(255, 0, 0, 0.65);
-  //    filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.65));
+  z-index: 1;
+  position: absolute;
+  font-size: 0.8rem;
+  visibility: hidden;
+  padding: 0 1%;
+  background: rgba(0, 0, 0, 1);
+  box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 1);
+
+  button {
+    background: rgba(255, 0, 0, 0.2);
+    box-shadow: inset 0 0 0 1px darkred;
+    color: wheat;
+    padding: 5px;
+    border-radius: 5px;
+    display: block;
+    margin: 10px auto 0 auto;
+  }
+
+  .description {
+    margin: 5px 0;
+  }
 
   .skill-desc,
   .rune-desc,
   .passive-desc {
     flex: 1 100%;
-    padding-left: (46px + 5px);
+    padding-left: (52px + 5px);
     color: burlywood;
-    margin: 5px 0;
+    margin: 0;
   }
 
   .rune-desc {
-    color: wheat;
+    color: white;
   }
 
   .desc-icon {
     margin-right: 5px;
-    flex: 0 46px;
-    height: 46px;
+    flex: 0 52px;
+    height: 52px;
     background-repeat: no-repeat;
     background-size: contain;
-  }
-
-  button {
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: inset 0 0 0 1px darkred;
-    position: absolute;
-    top: 1.5%;
-    color: wheat;
-    right: 1.5%;
-    padding: 5px;
-    border-radius: 7px;
-  }
-
-  &> span {
-    display: inline-block;
-    position: absolute;
-    bottom: 5vh;
-    left: 2vw;
   }
 
   span {
@@ -95,88 +88,69 @@
 
 #panel-bottom-left-desc {
   left: 0;
+  bottom: 0;
 }
 
 #panel-bottom-right-desc {
   right: 0;
+  bottom: 0;
 }
 
 #panel-right-additional {
+  z-index: 1;
   font-size: 1.05rem;
   filter: none;
-  right: -55vw;
-  height: auto;
+  right: 0;
+  top: 0;
   box-shadow: inset 0 0 1px 1px darkred;
-  top: 1.5vh;
-  width: 35vw;
+  visibility: hidden;
+  width: 35%;
   text-align: left;
   background: rgba(0, 0, 0, 1);
-  transform: translateZ(0);
-  transition: transform 0.75s;
+}
+
+#panel-left-additional {
+  font-size: 1.05rem;
+  filter: none;
+  left: 0;
+  box-shadow: inset 0 0 1px 1px darkred;
+  top: 0;
+  width: 35%;
+  visibility: hidden;
+  text-align: left;
+  background: rgba(0, 0, 0, 1);
+
+  &> span {
+    text-align: center;
+  }
 }
 
 #panel-left,
 #panel-right {
-  height: 40vh;
-  top: 1.5vh;
-  width: 35vw;
+  height: auto;
+  top: 1.5%;
+  width: 35%;
 }
 
 #panel-left {
   text-align: right;
-  left: -40vw;
-}
-
-#panel-left.visible {
-  animation-name: fadein-left;
-}
-
-#panel-right.visible {
-  animation-name: fadein-right;
+  left: -50px;
+  visibility: hidden;
 }
 
 #panel-right {
-  right: -40vw;
   text-align: left;
-
-  button {
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: inset 0 0 0 1px darkred;
-    position: absolute;
-    bottom: -7.5%;
-    color: wheat;
-    left: 0;
-    padding: 5px;
-    border-radius: 7px;
-  }
-
-  &.less ~ #panel-right-additional {
-    transform: translateX(-36.5vw) translateZ(0);
-    transition: transform 0.5s;
-  }
-}
-
-#panel-bottom-left.visible {
-  animation-name: fadein-bottom-left;
+  right: -50px;
+  visibility: hidden;
 }
 
 #panel-bottom-left {
   text-align: right;
-  height: 45vh;
-  width: 45%;
-  bottom: -55vh;
-  left: -60vw;
-
-  button {
-    position: absolute;
-    top: -7.5%;
-    color: wheat;
-    right: 0;
-    padding: 5px;
-    border-radius: 7px;
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: inset 0 0 0 1px darkred;
-  }
+  height: auto;
+  width: 35%;
+  bottom: 0;
+  left: -50px;
+  visibility: hidden;
 
   .icon-front,
   .icon-back,
@@ -187,33 +161,14 @@
   & > div {
     padding-right: 70px;
   }
-
-  &.open ~ #panel-bottom-left-desc {
-    transform: translateY(-100vh) translateZ(0);
-    transition: transform 1s;
-  }
-}
-
-#panel-bottom-right.visible {
-  animation-name: fadein-bottom-right;
 }
 
 #panel-bottom-right {
-  height: 45vh;
-  width: 45%;
-  bottom: -55vh;
-  right: -60vw;
-
-  button {
-    position: absolute;
-    top: -7.5%;
-    color: wheat;
-    left: 0;
-    padding: 5px;
-    border-radius: 7px;
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: inset 0 0 0 1px darkred;
-  }
+  height: auto;
+  width: 35%;
+  bottom: 0;
+  right: -50px;
+  visibility: hidden;
 
   .icon-front,
   .icon-back,
@@ -224,11 +179,6 @@
   & > div {
     padding-left: 70px;
   }
-
-  &.open ~ #panel-bottom-right-desc {
-    transform: translateY(-100vh) translateZ(0);
-    transition: transform 1s;
-  }
 }
 
 #panel-left > div:not(.d3-paragon-selector),
@@ -237,7 +187,7 @@
   padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
-  border-radius: 7px;
+  border-radius: 5px;
   background: rgba(0, 0, 0, 1);
   box-shadow: inset 0 0 0 1px darkred;
 }

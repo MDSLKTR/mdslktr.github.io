@@ -133,15 +133,87 @@ var statPool = [
     ringRCount,
     ringLCount,
     neckCount,
-    i,
-    k,
-    m,
     constructedLink,
     itemQuality,
     isAncient,
     gemLink,
     start,
     end,
+    panelLeft,
+    panelRight,
+    panelBottomLeft,
+    panelBottomRight,
+    panelRightAdditional,
+    panelLeftAdditional,
+    panelLeftWidth,
+    panelRightWidth,
+    panelBottomLeftHeight,
+    panelBottomRightHeight,
+    panelBottomLeftWidth,
+    panelBottomRightWidth,
+    panelRightAdditionalHeight,
+    panelLeftAdditionalHeight,
+    panelBottomLeftAdditional,
+    panelBottomRightAdditional,
+    panelBottomLeftAdditionalHeight,
+    panelBottomRightAdditionalHeight,
+    target,
+    childElements,
+    parentElement,
+    input,
+    selectedChar,
+    i,
+    j,
+    k,
+    m,
+    results,
+    cdr,
+    resRed,
+    dmgRedMelee,
+    dmgRedRanged,
+    eliteDmg,
+    eliteDmgRed,
+    areaDmg,
+    fireDmg,
+    coldDmg,
+    lightningDmg,
+    physicalDmg,
+    poisonDmg,
+    goldPickUp,
+    maxHealth,
+    atkSpd,
+    skillDmgToString,
+    countedValues,
+    skills,
+    skillsDesc,
+    heroes,
+    realms,
+    passives,
+    passivesDesc,
+    stats,
+    paragon,
+    specialPassive,
+    base,
+    style,
+    shoulders,
+    helmet,
+    torso,
+    hands,
+    feet,
+    ringLeft,
+    ringRight,
+    bracers,
+    legs,
+    items,
+    mainHand,
+    offHand,
+    belt,
+    neck,
+    additionalStatsOffensive,
+    additionalStatsDefensive,
+    calculatedAttackSpeed,
+    minDmgCalc,
+    maxDmgCalc,
     DataWrapper = React.createClass({
         displayName: 'DataWrapper',
         getInitialState: function () {
@@ -188,7 +260,6 @@ var statPool = [
                 dmgRedRanged: 0,
                 maxEleDmg: 0,
                 maxHealth: 0,
-                toggleItem: 'toggle',
 
                 paragonCdr: parseInt(localStorage.getItem('paragonCdr')),
                 paragonResRed: parseInt(localStorage.getItem('paragonResRed')),
@@ -204,9 +275,10 @@ var statPool = [
                 invalid: false,
                 setRing: false,
                 time: 0,
-                toggle: 'more',
-                skillDescOpen: '',
-                passiveDescOpen: '',
+                toggle: '',
+                skillDescToggle: '',
+                passiveDescToggle: '',
+                paragonToggle: '',
                 hellfire_clear: '',
                 heroesDataUrl: '',
                 heroDataUrl: '',
@@ -291,8 +363,9 @@ var statPool = [
 
         loadItemData: function (itemKey) {
             start = new Date().getTime();
-            this.setState({item: itemKey});
-            this.setState({itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+            this.setState({
+                itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey)
+            });
             var request = new XMLHttpRequest();
 
             if (request) {
@@ -410,8 +483,10 @@ var statPool = [
 
         loadItemDataWithProps: function (itemKey, left) {
             start = new Date().getTime();
-            this.setState({item: itemKey});
-            this.setState({itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(this.state.item, this.state.apiKey)});
+            this.setState({
+                itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey)
+            });
+
             var request = new XMLHttpRequest();
 
             if (request) {
@@ -452,8 +527,6 @@ var statPool = [
                             }
                             end = new Date().getTime();
                             console.log('Item Data fetched in', end - start, 'ms');
-                        } else {
-                            console.log('penis');
                         }
                     }
                 }.bind(this);
@@ -463,7 +536,7 @@ var statPool = [
 
         changeChar: function () {
             updateHeroData = setInterval(this.loadHeroData, 500);
-            updateHeroItems = setInterval(this.getItemData, 1000);
+            updateHeroItems = setInterval(this.getItemData, 1500);
         },
 
         changeBattleTag: function () {
@@ -479,7 +552,9 @@ var statPool = [
         componentDidMount: function () {
             fetchHeroList = setInterval(this.loadHeroesData, 1000);
             fetchHeroData = setInterval(this.loadHeroData, 1500);
+            setInterval(this.checkSetItems, 2000);
             setInterval(this.collectStats, 2000);
+            setInterval(this.collectSkillDamage, 2000);
             setInterval(this.loadHeroesData, this.props.pollInterval);
             setInterval(this.loadHeroData, this.props.pollInterval);
             setInterval(this.getItemData, this.props.pollInterval);
@@ -523,14 +598,22 @@ var statPool = [
                 this.setState({paragonMaxHealth: 0});
             }
 
+            // panel shorthands p = panel, l = left and so forth
+            panelLeft = this.refs.pl.getDOMNode();
+            panelRight = this.refs.pr.getDOMNode();
+            panelBottomLeft = this.refs.pbl.getDOMNode();
+            panelBottomRight = this.refs.pbr.getDOMNode();
+            panelRightAdditional = this.refs.pra.getDOMNode();
+            panelLeftAdditional = this.refs.pla.getDOMNode();
+            panelBottomLeftAdditional = this.refs.pbla.getDOMNode();
+            panelBottomRightAdditional = this.refs.pbra.getDOMNode();
         },
 
         handleChange: function (e) {
-            var input = e.target.value;
-            this.setState({battleTag: input});
-            localStorage.setItem('battleTag', input);
-            // clear old values and call ajax
+            input = e.target.value;
+
             this.setState({
+                battleTag: input,
                 heroes: {},
                 items: {},
                 skills: [],
@@ -544,19 +627,19 @@ var statPool = [
                 time: 0,
                 toggle: 'more',
                 skillDescOpen: '',
-                passiveDescOpen: '',
+                passiveDescToggle: '',
                 setRing: false
             });
+
+            localStorage.setItem('battleTag', input);
             this.changeBattleTag();
         },
 
         setRealm: function (e) {
-            var input = e.target.value;
-            this.setState({realm: input});
-            //localStorage.removeItem('battleTag');
-            localStorage.setItem('realm', input);
-            // clear old values and call ajax
+            input = e.target.value;
+
             this.setState({
+                realm: input,
                 heroes: {},
                 items: {},
                 skills: [],
@@ -569,17 +652,23 @@ var statPool = [
                 paragon: {},
                 time: 0,
                 toggle: 'more',
-                skillDescOpen: '',
-                passiveDescOpen: '',
+                skillDescToggle: '',
+                paragonToggle: '',
+                passiveDescToggle: '',
                 setRing: false
             });
+
+            localStorage.setItem('realm', input);
             this.changeBattleTag();
         },
 
         setSelect: function () {
-            var newValue = this.refs.select.getDOMNode().value;
-            this.setState({selected: newValue});
-            this.setState({panels: 'visible'});
+            selectedChar = this.refs.select.getDOMNode().value;
+            this.setState({
+                selected: selectedChar,
+                panels: 'visible'
+            });
+
             this.changeChar();
 
             if (this.state.heroes.code) {
@@ -587,203 +676,442 @@ var statPool = [
             } else {
                 this.setState({invalid: false});
             }
+
+            this.animatePanelsIn();
+        },
+
+        animatePanelsIn: function () {
+
+            panelLeftWidth = panelLeft.offsetWidth;
+            panelRightWidth = panelRight.offsetWidth;
+            panelBottomLeftHeight = panelBottomLeft.offsetHeight;
+            panelBottomRightHeight = panelBottomRight.offsetHeight;
+            panelBottomLeftWidth = panelBottomLeft.offsetWidth;
+            panelBottomRightWidth = panelBottomRight.offsetWidth;
+
+            TweenMax.fromTo(
+                panelLeft,
+                2,
+                {
+                    x: panelLeftWidth * -1,
+                    z: 0.01,
+                    delay: 0.5
+                },
+                {
+                    x: 0,
+                    z: 0.01,
+                    visibility: 'visible',
+                    delay: 0.5
+                }
+            );
+
+            TweenMax.fromTo(
+                panelRight,
+                2,
+                {
+                    x: panelRightWidth,
+                    z: 0.01,
+                    delay: 0.5
+                },
+                {
+                    x: 0,
+                    z: 0.01,
+                    visibility: 'visible',
+                    delay: 0.5
+                }
+            );
+
+            TweenMax.fromTo(
+                panelBottomLeft,
+                2,
+                {
+                    x: panelBottomLeftWidth * -1,
+                    y: panelBottomLeftHeight,
+                    delay: 0.5
+                },
+                {
+                    x: 0,
+                    y: 0,
+                    z: 0.01,
+                    visibility: 'visible',
+                    delay: 0.5
+                }
+            );
+
+            TweenMax.fromTo(
+                panelBottomRight,
+                2,
+                {
+                    x: panelBottomRightWidth,
+                    y: panelBottomRightHeight,
+                    delay: 0.5
+                },
+                {
+                    x: 0,
+                    y: 0,
+                    z: 0.01,
+                    visibility: 'visible',
+                    delay: 0.5
+                }
+            );
         },
 
         handleBonusStatsClick: function () {
+            panelRightAdditionalHeight = panelRightAdditional.offsetHeight;
             this.triggerStatCollector();
-            if (this.state.toggle !== 'more') {
-                return this.setState({toggle: 'more'});
+
+            if (this.state.toggle !== 'visible') {
+                TweenMax.fromTo(
+                    panelRightAdditional,
+                    1,
+                    {
+                        y: panelRightAdditionalHeight * -1
+                    },
+                    {
+                        y: 0,
+                        z: 0.01,
+                        visibility: 'visible',
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({toggle: 'visible'});
             } else {
-                return this.setState({toggle: 'less'});
+                TweenMax.fromTo(
+                    panelRightAdditional,
+                    1,
+                    {
+                        y: 0
+                    },
+                    {
+                        y: panelRightAdditionalHeight * -1,
+                        z: 0.01,
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({toggle: 'hidden'});
+            }
+        },
+
+        handleParagonStatsClick: function () {
+            panelLeftAdditionalHeight = panelLeftAdditional.offsetHeight;
+            if (this.state.paragonToggle !== 'visible') {
+                TweenMax.fromTo(
+                    panelLeftAdditional,
+                    1,
+                    {
+                        y: panelLeftAdditionalHeight * -1
+                    },
+                    {
+                        y: 0,
+                        z: 0.01,
+                        visibility: 'visible',
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({paragonToggle: 'visible'});
+            } else {
+                TweenMax.fromTo(
+                    panelLeftAdditional,
+                    1,
+                    {
+                        y: 0
+                    },
+                    {
+                        y: panelLeftAdditionalHeight * -1,
+                        z: 0.01,
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({paragonToggle: 'hidden'});
             }
         },
 
         handleSkillDescClick: function () {
-            if (this.state.skillDescOpen === 'open') {
-                return this.setState({skillDescOpen: ''});
+            panelBottomLeftAdditionalHeight = panelBottomLeftAdditional.offsetHeight;
+            if (this.state.skillDescToggle !== 'visible') {
+                TweenMax.fromTo(
+                    panelBottomLeftAdditional,
+                    1,
+                    {
+                        y: panelBottomLeftAdditionalHeight
+                    },
+                    {
+                        y: 0,
+                        z: 0.01,
+                        visibility: 'visible',
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({skillDescToggle: 'visible'});
             } else {
-                return this.setState({skillDescOpen: 'open'});
+                TweenMax.fromTo(
+                    panelBottomLeftAdditional,
+                    1,
+                    {
+                        y: 0
+                    },
+                    {
+                        y: panelBottomLeftAdditionalHeight,
+                        z: 0.01,
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({skillDescToggle: 'hidden'});
             }
         },
 
         handlePassiveDescClick: function () {
-            if (this.state.passiveDescOpen === 'open') {
-                return this.setState({passiveDescOpen: ''});
+            panelBottomRightAdditionalHeight = panelBottomRightAdditional.offsetHeight;
+            if (this.state.passiveDescToggle !== 'visible') {
+                TweenMax.fromTo(
+                    panelBottomRightAdditional,
+                    1,
+                    {
+                        y: panelBottomRightAdditionalHeight
+                    },
+                    {
+                        y: 0,
+                        z: 0.01,
+                        visibility: 'visible',
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({passiveDescToggle: 'visible'});
             } else {
-                return this.setState({passiveDescOpen: 'open'});
+                TweenMax.fromTo(
+                    panelBottomRightAdditional,
+                    1,
+                    {
+                        y: 0
+                    },
+                    {
+                        y: panelBottomRightAdditionalHeight,
+                        z: 0.01,
+                        ease: Power4.easeOut
+                    }
+                );
+                this.setState({passiveDescToggle: 'hidden'});
             }
         },
 
         handleItemClick: function (e) {
-            if (!$(e.target).hasClass('open') && $(e.target).hasClass('toggle')) {
-                $(e.target).addClass('open');
+            target = e.target;
 
-                if ($(e.target).parent().children().hasClass('open')) {
-                    $(e.target).parent().children().not($(e.target)).removeClass('open');
-                }
+            if (!e.target.classList.contains('item')) {
+                return;
+            }
+
+            childElements = target.parentNode.children;
+
+            if (!target.classList.contains('open')) {
+                target.classList.add('open');
+                TweenMax.fromTo(
+                    target,
+                    1,
+                    {
+                        width: 64,
+                        height: 128
+                    },
+                    {
+                        width: 450,
+                        height: 485,
+                        ease: Power4.easeOut
+                    }
+                );
+
             } else {
-                $(e.target).removeClass('open');
+                target.classList.remove('open');
+                TweenMax.fromTo(
+                    target,
+                    1,
+                    {
+                        width: 450,
+                        height: 485
+                    },
+                    {
+                        width: 64,
+                        height: 128,
+                        ease: Power4.easeOut
+                    }
+                );
+
+            }
+
+            for (i = 0; i < childElements.length; i++) {
+                if (childElements[i].classList.contains('open') && childElements[i] !== target) {
+                    childElements[i].classList.remove('open');
+                }
             }
         },
 
         handleParagon: function (e) {
-            var parent = $(e.target).parent(),
-                el = $(e.target);
 
-            if (parent.hasClass('cdr')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            target = e.target;
+            parentElement = target.parentNode;
+
+            if (parentElement.classList.contains('cdr')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonCdr < 10) {
                         this.setState({paragonCdr: Math.round((this.state.paragonCdr + 0.2) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonCdr: 10});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonCdr: 0});
                 } else {
                     if (this.state.paragonCdr > 0) {
                         this.setState({paragonCdr: Math.round((this.state.paragonCdr - 0.2) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('resred')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('resred')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonResRed < 10) {
                         this.setState({paragonResRed: Math.round((this.state.paragonResRed + 0.2) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonResRed: 10});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonResRed: 0});
                 } else {
                     if (this.state.paragonResRed > 0) {
                         this.setState({paragonResRed: Math.round((this.state.paragonResRed - 0.2) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('atkspd')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('atkspd')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonAtkSpd < 10) {
                         this.setState({paragonAtkSpd: Math.round((this.state.paragonAtkSpd + 0.2) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonAtkSpd: 10});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonAtkSpd: 0});
                 } else {
                     if (this.state.paragonAtkSpd > 0) {
                         this.setState({paragonAtkSpd: Math.round((this.state.paragonAtkSpd - 0.2) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('critdmg')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('critdmg')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonCritDmg < 50) {
                         this.setState({paragonCritDmg: Math.round((this.state.paragonCritDmg + 1) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonCritDmg: 50});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonCritDmg: 0});
                 } else {
                     if (this.state.paragonCritDmg > 0) {
                         this.setState({paragonCritDmg: Math.round((this.state.paragonCritDmg - 1) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('critchance')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('critchance')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonCritChance < 5) {
                         this.setState({paragonCritChance: Math.round((this.state.paragonCritChance + 0.1) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonCritChance: 5});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonCritChance: 0});
                 } else {
                     if (this.state.paragonCritChance > 0) {
                         this.setState({paragonCritChance: Math.round((this.state.paragonCritChance - 0.1) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('areadmg')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('areadmg')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonAreaDmg < 50) {
                         this.setState({paragonAreaDmg: Math.round((this.state.paragonAreaDmg + 1) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonAreaDmg: 50});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonAreaDmg: 0});
                 } else {
                     if (this.state.paragonAreaDmg > 0) {
                         this.setState({paragonAreaDmg: Math.round((this.state.paragonAreaDmg - 1) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('resource')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('resource')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonResource < 25) {
                         this.setState({paragonResource: Math.round((this.state.paragonResource + 0.5) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonResource: 25});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonResource: 0});
                 } else {
                     if (this.state.paragonResource > 0) {
                         this.setState({paragonResource: Math.round((this.state.paragonResource - 0.5) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('resistall')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('resistall')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonResistAll < 250) {
                         this.setState({paragonResistAll: Math.round((this.state.paragonResistAll + 5) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonResistAll: 250});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonResistAll: 0});
                 } else {
                     if (this.state.paragonResistAll > 0) {
                         this.setState({paragonResistAll: Math.round((this.state.paragonResistAll - 5) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('armor')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('armor')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonArmor < 25) {
                         this.setState({paragonArmor: Math.round((this.state.paragonArmor + 0.5) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonArmor: 25});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonArmor: 0});
                 } else {
                     if (this.state.paragonArmor > 0) {
                         this.setState({paragonArmor: Math.round((this.state.paragonArmor - 0.5) * 10) / 10});
                     }
                 }
-            } else if (parent.hasClass('maxlife')) {
-                if (el.hasClass('paragon-stat-increment')) {
+            }
+            if (parentElement.classList.contains('maxlife')) {
+                if (target.classList.contains('paragon-stat-increment')) {
                     if (this.state.paragonMaxHealth < 25) {
                         this.setState({paragonMaxHealth: Math.round((this.state.paragonMaxHealth + 0.5) * 10) / 10});
                     }
-                } else if (el.hasClass('paragon-stat-max') && !el.hasClass('maxed')) {
-                    el.addClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
+                    target.classList.add('maxed');
                     this.setState({paragonMaxHealth: 25});
-                } else if (el.hasClass('paragon-stat-max') && el.hasClass('maxed')) {
-                    el.removeClass('maxed');
+                } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
+                    target.classList.remove('maxed');
                     this.setState({paragonMaxHealth: 0});
                 } else {
                     if (this.state.paragonMaxHealth > 0) {
@@ -795,8 +1123,9 @@ var statPool = [
         },
 
         getItemData: function () {
-            var i,
-                itemData;
+            'use strict';
+            var itemData,
+                i;
 
             // clear fucking items
             this.setState({
@@ -884,31 +1213,348 @@ var statPool = [
             }
         },
 
+        collectSetNoRingStats: function () {
+            var repeatSet = [],
+                i,
+                j,
+                k,
+                m;
+
+            if (this.state.items) {
+                var itemSlots = [
+                    this.state.helmItem,
+                    this.state.amuletItem,
+                    this.state.chestItem,
+                    this.state.bootsItem,
+                    this.state.glovesItem,
+                    this.state.shouldersItem,
+                    this.state.legsItem,
+                    this.state.bracersItem,
+                    this.state.mainItem,
+                    this.state.offItem,
+                    this.state.beltItem,
+                    this.state.ringItemLeft,
+                    this.state.ringItemRight
+                ];
+                for (i = 0; i < itemSlots.length; i++) {
+                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
+
+                        for (m = 0; m < setPool.length; m++) {
+                            if (itemSlots[i].set.name === setPool[m][0]) {
+                                setPool[m][1]++;
+                            }
+                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                                if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
+                                    for (k = 0; k < statPool.length; k++) {
+                                        // check if the stats are releveant for stat building
+                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                                switch (statPool[k]) {
+                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                        fireDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                        coldDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                        lightningDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                        physicalDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                        poisonDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Power_Cooldown_Reduction_Percent_All':
+                                                        cdr *= (1 - results[k]);
+                                                        break;
+                                                    case 'Resource_Cost_Reduction_Percent_All':
+                                                        resRed *= (1 - results[k]);
+                                                        break;
+                                                    case 'Damage_Percent_Bonus_Vs_Elites':
+                                                        eliteDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Percent_Reduction_From_Elites':
+                                                        eliteDmgRed += results[k] * 100;
+                                                        break;
+                                                    case 'Splash_Damage_Effect_Percent':
+                                                        areaDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Gold_PickUp_Radius':
+                                                        goldPickUp += results[k];
+                                                        break;
+                                                    case 'Damage_Percent_Reduction_From_Melee':
+                                                        dmgRedMelee *= (1 - results[k]);
+                                                        break;
+                                                    case 'Damage_Percent_Reduction_From_Ranged':
+                                                        dmgRedRanged *= (1 - results[k]);
+                                                        break;
+                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                        maxHealth += results[k] * 100;
+                                                        break;
+                                                    case 'Attacks_Per_Second_Percent':
+                                                        atkSpd += results[k];
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
+                            continue;
+                        }
+                        repeatSet.push(itemSlots[i].set.name);
+                    }
+                }
+            }
+        },
+
+        collectSetRingStats: function () {
+            var repeatSet = [],
+                i,
+                j,
+                k,
+                m;
+
+            if (this.state.items) {
+                var itemSlots = [
+                    this.state.helmItem,
+                    this.state.amuletItem,
+                    this.state.chestItem,
+                    this.state.bootsItem,
+                    this.state.glovesItem,
+                    this.state.shouldersItem,
+                    this.state.legsItem,
+                    this.state.bracersItem,
+                    this.state.mainItem,
+                    this.state.offItem,
+                    this.state.beltItem,
+                    this.state.ringItemLeft,
+                    this.state.ringItemRight
+                ];
+                for (i = 0; i < itemSlots.length; i++) {
+                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
+
+                        for (m = 0; m < setPool.length; m++) {
+                            if (itemSlots[i].set.name === setPool[m][0]) {
+                                setPool[m][1]++;
+                            }
+                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                                if (
+                                    itemSlots[i].set.name === setPool[m][0] &&
+                                    itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
+                                    setPool[m][1] >= 2
+                                ) {
+                                    for (k = 0; k < statPool.length; k++) {
+                                        // check if the stats are releveant for stat building
+                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                                switch (statPool[k]) {
+                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                        fireDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                        coldDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                        lightningDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                        physicalDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                        poisonDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Power_Cooldown_Reduction_Percent_All':
+                                                        cdr *= (1 - results[k]);
+                                                        break;
+                                                    case 'Resource_Cost_Reduction_Percent_All':
+                                                        resRed *= (1 - results[k]);
+                                                        break;
+                                                    case 'Damage_Percent_Bonus_Vs_Elites':
+                                                        eliteDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Damage_Percent_Reduction_From_Elites':
+                                                        eliteDmgRed += results[k] * 100;
+                                                        break;
+                                                    case 'Splash_Damage_Effect_Percent':
+                                                        areaDmg += results[k] * 100;
+                                                        break;
+                                                    case 'Gold_PickUp_Radius':
+                                                        goldPickUp += results[k];
+                                                        break;
+                                                    case 'Damage_Percent_Reduction_From_Melee':
+                                                        dmgRedMelee *= (1 - results[k]);
+                                                        break;
+                                                    case 'Damage_Percent_Reduction_From_Ranged':
+                                                        dmgRedRanged *= (1 - results[k]);
+                                                        break;
+                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                        maxHealth += results[k] * 100;
+                                                        break;
+                                                    case 'Attacks_Per_Second_Percent':
+                                                        atkSpd += results[k];
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
+                            continue;
+                        }
+                        repeatSet.push(itemSlots[i].set.name);
+                    }
+                }
+            }
+        },
+
+        checkSetItems: function () {
+            var checkSave = [];
+
+            if (this.state.items) {
+                var itemSlots = [
+                    this.state.helmItem,
+                    this.state.amuletItem,
+                    this.state.chestItem,
+                    this.state.bootsItem,
+                    this.state.glovesItem,
+                    this.state.shouldersItem,
+                    this.state.legsItem,
+                    this.state.bracersItem,
+                    this.state.mainItem,
+                    this.state.offItem,
+                    this.state.beltItem,
+                    this.state.ringItemLeft,
+                    this.state.ringItemRight
+                ];
+
+                // detect Set -1 ring
+                for (i = 0; i < itemSlots.length; i++) {
+                    checkSave.push(itemSlots[i].name);
+                    if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
+                        this.collectSetRingStats();
+                    } else {
+                        this.collectSetNoRingStats();
+                    }
+                }
+            }
+        },
+
+        collectSkillDamage: function () {
+            var saveArr = [],
+                saveValues = [],
+                skilldmgArray = [],
+                i,
+                j,
+                k,
+                m;
+
+            if (this.state.items) {
+                var itemSlots = [
+                    this.state.helmItem,
+                    this.state.amuletItem,
+                    this.state.chestItem,
+                    this.state.bootsItem,
+                    this.state.glovesItem,
+                    this.state.shouldersItem,
+                    this.state.legsItem,
+                    this.state.bracersItem,
+                    this.state.mainItem,
+                    this.state.offItem,
+                    this.state.beltItem,
+                    this.state.ringItemLeft,
+                    this.state.ringItemRight
+                ];
+
+                if (this.state.class && this.state.skills && this.state.skills.length > 0) {
+                    for (m = 0; m < this.state.skills.length; m++) {
+                        if (this.state.skills[m].skill) {
+                            switch (this.state.class) {
+                                case 'demon-hunter':
+                                    saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                    break;
+                                case 'witch-doctor':
+                                    saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                    break;
+                                case 'barbarian':
+                                    saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                    break;
+                                case 'crusader':
+                                    saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                    break;
+                                case 'monk':
+                                    saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                    break;
+                                case 'wizard':
+                                    saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
+                                    break;
+                                default:
+                            }
+                        }
+                    }
+
+                    // skill bonus damage iterator
+                    for (i = 0; i < itemSlots.length; i++) {
+                        if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                            for (k = 0; k < saveArr.length; k++) {
+                                if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
+                                    if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
+                                        results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
+                                        if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
+                                            saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
+
+                                            skilldmgArray.push(itemSlots[i].attributesRaw[saveArr[k]].min + this.state.skills[k].skill.name);
+
+                                            countedValues = skilldmgArray.reduce(function (p, c) {
+                                                if (c in p) {
+                                                    p[c]++;
+                                                } else {
+                                                    p[c] = 1;
+                                                }
+                                                return p;
+                                            }, {});
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            skillDmgToString = this.skillDmgSanitize(countedValues);
+            this.setState({skillDmg: skillDmgToString});
+        },
+
         collectStats: function () {
             var i,
-                results = [],
+                k;
+
             // stats that add multiplicatively
-                cdr = 1,
-                resRed = 1,
-                dmgRedMelee = 1,
-                dmgRedRanged = 1,
+            results = [];
+            cdr = 1;
+            resRed = 1;
+            dmgRedMelee = 1;
+            dmgRedRanged = 1;
             // stats that add additively
-                eliteDmg = 0,
-                eliteDmgRed = 0,
-                areaDmg = 0,
-                fireDmg = 0,
-                coldDmg = 0,
-                lightningDmg = 0,
-                physicalDmg = 0,
-                poisonDmg = 0,
-                goldPickUp = 0,
-                maxHealth = 0,
-                atkSpd = 0,
-                k,
-                j,
-                m,
-                skillDmgToString,
-                countedValues;
+            eliteDmg = 0;
+            eliteDmgRed = 0;
+            areaDmg = 0;
+            fireDmg = 0;
+            coldDmg = 0;
+            lightningDmg = 0;
+            physicalDmg = 0;
+            poisonDmg = 0;
+            goldPickUp = 0;
+            maxHealth = 0;
+            atkSpd = 0;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -987,212 +1633,6 @@ var statPool = [
                     }
                 }
 
-                if (this.state.class && this.state.skills && this.state.skills.length > 0) {
-                    var saveArr = [];
-                    for (m = 0; m < this.state.skills.length; m++) {
-                        if (this.state.skills[m].skill) {
-                            switch (this.state.class) {
-                                case 'demon-hunter':
-                                    saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'witch-doctor':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'barbarian':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'crusader':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'monk':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'wizard':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                default:
-                            }
-                        }
-                    }
-
-                    // skill bonus damage iterator
-                    var saveValues = [],
-                        skilldmgArray = [];
-
-                    for (i = 0; i < itemSlots.length; i++) {
-                        if (itemSlots[i] && itemSlots[i].attributesRaw) {
-                            for (k = 0; k < saveArr.length; k++) {
-                                if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
-                                    if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
-                                        results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
-                                        if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
-                                            saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
-
-                                            skilldmgArray.push(itemSlots[i].attributesRaw[saveArr[k]].min + this.state.skills[k].skill.name);
-
-                                            countedValues = skilldmgArray.reduce(function (p, c) {
-                                                if (c in p) {
-                                                    p[c]++;
-                                                } else {
-                                                    p[c] = 1;
-                                                }
-                                                return p;
-                                            }, {});
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                var checkSave = [],
-                    repeatSet = [];
-                // detect Set -1 ring
-                for (i = 0; i < itemSlots.length; i++) {
-                    checkSave.push(itemSlots[i].name);
-                    if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
-                        this.setState({setRing: true});
-                    } else {
-                        this.setState({setRing: false});
-                    }
-                }
-                // set bonus iterator
-                for (i = 0; i < itemSlots.length; i++) {
-                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
-
-                        for (m = 0; m < setPool.length; m++) {
-                            if (itemSlots[i].set.name === setPool[m][0]) {
-                                setPool[m][1]++;
-                            }
-                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
-                                if (
-                                    this.state.setRing === true &&
-                                    itemSlots[i].set.name === setPool[m][0] &&
-                                    itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
-                                    setPool[m][1] >= 2
-                                ) {
-                                    for (k = 0; k < statPool.length; k++) {
-                                        // check if the stats are releveant for stat building
-                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                                switch (statPool[k]) {
-                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
-                                                        fireDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
-                                                        coldDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                                        lightningDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
-                                                        physicalDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
-                                                        poisonDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Power_Cooldown_Reduction_Percent_All':
-                                                        cdr *= (1 - results[k]);
-                                                        break;
-                                                    case 'Resource_Cost_Reduction_Percent_All':
-                                                        resRed *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Bonus_Vs_Elites':
-                                                        eliteDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Elites':
-                                                        eliteDmgRed += results[k] * 100;
-                                                        break;
-                                                    case 'Splash_Damage_Effect_Percent':
-                                                        areaDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Gold_PickUp_Radius':
-                                                        goldPickUp += results[k];
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Melee':
-                                                        dmgRedMelee *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Ranged':
-                                                        dmgRedRanged *= (1 - results[k]);
-                                                        break;
-                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
-                                                        maxHealth += results[k] * 100;
-                                                        break;
-                                                    case 'Attacks_Per_Second_Percent':
-                                                        atkSpd += results[k];
-                                                        break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                } else if (this.state.setRing === false && itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
-                                    for (k = 0; k < statPool.length; k++) {
-                                        // check if the stats are releveant for stat building
-                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                                switch (statPool[k]) {
-                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
-                                                        fireDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
-                                                        coldDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                                        lightningDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
-                                                        physicalDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
-                                                        poisonDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Power_Cooldown_Reduction_Percent_All':
-                                                        cdr *= (1 - results[k]);
-                                                        break;
-                                                    case 'Resource_Cost_Reduction_Percent_All':
-                                                        resRed *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Bonus_Vs_Elites':
-                                                        eliteDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Elites':
-                                                        eliteDmgRed += results[k] * 100;
-                                                        break;
-                                                    case 'Splash_Damage_Effect_Percent':
-                                                        areaDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Gold_PickUp_Radius':
-                                                        goldPickUp += results[k];
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Melee':
-                                                        dmgRedMelee *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Ranged':
-                                                        dmgRedRanged *= (1 - results[k]);
-                                                        break;
-                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
-                                                        maxHealth += results[k] * 100;
-                                                        break;
-                                                    case 'Attacks_Per_Second_Percent':
-                                                        atkSpd += results[k];
-                                                        break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
-                            continue;
-                        }
-                        repeatSet.push(itemSlots[i].set.name);
-                    }
-                }
-
                 // ignoring mf,gf,thorns and block since they are useless stats
                 if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0] && this.state.helmItem.attributesRaw) {
                     if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
@@ -1242,14 +1682,6 @@ var statPool = [
                         break;
                 }
 
-                // Paragon Point Party
-                cdr *= (1 - this.state.paragonCdr / 100);
-                resRed *= (1 - this.state.paragonResRed / 100);
-                maxHealth += this.state.paragonMaxHealth;
-
-                // Format Skill Damage String properly
-                skillDmgToString = this.skillDmgSanitize(countedValues);
-
                 // Find max Elemental Damage Bonus
                 if (findElem !== 0) {
                     this.setState({maxEleDmg: maxElement});
@@ -1269,23 +1701,15 @@ var statPool = [
                 this.setState({dmgRedMelee: dmgRedMelee});
                 this.setState({dmgRedRanged: dmgRedRanged});
                 this.setState({maxHealth: maxHealth});
-                this.setState({skillDmg: skillDmgToString});
                 this.setState({atkSpd: atkSpd});
             }
         },
 
         render: function () {
             var skillsState = this.state.skills,
-                skills = [],
-                skillsDesc = [],
                 passivesState = this.state.passives,
-                passives = [],
-                passivesDesc = [],
                 statsState = this.state.stats,
-                stats = [],
                 nameState = this.state.name,
-                heroes = [],
-                realms = [],
                 heroesState = this.state.heroes,
                 itemsState = this.state.items,
                 classState = this.state.class,
@@ -1293,42 +1717,22 @@ var statPool = [
                 paragonState = this.state.paragon,
                 amuletState = this.state.amuletItem,
                 shouldersState = this.state.shouldersItem,
-                shoulders = [],
                 helmState = this.state.helmItem,
-                helmet = [],
                 torsoState = this.state.chestItem,
-                torso = [],
                 handsState = this.state.glovesItem,
-                hands = [],
                 feetState = this.state.bootsItem,
-                feet = [],
                 bracersState = this.state.bracersItem,
-                bracers = [],
                 legsState = this.state.legsItem,
-                legs = [],
                 mainHandState = this.state.mainItem,
-                mainHand = [],
                 offHandState = this.state.offItem,
-                offHand = [],
                 beltState = this.state.beltItem,
-                belt = [],
                 neckState = this.state.amuletItem,
-                neck = [],
                 ringStateLeft = this.state.ringItemLeft,
-                ringLeft = [],
-                ringRight = [],
                 ringStateRight = this.state.ringItemRight,
-                specialPassive = [],
-                base = [],
-                style = [],
                 itemsIconState = this.state.items,
-                items = [],
                 skillIconBaseUrl = this.state.skillIconBase,
                 itemIconBaseUrl = this.state.itemIconBase,
-                toggle = this.state.toggleItem,
                 timeStamp = this.state.time,
-                additionalStatsOffensive = [],
-                additionalStatsDefensive = [],
                 cdrState = this.state.cdrRed,
                 resState = this.state.resRed,
                 eliteDmgState = this.state.eliteDmg,
@@ -1342,7 +1746,6 @@ var statPool = [
                 skillDmgState = this.state.skillDmg,
                 skillDmgStateRaw = this.state.skillDmgRaw,
                 itemAtkSpeedState = this.state.atkSpd,
-                paragon = [],
                 pCdr = this.state.paragonCdr,
                 pAtkSpd = this.state.paragonAtkSpd,
                 pResRed = this.state.paragonResRed,
@@ -1353,9 +1756,6 @@ var statPool = [
                 pResistAll = this.state.paragonResistAll,
                 pArmor = this.state.paragonArmor,
                 pLife = this.state.paragonMaxHealth,
-                calculatedAttackSpeed = 0,
-                minDmgCalc = 0,
-                maxDmgCalc = 0,
                 itemSlots = [
                     this.state.helmItem,
                     this.state.amuletItem,
@@ -1371,6 +1771,37 @@ var statPool = [
                     this.state.ringItemLeft,
                     this.state.ringItemRight
                 ];
+
+            calculatedAttackSpeed = 0;
+            minDmgCalc = 0;
+            maxDmgCalc = 0;
+            additionalStatsOffensive = [];
+            additionalStatsDefensive = [];
+            skills = [];
+            skillsDesc = [];
+            heroes = [];
+            realms = [];
+            passives = [];
+            passivesDesc = [];
+            stats = [];
+            paragon = [];
+            specialPassive = [];
+            base = [];
+            style = [];
+            shoulders = [];
+            helmet = [];
+            torso = [];
+            hands = [];
+            feet = [];
+            ringLeft = [];
+            ringRight = [];
+            bracers = [];
+            legs = [];
+            items = [];
+            mainHand = [];
+            offHand = [];
+            belt = [];
+            neck = [];
 
             for (i = 0; i < itemSlots.length; i++) {
                 for (m = 0; m < setPool.length; m++) {
@@ -1745,7 +2176,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' head',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' head',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: helmState.key, className: 'desc'}, React.DOM.ul({
@@ -1916,7 +2347,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' torso',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' torso',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: torsoState.key, className: 'desc'}, React.DOM.ul({
@@ -2054,7 +2485,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' hands',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' hands',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: handsState.key, className: 'desc'}, React.DOM.ul({
@@ -2192,7 +2623,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' feet',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' feet',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: feetState.key, className: 'desc'}, React.DOM.ul({
@@ -2338,7 +2769,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' shoulders',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' shoulders',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: shouldersState.key, className: 'desc'}, React.DOM.ul({
@@ -2500,7 +2931,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' legs',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' legs',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: legsState.key, className: 'desc'}, React.DOM.ul({
@@ -2642,7 +3073,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' bracers',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' bracers',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: bracersState.key, className: 'desc'}, React.DOM.ul({
@@ -2879,7 +3310,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' mainHand',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' mainHand',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: mainHandState.key, className: 'desc'}, React.DOM.ul({
@@ -3113,7 +3544,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' offHand',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' offHand',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: offHandState.key, className: 'desc'}, React.DOM.ul({
@@ -3250,7 +3681,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' waist',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' waist',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: beltState.key, className: 'desc'}, React.DOM.ul({
@@ -3428,7 +3859,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' rightFinger',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' rightFinger',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: ringStateRight.key, className: 'desc'}, React.DOM.ul({
@@ -3597,7 +4028,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' leftFinger',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' leftFinger',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: ringStateLeft.key, className: 'desc'}, React.DOM.ul({
@@ -3758,7 +4189,7 @@ var statPool = [
 
                 items.push(React.DOM.div({
                     key: itemsIconState.key,
-                    className: toggle + ' ' + isAncient + ' ' + itemQuality + ' neck',
+                    className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' neck',
                     onClick: this.handleItemClick,
                     style: {backgroundImage: 'url(' + constructedLink + ')'}
                 }, React.DOM.div({key: neckState.key, className: 'desc'}, React.DOM.ul({
@@ -3881,14 +4312,23 @@ var statPool = [
                     additionalStatsOffensive.push(React.DOM.div({
                         key: additionalStatsOffensive.key,
                         className: 'bonusstat'
-                    }, 'Cooldown Reduction: ' + Math.round((1 - cdrState) * 100 * 100) / 100 + '%'));
+                    }, 'Cooldown Reduction: ' + Math.round((1 - cdrState + (pCdr / 100)) * 100 * 100) / 100 + '%'));
+                } else if (pCdr !== 0) {
+                    additionalStatsOffensive.push(React.DOM.div({
+                        key: additionalStatsOffensive.key,
+                        className: 'bonusstat'
+                    }, 'Cooldown Reduction: ' + pCdr + '%'));
                 }
-
                 if (resState !== 1) {
                     additionalStatsOffensive.push(React.DOM.div({
                         key: additionalStatsOffensive.key,
                         className: 'bonusstat'
-                    }, 'Resource Cost Reduction: ' + Math.round((1 - resState) * 100 * 100) / 100 + '%'));
+                    }, 'Resource Cost Reduction: ' + Math.round((1 - resState + (pResRed / 100)) * 100 * 100) / 100 + '%'));
+                } else if (pResRed !== 0) {
+                    additionalStatsOffensive.push(React.DOM.div({
+                        key: additionalStatsOffensive.key,
+                        className: 'bonusstat'
+                    }, 'Resource Cost Reduction: ' + pResRed + '%'));
                 }
                 if (mainHandState.attacksPerSecond && offHandState.attacksPerSecond) {
                     calculatedAttackSpeed = mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (0.15 + itemAtkSpeedState + pAtkSpd / 100);
@@ -3996,7 +4436,7 @@ var statPool = [
                     for (i = 0; i < this.state.skillDmgRaw.length; i++) {
                         skillsState.forEach(function (skillName) {
                             if (skillName.skill) {
-                                if (skillDmgStateRaw[i].search(skillName.skill.name.toString()) != -1) {
+                                if (skillDmgStateRaw[i].search(skillName.skill.name.toString()) !== -1) {
                                     pushedValues.push([skillDamage, skillDmgStateRaw[i]]);
                                 }
                             }
@@ -4166,7 +4606,7 @@ var statPool = [
                     additionalStatsDefensive.push(React.DOM.div({
                         key: additionalStatsDefensive.key,
                         className: 'bonusstat'
-                    }, 'Bonus Max Health: ' + maxHealthState + '%'));
+                    }, 'Bonus Max Health: ' + (maxHealthState + pLife) + '%'));
                 } else if (pLife !== 0) {
                     additionalStatsDefensive.push(React.DOM.div({
                         key: additionalStatsDefensive.key,
@@ -4338,8 +4778,8 @@ var statPool = [
 
             return (
                 React.DOM.div({className: 'd3-container'},
-                    React.DOM.div({className: 'd3-item-wrapper'}, items),
                     React.DOM.div({className: 'd3-char-bg', style: style}),
+                    React.DOM.div({className: 'd3-item-wrapper'}, items),
                     React.DOM.div({className: 'd3-realm-wrapper'},
                         '1 - Realm: ',
                         React.DOM.select(
@@ -4373,47 +4813,76 @@ var statPool = [
                         )
                     ),
                     React.DOM.div({
-                        className: this.state.panels,
-                        id: 'panel-left'
-                    }, 'General', base, React.DOM.div({className: 'd3-paragon-selector'}, 'Paragon Points: ', paragon)),
+                        className: this.state.paragonToggle,
+                        id: 'panel-left',
+                        ref: 'pl'
+                    }, 'General', base, React.DOM.button({
+                        onClick: this.handleParagonStatsClick
+                    }, 'show paragon')),
                     React.DOM.div({
-                        className: this.state.skillDescOpen + ' ' + this.state.panels,
-                        title: 'click to open detailed description',
-                        id: 'panel-bottom-left'
-                    }, React.DOM.button({
-                        onClick: this.handleSkillDescClick
-                    }, 'show details'), 'Skills', skills),
+                            className: this.state.skillDescToggle,
+                            title: 'click to open detailed description',
+                            id: 'panel-bottom-left',
+                            ref: 'pbl'
+                        }, 'Skills', skills, React.DOM.button({
+                            onClick: this.handleSkillDescClick
+                        }, 'show details')
+                    ),
                     React.DOM.div({
-                        className: this.state.skillDescOpen,
-                        id: 'panel-bottom-left-desc'
+                        id: 'panel-left-additional',
+                        ref: 'pla'
+                    }, 'Paragon Points: ', paragon, React.DOM.button({
+                        onClick: this.handleParagonStatsClick,
+                        title: 'click to close'
+                    }, 'close')),
+                    React.DOM.div({
+                        className: this.state.skillDescToggle,
+                        id: 'panel-bottom-left-desc',
+                        ref: 'pbla'
                     }, React.DOM.button({
                         onClick: this.handleSkillDescClick,
                         title: 'click to close'
                     }, 'close'), skillsDesc),
                     React.DOM.div({
-                        className: this.state.passiveDescOpen + ' ' + this.state.panels,
+                        className: this.state.passiveDescToggle,
                         title: 'click to open detailed description',
-                        id: 'panel-bottom-right'
-                    }, React.DOM.button({
+                        id: 'panel-bottom-right',
+                        ref: 'pbr'
+                    }, 'Passives', passives, specialPassive, React.DOM.button({
                         onClick: this.handlePassiveDescClick
-                    }, 'show details'), 'Passives', passives, specialPassive),
+                    }, 'show details')),
                     React.DOM.div({
-                        className: this.state.passiveDescOpen,
-                        id: 'panel-bottom-right-desc'
+                        className: this.state.passiveDescToggle,
+                        id: 'panel-bottom-right-desc',
+                        ref: 'pbra'
                     }, React.DOM.button({
                         onClick: this.handlePassiveDescClick,
                         title: 'click to close'
                     }, 'close'), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                     React.DOM.div({
-                            className: this.state.toggle + ' ' + this.state.panels,
-                            id: 'panel-right'
-                        }, React.DOM.button({
+                            id: 'panel-right',
+                            ref: 'pr',
+                            className: this.state.toggle
+                        },
+                        'Stats',
+                        stats,
+                        React.DOM.button({
                             onClick: this.handleBonusStatsClick,
                             title: 'click to show/hide more stats'
-                        }, 'show ' + this.state.toggle),
-                        'Stats',
-                        stats),
-                    React.DOM.div({id: 'panel-right-additional'}, 'Offensive Stats', additionalStatsOffensive, 'Defensive Stats', additionalStatsDefensive)
+                        }, 'show more')
+                    ),
+                    React.DOM.div({
+                            id: 'panel-right-additional',
+                            ref: 'pra'
+                        },
+                        'Offensive Stats',
+                        additionalStatsOffensive,
+                        'Defensive Stats',
+                        additionalStatsDefensive,
+                        React.DOM.button({
+                            onClick: this.handleBonusStatsClick,
+                            title: 'click to show/hide more stats'
+                        }, 'show less'))
                 )
             );
         }

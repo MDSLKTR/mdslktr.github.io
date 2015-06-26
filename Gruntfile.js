@@ -43,7 +43,7 @@ module.exports = function (grunt) {
                 options: {
                     browsers: [
                         'last 2 version',
-                        'ie 8',
+                        'ie >= 9',
                         'Firefox ESR',
                         'Android >= 4.0',
                         'Safari 6.1'
@@ -80,8 +80,8 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/vendor.min.js': [
-                        '_vendor/jquery/dist/jquery.js',
-                        '_vendor/react/react.js'
+                        '_vendor/react/react.js',
+                        '_vendor/greensock/src/uncompressed/TweenMax.js'
 
                     ]
                 }
@@ -92,7 +92,8 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/scripts.min.js': [
-                        '_dev/js/updateData.js'
+                        '_dev/js/updateData.js',
+                        '_dev/js/animateBg.js'
                     ]
                 }
             }

@@ -5,3 +5,18 @@
   font-weight: normal;
   font-style: normal;
 }
+
+@function vw-desktop($target) {
+  $vw-context: (1920*.01) * 1px;
+  @return ($target/$vw-context) * 1vw;
+}
+
+@function vw-tablet($target) {
+  $vw-context: (1000*.01) * 1px;
+  @return ($target/$vw-context) * 1vw;
+}
+
+@function vw-mobile($target) {
+  $vw-context: (640*.01) * 1px;
+  @return ($target/$vw-context) * 1vw;
+}
