@@ -98,6 +98,8 @@ button {
 .d3-char-bg {
   position: absolute;
   left: 50%;
+  opacity: 0;
+  visibility: hidden;
   top: 0;
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
@@ -209,7 +211,9 @@ button {
   margin: 0 auto;
   position: relative;
   width: 405px;
-  height: 750px; }
+  height: 750px;
+  visibility: hidden;
+  opacity: 0; }
   .d3-item-wrapper > div {
     position: absolute;
     border-radius: 5px;

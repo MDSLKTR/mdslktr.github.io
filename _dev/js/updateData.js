@@ -157,6 +157,8 @@ var statPool = [
     panelBottomRightAdditional,
     panelBottomLeftAdditionalHeight,
     panelBottomRightAdditionalHeight,
+    itemWrapper,
+    charBgWrapper,
     target,
     childElements,
     parentElement,
@@ -283,6 +285,7 @@ var statPool = [
                 heroesDataUrl: '',
                 heroDataUrl: '',
                 itemUrl: '',
+                panelAnimationComplete: false,
                 realm: initialRealm,
                 battleTag: localStorage.getItem('battleTag'),
                 apiKey: '?locale=en_GB&apikey=65d63bvh7spjgmce3gjq2mv5nzjfsggy',
@@ -545,16 +548,30 @@ var statPool = [
         },
 
         triggerStatCollector: function () {
-            this.collectStats();
-            console.log('manual stat collector');
+                this.collectStats();
+                this.checkSetItems();
+                this.collectSkillDamage();
+                console.log('manual stat collector');
+        },
+
+        checkUpdates: function () {
+            if (this.state.panelAnimationComplete) {
+                this.collectStats();
+                this.checkSetItems();
+                this.collectSkillDamage();
+
+                console.log('automatic stat collector');
+                return;
+            }
+            console.log('waiting for animations');
         },
 
         componentDidMount: function () {
             fetchHeroList = setInterval(this.loadHeroesData, 1000);
             fetchHeroData = setInterval(this.loadHeroData, 1500);
-            setInterval(this.checkSetItems, 2000);
-            setInterval(this.collectStats, 2000);
-            setInterval(this.collectSkillDamage, 2000);
+
+            setInterval(this.checkUpdates, 3000);
+
             setInterval(this.loadHeroesData, this.props.pollInterval);
             setInterval(this.loadHeroData, this.props.pollInterval);
             setInterval(this.getItemData, this.props.pollInterval);
@@ -607,6 +624,8 @@ var statPool = [
             panelLeftAdditional = this.refs.pla.getDOMNode();
             panelBottomLeftAdditional = this.refs.pbla.getDOMNode();
             panelBottomRightAdditional = this.refs.pbra.getDOMNode();
+            itemWrapper = this.refs.items.getDOMNode();
+            charBgWrapper = this.refs.charbg.getDOMNode();
         },
 
         handleChange: function (e) {
@@ -677,10 +696,13 @@ var statPool = [
                 this.setState({invalid: false});
             }
 
-            this.animatePanelsIn();
+            this.animatePanelsOut();
+            setTimeout(this.animatePanelsIn, 1000);
         },
 
         animatePanelsIn: function () {
+
+            this.setState({panelAnimationComplete: false});
 
             panelLeftWidth = panelLeft.offsetWidth;
             panelRightWidth = panelRight.offsetWidth;
@@ -701,7 +723,28 @@ var statPool = [
                     x: 0,
                     z: 0.01,
                     visibility: 'visible',
-                    delay: 0.5
+                    delay: 0.5,
+                    onComplete: function() {
+                        this.setState({panelAnimationComplete: true});
+
+                        TweenMax.to(
+                            itemWrapper,
+                            2,
+                            {
+                                opacity: 1,
+                                visibility: 'visible'
+                            }
+                        );
+
+                        TweenMax.to(
+                            charBgWrapper,
+                            2,
+                            {
+                                opacity: 1,
+                                visibility: 'visible'
+                            }
+                        );
+                    }.bind(this)
                 }
             );
 
@@ -756,9 +799,102 @@ var statPool = [
             );
         },
 
+        animatePanelsOut: function () {
+            this.setState({panelAnimationComplete: false});
+
+            panelLeftWidth = panelLeft.offsetWidth;
+            panelRightWidth = panelRight.offsetWidth;
+            panelBottomLeftHeight = panelBottomLeft.offsetHeight;
+            panelBottomRightHeight = panelBottomRight.offsetHeight;
+            panelBottomLeftWidth = panelBottomLeft.offsetWidth;
+            panelBottomRightWidth = panelBottomRight.offsetWidth;
+
+            TweenMax.fromTo(
+                panelLeft,
+                1,
+                {
+                    x: 0,
+                    z: 0.01,
+                    delay: 0.5,
+                    onComplete: function() {
+                        this.setState({panelAnimationComplete: true});
+
+                        TweenMax.to(
+                            itemWrapper,
+                            1,
+                            {
+                                opacity: 0
+                            }
+                        );
+
+                        TweenMax.to(
+                            charBgWrapper,
+                            1,
+                            {
+                                opacity: 0,
+                            }
+                        );
+                    }.bind(this)
+                },
+                {
+                    x: panelLeftWidth * -1,
+                    z: 0.01,
+                    delay: 0.5
+                }
+            );
+
+            TweenMax.fromTo(
+                panelRight,
+               1,
+                {
+                    x: 0,
+                    z: 0.01,
+                    delay: 0.5
+                },
+                {
+                    x: panelRightWidth,
+                    z: 0.01,
+                    delay: 0.5
+                }
+            );
+
+            TweenMax.fromTo(
+                panelBottomLeft,
+                1,
+                {
+                    x: 0,
+                    y: 0,
+                    z: 0.01,
+                    delay: 0.5
+                },
+                {
+                    x: panelBottomLeftWidth * -1,
+                    y: panelBottomLeftHeight,
+                    delay: 0.5
+                }
+            );
+
+            TweenMax.fromTo(
+                panelBottomRight,
+                1,
+                {
+                    x: 0,
+                    y: 0,
+                    z: 0.01,
+                    delay: 0.5
+                },
+                {
+                    x: panelBottomRightWidth,
+                    y: panelBottomRightHeight,
+                    delay: 0.5
+                }
+            );
+        },
+
         handleBonusStatsClick: function () {
+            this.setState({panelAnimationComplete: false});
+
             panelRightAdditionalHeight = panelRightAdditional.offsetHeight;
-            this.triggerStatCollector();
 
             if (this.state.toggle !== 'visible') {
                 TweenMax.fromTo(
@@ -771,7 +907,11 @@ var statPool = [
                         y: 0,
                         z: 0.01,
                         visibility: 'visible',
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                            this.triggerStatCollector();
+                        }.bind(this)
                     }
                 );
                 this.setState({toggle: 'visible'});
@@ -785,7 +925,11 @@ var statPool = [
                     {
                         y: panelRightAdditionalHeight * -1,
                         z: 0.01,
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                            this.triggerStatCollector();
+                        }.bind(this)
                     }
                 );
                 this.setState({toggle: 'hidden'});
@@ -793,6 +937,9 @@ var statPool = [
         },
 
         handleParagonStatsClick: function () {
+            this.setState({panelAnimationComplete: false});
+
+
             panelLeftAdditionalHeight = panelLeftAdditional.offsetHeight;
             if (this.state.paragonToggle !== 'visible') {
                 TweenMax.fromTo(
@@ -805,7 +952,10 @@ var statPool = [
                         y: 0,
                         z: 0.01,
                         visibility: 'visible',
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
                 this.setState({paragonToggle: 'visible'});
@@ -819,7 +969,10 @@ var statPool = [
                     {
                         y: panelLeftAdditionalHeight * -1,
                         z: 0.01,
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
                 this.setState({paragonToggle: 'hidden'});
@@ -827,6 +980,9 @@ var statPool = [
         },
 
         handleSkillDescClick: function () {
+            this.setState({panelAnimationComplete: false});
+
+
             panelBottomLeftAdditionalHeight = panelBottomLeftAdditional.offsetHeight;
             if (this.state.skillDescToggle !== 'visible') {
                 TweenMax.fromTo(
@@ -839,7 +995,10 @@ var statPool = [
                         y: 0,
                         z: 0.01,
                         visibility: 'visible',
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
                 this.setState({skillDescToggle: 'visible'});
@@ -853,7 +1012,10 @@ var statPool = [
                     {
                         y: panelBottomLeftAdditionalHeight,
                         z: 0.01,
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
                 this.setState({skillDescToggle: 'hidden'});
@@ -861,6 +1023,8 @@ var statPool = [
         },
 
         handlePassiveDescClick: function () {
+            this.setState({panelAnimationComplete: false});
+
             panelBottomRightAdditionalHeight = panelBottomRightAdditional.offsetHeight;
             if (this.state.passiveDescToggle !== 'visible') {
                 TweenMax.fromTo(
@@ -873,7 +1037,10 @@ var statPool = [
                         y: 0,
                         z: 0.01,
                         visibility: 'visible',
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
                 this.setState({passiveDescToggle: 'visible'});
@@ -887,7 +1054,10 @@ var statPool = [
                     {
                         y: panelBottomRightAdditionalHeight,
                         z: 0.01,
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
                 this.setState({passiveDescToggle: 'hidden'});
@@ -895,6 +1065,8 @@ var statPool = [
         },
 
         handleItemClick: function (e) {
+            this.setState({panelAnimationComplete: false});
+
             target = e.target;
 
             if (!e.target.classList.contains('item')) {
@@ -915,7 +1087,10 @@ var statPool = [
                     {
                         width: 450,
                         height: 485,
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
 
@@ -931,7 +1106,10 @@ var statPool = [
                     {
                         width: 64,
                         height: 128,
-                        ease: Power4.easeOut
+                        ease: Power4.easeOut,
+                        onComplete: function() {
+                            this.setState({panelAnimationComplete: true});
+                        }.bind(this)
                     }
                 );
 
@@ -4778,8 +4956,8 @@ var statPool = [
 
             return (
                 React.DOM.div({className: 'd3-container'},
-                    React.DOM.div({className: 'd3-char-bg', style: style}),
-                    React.DOM.div({className: 'd3-item-wrapper'}, items),
+                    React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: style}),
+                    React.DOM.div({className: 'd3-item-wrapper', ref: 'items'}, items),
                     React.DOM.div({className: 'd3-realm-wrapper'},
                         '1 - Realm: ',
                         React.DOM.select(

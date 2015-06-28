@@ -11,6 +11,8 @@
 .d3-char-bg {
   position: absolute;
   left: 50%;
+  opacity: 0;
+  visibility: hidden;
   top: 0;
   transform: translateX(-50%);
   margin-top: 2.5%;

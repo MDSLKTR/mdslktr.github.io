@@ -3,6 +3,8 @@
   position: relative;
   width: 405px;
   height: 750px;
+  visibility: hidden;
+  opacity: 0;
 
   & > div {
     position: absolute;
