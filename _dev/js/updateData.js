@@ -216,6 +216,16 @@ var statPool = [
     calculatedAttackSpeed,
     minDmgCalc,
     maxDmgCalc,
+    pcdr,
+    presred,
+    patkspd,
+    pcritdmg,
+    pcritchance,
+    pareadmg,
+    presource,
+    presistall,
+    parmor,
+    pmaxlife,
     DataWrapper = React.createClass({
         displayName: 'DataWrapper',
         getInitialState: function () {
@@ -548,10 +558,10 @@ var statPool = [
         },
 
         triggerStatCollector: function () {
-                this.collectStats();
-                this.checkSetItems();
-                this.collectSkillDamage();
-                console.log('manual stat collector');
+            this.collectStats();
+            this.checkSetItems();
+            this.collectSkillDamage();
+            console.log('manual stat collector');
         },
 
         checkUpdates: function () {
@@ -831,7 +841,7 @@ var statPool = [
                             charBgWrapper,
                             1,
                             {
-                                opacity: 0,
+                                opacity: 0
                             }
                         );
                     }.bind(this)
@@ -845,7 +855,7 @@ var statPool = [
 
             TweenMax.fromTo(
                 panelRight,
-               1,
+                1,
                 {
                     x: 0,
                     z: 0.01,
@@ -937,6 +947,7 @@ var statPool = [
         },
 
         handleParagonStatsClick: function () {
+            this.checkParagon();
             this.setState({panelAnimationComplete: false});
 
 
@@ -1122,8 +1133,62 @@ var statPool = [
             }
         },
 
-        handleParagon: function (e) {
+        checkParagon: function () {
+            pcdr = this.refs.cdr.getDOMNode();
+            presred = this.refs.resred.getDOMNode();
+            patkspd = this.refs.atkspd.getDOMNode();
+            pcritdmg = this.refs.critdmg.getDOMNode();
+            pcritchance = this.refs.critchance.getDOMNode();
+            pareadmg = this.refs.areadmg.getDOMNode();
+            presource = this.refs.resource.getDOMNode();
+            presistall = this.refs.resistall.getDOMNode();
+            parmor = this.refs.armor.getDOMNode();
+            pmaxlife = this.refs.maxlife.getDOMNode();
 
+
+            if (this.state.paragonCdr === 10) {
+                pcdr.classList.add('maxed');
+            }
+
+            if (this.state.paragonResRed === 10) {
+                presred.classList.add('maxed');
+            }
+
+            if (this.state.paragonAtkSpd === 10) {
+                patkspd.classList.add('maxed');
+            }
+
+            if (this.state.paragonCritDmg === 50) {
+                pcritdmg.classList.add('maxed');
+            }
+
+            if (this.state.paragonCritChance === 5) {
+                pcritchance.classList.add('maxed');
+            }
+
+            if (this.state.paragonAreaDmg === 50) {
+                pareadmg.classList.add('maxed');
+            }
+
+            if (this.state.paragonResource === 25) {
+                presource.classList.add('maxed');
+            }
+
+            if (this.state.paragonResistAll === 250) {
+                presistall.classList.add('maxed');
+            }
+
+            if (this.state.paragonArmor === 25) {
+                parmor.classList.add('maxed');
+            }
+
+            if (this.state.paragonMaxHealth === 25) {
+                pmaxlife.classList.add('maxed');
+            }
+
+        },
+
+        handleParagon: function (e) {
             target = e.target;
             parentElement = target.parentNode;
 
@@ -1630,7 +1695,6 @@ var statPool = [
                 saveValues = [],
                 skilldmgArray = [],
                 i,
-                j,
                 k,
                 m;
 
@@ -4805,7 +4869,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'cdr', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resred'},
@@ -4820,7 +4884,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'resred', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat atkspd'},
@@ -4835,7 +4899,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'atkspd', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critdmg'},
@@ -4850,7 +4914,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'critdmg', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critchance'},
@@ -4865,7 +4929,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'critchance', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat areadmg'},
@@ -4880,7 +4944,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'areadmg', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resource'},
@@ -4895,7 +4959,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'resource', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resistall'},
@@ -4910,7 +4974,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'resistall', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat armor'},
@@ -4925,7 +4989,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key, ref: 'armor', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat maxlife'},
@@ -4940,7 +5004,7 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({key: paragon.key,  ref: 'maxlife', className: 'paragon-stat-max', onClick: this.handleParagon})
             ));
 
             localStorage.setItem('paragonCdr', this.state.paragonCdr);
