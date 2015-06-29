@@ -549,7 +549,7 @@ var statPool = [
 
         changeChar: function () {
             updateHeroData = setInterval(this.loadHeroData, 500);
-            updateHeroItems = setInterval(this.getItemData, 1000);
+            updateHeroItems = setInterval(this.getItemData, 1250);
         },
 
         changeBattleTag: function () {
@@ -713,13 +713,6 @@ var statPool = [
         animatePanelsIn: function () {
 
             this.setState({panelAnimationComplete: false});
-
-            panelLeftWidth = panelLeft.offsetWidth;
-            panelRightWidth = panelRight.offsetWidth;
-            panelBottomLeftHeight = panelBottomLeft.offsetHeight;
-            panelBottomRightHeight = panelBottomRight.offsetHeight;
-            panelBottomLeftWidth = panelBottomLeft.offsetWidth;
-            panelBottomRightWidth = panelBottomRight.offsetWidth;
 
             TweenMax.fromTo(
                 panelLeft,
@@ -5060,7 +5053,7 @@ var statPool = [
                         ref: 'pl'
                     }, 'General', base, React.DOM.button({
                         onClick: this.handleParagonStatsClick
-                    }, 'show paragon')),
+                    }, React.DOM.span({className: 'button-text'}, 'show paragon'))),
                     React.DOM.div({
                             className: this.state.skillDescToggle,
                             title: 'click to open detailed description',
@@ -5068,7 +5061,7 @@ var statPool = [
                             ref: 'pbl'
                         }, 'Skills', skills, React.DOM.button({
                             onClick: this.handleSkillDescClick
-                        }, 'show details')
+                        }, React.DOM.span({className: 'button-text'}, 'show details'))
                     ),
                     React.DOM.div({
                         id: 'panel-left-additional',
@@ -5076,7 +5069,7 @@ var statPool = [
                     }, 'Paragon Points: ', paragon, React.DOM.button({
                         onClick: this.handleParagonStatsClick,
                         title: 'click to close'
-                    }, 'close')),
+                    }, React.DOM.span({className: 'button-text'}, 'close'))),
                     React.DOM.div({
                         className: this.state.skillDescToggle,
                         id: 'panel-bottom-left-desc',
@@ -5084,7 +5077,7 @@ var statPool = [
                     }, React.DOM.button({
                         onClick: this.handleSkillDescClick,
                         title: 'click to close'
-                    }, 'close'), skillsDesc),
+                    }, React.DOM.span({className: 'button-text'}, 'close')), skillsDesc),
                     React.DOM.div({
                         className: this.state.passiveDescToggle,
                         title: 'click to open detailed description',
@@ -5092,7 +5085,7 @@ var statPool = [
                         ref: 'pbr'
                     }, 'Passives', passives, specialPassive, React.DOM.button({
                         onClick: this.handlePassiveDescClick
-                    }, 'show details')),
+                    }, React.DOM.span({className: 'button-text'}, 'show details'))),
                     React.DOM.div({
                         className: this.state.passiveDescToggle,
                         id: 'panel-bottom-right-desc',
@@ -5100,7 +5093,7 @@ var statPool = [
                     }, React.DOM.button({
                         onClick: this.handlePassiveDescClick,
                         title: 'click to close'
-                    }, 'close'), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
+                    }, React.DOM.span({className: 'button-text'}, 'close')), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                     React.DOM.div({
                             id: 'panel-right',
                             ref: 'pr',
@@ -5111,7 +5104,7 @@ var statPool = [
                         React.DOM.button({
                             onClick: this.handleBonusStatsClick,
                             title: 'click to show/hide more stats'
-                        }, 'show more')
+                        }, React.DOM.span({className: 'button-text'}, 'show more'))
                     ),
                     React.DOM.div({
                             id: 'panel-right-additional',
@@ -5124,7 +5117,7 @@ var statPool = [
                         React.DOM.button({
                             onClick: this.handleBonusStatsClick,
                             title: 'click to show/hide more stats'
-                        }, 'show less'))
+                        }, React.DOM.span({className: 'button-text'}, 'show less')))
                 )
             );
         }

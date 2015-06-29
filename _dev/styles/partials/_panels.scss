@@ -10,16 +10,6 @@
   border-radius: 5px;
   padding: 1.5vh;
 
-  button {
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: inset 0 0 0 1px darkred;
-    color: wheat;
-    padding: 5px;
-    border-radius: 5px;
-    display: block;
-    margin: 0 auto;
-  }
-
   & > span {
     color: wheat;
     display: inline-block;
@@ -44,16 +34,6 @@
   padding: 0 1%;
   background: rgba(0, 0, 0, 1);
   box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 1);
-
-  button {
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: inset 0 0 0 1px darkred;
-    color: wheat;
-    padding: 5px;
-    border-radius: 5px;
-    display: block;
-    margin: 10px auto 0 auto;
-  }
 
   .description {
     margin: 5px 0;
@@ -95,7 +75,7 @@
   right: 0;
   bottom: 0;
 
-  span {
+  &> span {
     margin: 20px 0;
     display: inline-block;
   }
