@@ -1,5 +1,5 @@
 html{
-  font-family: 'robotomedium', Arial, sans-serif;
+  font-family: 'roboto_slabbold', Arial, sans-serif;
   font-size: vw-mobile(16px);
 
   @media screen and (min-width: 640px) {
@@ -12,8 +12,8 @@ html{
 }
 
 select, input, button {
-  font-family: 'robotomedium', Arial, sans-serif;
-  font-size: 0.8rem;
+  font-family: 'roboto_slabbold', Arial, sans-serif;
+    line-height: 1.5em;
 }
 
 html {

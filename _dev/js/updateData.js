@@ -186,33 +186,33 @@ var statPool = [
     atkSpd,
     skillDmgToString,
     countedValues,
-    skills,
-    skillsDesc,
-    heroes,
-    realms,
-    passives,
-    passivesDesc,
-    stats,
-    paragon,
-    specialPassive,
-    base,
-    style,
-    shoulders,
-    helmet,
-    torso,
-    hands,
-    feet,
-    ringLeft,
-    ringRight,
-    bracers,
-    legs,
-    items,
-    mainHand,
-    offHand,
-    belt,
-    neck,
-    additionalStatsOffensive,
-    additionalStatsDefensive,
+    skills = [],
+    skillsDesc = [],
+    heroes = [],
+    realms = [],
+    passives = [],
+    passivesDesc = [],
+    stats = [],
+    paragon = [],
+    specialPassive = [],
+    base = [],
+    style = [],
+    shoulders = [],
+    helmet = [],
+    torso = [],
+    hands = [],
+    feet = [],
+    ringLeft = [],
+    ringRight = [],
+    bracers = [],
+    legs = [],
+    items = [],
+    mainHand = [],
+    offHand = [],
+    belt = [],
+    neck = [],
+    additionalStatsOffensive = [],
+    additionalStatsDefensive = [],
     calculatedAttackSpeed,
     minDmgCalc,
     maxDmgCalc,
@@ -2010,33 +2010,33 @@ var statPool = [
             calculatedAttackSpeed = 0;
             minDmgCalc = 0;
             maxDmgCalc = 0;
-            additionalStatsOffensive = [];
-            additionalStatsDefensive = [];
-            skills = [];
-            skillsDesc = [];
-            heroes = [];
-            realms = [];
-            passives = [];
-            passivesDesc = [];
-            stats = [];
-            paragon = [];
-            specialPassive = [];
-            base = [];
-            style = [];
-            shoulders = [];
-            helmet = [];
-            torso = [];
-            hands = [];
-            feet = [];
-            ringLeft = [];
-            ringRight = [];
-            bracers = [];
-            legs = [];
-            items = [];
-            mainHand = [];
-            offHand = [];
-            belt = [];
-            neck = [];
+            additionalStatsOffensive.length = 0;
+            additionalStatsDefensive.length = 0;
+            skills.length = 0;
+            skillsDesc.length = 0;
+            heroes.length = 0;
+            realms.length = 0;
+            passives.length = 0;
+            passivesDesc.length = 0;
+            stats.length = 0;
+            paragon.length = 0;
+            specialPassive.length = 0;
+            base.length = 0;
+            style.length = 0;
+            shoulders.length = 0;
+            helmet.length = 0;
+            torso.length = 0;
+            hands.length = 0;
+            feet.length = 0;
+            ringLeft.length = 0;
+            ringRight.length = 0;
+            bracers.length = 0;
+            legs.length = 0;
+            items.length = 0;
+            mainHand.length = 0;
+            offHand.length = 0;
+            belt.length = 0;
+            neck.length = 0;
 
             for (i = 0; i < itemSlots.length; i++) {
                 for (m = 0; m < setPool.length; m++) {
