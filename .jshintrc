@@ -88,6 +88,9 @@
 		"React": true,
 		"TweenMax": true,
 		"Elastic": true,
-		"Power4": true
+		"Power4": true,
+        "SlowMo": true,
+        "Bounce": true,
+        "Back": true
     }
 }

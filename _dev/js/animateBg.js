@@ -1,6 +1,6 @@
 (function () {
     var bg = document.querySelector('.d3-bg'),
-        animateDown = function() {
+        animateDown = function () {
             TweenMax.fromTo(
                 bg,
                 3,

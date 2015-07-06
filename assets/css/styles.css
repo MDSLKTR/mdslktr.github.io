@@ -6,7 +6,9 @@
 
 html {
   font-family: 'roboto_slabbold', Arial, sans-serif;
-  font-size: 2.5vw; }
+  font-size: 2.5vw;
+  width: 100%;
+  height: 100%; }
   @media screen and (min-width: 640px) {
     html {
       font-size: 1.6vw; } }
@@ -17,10 +19,6 @@ html {
 select, input, button {
   font-family: 'roboto_slabbold', Arial, sans-serif;
   line-height: 1.5em; }
-
-html {
-  width: 100%;
-  height: 100%; }
 
 body {
   overflow: hidden;
@@ -86,7 +84,7 @@ button {
     opacity: 0; } }
 
 .d3-bg {
-  background: transparent url(/assets/images/bg-3.jpg) center center/cover no-repeat;
+  background: transparent url("/assets/images/bg-3.jpg") 50% 50%/cover no-repeat;
   position: absolute;
   height: 120%;
   overflow: hidden;
@@ -109,7 +107,7 @@ button {
   height: 615px;
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: center center;
+  background-position: 50% 50%;
   -webkit-filter: drop-shadow(1px 1px 30px white);
           filter: drop-shadow(1px 1px 30px white); }
 
@@ -515,7 +513,7 @@ button {
   position: absolute;
   background: rgba(255, 0, 0, 0.25);
   color: sienna;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   padding: 1.5vh; }
   #panel-left > span,
   #panel-right > span,
@@ -525,7 +523,7 @@ button {
   #panel-left-additional > span {
     color: wheat;
     display: inline-block;
-    margin: 5px 0; }
+    margin: 0.3rem 0; }
 
 #panel-bottom-left-desc {
   width: 64%; }
@@ -544,7 +542,7 @@ button {
   box-shadow: inset 0 0 1px 1px red; }
   #panel-bottom-left-desc .description,
   #panel-bottom-right-desc .description {
-    margin: 5px 0; }
+    margin: 0.3rem 0; }
   #panel-bottom-left-desc .skill-desc,
   #panel-bottom-left-desc .rune-desc,
   #panel-bottom-left-desc .passive-desc,
@@ -640,7 +638,7 @@ button {
   #panel-bottom-left .icon-front,
   #panel-bottom-left .icon-back,
   #panel-bottom-left .icon {
-    right: -5px; }
+    right: -0.3rem; }
   #panel-bottom-left > div {
     padding-right: 70px; }
 
@@ -653,7 +651,7 @@ button {
   #panel-bottom-right .icon-front,
   #panel-bottom-right .icon-back,
   #panel-bottom-right .icon {
-    left: -5px; }
+    left: -0.3rem; }
   #panel-bottom-right > div {
     padding-left: 70px; }
 
@@ -664,7 +662,7 @@ button {
   padding: 0.75vh;
   margin-bottom: 1.5vh;
   position: relative;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   background: black;
   box-shadow: inset 0 0 0 1px darkred; }
 
@@ -678,7 +676,7 @@ button {
   -webkit-animation: fader 2s both linear;
           animation: fader 2s both linear;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   background: #000;
   box-shadow: inset 0 0 0 1px #8b0000; }
   #panel-left-additional span:not(.button-text) {
@@ -704,7 +702,7 @@ button {
       display: inline-block;
       margin-bottom: 0.25rem;
       color: black;
-      border-radius: 5px; }
+      border-radius: 0.3rem; }
     #panel-left-additional .paragon-stat span:first-child {
       width: 100%; }
     #panel-left-additional .paragon-stat span:not(:first-child) {
@@ -821,7 +819,7 @@ button {
       -ms-flex-align: center;
           align-items: center;
   z-index: 5;
-  margin: 10px 0;
+  margin: 0.6rem 0;
   font-size: 0.8rem; }
   .description span {
     color: wheat;
@@ -839,12 +837,13 @@ footer {
     color: wheat; }
 
 button {
+  appearance: none;
   -webkit-appearance: none;
   background: transparent;
   display: block;
   padding: 0;
-  border-radius: 5px;
-  margin: 5px auto;
+  border-radius: 0.3rem;
+  margin: 0.3rem auto;
   box-shadow: 0 3px 0 #590000, 0 5px 1px rgba(0, 0, 0, 0.1);
   -webkit-transition: box-shadow 0.2s ease-in-out;
           transition: box-shadow 0.2s ease-in-out; }

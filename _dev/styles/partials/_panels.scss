@@ -4,181 +4,181 @@
 #panel-bottom-right,
 #panel-right-additional,
 #panel-left-additional {
-  position: absolute;
-  background: rgba(255, 0, 0, 0.25);
-  color: sienna;
-  border-radius: 5px;
-  padding: 1.5vh;
+    position: absolute;
+    background: rgba(255, 0, 0, 0.25);
+    color: sienna;
+    border-radius: 0.3rem;
+    padding: 1.5vh;
 
-  & > span {
-    color: wheat;
-    display: inline-block;
-    margin: 5px 0;
-  }
+    & > span {
+        color: wheat;
+        display: inline-block;
+        margin: 0.3rem 0;
+    }
 }
 
 #panel-bottom-left-desc {
-  width: 64%;
+    width: 64%;
 }
 
 #panel-bottom-right-desc {
-  width: 32%;
+    width: 32%;
 }
 
 #panel-bottom-left-desc,
 #panel-bottom-right-desc {
-  z-index: 1;
-  position: absolute;
-  font-size: 0.8rem;
-  visibility: hidden;
-  padding: 0 1%;
-  background: rgba(0, 0, 0, 1);
-  box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 1);
+    z-index: 1;
+    position: absolute;
+    font-size: 0.8rem;
+    visibility: hidden;
+    padding: 0 1%;
+    background: rgba(0, 0, 0, 1);
+    box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 1);
 
-  .description {
-    margin: 5px 0;
-  }
+    .description {
+        margin: 0.3rem 0;
+    }
 
-  .skill-desc,
-  .rune-desc,
-  .passive-desc {
-    flex: 1 100%;
-    padding-left: (48px + 10px);
-    color: burlywood;
-    margin: 0;
-  }
+    .skill-desc,
+    .rune-desc,
+    .passive-desc {
+        flex: 1 100%;
+        padding-left: (48px + 10px);
+        color: burlywood;
+        margin: 0;
+    }
 
-  .rune-desc {
-    color: white;
-  }
+    .rune-desc {
+        color: white;
+    }
 
-  .desc-icon {
-    margin-right: 10px;
-    flex: 0 48px;
-    height: 48px;
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
+    .desc-icon {
+        margin-right: 10px;
+        flex: 0 48px;
+        height: 48px;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
 
-  span {
-    color: wheat;
-    font-size: 1rem;
-  }
+    span {
+        color: wheat;
+        font-size: 1rem;
+    }
 }
 
 #panel-bottom-left-desc {
-  left: 0;
-  bottom: 0;
+    left: 0;
+    bottom: 0;
 }
 
 #panel-bottom-right-desc {
-  right: 0;
-  bottom: 0;
+    right: 0;
+    bottom: 0;
 
-  &> span {
-    margin: 20px 0;
-    display: inline-block;
-  }
+    & > span {
+        margin: 20px 0;
+        display: inline-block;
+    }
 }
 
 #panel-right-additional {
-  z-index: 1;
-  font-size: 1.05rem;
-  filter: none;
-  right: 0;
-  top: 0;
-  box-shadow: inset 0 0 1px 1px darkred;
-  visibility: hidden;
-  width: 35%;
-  text-align: left;
-  background: rgba(0, 0, 0, 1);
+    z-index: 1;
+    font-size: 1.05rem;
+    filter: none;
+    right: 0;
+    top: 0;
+    box-shadow: inset 0 0 1px 1px darkred;
+    visibility: hidden;
+    width: 35%;
+    text-align: left;
+    background: rgba(0, 0, 0, 1);
 }
 
 #panel-left-additional {
-  font-size: 1.05rem;
-  filter: none;
-  left: 0;
-  box-shadow: inset 0 0 1px 1px darkred;
-  top: 0;
-  width: 35%;
-  visibility: hidden;
-  text-align: left;
-  background: rgba(0, 0, 0, 1);
+    font-size: 1.05rem;
+    filter: none;
+    left: 0;
+    box-shadow: inset 0 0 1px 1px darkred;
+    top: 0;
+    width: 35%;
+    visibility: hidden;
+    text-align: left;
+    background: rgba(0, 0, 0, 1);
 
-  &> span {
-    text-align: center;
-  }
+    & > span {
+        text-align: center;
+    }
 }
 
 #panel-left,
 #panel-right {
-  height: auto;
-  top: 1.5%;
-  width: 35%;
+    height: auto;
+    top: 1.5%;
+    width: 35%;
 }
 
 #panel-left {
-  text-align: right;
-  left: -50px;
-  visibility: hidden;
+    text-align: right;
+    left: -50px;
+    visibility: hidden;
 }
 
 #panel-right {
-  text-align: left;
-  right: -50px;
-  visibility: hidden;
+    text-align: left;
+    right: -50px;
+    visibility: hidden;
 }
 
 #panel-bottom-left {
-  text-align: right;
-  height: auto;
-  width: 35%;
-  bottom: 0;
-  left: -50px;
-  visibility: hidden;
+    text-align: right;
+    height: auto;
+    width: 35%;
+    bottom: 0;
+    left: -50px;
+    visibility: hidden;
 
-  .icon-front,
-  .icon-back,
-  .icon {
-    right: -5px;
-  }
+    .icon-front,
+    .icon-back,
+    .icon {
+        right: -0.3rem;
+    }
 
-  & > div {
-    padding-right: 70px;
-  }
+    & > div {
+        padding-right: 70px;
+    }
 }
 
 #panel-bottom-right {
-  height: auto;
-  width: 35%;
-  bottom: 0;
-  right: -50px;
-  visibility: hidden;
+    height: auto;
+    width: 35%;
+    bottom: 0;
+    right: -50px;
+    visibility: hidden;
 
-  .icon-front,
-  .icon-back,
-  .icon {
-    left: -5px;
-  }
+    .icon-front,
+    .icon-back,
+    .icon {
+        left: -0.3rem;
+    }
 
-  & > div {
-    padding-left: 70px;
-  }
+    & > div {
+        padding-left: 70px;
+    }
 }
 
 #panel-left > div:not(.d3-paragon-selector),
 #panel-right > div {
-  animation: fader 2s both linear;
-  padding: 0.75vh;
-  margin-bottom: 1.5vh;
-  position: relative;
-  border-radius: 5px;
-  background: rgba(0, 0, 0, 1);
-  box-shadow: inset 0 0 0 1px darkred;
+    animation: fader 2s both linear;
+    padding: 0.75vh;
+    margin-bottom: 1.5vh;
+    position: relative;
+    border-radius: 0.3rem;
+    background: rgba(0, 0, 0, 1);
+    box-shadow: inset 0 0 0 1px darkred;
 }
 
 #panel-right-additional > div {
-  animation: fader 2s both linear;
-  padding: 0;
-  margin-bottom: 0;
+    animation: fader 2s both linear;
+    padding: 0;
+    margin-bottom: 0;
 }

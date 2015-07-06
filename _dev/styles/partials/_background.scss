@@ -1,25 +1,25 @@
 .d3-bg {
-  background: transparent url(/assets/images/bg-3.jpg) center center/ cover no-repeat;
-  position: absolute;
-  height: 120%;
-  overflow: hidden;
-  width: 100%;
-  top: -50px;
-  filter: unquote('brightness(0.75)');
+    background: transparent url('/assets/images/bg-3.jpg') 50% 50% / cover no-repeat;
+    position: absolute;
+    height: 120%;
+    overflow: hidden;
+    width: 100%;
+    top: -50px;
+    filter: unquote('brightness(0.75)');
 }
 
 .d3-char-bg {
-  position: absolute;
-  left: 50%;
-  opacity: 0;
-  visibility: hidden;
-  top: 0;
-  transform: translateX(-50%);
-  margin-top: 2.5%;
-  width: 100%;
-  height: 615px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
-  filter: drop-shadow(1px 1px 30px white);
+    position: absolute;
+    left: 50%;
+    opacity: 0;
+    visibility: hidden;
+    top: 0;
+    transform: translateX(-50%);
+    margin-top: 2.5%;
+    width: 100%;
+    height: 615px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    filter: drop-shadow(1px 1px 30px rgba(255, 255, 255, 1));
 }

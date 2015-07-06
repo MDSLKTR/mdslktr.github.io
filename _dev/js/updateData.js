@@ -727,7 +727,7 @@ var statPool = [
                     z: 0.01,
                     visibility: 'visible',
                     delay: 0.5,
-                    onComplete: function() {
+                    onComplete: function () {
                         this.setState({panelAnimationComplete: true});
 
                         TweenMax.to(
@@ -819,7 +819,7 @@ var statPool = [
                     x: 0,
                     z: 0.01,
                     delay: 0.5,
-                    onComplete: function() {
+                    onComplete: function () {
                         this.setState({panelAnimationComplete: true});
 
                         TweenMax.to(
@@ -911,7 +911,7 @@ var statPool = [
                         z: 0.01,
                         visibility: 'visible',
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                             this.triggerStatCollector();
                         }.bind(this)
@@ -929,7 +929,7 @@ var statPool = [
                         y: panelRightAdditionalHeight * -1,
                         z: 0.01,
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                             this.triggerStatCollector();
                         }.bind(this)
@@ -957,7 +957,7 @@ var statPool = [
                         z: 0.01,
                         visibility: 'visible',
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -974,7 +974,7 @@ var statPool = [
                         y: panelLeftAdditionalHeight * -1,
                         z: 0.01,
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1000,7 +1000,7 @@ var statPool = [
                         z: 0.01,
                         visibility: 'visible',
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1017,7 +1017,7 @@ var statPool = [
                         y: panelBottomLeftAdditionalHeight,
                         z: 0.01,
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1042,7 +1042,7 @@ var statPool = [
                         z: 0.01,
                         visibility: 'visible',
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1059,7 +1059,7 @@ var statPool = [
                         y: panelBottomRightAdditionalHeight,
                         z: 0.01,
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1090,9 +1090,9 @@ var statPool = [
                     },
                     {
                         width: 450,
-                        height: 485,
-                        ease: Power4.easeOut,
-                        onComplete: function() {
+                        height: 500,
+                        ease: Back.easeOut.config(1.5),
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1105,13 +1105,13 @@ var statPool = [
                     1,
                     {
                         width: 450,
-                        height: 485
+                        height: 500
                     },
                     {
                         width: 64,
                         height: 128,
                         ease: Power4.easeOut,
-                        onComplete: function() {
+                        onComplete: function () {
                             this.setState({panelAnimationComplete: true});
                         }.bind(this)
                     }
@@ -1122,6 +1122,23 @@ var statPool = [
             for (i = 0; i < childElements.length; i++) {
                 if (childElements[i].classList.contains('open') && childElements[i] !== target) {
                     childElements[i].classList.remove('open');
+                    TweenMax.fromTo(
+                        childElements[i],
+                        1,
+                        {
+                            width: 450,
+                            height: 500
+                        },
+                        {
+                            width: 64,
+                            height: 128,
+                            ease: Power4.easeOut,
+                            onComplete: function () {
+                                this.setState({panelAnimationComplete: true});
+                            }.bind(this)
+                        }
+                    );
+
                 }
             }
         },
@@ -2055,32 +2072,32 @@ var statPool = [
             switch (classState) {
                 case 'demon-hunter':
                     style = {
-                        backgroundImage: 'url("../../assets/images/dh.png")'
+                        backgroundImage: 'url("assets/images/dh.png")'
                     };
                     break;
                 case 'witch-doctor':
                     style = {
-                        backgroundImage: 'url("../../assets/images/wd.png")'
+                        backgroundImage: 'url("assets/images/wd.png")'
                     };
                     break;
                 case 'barbarian':
                     style = {
-                        backgroundImage: 'url("../../assets/images/barbarian.png")'
+                        backgroundImage: 'url("assets/images/barbarian.png")'
                     };
                     break;
                 case 'crusader':
                     style = {
-                        backgroundImage: 'url("../../assets/images/crusader.png")'
+                        backgroundImage: 'url("assets/images/crusader.png")'
                     };
                     break;
                 case 'monk':
                     style = {
-                        backgroundImage: 'url("../../assets/images/monk.png")'
+                        backgroundImage: 'url("assets/images/monk.png")'
                     };
                     break;
                 case 'wizard':
                     style = {
-                        backgroundImage: 'url("../../assets/images/wiz.jpg")'
+                        backgroundImage: 'url("assets/images/wiz.jpg")'
                     };
                     break;
                 default:
@@ -4862,7 +4879,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'cdr', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'cdr',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resred'},
@@ -4877,7 +4899,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'resred', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'resred',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat atkspd'},
@@ -4892,7 +4919,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'atkspd', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'atkspd',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critdmg'},
@@ -4907,7 +4939,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'critdmg', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'critdmg',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat critchance'},
@@ -4922,7 +4959,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'critchance', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'critchance',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat areadmg'},
@@ -4937,7 +4979,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'areadmg', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'areadmg',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resource'},
@@ -4952,7 +4999,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'resource', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'resource',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resistall'},
@@ -4967,7 +5019,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'resistall', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'resistall',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat armor'},
@@ -4982,7 +5039,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key, ref: 'armor', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'armor',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat maxlife'},
@@ -4997,7 +5059,12 @@ var statPool = [
                     className: 'paragon-stat-decrement',
                     onClick: this.handleParagon
                 }, '-'),
-                React.DOM.span({key: paragon.key,  ref: 'maxlife', className: 'paragon-stat-max', onClick: this.handleParagon})
+                React.DOM.span({
+                    key: paragon.key,
+                    ref: 'maxlife',
+                    className: 'paragon-stat-max',
+                    onClick: this.handleParagon
+                })
             ));
 
             localStorage.setItem('paragonCdr', this.state.paragonCdr);

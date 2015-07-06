@@ -1,68 +1,65 @@
-html{
-  font-family: 'roboto_slabbold', Arial, sans-serif;
-  font-size: vw-mobile(16px);
+html {
+    font-family: 'roboto_slabbold', Arial, sans-serif;
+    font-size: vw-mobile(16px);
+    width: 100%;
+    height: 100%;
 
-  @media screen and (min-width: 640px) {
-    font-size: vw-tablet(16px);
-  }
+    @media screen and (min-width: 640px) {
+        font-size: vw-tablet(16px);
+    }
 
-  @media screen and (min-width: 1000px) {
-    font-size: vw-desktop(16px);
-  }
+    @media screen and (min-width: 1000px) {
+        font-size: vw-desktop(16px);
+    }
 }
 
 select, input, button {
-  font-family: 'roboto_slabbold', Arial, sans-serif;
+    font-family: 'roboto_slabbold', Arial, sans-serif;
     line-height: 1.5em;
 }
 
-html {
-  width: 100%;
-  height: 100%;
-}
-
 body {
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
 }
 
 main {
-  user-select: none;
+    user-select: none;
 }
 
 button {
-  font-size: 1rem;
-  border: none;
-  outline: none;
-  cursor: pointer;
+    font-size: 1rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 
 @keyframes fader {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes pulse {
-  from {
-    transform: scale(0.001);
-    opacity: 0;
-  }
-  45% {
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 0;
-  }
+    from {
+        transform: scale(0.001);
+        opacity: 0;
+    }
+    45% {
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 0;
+    }
 }
