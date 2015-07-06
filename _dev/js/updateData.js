@@ -184,7 +184,14 @@ var statPool = [
     goldPickUp,
     maxHealth,
     atkSpd,
-    skillDmgToString,
+    skillDmgToString = [],
+    saveArr = [],
+    saveArray = [],
+    combined,
+    string,
+    calc,
+    saveValues = [],
+    skilldmgArray = [],
     countedValues,
     skills = [],
     skillsDesc = [],
@@ -660,6 +667,8 @@ var statPool = [
                 setRing: false
             });
 
+            this.animatePanelsOut();
+
             localStorage.setItem('battleTag', input);
             this.changeBattleTag();
         },
@@ -687,6 +696,8 @@ var statPool = [
                 setRing: false
             });
 
+            this.animatePanelsOut();
+
             localStorage.setItem('realm', input);
             this.changeBattleTag();
         },
@@ -711,7 +722,6 @@ var statPool = [
         },
 
         animatePanelsIn: function () {
-
             this.setState({panelAnimationComplete: false});
 
             TweenMax.fromTo(
@@ -727,6 +737,7 @@ var statPool = [
                     z: 0.01,
                     visibility: 'visible',
                     delay: 0.5,
+                    ease: Back.easeOut.config(1.1),
                     onComplete: function () {
                         this.setState({panelAnimationComplete: true});
 
@@ -761,6 +772,7 @@ var statPool = [
                 },
                 {
                     x: 0,
+                    ease: Back.easeOut.config(1.1),
                     z: 0.01,
                     visibility: 'visible',
                     delay: 0.5
@@ -778,6 +790,7 @@ var statPool = [
                 {
                     x: 0,
                     y: 0,
+                    ease: Back.easeOut.config(1.1),
                     z: 0.01,
                     visibility: 'visible',
                     delay: 0.5
@@ -795,6 +808,7 @@ var statPool = [
                 {
                     x: 0,
                     y: 0,
+                    ease: Back.easeOut.config(1.1),
                     z: 0.01,
                     visibility: 'visible',
                     delay: 0.5
@@ -812,48 +826,38 @@ var statPool = [
             panelBottomLeftWidth = panelBottomLeft.offsetWidth;
             panelBottomRightWidth = panelBottomRight.offsetWidth;
 
-            TweenMax.fromTo(
+            TweenMax.to(
+                itemWrapper,
+                0.25,
+                {
+                    opacity: 0
+                }
+            );
+
+            TweenMax.to(
+                charBgWrapper,
+                0.25,
+                {
+                    opacity: 0
+                }
+            );
+
+            TweenMax.to(
                 panelLeft,
                 1,
                 {
-                    x: 0,
+                    x: panelLeftWidth * -1,
                     z: 0.01,
                     delay: 0.5,
                     onComplete: function () {
                         this.setState({panelAnimationComplete: true});
-
-                        TweenMax.to(
-                            itemWrapper,
-                            1,
-                            {
-                                opacity: 0
-                            }
-                        );
-
-                        TweenMax.to(
-                            charBgWrapper,
-                            1,
-                            {
-                                opacity: 0
-                            }
-                        );
                     }.bind(this)
-                },
-                {
-                    x: panelLeftWidth * -1,
-                    z: 0.01,
-                    delay: 0.5
                 }
             );
 
-            TweenMax.fromTo(
+            TweenMax.to(
                 panelRight,
                 1,
-                {
-                    x: 0,
-                    z: 0.01,
-                    delay: 0.5
-                },
                 {
                     x: panelRightWidth,
                     z: 0.01,
@@ -861,15 +865,9 @@ var statPool = [
                 }
             );
 
-            TweenMax.fromTo(
+            TweenMax.to(
                 panelBottomLeft,
                 1,
-                {
-                    x: 0,
-                    y: 0,
-                    z: 0.01,
-                    delay: 0.5
-                },
                 {
                     x: panelBottomLeftWidth * -1,
                     y: panelBottomLeftHeight,
@@ -877,15 +875,9 @@ var statPool = [
                 }
             );
 
-            TweenMax.fromTo(
+            TweenMax.to(
                 panelBottomRight,
                 1,
-                {
-                    x: 0,
-                    y: 0,
-                    z: 0.01,
-                    delay: 0.5
-                },
                 {
                     x: panelBottomRightWidth,
                     y: panelBottomRightHeight,
@@ -1441,10 +1433,11 @@ var statPool = [
         },
 
         skillDmgSanitize: function (obj) {
-            var combined = '',
-                string = '',
-                calc = 0,
-                saveArray = [];
+            calc = 0;
+            string = '';
+            combined = '';
+            saveArray.length = 0;
+
             for (var p in obj) {
                 if (obj.hasOwnProperty(p)) {
 
@@ -1701,12 +1694,14 @@ var statPool = [
         },
 
         collectSkillDamage: function () {
-            var saveArr = [],
-                saveValues = [],
-                skilldmgArray = [],
-                i,
+            var i,
                 k,
-                m;
+                m,
+                countedValues;
+
+            skilldmgArray.length = 0;
+            saveArr.length = 0;
+            saveValues.length = 0;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -1781,8 +1776,7 @@ var statPool = [
                 }
             }
 
-            skillDmgToString = this.skillDmgSanitize(countedValues);
-            this.setState({skillDmg: skillDmgToString});
+            this.setState({skillDmg: this.skillDmgSanitize(countedValues)});
         },
 
         collectStats: function () {
@@ -4669,6 +4663,8 @@ var statPool = [
                     maxSkillDmg,
                     nativeSkillDamage,
                     pushedValues = [];
+
+                pushedValues.length = 0;
 
                 if (classState === 'demon-hunter' || classState === 'monk') {
                     statCalc = statsState.dexterity / 100;

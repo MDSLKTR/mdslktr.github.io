@@ -837,6 +837,7 @@ footer {
     color: wheat; }
 
 button {
+  z-index: 1;
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
