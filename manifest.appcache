@@ -1,11 +1,11 @@
 CACHE MANIFEST
-# rev 21 - 2015-06-14T17:56:40.140Z
+# rev 22 - 2015-07-06T19:40:36.385Z
 
 CACHE:
 ../../assets/css/styles.css
 ../../assets/css/styles.css.map
 ../../assets/css/styles.min.css
-../../assets/fonts/roboto-medium-webfont.svg
+../../assets/fonts/robotoslab-bold-webfont.woff2
 ../../assets/images/barbarian.png
 ../../assets/images/bg-2.jpg
 ../../assets/images/bg-3.jpg
