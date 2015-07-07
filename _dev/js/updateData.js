@@ -184,7 +184,6 @@ var statPool = [
     goldPickUp,
     maxHealth,
     atkSpd,
-    skillDmgToString = [],
     saveArr = [],
     saveArray = [],
     combined,
@@ -192,7 +191,6 @@ var statPool = [
     calc,
     saveValues = [],
     skilldmgArray = [],
-    countedValues,
     skills = [],
     skillsDesc = [],
     heroes = [],
@@ -745,6 +743,7 @@ var statPool = [
                             itemWrapper,
                             2,
                             {
+                                delay: 0.5,
                                 opacity: 1,
                                 visibility: 'visible'
                             }
@@ -754,6 +753,7 @@ var statPool = [
                             charBgWrapper,
                             2,
                             {
+                                delay: 0.5,
                                 opacity: 1,
                                 visibility: 'visible'
                             }
