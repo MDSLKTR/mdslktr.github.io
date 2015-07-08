@@ -717,6 +717,19 @@ var statPool = [
 
             this.animatePanelsOut();
             setTimeout(this.animatePanelsIn, 1000);
+
+            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight, -1);
+            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 2, -1);
+            this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
+            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 2, 1);
+
+            this.setState({
+                toggle: 'hidden',
+                paragonToggle: 'hidden',
+                skillDescToggle: 'hidden',
+                passiveDescToggle: 'hidden'
+            });
+
         },
 
         animatePanelsIn: function () {
@@ -886,47 +899,50 @@ var statPool = [
             );
         },
 
+        animateBonusPanelIn: function (panel, height, triggerStatCollector, dir) {
+            TweenMax.to(
+                panel,
+                1,
+                {
+                    y: 0,
+                    z: 0.01,
+                    visibility: 'visible',
+                    ease: Power4.easeOut,
+                    onComplete: function () {
+                        this.setState({panelAnimationComplete: true});
+
+                        if (triggerStatCollector === true) {
+                            this.triggerStatCollector();
+                        }
+                    }.bind(this)
+                }
+            );
+        },
+
+        animateBonusPanelOut: function (panel, height, dir) {
+            TweenMax.to(
+                panel,
+                1,
+                {
+                    y: height * dir,
+                    z: 0.01,
+                    ease: Power4.easeOut,
+                    onComplete: function () {
+                        this.setState({panelAnimationComplete: true});
+                    }.bind(this)
+                }
+            );
+        },
+
         handleBonusStatsClick: function () {
             this.setState({panelAnimationComplete: false});
 
             panelRightAdditionalHeight = panelRightAdditional.offsetHeight;
-
             if (this.state.toggle !== 'visible') {
-                TweenMax.fromTo(
-                    panelRightAdditional,
-                    1,
-                    {
-                        y: panelRightAdditionalHeight * -1
-                    },
-                    {
-                        y: 0,
-                        z: 0.01,
-                        visibility: 'visible',
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                            this.triggerStatCollector();
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelIn(panelRightAdditional, panelRightAdditionalHeight, true, -1);
                 this.setState({toggle: 'visible'});
             } else {
-                TweenMax.fromTo(
-                    panelRightAdditional,
-                    1,
-                    {
-                        y: 0
-                    },
-                    {
-                        y: panelRightAdditionalHeight * -1,
-                        z: 0.01,
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                            this.triggerStatCollector();
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelOut(panelRightAdditional, panelRightAdditionalHeight, -1);
                 this.setState({toggle: 'hidden'});
             }
         },
@@ -935,42 +951,12 @@ var statPool = [
             this.checkParagon();
             this.setState({panelAnimationComplete: false});
 
-
             panelLeftAdditionalHeight = panelLeftAdditional.offsetHeight;
             if (this.state.paragonToggle !== 'visible') {
-                TweenMax.fromTo(
-                    panelLeftAdditional,
-                    1,
-                    {
-                        y: panelLeftAdditionalHeight * -1
-                    },
-                    {
-                        y: 0,
-                        z: 0.01,
-                        visibility: 'visible',
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelIn(panelLeftAdditional, panelLeftAdditionalHeight, false, -1);
                 this.setState({paragonToggle: 'visible'});
             } else {
-                TweenMax.fromTo(
-                    panelLeftAdditional,
-                    1,
-                    {
-                        y: 0
-                    },
-                    {
-                        y: panelLeftAdditionalHeight * -1,
-                        z: 0.01,
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight, -1);
                 this.setState({paragonToggle: 'hidden'});
             }
         },
@@ -978,42 +964,12 @@ var statPool = [
         handleSkillDescClick: function () {
             this.setState({panelAnimationComplete: false});
 
-
             panelBottomLeftAdditionalHeight = panelBottomLeftAdditional.offsetHeight;
             if (this.state.skillDescToggle !== 'visible') {
-                TweenMax.fromTo(
-                    panelBottomLeftAdditional,
-                    1,
-                    {
-                        y: panelBottomLeftAdditionalHeight
-                    },
-                    {
-                        y: 0,
-                        z: 0.01,
-                        visibility: 'visible',
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelIn(panelBottomLeftAdditional, panelBottomLeftAdditionalHeight, false, 1);
                 this.setState({skillDescToggle: 'visible'});
             } else {
-                TweenMax.fromTo(
-                    panelBottomLeftAdditional,
-                    1,
-                    {
-                        y: 0
-                    },
-                    {
-                        y: panelBottomLeftAdditionalHeight,
-                        z: 0.01,
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelOut(panelBottomLeftAdditional, panelBottomLeftAdditionalHeight, 1);
                 this.setState({skillDescToggle: 'hidden'});
             }
         },
@@ -1023,39 +979,10 @@ var statPool = [
 
             panelBottomRightAdditionalHeight = panelBottomRightAdditional.offsetHeight;
             if (this.state.passiveDescToggle !== 'visible') {
-                TweenMax.fromTo(
-                    panelBottomRightAdditional,
-                    1,
-                    {
-                        y: panelBottomRightAdditionalHeight
-                    },
-                    {
-                        y: 0,
-                        z: 0.01,
-                        visibility: 'visible',
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelIn(panelBottomRightAdditional, panelBottomRightAdditionalHeight, false, 1);
                 this.setState({passiveDescToggle: 'visible'});
             } else {
-                TweenMax.fromTo(
-                    panelBottomRightAdditional,
-                    1,
-                    {
-                        y: 0
-                    },
-                    {
-                        y: panelBottomRightAdditionalHeight,
-                        z: 0.01,
-                        ease: Power4.easeOut,
-                        onComplete: function () {
-                            this.setState({panelAnimationComplete: true});
-                        }.bind(this)
-                    }
-                );
+                this.animateBonusPanelOut(panelBottomRightAdditional, panelBottomRightAdditionalHeight, 1);
                 this.setState({passiveDescToggle: 'hidden'});
             }
         },
@@ -5114,7 +5041,8 @@ var statPool = [
                         className: this.state.paragonToggle,
                         id: 'panel-left',
                         ref: 'pl'
-                    }, 'General', base, React.DOM.button({
+                    }, 'General', base, React.DOM.a({
+                        className: 'button',
                         onClick: this.handleParagonStatsClick
                     }, React.DOM.span({className: 'button-text'}, 'show paragon'))),
                     React.DOM.div({
@@ -5122,14 +5050,16 @@ var statPool = [
                             title: 'click to open detailed description',
                             id: 'panel-bottom-left',
                             ref: 'pbl'
-                        }, 'Skills', skills, React.DOM.button({
+                        }, 'Skills', skills, React.DOM.a({
+                            className: 'button',
                             onClick: this.handleSkillDescClick
                         }, React.DOM.span({className: 'button-text'}, 'show details'))
                     ),
                     React.DOM.div({
                         id: 'panel-left-additional',
                         ref: 'pla'
-                    }, 'Paragon Points: ', paragon, React.DOM.button({
+                    }, 'Paragon Points: ', paragon, React.DOM.a({
+                        className: 'button',
                         onClick: this.handleParagonStatsClick,
                         title: 'click to close'
                     }, React.DOM.span({className: 'button-text'}, 'close'))),
@@ -5137,7 +5067,8 @@ var statPool = [
                         className: this.state.skillDescToggle,
                         id: 'panel-bottom-left-desc',
                         ref: 'pbla'
-                    }, React.DOM.button({
+                    }, React.DOM.a({
+                        className: 'button',
                         onClick: this.handleSkillDescClick,
                         title: 'click to close'
                     }, React.DOM.span({className: 'button-text'}, 'close')), skillsDesc),
@@ -5146,14 +5077,16 @@ var statPool = [
                         title: 'click to open detailed description',
                         id: 'panel-bottom-right',
                         ref: 'pbr'
-                    }, 'Passives', passives, specialPassive, React.DOM.button({
+                    }, 'Passives', passives, specialPassive, React.DOM.a({
+                        className: 'button',
                         onClick: this.handlePassiveDescClick
                     }, React.DOM.span({className: 'button-text'}, 'show details'))),
                     React.DOM.div({
                         className: this.state.passiveDescToggle,
                         id: 'panel-bottom-right-desc',
                         ref: 'pbra'
-                    }, React.DOM.button({
+                    }, React.DOM.a({
+                        className: 'button',
                         onClick: this.handlePassiveDescClick,
                         title: 'click to close'
                     }, React.DOM.span({className: 'button-text'}, 'close')), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
@@ -5164,7 +5097,8 @@ var statPool = [
                         },
                         'Stats',
                         stats,
-                        React.DOM.button({
+                        React.DOM.a({
+                            className: 'button',
                             onClick: this.handleBonusStatsClick,
                             title: 'click to show/hide more stats'
                         }, React.DOM.span({className: 'button-text'}, 'show more'))
@@ -5177,7 +5111,8 @@ var statPool = [
                         additionalStatsOffensive,
                         'Defensive Stats',
                         additionalStatsDefensive,
-                        React.DOM.button({
+                        React.DOM.a({
+                            className: 'button',
                             onClick: this.handleBonusStatsClick,
                             title: 'click to show/hide more stats'
                         }, React.DOM.span({className: 'button-text'}, 'show less')))

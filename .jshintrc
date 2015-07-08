@@ -91,6 +91,7 @@
 		"Power4": true,
         "SlowMo": true,
         "Bounce": true,
-        "Back": true
+        "Back": true,
+        "Sine": true
     }
 }
