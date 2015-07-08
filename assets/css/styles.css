@@ -287,6 +287,14 @@ main {
       .d3-item-wrapper > div.common:hover {
         -webkit-filter: drop-shadow(0px 0px 20px grey);
                 filter: drop-shadow(0px 0px 20px grey); }
+    .d3-item-wrapper > div.empty {
+      cursor: default;
+      -webkit-filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.75));
+              filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.75));
+      border: 1px solid rgba(255, 255, 255, 0.5); }
+      .d3-item-wrapper > div.empty:hover {
+        -webkit-filter: drop-shadow(0px 0px 20px white);
+                filter: drop-shadow(0px 0px 20px white); }
     .d3-item-wrapper > div.open {
       z-index: 1;
       -webkit-transition: background-color 0.5s;

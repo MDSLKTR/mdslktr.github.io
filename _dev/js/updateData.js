@@ -2367,6 +2367,11 @@ var statPool = [
                     }, helmet)
                 )));
 
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item head'
+                }));
             }
 
             if (itemsIconState && itemsIconState.torso && torsoState) {
@@ -2537,6 +2542,11 @@ var statPool = [
                         className: 'stats'
                     }, torso)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item torso'
+                }));
             }
 
             if (itemsIconState && itemsIconState.hands && handsState) {
@@ -2675,6 +2685,11 @@ var statPool = [
                         className: 'stats'
                     }, hands)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item hands'
+                }));
             }
 
             if (itemsIconState && itemsIconState.feet && feetState) {
@@ -2813,6 +2828,11 @@ var statPool = [
                         className: 'stats'
                     }, feet)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item feet'
+                }));
             }
 
             if (itemsIconState && itemsIconState.shoulders && shouldersState) {
@@ -2959,6 +2979,11 @@ var statPool = [
                         className: 'stats'
                     }, shoulders)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item shoulders'
+                }));
             }
 
             if (itemsIconState && itemsIconState.legs && legsState) {
@@ -3121,6 +3146,11 @@ var statPool = [
                         className: 'stats'
                     }, legs)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item legs'
+                }));
             }
 
             if (itemsIconState && itemsIconState.bracers && bracersState) {
@@ -3263,6 +3293,11 @@ var statPool = [
                         className: 'stats'
                     }, bracers)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item bracers'
+                }));
             }
 
             if (itemsIconState && itemsIconState.mainHand && mainHandState) {
@@ -3500,6 +3535,11 @@ var statPool = [
                         className: 'stats'
                     }, mainHand)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item mainHand'
+                }));
             }
 
             if (itemsIconState && itemsIconState.offHand && offHandState) {
@@ -3734,6 +3774,11 @@ var statPool = [
                         className: 'stats'
                     }, offHand)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item offHand'
+                }));
             }
 
             if (itemsIconState && itemsIconState.waist && beltState) {
@@ -3871,6 +3916,11 @@ var statPool = [
                         className: 'stats'
                     }, belt)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item waist'
+                }));
             }
 
             if (itemsIconState && itemsIconState.rightFinger && ringStateRight) {
@@ -4049,6 +4099,11 @@ var statPool = [
                         className: 'stats'
                     }, ringRight)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item rightFinger'
+                }));
             }
 
             if (itemsIconState && itemsIconState.leftFinger && ringStateLeft) {
@@ -4218,6 +4273,11 @@ var statPool = [
                         className: 'stats'
                     }, ringLeft)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item leftFinger'
+                }));
             }
 
             if (itemsIconState && itemsIconState.neck && neckState) {
@@ -4379,6 +4439,11 @@ var statPool = [
                         className: 'stats'
                     }, neck)
                 )));
+            } else {
+                items.push(React.DOM.div({
+                    key: itemsIconState.key,
+                    className: 'empty item neck'
+                }));
             }
 
             if (amuletState.attributes && itemsState) {
