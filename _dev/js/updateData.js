@@ -2104,22 +2104,22 @@ var statPool = [
                                 break;
                             case 'b':
                                 runeType = {
-                                    backgroundPosition: '0 25%'
+                                    backgroundPosition: '0 97%'
                                 };
                                 break;
                             case 'c':
                                 runeType = {
-                                    backgroundPosition: '0 49%'
+                                    backgroundPosition: '0 25%'
                                 };
                                 break;
                             case 'd':
                                 runeType = {
-                                    backgroundPosition: '0 73%'
+                                    backgroundPosition: '0 49%'
                                 };
                                 break;
                             case 'e':
                                 runeType = {
-                                    backgroundPosition: '0 97%'
+                                    backgroundPosition: '0 73%'
                                 };
                                 break;
                         }
