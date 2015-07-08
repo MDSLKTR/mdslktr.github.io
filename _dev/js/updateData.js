@@ -5047,17 +5047,15 @@ var statPool = [
                         )
                     ),
                     React.DOM.div({
-                        className: this.state.paragonToggle,
-                        id: 'panel-left',
+                        className: 'panel-left ' + this.state.paragonToggle,
                         ref: 'pl'
                     }, 'General', base, React.DOM.a({
                         className: 'button',
                         onClick: this.handleParagonStatsClick
                     }, React.DOM.span({className: 'button-text'}, 'show paragon'))),
                     React.DOM.div({
-                            className: this.state.skillDescToggle,
+                            className: 'panel-bottom-left ' + this.state.skillDescToggle,
                             title: 'click to open detailed description',
-                            id: 'panel-bottom-left',
                             ref: 'pbl'
                         }, 'Skills', skills, React.DOM.a({
                             className: 'button',
@@ -5065,7 +5063,7 @@ var statPool = [
                         }, React.DOM.span({className: 'button-text'}, 'show details'))
                     ),
                     React.DOM.div({
-                        id: 'panel-left-additional',
+                        className: 'panel-left-additional ',
                         ref: 'pla'
                     }, 'Paragon Points: ', paragon, React.DOM.a({
                         className: 'button',
@@ -5073,8 +5071,7 @@ var statPool = [
                         title: 'click to close'
                     }, React.DOM.span({className: 'button-text'}, 'close'))),
                     React.DOM.div({
-                        className: this.state.skillDescToggle,
-                        id: 'panel-bottom-left-desc',
+                        className: 'panel-bottom-left-desc ' + this.state.skillDescToggle,
                         ref: 'pbla'
                     }, React.DOM.a({
                         className: 'button',
@@ -5082,17 +5079,15 @@ var statPool = [
                         title: 'click to close'
                     }, React.DOM.span({className: 'button-text'}, 'close')), skillsDesc),
                     React.DOM.div({
-                        className: this.state.passiveDescToggle,
+                        className: 'panel-bottom-right ' + this.state.passiveDescToggle,
                         title: 'click to open detailed description',
-                        id: 'panel-bottom-right',
                         ref: 'pbr'
                     }, 'Passives', passives, specialPassive, React.DOM.a({
                         className: 'button',
                         onClick: this.handlePassiveDescClick
                     }, React.DOM.span({className: 'button-text'}, 'show details'))),
                     React.DOM.div({
-                        className: this.state.passiveDescToggle,
-                        id: 'panel-bottom-right-desc',
+                        className: 'panel-bottom-right-desc ' + this.state.passiveDescToggle,
                         ref: 'pbra'
                     }, React.DOM.a({
                         className: 'button',
@@ -5100,9 +5095,8 @@ var statPool = [
                         title: 'click to close'
                     }, React.DOM.span({className: 'button-text'}, 'close')), passivesDesc, 'Note: your Hellfire Passive cannot be displayed here, courtesy of blizzard'),
                     React.DOM.div({
-                            id: 'panel-right',
                             ref: 'pr',
-                            className: this.state.toggle
+                            className: 'panel-right ' + this.state.toggle
                         },
                         'Stats',
                         stats,
@@ -5113,7 +5107,7 @@ var statPool = [
                         }, React.DOM.span({className: 'button-text'}, 'show more'))
                     ),
                     React.DOM.div({
-                            id: 'panel-right-additional',
+                            className: 'panel-right-additional ',
                             ref: 'pra'
                         },
                         'Offensive Stats',
