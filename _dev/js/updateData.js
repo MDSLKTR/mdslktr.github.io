@@ -659,13 +659,19 @@ var statPool = [
                 level: {},
                 paragon: {},
                 time: 0,
-                toggle: 'more',
-                skillDescOpen: '',
-                passiveDescToggle: '',
-                setRing: false
+                setRing: false,
+                toggle: 'hidden',
+                paragonToggle: 'hidden',
+                skillDescToggle: 'hidden',
+                passiveDescToggle: 'hidden'
             });
 
             this.animatePanelsOut();
+
+            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
+            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
+            this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
+            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
             localStorage.setItem('battleTag', input);
             this.changeBattleTag();
@@ -687,14 +693,19 @@ var statPool = [
                 level: {},
                 paragon: {},
                 time: 0,
-                toggle: 'more',
-                skillDescToggle: '',
-                paragonToggle: '',
-                passiveDescToggle: '',
-                setRing: false
+                setRing: false,
+                toggle: 'hidden',
+                paragonToggle: 'hidden',
+                skillDescToggle: 'hidden',
+                passiveDescToggle: 'hidden'
             });
 
             this.animatePanelsOut();
+
+            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
+            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
+            this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
+            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
             localStorage.setItem('realm', input);
             this.changeBattleTag();
@@ -704,7 +715,12 @@ var statPool = [
             selectedChar = this.refs.select.getDOMNode().value;
             this.setState({
                 selected: selectedChar,
-                panels: 'visible'
+                panels: 'visible',
+                toggle: 'hidden',
+                paragonToggle: 'hidden',
+                skillDescToggle: 'hidden',
+                passiveDescToggle: 'hidden'
+
             });
 
             this.changeChar();
@@ -718,17 +734,10 @@ var statPool = [
             this.animatePanelsOut();
             setTimeout(this.animatePanelsIn, 1000);
 
-            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight, -1);
-            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 2, -1);
+            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
+            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
             this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 2, 1);
-
-            this.setState({
-                toggle: 'hidden',
-                paragonToggle: 'hidden',
-                skillDescToggle: 'hidden',
-                passiveDescToggle: 'hidden'
-            });
+            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
         },
 
@@ -899,10 +908,10 @@ var statPool = [
             );
         },
 
-        animateBonusPanelIn: function (panel, height, triggerStatCollector, dir) {
+        animateBonusPanelIn: function (panel, height, triggerStatCollector) {
             TweenMax.to(
                 panel,
-                1,
+                1.5,
                 {
                     y: 0,
                     z: 0.01,
@@ -922,7 +931,7 @@ var statPool = [
         animateBonusPanelOut: function (panel, height, dir) {
             TweenMax.to(
                 panel,
-                1,
+                1.5,
                 {
                     y: height * dir,
                     z: 0.01,
