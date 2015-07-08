@@ -30,7 +30,19 @@ body {
 }
 
 main {
+    height: 100%;
+    width: 100%;
+}
+
+.d3-profile {
+    height: 100%;
+    width: 100%;
     user-select: none;
+}
+
+.d3-container {
+    height: 100%;
+    width: 100%;
 }
 
 @keyframes fader {

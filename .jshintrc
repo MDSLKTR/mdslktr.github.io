@@ -87,6 +87,7 @@
 	"globals": {
 		"React": true,
 		"TweenMax": true,
+        "TweenLite": true,
 		"Elastic": true,
 		"Power4": true,
         "SlowMo": true,

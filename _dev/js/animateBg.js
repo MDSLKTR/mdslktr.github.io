@@ -1,7 +1,7 @@
 (function () {
     var bg = document.querySelector('.d3-bg'),
         animateDown = function () {
-            TweenMax.fromTo(
+            TweenLite.fromTo(
                 bg,
                 3,
                 {

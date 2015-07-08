@@ -31,10 +31,20 @@ body {
   height: 100%; }
 
 main {
+  height: 100%;
+  width: 100%; }
+
+.d3-profile {
+  height: 100%;
+  width: 100%;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+
+.d3-container {
+  height: 100%;
+  width: 100%; }
 
 @-webkit-keyframes fader {
   from {

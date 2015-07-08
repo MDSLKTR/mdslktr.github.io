@@ -744,7 +744,7 @@ var statPool = [
         animatePanelsIn: function () {
             this.setState({panelAnimationComplete: false});
 
-            TweenMax.fromTo(
+            TweenLite.fromTo(
                 panelLeft,
                 2,
                 {
@@ -761,7 +761,7 @@ var statPool = [
                     onComplete: function () {
                         this.setState({panelAnimationComplete: true});
 
-                        TweenMax.to(
+                        TweenLite.to(
                             itemWrapper,
                             2,
                             {
@@ -771,7 +771,7 @@ var statPool = [
                             }
                         );
 
-                        TweenMax.to(
+                        TweenLite.to(
                             charBgWrapper,
                             2,
                             {
@@ -784,7 +784,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.fromTo(
+            TweenLite.fromTo(
                 panelRight,
                 2,
                 {
@@ -801,7 +801,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.fromTo(
+            TweenLite.fromTo(
                 panelBottomLeft,
                 2,
                 {
@@ -819,7 +819,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.fromTo(
+            TweenLite.fromTo(
                 panelBottomRight,
                 2,
                 {
@@ -848,7 +848,7 @@ var statPool = [
             panelBottomLeftWidth = panelBottomLeft.offsetWidth;
             panelBottomRightWidth = panelBottomRight.offsetWidth;
 
-            TweenMax.to(
+            TweenLite.to(
                 itemWrapper,
                 0.25,
                 {
@@ -856,7 +856,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.to(
+            TweenLite.to(
                 charBgWrapper,
                 0.25,
                 {
@@ -864,7 +864,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.to(
+            TweenLite.to(
                 panelLeft,
                 1,
                 {
@@ -877,7 +877,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.to(
+            TweenLite.to(
                 panelRight,
                 1,
                 {
@@ -887,7 +887,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.to(
+            TweenLite.to(
                 panelBottomLeft,
                 1,
                 {
@@ -897,7 +897,7 @@ var statPool = [
                 }
             );
 
-            TweenMax.to(
+            TweenLite.to(
                 panelBottomRight,
                 1,
                 {
@@ -909,7 +909,7 @@ var statPool = [
         },
 
         animateBonusPanelIn: function (panel, height, triggerStatCollector) {
-            TweenMax.to(
+            TweenLite.to(
                 panel,
                 1.5,
                 {
@@ -929,7 +929,7 @@ var statPool = [
         },
 
         animateBonusPanelOut: function (panel, height, dir) {
-            TweenMax.to(
+            TweenLite.to(
                 panel,
                 1.5,
                 {
@@ -1009,7 +1009,7 @@ var statPool = [
 
             if (!target.classList.contains('open')) {
                 target.classList.add('open');
-                TweenMax.fromTo(
+                TweenLite.fromTo(
                     target,
                     1,
                     {
@@ -1028,7 +1028,7 @@ var statPool = [
 
             } else {
                 target.classList.remove('open');
-                TweenMax.fromTo(
+                TweenLite.fromTo(
                     target,
                     1,
                     {
@@ -1050,7 +1050,7 @@ var statPool = [
             for (i = 0; i < childElements.length; i++) {
                 if (childElements[i].classList.contains('open') && childElements[i] !== target) {
                     childElements[i].classList.remove('open');
-                    TweenMax.fromTo(
+                    TweenLite.fromTo(
                         childElements[i],
                         1,
                         {
@@ -5133,7 +5133,7 @@ var statPool = [
 React.render(React.createElement(DataWrapper, {
         pollInterval: 600000
     }),
-    document.getElementById('profile-data'));
+    document.querySelector('.d3-profile'));
 
 // Test Profiles
 // Ferdi#1763
