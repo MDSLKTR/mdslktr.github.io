@@ -5135,12 +5135,5 @@ React.render(React.createElement(DataWrapper, {
     }),
     document.querySelector('.d3-profile'));
 
-// Test Profiles
-// Ferdi#1763
-// McleodNUS#2608
-// Mephir#2101
-// MazlSan#2233
-
-
 // todo find out how the % dmg of the skill can be gathered
 // todo add more buffs
