@@ -16,9 +16,12 @@ html {
     html {
       font-size: 0.8333333333vw; } }
 
-select, input, button {
+select, input {
   font-family: 'roboto_slabbold', Arial, sans-serif;
-  line-height: 1.5em; }
+  line-height: 1.5em;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none; }
 
 body {
   overflow: hidden;
@@ -32,12 +35,6 @@ main {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; }
-
-button {
-  font-size: 1rem;
-  border: none;
-  outline: none;
-  cursor: pointer; }
 
 @-webkit-keyframes fader {
   from {
@@ -196,7 +193,7 @@ button {
   .d3-char-wrapper select {
     margin-top: 0.25rem;
     cursor: pointer;
-    background: black;
+    background-color: #000000;
     width: 90%;
     border: 2px solid darkred;
     color: wheat;
