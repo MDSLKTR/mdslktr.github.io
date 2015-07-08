@@ -2099,7 +2099,7 @@ var statPool = [
                         switch (skillName.rune.type) {
                             case 'a':
                                 runeType = {
-                                    backgroundPosition: '0 0'
+                                    backgroundPosition: '0 49%'
                                 };
                                 break;
                             case 'b':
@@ -2109,17 +2109,17 @@ var statPool = [
                                 break;
                             case 'c':
                                 runeType = {
-                                    backgroundPosition: '0 25%'
+                                    backgroundPosition: '0 73%'
                                 };
                                 break;
                             case 'd':
                                 runeType = {
-                                    backgroundPosition: '0 49%'
+                                    backgroundPosition: '0 0'
                                 };
                                 break;
                             case 'e':
                                 runeType = {
-                                    backgroundPosition: '0 73%'
+                                    backgroundPosition: '0 25%'
                                 };
                                 break;
                         }
