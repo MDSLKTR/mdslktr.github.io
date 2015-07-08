@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# rev 26 - 2015-07-08T18:06:38.629Z
+# rev 27 - 2015-07-08T18:19:44.451Z
 
 CACHE:
 ../../assets/css/styles.css
@@ -7,9 +7,7 @@ CACHE:
 ../../assets/css/styles.min.css
 ../../assets/fonts/robotoslab-bold-webfont.woff2
 ../../assets/images/barbarian.png
-../../assets/images/bg-2.jpg
 ../../assets/images/bg-3.jpg
-../../assets/images/bg.jpg
 ../../assets/images/crusader.png
 ../../assets/images/dh.png
 ../../assets/images/monk.png
