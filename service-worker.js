@@ -16,7 +16,8 @@ var offlineFundamentals = [
     'assets/css/styles.min.css',
     'assets/js/vendor.min.js',
     'assets/js/scripts.min.js',
-    'assets/images/*.jpg',
+    'assets/images/bg-3.jpg',
+    'assets/images/runes.jpg'
 ];
 
 importScripts('service-worker-cache-polyfill.js');
