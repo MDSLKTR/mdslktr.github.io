@@ -305,8 +305,8 @@ var statPool = [
                 battleTag: localStorage.getItem('battleTag'),
                 apiKey: '?locale=en_GB&apikey=65d63bvh7spjgmce3gjq2mv5nzjfsggy',
                 profile: '.api.battle.net/d3/profile/',
-                itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
-                skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/',
+                itemIconBase: 'https://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
+                skillIconBase: 'https://media.blizzard.com/d3/icons/skills/64/',
                 itemToolTipBase: '.api.battle.net/d3/data/'
             };
         },
