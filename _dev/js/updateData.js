@@ -305,8 +305,8 @@ var statPool = [
                 battleTag: localStorage.getItem('battleTag'),
                 apiKey: '?locale=en_GB&apikey=65d63bvh7spjgmce3gjq2mv5nzjfsggy',
                 profile: '.api.battle.net/d3/profile/',
-                itemIconBase: 'https://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
-                skillIconBase: 'https://media.blizzard.com/d3/icons/skills/64/',
+                itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
+                skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/',
                 itemToolTipBase: '.api.battle.net/d3/data/'
             };
         },
@@ -582,21 +582,21 @@ var statPool = [
         },
 
         initServiceWorker: function () {
-            if ('serviceWorker' in navigator) {
-                console.log('CLIENT: service worker registration in progress.');
-                navigator.serviceWorker.register('service-worker.js'
-                ).then(function () {
-                        console.log('CLIENT: service worker registration complete.');
-                    }, function () {
-                        console.log('CLIENT: service worker registration failure.');
-                    });
-            } else {
-                console.log('CLIENT: service worker is not supported.');
-            }
+            //if ('serviceWorker' in navigator) {
+            //    console.log('CLIENT: service worker registration in progress.');
+            //    navigator.serviceWorker.register('service-worker.js'
+            //    ).then(function () {
+            //            console.log('CLIENT: service worker registration complete.');
+            //        }, function () {
+            //            console.log('CLIENT: service worker registration failure.');
+            //        });
+            //} else {
+            //    console.log('CLIENT: service worker is not supported.');
+            //}
         },
 
         componentDidMount: function () {
-            this.initServiceWorker();
+            //this.initServiceWorker();
             fetchHeroList = setInterval(this.loadHeroesData, 1000);
             fetchHeroData = setInterval(this.loadHeroData, 1500);
 
