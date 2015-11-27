@@ -114,6 +114,12 @@ var statPool = [
         ['Bane of the Trapped', 'Item_Power_Passive#ItemPassive_Unique_Gem_002_x1'],
         ['Gogok of the Swiftness', 'Item_Power_Passive#ItemPassive_Unique_Gem_008U_x1']
     ],
+    realmList = [
+        'eu',
+        'us',
+        'kr'
+    ],
+    backgroundImage,
     helmCount,
     torsoCount,
     handsCount,
@@ -187,7 +193,6 @@ var statPool = [
     skills = [],
     skillsDesc = [],
     heroes = [],
-    realms = [],
     passives = [],
     passivesDesc = [],
     stats = [],
@@ -555,6 +560,8 @@ var statPool = [
                 }
             }
 
+            this.createRealmList();
+
             // panel shorthands p = panel, l = left and so forth
             panelLeft = this.refs.pl.getDOMNode();
             panelRight = this.refs.pr.getDOMNode();
@@ -637,7 +644,7 @@ var statPool = [
                 this.changeBattleTag(this.state.battleTag);
             });
 
-            localStorage.setItem('realm', input);
+            localStorage.setItem('realm', e.target.value);
         },
 
         setCharacterSelect: function (e) {
@@ -1000,16 +1007,16 @@ var statPool = [
         },
 
         checkParagon: function () {
-            pcdr = this.refs.cdr.getDOMNode();
-            presred = this.refs.resred.getDOMNode();
-            patkspd = this.refs.atkspd.getDOMNode();
-            pcritdmg = this.refs.critdmg.getDOMNode();
-            pcritchance = this.refs.critchance.getDOMNode();
-            pareadmg = this.refs.areadmg.getDOMNode();
-            presource = this.refs.resource.getDOMNode();
-            presistall = this.refs.resistall.getDOMNode();
-            parmor = this.refs.armor.getDOMNode();
-            pmaxlife = this.refs.maxlife.getDOMNode();
+            //pcdr = this.refs.cdr.getDOMNode();
+            //presred = this.refs.resred.getDOMNode();
+            //patkspd = this.refs.atkspd.getDOMNode();
+            //pcritdmg = this.refs.critdmg.getDOMNode();
+            //pcritchance = this.refs.critchance.getDOMNode();
+            //pareadmg = this.refs.areadmg.getDOMNode();
+            //presource = this.refs.resource.getDOMNode();
+            //presistall = this.refs.resistall.getDOMNode();
+            //parmor = this.refs.armor.getDOMNode();
+            //pmaxlife = this.refs.maxlife.getDOMNode();
 
 
             if (this.state.paragonCdr === 10) {
@@ -1818,6 +1825,17 @@ var statPool = [
             }
         },
 
+        createRealmList: function () {
+            var realms = [];
+            realmList.forEach(function (realm) {
+                realms.push(React.DOM.option({key: realm, value: realm}, realm.toUpperCase()));
+            });
+
+            this.setState({
+                realms: realms
+            });
+        },
+
         render: function () {
             var skillsState = this.state.skills,
                 passivesState = this.state.passives,
@@ -1883,7 +1901,7 @@ var statPool = [
                     this.state.beltItem,
                     this.state.ringItemLeft,
                     this.state.ringItemRight
-                ];
+                ],
 
             calculatedAttackSpeed = 0;
             minDmgCalc = 0;
@@ -1893,7 +1911,6 @@ var statPool = [
             skills.length = 0;
             skillsDesc.length = 0;
             heroes.length = 0;
-            realms.length = 0;
             passives.length = 0;
             passivesDesc.length = 0;
             stats.length = 0;
@@ -1926,46 +1943,16 @@ var statPool = [
                 }
             }
 
-            realms.push(React.DOM.option({key: 'eu', value: 'eu'}, 'EU'));
-            realms.push(React.DOM.option({key: 'us', value: 'us'}, 'US'));
-            realms.push(React.DOM.option({key: 'kr', value: 'kr'}, 'KR'));
-
-            switch (classState) {
-                case 'demon-hunter':
-                    style = {
-                        backgroundImage: 'url("assets/images/dh.png")'
-                    };
-                    break;
-                case 'witch-doctor':
-                    style = {
-                        backgroundImage: 'url("assets/images/wd.png")'
-                    };
-                    break;
-                case 'barbarian':
-                    style = {
-                        backgroundImage: 'url("assets/images/barbarian.png")'
-                    };
-                    break;
-                case 'crusader':
-                    style = {
-                        backgroundImage: 'url("assets/images/crusader.png")'
-                    };
-                    break;
-                case 'monk':
-                    style = {
-                        backgroundImage: 'url("assets/images/monk.png")'
-                    };
-                    break;
-                case 'wizard':
-                    style = {
-                        backgroundImage: 'url("assets/images/wiz.jpg")'
-                    };
-                    break;
-                default:
-                    style = {
-                        backgroundImage: 'none'
-                    };
+            if (classState) {
+                backgroundImage = {
+                    backgroundImage: 'url(assets/images/' + classState + '.png)'
+                };
+            } else {
+                backgroundImage = {
+                    backgroundImage: 'none'
+                };
             }
+
             if (heroesState.heroes) {
                 heroes.push(React.DOM.option({
                     key: heroesState.heroes.key,
@@ -4795,25 +4782,32 @@ var statPool = [
                 }
             }
 
-            paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat cdr'},
-                'cdr: ' + Math.round(pCdr * 10) / 10 + '%',
-                React.DOM.span({
-                    key: paragon.key,
-                    className: 'paragon-stat-increment',
-                    onClick: this.handleParagon
-                }, '+'),
-                React.DOM.span({
-                    key: paragon.key,
-                    className: 'paragon-stat-decrement',
-                    onClick: this.handleParagon
-                }, '-'),
-                React.DOM.span({
-                    key: paragon.key,
-                    ref: 'cdr',
-                    className: 'paragon-stat-max',
-                    onClick: this.handleParagon
-                })
-            ));
+            var self = this;
+            // TODO paragonshit
+            for (var pstat in this.state.paragonStats) {
+                if (this.state.paragonStats.hasOwnProperty(pstat)) {
+                    console.log(this.state.paragonStats[pstat], pstat);
+                    paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat ' + pstat},
+                        pstat + ' ' + Math.round(pCdr * 10) / 10 + '%',
+                        React.DOM.span({
+                            key: paragon.key,
+                            className: 'paragon-stat-increment',
+                            onClick: self.handleParagon
+                        }, '+'),
+                        React.DOM.span({
+                            key: paragon.key,
+                            className: 'paragon-stat-decrement',
+                            onClick: self.handleParagon
+                        }, '-'),
+                        React.DOM.span({
+                            key: paragon.key,
+                            ref: pstat,
+                            className: 'paragon-stat-max',
+                            onClick: self.handleParagon
+                        })
+                    ));
+                }
+            }
 
             paragon.push(React.DOM.div({key: paragon.key, className: 'paragon-stat resred'},
                 'res: ' + Math.round(pResRed * 10) / 10 + '%',
@@ -5003,7 +4997,7 @@ var statPool = [
 
             return (
                 React.DOM.div({className: 'd3-container'},
-                    React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: style}),
+                    React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: backgroundImage}),
                     React.DOM.div({className: 'd3-item-wrapper', ref: 'items'}, items),
                     React.DOM.div({className: 'd3-realm-wrapper'},
                         '1 - Realm: ',
@@ -5013,7 +5007,7 @@ var statPool = [
                                 ref: 'select',
                                 value: this.state.realm,
                                 onChange: this.setRealm
-                            }, realms
+                            }, this.state.realms
                         )
                     ),
                     React.DOM.div({className: 'd3-api-url'},
