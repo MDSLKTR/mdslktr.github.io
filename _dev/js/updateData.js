@@ -114,12 +114,6 @@ var statPool = [
         ['Bane of the Trapped', 'Item_Power_Passive#ItemPassive_Unique_Gem_002_x1'],
         ['Gogok of the Swiftness', 'Item_Power_Passive#ItemPassive_Unique_Gem_008U_x1']
     ],
-    fetchHeroList,
-    fetchHeroData,
-    fetchHeroItems,
-    updateHerolist,
-    updateHeroData,
-    updateHeroItems,
     helmCount,
     torsoCount,
     handsCount,
@@ -163,7 +157,6 @@ var statPool = [
     childElements,
     parentElement,
     input,
-    selectedChar,
     i,
     j,
     k,
@@ -231,8 +224,8 @@ var statPool = [
     presistall,
     parmor,
     pmaxlife,
-    DataWrapper = React.createClass({
-        displayName: 'DataWrapper',
+    d3Profile = React.createClass({
+        displayName: 'd3Profile',
         getInitialState: function () {
             var initialRealm;
             if (!localStorage.getItem('realm')) {
@@ -277,18 +270,6 @@ var statPool = [
                 dmgRedRanged: 0,
                 maxEleDmg: 0,
                 maxHealth: 0,
-
-                paragonCdr: parseInt(localStorage.getItem('paragonCdr')),
-                paragonResRed: parseInt(localStorage.getItem('paragonResRed')),
-                paragonAtkSpd: parseInt(localStorage.getItem('paragonAtkSpd')),
-                paragonCritDmg: parseInt(localStorage.getItem('paragonCritDmg')),
-                paragonCritChance: parseInt(localStorage.getItem('paragonCritChance')),
-                paragonAreaDmg: parseInt(localStorage.getItem('paragonAreaDmg')),
-                paragonResource: parseInt(localStorage.getItem('paragonResource')),
-                paragonResistAll: parseInt(localStorage.getItem('paragonResistAll')),
-                paragonArmor: parseInt(localStorage.getItem('paragonArmor')),
-                paragonMaxHealth: parseInt(localStorage.getItem('paragonMaxHealth')),
-
                 invalid: false,
                 setRing: false,
                 time: 0,
@@ -302,6 +283,18 @@ var statPool = [
                 itemUrl: '',
                 panelAnimationComplete: false,
                 realm: initialRealm,
+                paragonStats: {
+                    'paragonCdr': 0,
+                    'paragonResRed': 0,
+                    'paragonAtkSpd': 0,
+                    'paragonCritChance': 0,
+                    'paragonCritDmg': 0,
+                    'paragonAreaDmg': 0,
+                    'paragonResource': 0,
+                    'paragonResistAll': 0,
+                    'paragonArmor': 0,
+                    'paragonMaxHealth': 0
+                },
                 battleTag: localStorage.getItem('battleTag'),
                 apiKey: '?locale=en_GB&apikey=65d63bvh7spjgmce3gjq2mv5nzjfsggy',
                 profile: '.api.battle.net/d3/profile/',
@@ -311,255 +304,215 @@ var statPool = [
             };
         },
 
-        loadHeroesData: function () {
-            start = new Date().getTime();
-            if (this.state.battleTag) {
-                this.setState({heroesDataUrl: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/', this.state.apiKey)});
+        getData: function (url) {
+            return new Promise(function (resolve, reject) {
                 var request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                request.onload = function () {
+                    if (request.status === 200) {
+                        resolve(request.response);
+                    } else {
+                        reject(Error(request.statusText));
+                    }
+                };
+                request.send();
+            });
+        },
 
-                if (request) {
-                    request.open('GET', this.state.heroesDataUrl, true);
-                    request.onreadystatechange = function () {
-                        if (request.readyState === 4) {
-                            if (request.status >= 200 && request.status < 400) {
-                                var data = JSON.parse(request.responseText);
-                                this.setState({
-                                    heroes: data
-                                });
-                                clearInterval(fetchHeroList);
-                                clearInterval(updateHerolist);
-                                end = new Date().getTime();
-                                console.log('Heroes Data fetched in', end - start, 'ms');
-                            }
-                        }
-                    }.bind(this);
-                    request.send();
-                }
+        loadHeroesList: function (tag) {
+            var self = this,
+                url;
+            if (tag) {
+                url = 'https://' + this.state.realm + this.state.profile.concat(tag.replace(/#/g, '-'), '/', this.state.apiKey);
+                this.getData(url).then(function (response) {
+                    var data = JSON.parse(response);
+                    self.setState({
+                        heroes: data
+                    });
+                });
             }
         },
 
-        loadHeroData: function () {
-            start = new Date().getTime();
-            if (this.state.selected) {
-                this.setState({heroDataUrl: 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', this.state.selected, this.state.apiKey)});
-                var request = new XMLHttpRequest();
+        loadHeroData: function (id) {
+            var self = this,
+                url;
+            if (id) {
+                url = 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', id, this.state.apiKey);
+                this.getData(url).then(function (response) {
+                    var data = JSON.parse(response);
+                    self.setState({
+                        name: data.name,
+                        class: data.class,
+                        level: data.level,
+                        paragon: data.paragonLevel,
+                        stats: data.stats,
+                        items: data.items,
+                        time: data['last-updated']
+                    });
 
-                if (request) {
-                    request.open('GET', this.state.heroDataUrl, true);
-                    request.onreadystatechange = function () {
-                        if (request.readyState === 4) {
-                            if (request.status >= 200 && request.status < 400) {
-                                var data = JSON.parse(request.responseText);
-                                this.setState({
-                                    name: data.name,
-                                    class: data.class,
-                                    level: data.level,
-                                    paragon: data.paragonLevel,
-                                    stats: data.stats,
-                                    items: data.items,
-                                    time: data['last-updated']
-                                });
-
-                                if (data.skills) {
-                                    this.setState({
-                                        skills: data.skills.active,
-                                        passives: data.skills.passive
-                                    });
-                                }
-                                clearInterval(fetchHeroData);
-                                clearInterval(updateHeroData);
-
-                                end = new Date().getTime();
-                                console.log('Hero Data fetched in', end - start, 'ms');
-                            }
-                        }
-                    }.bind(this);
-                    request.send();
-                }
+                    if (data.skills) {
+                        self.setState({
+                            skills: data.skills.active,
+                            passives: data.skills.passive
+                        });
+                    }
+                }).then(function () {
+                    self.getItemData();
+                });
             }
         },
 
         loadItemData: function (itemKey) {
-            start = new Date().getTime();
-            this.setState({
-                itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey)
-            });
-            var request = new XMLHttpRequest();
+            var self = this,
+                url = 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey);
 
-            if (request) {
-                request.open('GET', this.state.itemUrl, true);
-                request.onreadystatechange = function () {
-                    if (request.readyState === 4) {
-                        if (request.status >= 200 && request.status < 400) {
-                            var data = JSON.parse(request.responseText);
-                            switch (data.type.id) {
-                                case 'GenericHelm':
-                                case 'Helm':
-                                case 'Helm_Barbarian':
-                                case 'Helm_DemonHunter':
-                                case 'Helm_WitchDoctor':
-                                case 'Helm_Crusader':
-                                case 'Helm_Wizard':
-                                case 'Helm_Monk':
-                                case 'VoodooMask':
-                                    this.setState({helmItem: data});
-                                    break;
-                                case 'GenericShoulders':
-                                case 'Shoulders':
-                                case 'Shoulders_Barbarian':
-                                case 'Shoulders_DemonHunter':
-                                case 'Shoulders_WitchDoctor':
-                                case 'Shoulders_Crusader':
-                                case 'Shoulders_Wizard':
-                                case 'Shoulders_Monk':
-                                    this.setState({shouldersItem: data});
-                                    break;
-                                case 'Bracers':
-                                    this.setState({bracersItem: data});
-                                    break;
-                                case 'ChestArmor':
-                                case 'GenericChestArmor':
-                                case 'ChestArmor_Barbarian':
-                                case 'ChestArmor_DemonHunter':
-                                case 'ChestArmor_WitchDoctor':
-                                case 'ChestArmor_Crusader':
-                                case 'ChestArmor_Wizard':
-                                case 'ChestArmor_Monk':
-                                case 'Cloak':
-                                    this.setState({chestItem: data});
-                                    break;
-                                case 'GenericLegs':
-                                case 'Legs':
-                                case 'Legs_Barbarian':
-                                case 'Legs_DemonHunter':
-                                case 'Legs_WitchDoctor':
-                                case 'Legs_Crusader':
-                                case 'Legs_Wizard':
-                                case 'Legs_Monk':
-                                    this.setState({legsItem: data});
-                                    break;
-                                case 'GenericBoots':
-                                case 'Boots':
-                                case 'Boots_Barbarian':
-                                case 'Boots_DemonHunter':
-                                case 'Boots_WitchDoctor':
-                                case 'Boots_Crusader':
-                                case 'Boots_Wizard':
-                                case 'Boots_Monk':
-                                    this.setState({bootsItem: data});
-                                    break;
-                                case 'Polearm':
-                                case 'Crossbow':
-                                case 'Dagger':
-                                case 'Sword':
-                                case 'Sword2H':
-                                case 'Mace':
-                                case 'Axe':
-                                case 'FistWeapon':
-                                case 'CeremonialKnife':
-                                case 'MightyWeapon1H':
-                                case 'Flail2H':
-                                case 'Flail1H':
-                                case 'HandXbow':
-                                case 'Bow2H':
-                                case 'Bow':
-                                case 'Wand':
-                                case 'Staff':
-                                case 'Staff2H':
-                                case 'CeremonialDagger':
-                                case 'MightyWeapon2H':
-                                case 'Mace2H':
-                                    this.setState({mainItem: data});
-                                    break;
-                                case 'GenericGloves':
-                                case 'Gloves':
-                                case 'Gloves_Barbarian':
-                                case 'Gloves_DemonHunter':
-                                case 'Gloves_WitchDoctor':
-                                case 'Gloves_Crusader':
-                                case 'Gloves_Wizard':
-                                case 'Gloves_Monk':
-                                    this.setState({glovesItem: data});
-                                    break;
-                                case 'Belt':
-                                case 'GenericBelt':
-                                case 'Belt_Barbarian':
-                                    this.setState({beltItem: data});
-                                    break;
-                                case 'Amulet':
-                                    this.setState({amuletItem: data});
-                                    break;
-                            }
-                            end = new Date().getTime();
-                            console.log('Item Data fetched in', end - start, 'ms');
-                        }
-                    }
-                }.bind(this);
-                request.send();
-            }
+            this.getData(url).then(function (response) {
+                var data = JSON.parse(response);
+                switch (data.type.id) {
+                    case 'GenericHelm':
+                    case 'Helm':
+                    case 'Helm_Barbarian':
+                    case 'Helm_DemonHunter':
+                    case 'Helm_WitchDoctor':
+                    case 'Helm_Crusader':
+                    case 'Helm_Wizard':
+                    case 'Helm_Monk':
+                    case 'VoodooMask':
+                        self.setState({helmItem: data});
+                        break;
+                    case 'GenericShoulders':
+                    case 'Shoulders':
+                    case 'Shoulders_Barbarian':
+                    case 'Shoulders_DemonHunter':
+                    case 'Shoulders_WitchDoctor':
+                    case 'Shoulders_Crusader':
+                    case 'Shoulders_Wizard':
+                    case 'Shoulders_Monk':
+                        self.setState({shouldersItem: data});
+                        break;
+                    case 'Bracers':
+                        self.setState({bracersItem: data});
+                        break;
+                    case 'ChestArmor':
+                    case 'GenericChestArmor':
+                    case 'ChestArmor_Barbarian':
+                    case 'ChestArmor_DemonHunter':
+                    case 'ChestArmor_WitchDoctor':
+                    case 'ChestArmor_Crusader':
+                    case 'ChestArmor_Wizard':
+                    case 'ChestArmor_Monk':
+                    case 'Cloak':
+                        self.setState({chestItem: data});
+                        break;
+                    case 'GenericLegs':
+                    case 'Legs':
+                    case 'Legs_Barbarian':
+                    case 'Legs_DemonHunter':
+                    case 'Legs_WitchDoctor':
+                    case 'Legs_Crusader':
+                    case 'Legs_Wizard':
+                    case 'Legs_Monk':
+                        self.setState({legsItem: data});
+                        break;
+                    case 'GenericBoots':
+                    case 'Boots':
+                    case 'Boots_Barbarian':
+                    case 'Boots_DemonHunter':
+                    case 'Boots_WitchDoctor':
+                    case 'Boots_Crusader':
+                    case 'Boots_Wizard':
+                    case 'Boots_Monk':
+                        self.setState({bootsItem: data});
+                        break;
+                    case 'Polearm':
+                    case 'Crossbow':
+                    case 'Dagger':
+                    case 'Sword':
+                    case 'Sword2H':
+                    case 'Mace':
+                    case 'Axe':
+                    case 'FistWeapon':
+                    case 'CeremonialKnife':
+                    case 'MightyWeapon1H':
+                    case 'Flail2H':
+                    case 'Flail1H':
+                    case 'HandXbow':
+                    case 'Bow2H':
+                    case 'Bow':
+                    case 'Wand':
+                    case 'Staff':
+                    case 'Staff2H':
+                    case 'CeremonialDagger':
+                    case 'MightyWeapon2H':
+                    case 'Mace2H':
+                        self.setState({mainItem: data});
+                        break;
+                    case 'GenericGloves':
+                    case 'Gloves':
+                    case 'Gloves_Barbarian':
+                    case 'Gloves_DemonHunter':
+                    case 'Gloves_WitchDoctor':
+                    case 'Gloves_Crusader':
+                    case 'Gloves_Wizard':
+                    case 'Gloves_Monk':
+                        self.setState({glovesItem: data});
+                        break;
+                    case 'Belt':
+                    case 'GenericBelt':
+                    case 'Belt_Barbarian':
+                        self.setState({beltItem: data});
+                        break;
+                    case 'Amulet':
+                        self.setState({amuletItem: data});
+                        break;
+                }
+            });
         },
 
         loadItemDataWithProps: function (itemKey, left) {
-            start = new Date().getTime();
-            this.setState({
-                itemUrl: 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey)
-            });
-
-            var request = new XMLHttpRequest();
-
-            if (request) {
-                request.open('GET', this.state.itemUrl, true);
-                request.onreadystatechange = function () {
-                    if (request.readyState === 4) {
-                        if (request.status >= 200 && request.status < 400) {
-                            var data = JSON.parse(request.responseText);
-                            switch (data.type.id) {
-                                case 'Ring':
-                                    if (left === true) {
-                                        this.setState({ringItemLeft: data});
-                                    } else {
-                                        this.setState({ringItemRight: data});
-                                    }
-                                    break;
-                                case 'Quiver':
-                                case 'CrusaderShield':
-                                case 'Shield':
-                                case 'Orb':
-                                case 'Source':
-                                case 'Mojo':
-                                    this.setState({offItem: data});
-                                    break;
-                                case 'Dagger':
-                                case 'Sword':
-                                case 'Mace':
-                                case 'Axe':
-                                case 'FistWeapon':
-                                case 'MightyWeapon1H':
-                                case 'Flail1H':
-                                case 'HandXbow':
-                                case 'Bow':
-                                case 'Wand':
-                                case 'Staff':
-                                    this.setState({offItem: data});
-                                    break;
-                            }
-                            end = new Date().getTime();
-                            console.log('Item Data fetched in', end - start, 'ms');
+            var self = this,
+                url = 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey);
+            this.getData(url).then(function (response) {
+                var data = JSON.parse(response);
+                switch (data.type.id) {
+                    case 'Ring':
+                        if (left === true) {
+                            self.setState({ringItemLeft: data});
+                        } else {
+                            self.setState({ringItemRight: data});
                         }
-                    }
-                }.bind(this);
-                request.send();
-            }
+                        break;
+                    case 'Quiver':
+                    case 'CrusaderShield':
+                    case 'Shield':
+                    case 'Orb':
+                    case 'Source':
+                    case 'Mojo':
+                        self.setState({offItem: data});
+                        break;
+                    case 'Dagger':
+                    case 'Sword':
+                    case 'Mace':
+                    case 'Axe':
+                    case 'FistWeapon':
+                    case 'MightyWeapon1H':
+                    case 'Flail1H':
+                    case 'HandXbow':
+                    case 'Bow':
+                    case 'Wand':
+                    case 'Staff':
+                        self.setState({offItem: data});
+                        break;
+                }
+            });
         },
 
-        changeChar: function () {
-            updateHeroData = setInterval(this.loadHeroData, 500);
-            updateHeroItems = setInterval(this.getItemData, 1250);
+        changeChar: function (id) {
+            this.loadHeroData(id);
         },
 
-        changeBattleTag: function () {
-            clearInterval(updateHerolist);
-            updateHerolist = setInterval(this.loadHeroesData, 1000);
+        changeBattleTag: function (tag) {
+            this.loadHeroesList(tag);
         },
 
         triggerStatCollector: function () {
@@ -569,7 +522,7 @@ var statPool = [
             console.log('manual stat collector');
         },
 
-        checkUpdates: function () {
+        startStatCollectorRunner: function () {
             if (this.state.panelAnimationComplete) {
                 this.collectStats();
                 this.checkSetItems();
@@ -581,68 +534,25 @@ var statPool = [
             console.log('waiting for animations');
         },
 
-        initServiceWorker: function () {
-            //if ('serviceWorker' in navigator) {
-            //    console.log('CLIENT: service worker registration in progress.');
-            //    navigator.serviceWorker.register('service-worker.js'
-            //    ).then(function () {
-            //            console.log('CLIENT: service worker registration complete.');
-            //        }, function () {
-            //            console.log('CLIENT: service worker registration failure.');
-            //        });
-            //} else {
-            //    console.log('CLIENT: service worker is not supported.');
-            //}
-        },
-
         componentDidMount: function () {
-            //this.initServiceWorker();
-            fetchHeroList = setInterval(this.loadHeroesData, 1000);
-            fetchHeroData = setInterval(this.loadHeroData, 1500);
-
-            setInterval(this.checkUpdates, 3000);
-
-            setInterval(this.loadHeroesData, this.props.pollInterval);
-            setInterval(this.loadHeroData, this.props.pollInterval);
-            setInterval(this.getItemData, this.props.pollInterval);
-
-            if (!parseInt(localStorage.getItem('paragonCdr'))) {
-                this.setState({paragonCdr: 0});
+            var savedBattleTag = localStorage.getItem('battleTag');
+            if (savedBattleTag) {
+                this.loadHeroesList(savedBattleTag);
             }
+            setInterval(this.startStatCollectorRunner, 3000);
+            setInterval(this.loadHeroesList(this.state.battleTag), this.props.pollInterval);
+            setInterval(this.loadHeroData(this.state.selected), this.props.pollInterval);
 
-            if (!parseInt(localStorage.getItem('paragonResRed'))) {
-                this.setState({paragonResRed: 0});
-            }
+            var stat;
 
-            if (!parseInt(localStorage.getItem('paragonAtkSpd'))) {
-                this.setState({paragonAtkSpd: 0});
-            }
-
-            if (!parseInt(localStorage.getItem('paragonCritChance'))) {
-                this.setState({paragonCritChance: 0});
-            }
-
-            if (!parseInt(localStorage.getItem('paragonCritDmg'))) {
-                this.setState({paragonCritDmg: 0});
-            }
-
-            if (!parseInt(localStorage.getItem('paragonAreaDmg'))) {
-                this.setState({paragonAreaDmg: 0});
-            }
-
-            if (!parseInt(localStorage.getItem('paragonResource'))) {
-                this.setState({paragonResource: 0});
-            }
-
-            if (!parseInt(localStorage.getItem('paragonResistAll'))) {
-                this.setState({paragonResistAll: 0});
-            }
-
-            if (!parseInt(localStorage.getItem('paragonArmor'))) {
-                this.setState({paragonArmor: 0});
-            }
-            if (!parseInt(localStorage.getItem('paragonMaxHealth'))) {
-                this.setState({paragonMaxHealth: 0});
+            for (stat in this.state.paragonStats) {
+                if (this.state.paragonStats.hasOwnProperty(stat)) {
+                    if (!parseInt(localStorage.getItem(this.state.paragonStats[stat]))) {
+                        this.state.paragonStats[stat] = 0;
+                    } else {
+                        this.state.paragonStats[stat] = parseInt(localStorage.getItem(this.state.paragonStats[stat]));
+                    }
+                }
             }
 
             // panel shorthands p = panel, l = left and so forth
@@ -658,11 +568,8 @@ var statPool = [
             charBgWrapper = this.refs.charbg.getDOMNode();
         },
 
-        handleChange: function (e) {
-            input = e.target.value;
-
+        setBattleTag: function (e) {
             this.setState({
-                battleTag: input,
                 heroes: {},
                 items: {},
                 skills: [],
@@ -688,15 +595,17 @@ var statPool = [
             this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
             this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
-            localStorage.setItem('battleTag', input);
-            this.changeBattleTag();
+            this.setState({
+                battleTag: e.target.value
+            }, function () {
+                this.changeBattleTag(this.state.battleTag);
+            });
+
+            localStorage.setItem('battleTag', e.target.value);
         },
 
         setRealm: function (e) {
-            input = e.target.value;
-
             this.setState({
-                realm: input,
                 heroes: {},
                 items: {},
                 skills: [],
@@ -722,23 +631,27 @@ var statPool = [
             this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
             this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
+            this.setState({
+                realm: e.target.value
+            }, function () {
+                this.changeBattleTag(this.state.battleTag);
+            });
+
             localStorage.setItem('realm', input);
-            this.changeBattleTag();
         },
 
-        setSelect: function () {
-            selectedChar = this.refs.select.getDOMNode().value;
+        setCharacterSelect: function (e) {
+            console.log(e);
             this.setState({
-                selected: selectedChar,
+                selected: e.target.value,
                 panels: 'visible',
                 toggle: 'hidden',
                 paragonToggle: 'hidden',
                 skillDescToggle: 'hidden',
                 passiveDescToggle: 'hidden'
-
             });
 
-            this.changeChar();
+            this.changeChar(e.target.value);
 
             if (this.state.heroes.code) {
                 this.setState({invalid: true});
@@ -963,10 +876,10 @@ var statPool = [
 
             panelRightAdditionalHeight = panelRightAdditional.offsetHeight;
             if (this.state.toggle !== 'visible') {
-                this.animateBonusPanelIn(panelRightAdditional, panelRightAdditionalHeight, true, -1);
+                this.animateBonusPanelIn(panelRightAdditional, panelRightAdditionalHeight, true);
                 this.setState({toggle: 'visible'});
             } else {
-                this.animateBonusPanelOut(panelRightAdditional, panelRightAdditionalHeight, -1);
+                this.animateBonusPanelOut(panelRightAdditional, panelRightAdditionalHeight);
                 this.setState({toggle: 'hidden'});
             }
         },
@@ -977,10 +890,10 @@ var statPool = [
 
             panelLeftAdditionalHeight = panelLeftAdditional.offsetHeight;
             if (this.state.paragonToggle !== 'visible') {
-                this.animateBonusPanelIn(panelLeftAdditional, panelLeftAdditionalHeight, false, -1);
+                this.animateBonusPanelIn(panelLeftAdditional, panelLeftAdditionalHeight, false);
                 this.setState({paragonToggle: 'visible'});
             } else {
-                this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight, -1);
+                this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight);
                 this.setState({paragonToggle: 'hidden'});
             }
         },
@@ -990,10 +903,10 @@ var statPool = [
 
             panelBottomLeftAdditionalHeight = panelBottomLeftAdditional.offsetHeight;
             if (this.state.skillDescToggle !== 'visible') {
-                this.animateBonusPanelIn(panelBottomLeftAdditional, panelBottomLeftAdditionalHeight, false, 1);
+                this.animateBonusPanelIn(panelBottomLeftAdditional, panelBottomLeftAdditionalHeight, false);
                 this.setState({skillDescToggle: 'visible'});
             } else {
-                this.animateBonusPanelOut(panelBottomLeftAdditional, panelBottomLeftAdditionalHeight, 1);
+                this.animateBonusPanelOut(panelBottomLeftAdditional, panelBottomLeftAdditionalHeight);
                 this.setState({skillDescToggle: 'hidden'});
             }
         },
@@ -1003,10 +916,10 @@ var statPool = [
 
             panelBottomRightAdditionalHeight = panelBottomRightAdditional.offsetHeight;
             if (this.state.passiveDescToggle !== 'visible') {
-                this.animateBonusPanelIn(panelBottomRightAdditional, panelBottomRightAdditionalHeight, false, 1);
+                this.animateBonusPanelIn(panelBottomRightAdditional, panelBottomRightAdditionalHeight, false);
                 this.setState({passiveDescToggle: 'visible'});
             } else {
-                this.animateBonusPanelOut(panelBottomRightAdditional, panelBottomRightAdditionalHeight, 1);
+                this.animateBonusPanelOut(panelBottomRightAdditional, panelBottomRightAdditionalHeight);
                 this.setState({passiveDescToggle: 'hidden'});
             }
         },
@@ -1378,9 +1291,6 @@ var statPool = [
                     }
                 }
             }
-
-            clearInterval(updateHeroItems);
-            clearInterval(fetchHeroItems);
         },
 
         skillDmgSanitize: function (obj) {
@@ -1842,7 +1752,7 @@ var statPool = [
                     if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                         // increment for health gem
                         maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 +
-                        (this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
+                            (this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
                     } else if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                         maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
                     }
@@ -1881,24 +1791,30 @@ var statPool = [
 
                 // Find max Elemental Damage Bonus
                 if (findElem !== 0) {
-                    this.setState({maxEleDmg: maxElement});
-                    this.setState({maxEleDmgValue: findElem});
+                    this.setState({
+                        maxEleDmg: maxElement,
+                        maxEleDmgValue: findElem
+                    });
                 } else {
-                    this.setState({maxEleDmg: ''});
-                    this.setState({maxEleDmgValue: 0});
+                    this.setState({
+                        maxEleDmg: '',
+                        maxEleDmgValue: 0
+                    });
                 }
 
                 // set states of other stats
-                this.setState({cdrRed: cdr});
-                this.setState({resRed: resRed});
-                this.setState({eliteDmg: eliteDmg});
-                this.setState({eliteDmgRed: eliteDmgRed});
-                this.setState({areaDmg: areaDmg});
-                this.setState({goldPickup: goldPickUp});
-                this.setState({dmgRedMelee: dmgRedMelee});
-                this.setState({dmgRedRanged: dmgRedRanged});
-                this.setState({maxHealth: maxHealth});
-                this.setState({atkSpd: atkSpd});
+                this.setState({
+                    cdrRed: cdr,
+                    resRed: resRed,
+                    eliteDmg: eliteDmg,
+                    eliteDmgRed: eliteDmgRed,
+                    areaDmg: areaDmg,
+                    goldPickup: goldPickUp,
+                    dmgRedMelee: dmgRedMelee,
+                    dmgRedRanged: dmgRedRanged,
+                    maxHealth: maxHealth,
+                    atkSpd: atkSpd
+                });
             }
         },
 
@@ -3375,24 +3291,24 @@ var statPool = [
                         if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
                             if (mainHandState.attributesRaw[DamagePercentAll] && !mainHandState.attributesRaw[DamageBonusMinPhysical]) {
                                 minDmgCalc = mainHandState.minDamage.max +
-                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                                (mainHandState.attributesRaw[weaponElementsMin[i]].max *
-                                mainHandState.attributesRaw[DamagePercentAll].max);
+                                    mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                                    (mainHandState.attributesRaw[weaponElementsMin[i]].max *
+                                    mainHandState.attributesRaw[DamagePercentAll].max);
                                 maxDmgCalc = mainHandState.maxDamage.max +
-                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                                mainHandState.attributesRaw[weaponElementsDelta[i]].max +
-                                ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) *
-                                mainHandState.attributesRaw[DamagePercentAll].max);
+                                    mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                                    mainHandState.attributesRaw[weaponElementsDelta[i]].max +
+                                    ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) *
+                                    mainHandState.attributesRaw[DamagePercentAll].max);
                                 mainHand.push(React.DOM.li({
                                     key: mainHandState.key,
                                     className: 'raw-damage'
                                 }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                             } else if (!mainHandState.attributesRaw[DamagePercentAll] && !mainHandState.attributesRaw[DamageBonusMinPhysical]) {
                                 minDmgCalc = mainHandState.minDamage.max +
-                                mainHandState.attributesRaw[weaponElementsMin[i]].max;
+                                    mainHandState.attributesRaw[weaponElementsMin[i]].max;
                                 maxDmgCalc = mainHandState.maxDamage.max +
-                                mainHandState.attributesRaw[weaponElementsMin[i]].max +
-                                mainHandState.attributesRaw[weaponElementsDelta[i]].max;
+                                    mainHandState.attributesRaw[weaponElementsMin[i]].max +
+                                    mainHandState.attributesRaw[weaponElementsDelta[i]].max;
                                 mainHand.push(React.DOM.li({
                                     key: mainHandState.key,
                                     className: 'raw-damage'
@@ -3621,36 +3537,36 @@ var statPool = [
                                     key: offHandState.key,
                                     className: 'raw-damage'
                                 }, Math.round(offHandState.minDamage.max +
-                                offHandState.attributesRaw[weaponElementsMin[i]].max +
-                                (offHandState.attributesRaw[weaponElementsMin[i]].max *
-                                offHandState.attributesRaw[DamagePercentAll].max)) +
-                                ' - ' +
-                                Math.round(offHandState.maxDamage.max +
-                                    offHandState.attributesRaw[weaponElementsMin[i]].max +
-                                    offHandState.attributesRaw[weaponElementsDelta[i]].max +
-                                    ((offHandState.attributesRaw[weaponElementsMin[i]].max +
-                                    offHandState.attributesRaw[weaponElementsDelta[i]].max) *
-                                    offHandState.attributesRaw[DamagePercentAll].max)
-                                ) + ' Damage'));
+                                        offHandState.attributesRaw[weaponElementsMin[i]].max +
+                                        (offHandState.attributesRaw[weaponElementsMin[i]].max *
+                                        offHandState.attributesRaw[DamagePercentAll].max)) +
+                                    ' - ' +
+                                    Math.round(offHandState.maxDamage.max +
+                                        offHandState.attributesRaw[weaponElementsMin[i]].max +
+                                        offHandState.attributesRaw[weaponElementsDelta[i]].max +
+                                        ((offHandState.attributesRaw[weaponElementsMin[i]].max +
+                                        offHandState.attributesRaw[weaponElementsDelta[i]].max) *
+                                        offHandState.attributesRaw[DamagePercentAll].max)
+                                    ) + ' Damage'));
                             } else if (!offHandState.attributesRaw[DamagePercentAll] && !offHandState.attributesRaw[DamageBonusMinPhysical]) {
                                 offHand.push(React.DOM.li({
                                     key: offHandState.key,
                                     className: 'raw-damage'
                                 }, Math.round(offHandState.minDamage.max +
-                                offHandState.attributesRaw[weaponElementsMin[i]].max) +
-                                ' - ' +
-                                Math.round(offHandState.maxDamage.max +
-                                offHandState.attributesRaw[weaponElementsMin[i]].max +
-                                offHandState.attributesRaw[weaponElementsDelta[i]].max) +
-                                ' Damage'));
+                                        offHandState.attributesRaw[weaponElementsMin[i]].max) +
+                                    ' - ' +
+                                    Math.round(offHandState.maxDamage.max +
+                                        offHandState.attributesRaw[weaponElementsMin[i]].max +
+                                        offHandState.attributesRaw[weaponElementsDelta[i]].max) +
+                                    ' Damage'));
                             } else {
                                 offHand.push(React.DOM.li({
                                     key: offHandState.key,
                                     className: 'raw-damage'
                                 }, Math.round(offHandState.minDamage.max) +
-                                ' - ' +
-                                Math.round(offHandState.maxDamage.max) +
-                                ' Damage'));
+                                    ' - ' +
+                                    Math.round(offHandState.maxDamage.max) +
+                                    ' Damage'));
                             }
                         }
                     }
@@ -5079,16 +4995,11 @@ var statPool = [
                 })
             ));
 
-            localStorage.setItem('paragonCdr', this.state.paragonCdr);
-            localStorage.setItem('paragonResRed', this.state.paragonResRed);
-            localStorage.setItem('paragonAtkSpd', this.state.paragonAtkSpd);
-            localStorage.setItem('paragonCritDmg', this.state.paragonCritDmg);
-            localStorage.setItem('paragonCritChance', this.state.paragonCritChance);
-            localStorage.setItem('paragonAreaDmg', this.state.paragonAreaDmg);
-            localStorage.setItem('paragonResource', this.state.paragonResource);
-            localStorage.setItem('paragonResistAll', this.state.paragonResistAll);
-            localStorage.setItem('paragonArmor', this.state.paragonArmor);
-            localStorage.setItem('paragonMaxHealth', this.state.paragonMaxHealth);
+            for (var stat in this.state.paragonStats) {
+                if (this.state.paragonStats.hasOwnProperty(stat)) {
+                    localStorage.setItem(stat, this.state.paragonStats[stat]);
+                }
+            }
 
             return (
                 React.DOM.div({className: 'd3-container'},
@@ -5111,7 +5022,7 @@ var statPool = [
                             {
                                 value: this.state.battleTag,
                                 placeholder: 'NAME#1234',
-                                onChange: this.handleChange
+                                onChange: this.setBattleTag
                             }
                         )
                     ),
@@ -5122,7 +5033,7 @@ var statPool = [
                                 className: 'd3-chars',
                                 ref: 'select',
                                 value: this.state.selected,
-                                onChange: this.setSelect
+                                onChange: this.setCharacterSelect
                             }, heroes
                         )
                     ),
@@ -5204,7 +5115,7 @@ var statPool = [
         }
     });
 
-React.render(React.createElement(DataWrapper, {
+React.render(React.createElement(d3Profile, {
         pollInterval: 600000
     }),
     document.querySelector('.d3-profile'));

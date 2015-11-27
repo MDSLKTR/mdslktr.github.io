@@ -70,6 +70,7 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/vendor.min.js': [
+                        '_vendor/promise-polyfill/Promise.min.js',
                         '_vendor/react/react.js',
                         '_vendor/greensock/src/minified/easing/EasePack.min.js',
                         '_vendor/greensock/src/uncompressed/plugins/CSSPlugin.js',
