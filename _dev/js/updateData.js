@@ -213,8 +213,10 @@ var statPool = [
         'dexterity': ['Dexterity', 0],
         'strength': ['Strength', 0],
         'intelligence': ['Intelligence', 0],
+        'vitality': ['Vitality', 0],
         'armor': ['Armor', 0],
-        'damageIncrease': ['Damage Increase', 0]
+        'damageIncrease': ['Damage Increase', 0],
+        'healing': ['Healing', 0]
     },
     d3Profile = React.createClass({
         displayName: 'd3Profile',
@@ -657,7 +659,6 @@ var statPool = [
         },
 
         setCharacterSelect: function (e) {
-            console.log(e);
             this.setState({
                 selectedChar: e.target.value,
                 panels: 'visible',
@@ -1630,16 +1631,57 @@ var statPool = [
 
                 // set states of other stats
                 this.setState({
-                    cdrRed: cdr,
-                    resRed: resRed,
-                    eliteDmg: eliteDmg,
-                    eliteDmgRed: eliteDmgRed,
-                    areaDmg: areaDmg,
-                    goldPickup: goldPickUp,
-                    dmgRedMelee: dmgRedMelee,
-                    dmgRedRanged: dmgRedRanged,
-                    maxHealth: maxHealth,
-                    atkSpd: atkSpd
+                    customOffensiveStats: {
+                        cdrRed: {
+                            name: 'Cooldown Reduction',
+                            value: cdr,
+                            modifier: this.state.paragonStats.paragonCdr[1]
+                        },
+                        resRed: {
+                            name: 'Resource Cost Reduction',
+                            value: resRed,
+                            modifier: this.state.paragonStats.paragonResRed[1]
+                        },
+                        eliteDmg: {
+                            name: 'Elite Damage Bonus',
+                            value: eliteDmg
+                        },
+                        eliteDmgRed: {
+                            name: 'Elite Damage Reduction',
+                            value: eliteDmgRed
+                        },
+                        areaDmg: {
+                            name: 'Area Damage Bonus',
+                            value: areaDmg,
+                            modifier: this.state.paragonStats.paragonAreaDmg[1]
+                        },
+                        atkSpd: {
+                            name: 'Attack Speed Bonus',
+                            value: atkSpd,
+                            modifier: this.state.paragonStats.paragonAtkSpd[1]
+                        }
+                    },
+                    customDefensiveStats: {
+                        goldPickup: {
+                            name: 'Gold Pick-up Range',
+                            value: goldPickUp
+                        },
+                        dmgRedMelee: {
+                            name: 'Melee Damage Reduction',
+                            value: dmgRedMelee
+                        },
+
+                        dmgRedRanged: {
+                            name: 'Ranged Damage Reduction',
+                            value: dmgRedRanged
+                        },
+
+                        maxHealth: {
+                            name: 'Max Health Bonus',
+                            value: maxHealth,
+                            modifier: this.state.paragonStats.paragonMaxHealth[1]
+                        },
+                    }
                 });
             }
         },
@@ -1666,19 +1708,8 @@ var statPool = [
                 levelState = this.state.level,
                 paragonState = this.state.paragon,
                 amuletState = this.state.amuletItem,
-                shouldersState = this.state.shouldersItem,
-                helmState = this.state.helmItem,
-                torsoState = this.state.chestItem,
-                handsState = this.state.glovesItem,
-                feetState = this.state.bootsItem,
-                bracersState = this.state.bracersItem,
-                legsState = this.state.legsItem,
                 mainHandState = this.state.mainItem,
                 offHandState = this.state.offItem,
-                beltState = this.state.beltItem,
-                neckState = this.state.amuletItem,
-                ringStateLeft = this.state.ringItemLeft,
-                ringStateRight = this.state.ringItemRight,
                 itemsIconState = this.state.items,
                 skillIconBaseUrl = this.state.skillIconBase,
                 itemIconBaseUrl = this.state.itemIconBase,
@@ -1712,7 +1743,7 @@ var statPool = [
                     this.state.ringItemRight
                 ],
 
-            calculatedAttackSpeed = 0;
+                calculatedAttackSpeed = 0;
             minDmgCalc = 0;
             maxDmgCalc = 0;
             additionalStatsOffensive.length = 0;
@@ -1741,6 +1772,10 @@ var statPool = [
             offHand.length = 0;
             belt.length = 0;
             neck.length = 0;
+
+            for (m = 0; m < setPool.length; m++) {
+                setPool[m][1] = 0;
+            }
 
             for (i = 0; i < itemSlots.length; i++) {
                 for (m = 0; m < setPool.length; m++) {
@@ -1935,21 +1970,21 @@ var statPool = [
                     }
                 });
             }
-            // TODO finish this
+
             var itemCollection = {
                 'head': [this.state.helmItem, helmet],
-                //'neck': this.state.amuletItem,
-                'torso': [this.state.chestItem, torso]
-                //'feet': this.state.bootsItem,
-                //'hands': this.state.glovesItem,
-                //'shoulders': this.state.shouldersItem,
-                //'legs': this.state.legsItem,
-                //'bracers': this.state.bracersItem,
-                //'mainhand': this.state.mainItem,
-                //'offhand': this.state.offItem,
-                //'belt': this.state.beltItem,
-                //'ringLeft': this.state.ringItemLeft,
-                //'ringRight': this.state.ringItemRight
+                'neck': [this.state.amuletItem, neck],
+                'torso': [this.state.chestItem, torso],
+                'feet': [this.state.bootsItem, feet],
+                'hands': [this.state.glovesItem, hands],
+                'shoulders': [this.state.shouldersItem, shoulders],
+                'legs': [this.state.legsItem, legs],
+                'bracers': [this.state.bracersItem, bracers],
+                'mainHand': [this.state.mainItem, mainHand],
+                'offHand': [this.state.offItem, offHand],
+                'waist': [this.state.beltItem, belt],
+                'leftFinger': [this.state.ringItemLeft, ringLeft],
+                'rightFinger': [this.state.ringItemRight, ringRight]
             };
 
 
@@ -1982,43 +2017,107 @@ var statPool = [
                             }
 
                             if (itemCollection[item][0].attributesRaw) {
-                                if (itemCollection[item][0].attributesRaw.Ancient_Rank && itemCollection[item][0].attributesRaw.Ancient_Rank.min === 1.0) {
-                                    isAncient = 'ancient';
+                                isAncient = itemCollection[item][0].attributesRaw.Ancient_Rank && itemCollection[item][0].attributesRaw.Ancient_Rank.min === 1.0 ? 'ancient' : '';
+                                if (item === 'mainHand' || item === 'offHand' ) {
+                                    if (itemCollection[item][0].type) {
+                                        var mainHanded = '';
+                                        mainHanded = itemCollection[item][0].type.twoHanded ? '(2h)' : '(1h)';
+
+                                        itemCollection[item][1].push(React.DOM.li({
+                                            key: 'item-name',
+                                            className: itemQuality + ' name'
+                                        }, isAncient + ' ' + itemCollection[item][0].name + ' ' + mainHanded));
+                                    }
+
+                                    if (itemCollection[item][0].dps) {
+                                        itemCollection[item][1].push(React.DOM.li({
+                                            key: 'dps',
+                                            className: 'dps'
+                                        }, itemCollection[item][0].dps.max.toString().substring(0, 7) + ' DPS'));
+                                    }
+
+                                    if (itemCollection[item][0].minDamage && itemCollection[item][0].maxDamage && itemCollection[item][0].attributesRaw) {
+                                        for (i = 0; i < weaponElementsMin.length; i++) {
+                                            if (itemCollection[item][0].attributesRaw[weaponElementsMin[i]]) {
+                                                if (itemCollection[item][0].attributesRaw[DamagePercentAll] && !itemCollection[item][0].attributesRaw[DamageBonusMinPhysical]) {
+                                                    minDmgCalc = itemCollection[item][0].minDamage.max +
+                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max +
+                                                        (itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max *
+                                                        itemCollection[item][0].attributesRaw[DamagePercentAll].max);
+                                                    maxDmgCalc = itemCollection[item][0].maxDamage.max +
+                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max +
+                                                        itemCollection[item][0].attributesRaw[weaponElementsDelta[i]].max +
+                                                        ((itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max + itemCollection[item][0].attributesRaw[weaponElementsDelta[i]].max) *
+                                                        itemCollection[item][0].attributesRaw[DamagePercentAll].max);
+                                                    itemCollection[item][1].push(React.DOM.li({
+                                                        key: itemCollection[item][0].key,
+                                                        className: 'raw-damage'
+                                                    }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
+                                                } else if (!itemCollection[item][0].attributesRaw[DamagePercentAll] && !itemCollection[item][0].attributesRaw[DamageBonusMinPhysical]) {
+                                                    minDmgCalc = itemCollection[item][0].minDamage.max +
+                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max;
+                                                    maxDmgCalc = itemCollection[item][0].maxDamage.max +
+                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max +
+                                                        itemCollection[item][0].attributesRaw[weaponElementsDelta[i]].max;
+                                                    itemCollection[item][1].push(React.DOM.li({
+                                                        key: itemCollection[item][0].key,
+                                                        className: 'raw-damage'
+                                                    }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
+                                                } else {
+                                                    minDmgCalc = itemCollection[item][0].minDamage.max;
+                                                    maxDmgCalc = itemCollection[item][0].maxDamage.max;
+                                                    itemCollection[item][1].push(React.DOM.li({
+                                                        key: itemCollection[item][0].key,
+                                                        className: 'raw-damage'
+                                                    }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                } else {
                                     itemCollection[item][1].push(React.DOM.li({
                                         key: 'item-name',
                                         className: itemQuality + ' name'
                                     }, isAncient + ' ' + itemCollection[item][0].name));
-                                } else {
-                                    isAncient = '';
-                                    itemCollection[item][1].push(React.DOM.li({
-                                        key: 'item-name',
-                                        className: itemQuality + ' name'
-                                    }, itemCollection[item][0].name));
                                 }
                             }
 
                             if (itemCollection[item][0].attributes) {
                                 if (itemCollection[item][0].attributes.primary) {
                                     itemCollection[item][0].attributes.primary.forEach(function (primaryStat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({key: 'primary-stat-' + currentIndex, className: 'primary'}, primaryStat.text));
+                                        itemCollection[item][1].push(React.DOM.li({
+                                            key: 'primary-stat-' + currentIndex,
+                                            className: 'primary'
+                                        }, primaryStat.text));
                                     });
                                 }
                                 if (itemCollection[item][0].attributes.secondary) {
                                     itemCollection[item][0].attributes.secondary.forEach(function (secondaryStat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({key: 'secondary-stat-' + currentIndex, className: 'secondary'}, secondaryStat.text));
+                                        itemCollection[item][1].push(React.DOM.li({
+                                            key: 'secondary-stat-' + currentIndex,
+                                            className: 'secondary'
+                                        }, secondaryStat.text));
                                     });
                                 }
 
                                 if (itemCollection[item][0].attributes.passive) {
                                     itemCollection[item][0].attributes.passive.forEach(function (passiveStat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({key: 'passive-stat-' + currentIndex, className: 'passive'}, passiveStat.text));
+                                        itemCollection[item][1].push(React.DOM.li({
+                                            key: 'passive-stat-' + currentIndex,
+                                            className: 'passive'
+                                        }, passiveStat.text));
                                     });
                                 }
                             }
 
                             if (itemCollection[item][0].set && itemCollection[item][0].set.ranks) {
                                 for (i = 0; i < itemCollection[item][0].set.ranks.length; i++) {
+                                    // count of ranks eg. 2, 3, 6
+
                                     for (k = 1; k <= 6; k++) {
+                                        // count of max set boni - 6
                                         for (m = 0; m < setPool.length; m++) {
                                             if (itemCollection[item][0].set.name === setPool[m][0] && this.state.setRing) {
                                                 if (setPool[m][1] >= 2) {
@@ -2034,14 +2133,14 @@ var statPool = [
                                         if (itemCollection[item][0].set.ranks[i].required === k && itemCollection[item][0].set.ranks[i].required <= itemSetCount) {
                                             itemCollection[item][0].set.ranks[i].attributes.primary.forEach(function (primaryStat) {
                                                 itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-bonus-' + k,
+                                                    key: 'set-' + itemCollection[item][0].set.name + '-primary-bonus-' + primaryStat.text,
                                                     className: 'set-bonus-' + k
                                                 }, primaryStat.text));
                                             });
                                         } else if (itemCollection[item][0].set.ranks[i].required === k) {
                                             itemCollection[item][0].set.ranks[i].attributes.primary.forEach(function (primaryStat) {
                                                 itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-bonus-' + k + '-inactive',
+                                                    key: 'set-' + itemCollection[item][0].set.name + '-primary-bonus-' + primaryStat.text + '-inactive',
                                                     className: 'set-bonus-' + k + ' inactive'
                                                 }, primaryStat.text));
                                             });
@@ -2050,14 +2149,14 @@ var statPool = [
                                         if (itemCollection[item][0].set.ranks[i].required === k && itemCollection[item][0].set.ranks[i].required <= itemSetCount) {
                                             itemCollection[item][0].set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
                                                 itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-bonus-' + k,
+                                                    key: 'set-' + itemCollection[item][0].set.name + '-secondary bonus-' + secondaryStat.text,
                                                     className: 'set-bonus-' + k
                                                 }, secondaryStat.text));
                                             });
                                         } else if (itemCollection[item][0].set.ranks[i].required === k) {
                                             itemCollection[item][0].set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
                                                 itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-bonus-' + k + '-inactive',
+                                                    key: 'set-' + itemCollection[item][0].set.name + '-secondary bonus-' + secondaryStat.text + '-inactive',
                                                     className: 'set-bonus-' + k + ' inactive'
                                                 }, secondaryStat.text));
                                             });
@@ -2066,14 +2165,14 @@ var statPool = [
                                         if (itemCollection[item][0].set.ranks[i].required === k && itemCollection[item][0].set.ranks[i].required <= itemSetCount) {
                                             itemCollection[item][0].set.ranks[i].attributes.passive.forEach(function (passiveStat) {
                                                 itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-bonus-' + k,
+                                                    key: 'set-' + itemCollection[item][0].set.name + '-passive bonus-' + passiveStat.text,
                                                     className: 'set-bonus-' + k
                                                 }, passiveStat.text));
                                             });
                                         } else if (itemCollection[item][0].set.ranks[i].required === k) {
                                             itemCollection[item][0].set.ranks[i].attributes.passive.forEach(function (passiveStat) {
                                                 itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-bonus-' + k + '-inactive',
+                                                    key: 'set-' + itemCollection[item][0].set.name + '-passive bonus-' + passiveStat.text + '-inactive',
                                                     className: 'set-bonus-' + k + ' inactive'
                                                 }, passiveStat.text));
                                             });
@@ -2082,24 +2181,55 @@ var statPool = [
                                 }
                             }
 
-                            if (itemCollection[item][0].attributesRaw && itemCollection[item][0].attributesRaw.Sockets && itemCollection[item][0].gems[0]) {
-                                gemLink = itemIconBaseUrl.concat(itemCollection[item][0].gems[0].item.icon, '.png');
-                                itemCollection[item][1].push(React.DOM.li({
-                                    key: 'socket',
-                                    className: 'socket',
-                                    style: {backgroundImage: 'url(' + gemLink + ')'}
-                                }));
+                            if (itemCollection[item][0].attributesRaw && itemCollection[item][0].attributesRaw.Sockets) {
+                                for (i = 0; i < itemCollection[item][0].attributesRaw.Sockets.min; i++) {
+                                    if (itemCollection[item][0].gems[i]) {
+                                        gemLink = itemIconBaseUrl.concat(itemCollection[item][0].gems[0].item.icon, '.png');
 
-                                if (itemCollection[item][0].gems[0].attributes.primary) {
-                                    itemCollection[item][0].gems[0].attributes.primary.forEach(function (Stat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({key: 'gem-passive-' + currentIndex, className: 'gem-passive'}, Stat.text));
-                                    });
-                                }
+                                        if (itemCollection[item][0].gems[i].attributesRaw.Jewel_Rank) {
+                                            itemCollection[item][1].push(React.DOM.li({
+                                                key: 'socket-' + i,
+                                                className: 'socket',
+                                                style: {backgroundImage: 'url(' + gemLink + ')'}
+                                            }, React.DOM.span({
+                                                key: 'socket-gem-level' + i,
+                                                className: 'gem-level'
+                                            }, itemCollection[item][0].gems[i].attributesRaw.Jewel_Rank.min)));
+                                        } else {
+                                            itemCollection[item][1].push(React.DOM.li({
+                                                key: 'socket-' + i,
+                                                className: 'socket',
+                                                style: {backgroundImage: 'url(' + gemLink + ')'}
+                                            }));
+                                        }
 
-                                if (itemCollection[item][0].gems[0].attributes.secondary) {
-                                    itemCollection[item][0].gems[0].attributes.secondary.forEach(function (Stat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({key: 'gem-passive-' + currentIndex, className: 'gem-passive'}, Stat.text));
-                                    });
+                                        if (itemCollection[item][0].gems[i].attributes.primary[0]) {
+                                            itemCollection[item][1].push(React.DOM.li({
+                                                key: 'gem-passive-primary' + i,
+                                                className: 'gem-passive'
+                                            }, itemCollection[item][0].gems[i].attributes.primary[0].text));
+                                        }
+
+                                        if (itemCollection[item][0].gems[i].attributes.secondary[0]) {
+                                            itemCollection[item][1].push(React.DOM.li({
+                                                key: 'gem-passive-secondary' + i,
+                                                className: 'gem-passive'
+                                            }, itemCollection[item][0].gems[i].attributes.secondary[0].text));
+                                        }
+
+                                        if (itemCollection[item][0].gems[i].attributes.passive[0]) {
+                                            itemCollection[item][1].push(React.DOM.li({
+                                                key: 'gem-passive-secondary' + i,
+                                                className: 'gem-passive'
+                                            }, itemCollection[item][0].gems[i].attributes.passive[0].text));
+                                        }
+
+                                    } else {
+                                        itemCollection[item][1].push(React.DOM.li({
+                                            key: 'socket-' + i,
+                                            className: 'socket'
+                                        }));
+                                    }
                                 }
                             }
 
@@ -2116,2084 +2246,12 @@ var statPool = [
                         } else {
                             items.push(React.DOM.div({
                                 key: item.toString(),
-                                className: 'empty item head'
+                                className: 'empty item ' + item
                             }));
                         }
                     }
                 }
             }
-
-            //if (itemsIconState && itemsIconState.torso && torsoState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.torso.icon, '.png');
-            //
-            //    switch (itemsState.torso.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (torsoState.attributesRaw) {
-            //        if (torsoState.attributesRaw.Ancient_Rank && torsoState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            torso.push(React.DOM.li({
-            //                key: torsoState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.torso.name));
-            //        } else {
-            //            isAncient = '';
-            //            torso.push(React.DOM.li({
-            //                key: torsoState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.torso.name));
-            //        }
-            //    }
-            //
-            //    if (torsoState.attributes) {
-            //        if (torsoState.attributes.primary) {
-            //            torsoState.attributes.primary.forEach(function (primaryStat) {
-            //                torso.push(React.DOM.li({key: torsoState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (torsoState.attributes.secondary) {
-            //            torsoState.attributes.secondary.forEach(function (secondaryStat) {
-            //                torso.push(React.DOM.li({key: torsoState.key, className: 'secondary'}, secondaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (torsoState.attributes.passive) {
-            //            torsoState.attributes.passive.forEach(function (passiveStat) {
-            //                torso.push(React.DOM.li({key: torsoState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (torsoState.set && torsoState.set.ranks) {
-            //        for (i = 0; i < torsoState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (torsoState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            torsoCount = setPool[m][1]++;
-            //                        } else {
-            //                            torsoCount = setPool[m][1];
-            //                        }
-            //                    } else if (torsoState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        torsoCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (torsoState.set.ranks[i].required === k && torsoState.set.ranks[i].required <= torsoCount) {
-            //                    torsoState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        torso.push(React.DOM.li({
-            //                            key: torsoState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (torsoState.set.ranks[i].required === k) {
-            //                    torsoState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        torso.push(React.DOM.li({
-            //                            key: torsoState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (torsoState.set.ranks[i].required === k && torsoState.set.ranks[i].required <= torsoCount) {
-            //                    torsoState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        torso.push(React.DOM.li({
-            //                            key: torsoState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (torsoState.set.ranks[i].required === k) {
-            //                    torsoState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        torso.push(React.DOM.li({
-            //                            key: torsoState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (torsoState.set.ranks[i].required === k && torsoState.set.ranks[i].required <= torsoCount) {
-            //                    torsoState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        torso.push(React.DOM.li({
-            //                            key: torsoState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (torsoState.set.ranks[i].required === k) {
-            //                    torsoState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        torso.push(React.DOM.li({
-            //                            key: torsoState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (torsoState.attributesRaw && torsoState.attributesRaw.Sockets && torsoState.gems[0]) {
-            //        gemLink = itemIconBaseUrl.concat(torsoState.gems[0].item.icon, '.png');
-            //        if (torsoState.gems[0].attributes.primary) {
-            //            torsoState.gems[0].attributes.primary.forEach(function (Stat) {
-            //                torso.push(React.DOM.li({
-            //                    key: torsoState.key,
-            //                    className: 'socket',
-            //                    style: {backgroundImage: 'url(' + gemLink + ')'}
-            //                }));
-            //                torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
-            //                torso.push(React.DOM.li({
-            //                    key: torsoState.key,
-            //                    className: 'socket',
-            //                    style: {backgroundImage: 'url(' + gemLink + ')'}
-            //                }));
-            //                torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
-            //                torso.push(React.DOM.li({
-            //                    key: torsoState.key,
-            //                    className: 'socket',
-            //                    style: {backgroundImage: 'url(' + gemLink + ')'}
-            //                }));
-            //                torso.push(React.DOM.li({key: torsoState.key, className: 'gem-passive'}, Stat.text));
-            //            });
-            //        }
-            //
-            //    } else if (torsoState.attributesRaw && torsoState.attributesRaw.Sockets) {
-            //        torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
-            //        torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
-            //        torso.push(React.DOM.li({key: torsoState.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' torso',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: torsoState.key, className: 'desc'}, React.DOM.ul({
-            //            key: torsoState.key,
-            //            className: 'stats'
-            //        }, torso)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item torso'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.hands && handsState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.hands.icon, '.png');
-            //
-            //    switch (itemsState.hands.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (handsState.attributesRaw) {
-            //        if (handsState.attributesRaw.Ancient_Rank && handsState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            hands.push(React.DOM.li({
-            //                key: handsState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.hands.name));
-            //        } else {
-            //            isAncient = '';
-            //            hands.push(React.DOM.li({
-            //                key: handsState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.hands.name));
-            //        }
-            //    }
-            //
-            //
-            //    if (handsState.attributes) {
-            //        if (handsState.attributes.primary) {
-            //            handsState.attributes.primary.forEach(function (primaryStat) {
-            //                hands.push(React.DOM.li({key: handsState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //        if (handsState.attributes.secondary) {
-            //            handsState.attributes.secondary.forEach(function (secondaryStat) {
-            //                hands.push(React.DOM.li({key: handsState.key, className: 'secondary'}, secondaryStat.text));
-            //            });
-            //        }
-            //        if (handsState.attributes.passive) {
-            //            handsState.attributes.passive.forEach(function (passiveStat) {
-            //                hands.push(React.DOM.li({key: handsState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (handsState.set && handsState.set.ranks) {
-            //        for (i = 0; i < handsState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (handsState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            handsCount = setPool[m][1]++;
-            //                        } else {
-            //                            handsCount = setPool[m][1];
-            //                        }
-            //                    } else if (handsState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        handsCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (handsState.set.ranks[i].required === k && handsState.set.ranks[i].required <= handsCount) {
-            //                    handsState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        hands.push(React.DOM.li({
-            //                            key: handsState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (handsState.set.ranks[i].required === k) {
-            //                    handsState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        hands.push(React.DOM.li({
-            //                            key: handsState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (handsState.set.ranks[i].required === k && handsState.set.ranks[i].required <= handsCount) {
-            //                    handsState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        hands.push(React.DOM.li({
-            //                            key: handsState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (handsState.set.ranks[i].required === k) {
-            //                    handsState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        hands.push(React.DOM.li({
-            //                            key: handsState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (handsState.set.ranks[i].required === k && handsState.set.ranks[i].required <= handsCount) {
-            //                    handsState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        hands.push(React.DOM.li({
-            //                            key: handsState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (handsState.set.ranks[i].required === k) {
-            //                    handsState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        hands.push(React.DOM.li({
-            //                            key: handsState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' hands',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: handsState.key, className: 'desc'}, React.DOM.ul({
-            //            key: handsState.key,
-            //            className: 'stats'
-            //        }, hands)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item hands'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.feet && feetState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.feet.icon, '.png');
-            //
-            //    switch (itemsState.feet.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (feetState.attributesRaw) {
-            //        if (feetState.attributesRaw.Ancient_Rank && feetState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            feet.push(React.DOM.li({
-            //                key: feetState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.feet.name));
-            //        } else {
-            //            isAncient = '';
-            //            feet.push(React.DOM.li({
-            //                key: feetState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.feet.name));
-            //        }
-            //    }
-            //
-            //
-            //    if (feetState.attributes) {
-            //        if (feetState.attributes.primary) {
-            //            feetState.attributes.primary.forEach(function (primaryStat) {
-            //                feet.push(React.DOM.li({key: feetState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //        if (feetState.attributes.secondary) {
-            //            feetState.attributes.secondary.forEach(function (secondaryStat) {
-            //                feet.push(React.DOM.li({key: feetState.key, className: 'secondary'}, secondaryStat.text));
-            //            });
-            //        }
-            //        if (feetState.attributes.passive) {
-            //            feetState.attributes.passive.forEach(function (passiveStat) {
-            //                feet.push(React.DOM.li({key: feetState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (feetState.set && feetState.set.ranks) {
-            //        for (i = 0; i < feetState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (feetState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            feetCount = setPool[m][1]++;
-            //                        } else {
-            //                            feetCount = setPool[m][1];
-            //                        }
-            //                    } else if (feetState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        feetCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (feetState.set.ranks[i].required === k && feetState.set.ranks[i].required <= feetCount) {
-            //                    feetState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        feet.push(React.DOM.li({
-            //                            key: feetState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (feetState.set.ranks[i].required === k) {
-            //                    feetState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        feet.push(React.DOM.li({
-            //                            key: feetState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (feetState.set.ranks[i].required === k && feetState.set.ranks[i].required <= feetCount) {
-            //                    feetState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        feet.push(React.DOM.li({
-            //                            key: feetState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (feetState.set.ranks[i].required === k) {
-            //                    feetState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        feet.push(React.DOM.li({
-            //                            key: feetState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (feetState.set.ranks[i].required === k && feetState.set.ranks[i].required <= feetCount) {
-            //                    feetState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        feet.push(React.DOM.li({
-            //                            key: feetState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (feetState.set.ranks[i].required === k) {
-            //                    feetState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        feet.push(React.DOM.li({
-            //                            key: feetState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' feet',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: feetState.key, className: 'desc'}, React.DOM.ul({
-            //            key: feetState.key,
-            //            className: 'stats'
-            //        }, feet)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item feet'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.shoulders && shouldersState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.shoulders.icon, '.png');
-            //
-            //    switch (itemsState.shoulders.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (shouldersState.attributesRaw) {
-            //        if (shouldersState.attributesRaw.Ancient_Rank && shouldersState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            shoulders.push(React.DOM.li({
-            //                key: shouldersState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.shoulders.name));
-            //        } else {
-            //            isAncient = '';
-            //            shoulders.push(React.DOM.li({
-            //                key: shouldersState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.shoulders.name));
-            //        }
-            //    }
-            //
-            //    if (shouldersState.attributes) {
-            //        if (shouldersState.attributes.primary) {
-            //            shouldersState.attributes.primary.forEach(function (primaryStat) {
-            //                shoulders.push(React.DOM.li({
-            //                    key: shouldersState.key,
-            //                    className: 'primary'
-            //                }, primaryStat.text));
-            //            });
-            //        }
-            //        if (shouldersState.attributes.secondary) {
-            //            shouldersState.attributes.secondary.forEach(function (secondaryStat) {
-            //                shoulders.push(React.DOM.li({
-            //                    key: shouldersState.key,
-            //                    className: 'secondary'
-            //                }, secondaryStat.text));
-            //            });
-            //        }
-            //        if (shouldersState.attributes.passive) {
-            //            shouldersState.attributes.passive.forEach(function (passiveStat) {
-            //                shoulders.push(React.DOM.li({
-            //                    key: shouldersState.key,
-            //                    className: 'passive'
-            //                }, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (shouldersState.set && shouldersState.set.ranks) {
-            //        for (i = 0; i < shouldersState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (shouldersState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            shouldersCount = setPool[m][1]++;
-            //                        } else {
-            //                            shouldersCount = setPool[m][1];
-            //                        }
-            //                    } else if (shouldersState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        shouldersCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (shouldersState.set.ranks[i].required === k && shouldersState.set.ranks[i].required <= shouldersCount) {
-            //                    shouldersState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        shoulders.push(React.DOM.li({
-            //                            key: shouldersState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (shouldersState.set.ranks[i].required === k) {
-            //                    shouldersState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        shoulders.push(React.DOM.li({
-            //                            key: shouldersState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (shouldersState.set.ranks[i].required === k && shouldersState.set.ranks[i].required <= shouldersCount) {
-            //                    shouldersState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        shoulders.push(React.DOM.li({
-            //                            key: shouldersState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (shouldersState.set.ranks[i].required === k) {
-            //                    shouldersState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        shoulders.push(React.DOM.li({
-            //                            key: shouldersState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (shouldersState.set.ranks[i].required === k && shouldersState.set.ranks[i].required <= shouldersCount) {
-            //                    shouldersState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        shoulders.push(React.DOM.li({
-            //                            key: shouldersState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (shouldersState.set.ranks[i].required === k) {
-            //                    shouldersState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        shoulders.push(React.DOM.li({
-            //                            key: shouldersState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' shoulders',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: shouldersState.key, className: 'desc'}, React.DOM.ul({
-            //            key: shouldersState.key,
-            //            className: 'stats'
-            //        }, shoulders)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item shoulders'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.legs && legsState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.legs.icon, '.png');
-            //
-            //    switch (itemsState.legs.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (legsState.attributesRaw) {
-            //        if (legsState.attributesRaw.Ancient_Rank && legsState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            legs.push(React.DOM.li({
-            //                key: legsState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.legs.name));
-            //        } else {
-            //            isAncient = '';
-            //            legs.push(React.DOM.li({
-            //                key: legsState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.legs.name));
-            //        }
-            //    }
-            //
-            //    if (legsState.attributes) {
-            //        if (legsState.attributes.primary) {
-            //            legsState.attributes.primary.forEach(function (primaryStat) {
-            //                legs.push(React.DOM.li({key: legsState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //        if (legsState.attributes.secondary) {
-            //            legsState.attributes.secondary.forEach(function (secondaryStat) {
-            //                legs.push(React.DOM.li({key: legsState.key, className: 'secondary'}, secondaryStat.text));
-            //            });
-            //        }
-            //        if (legsState.attributes.passive) {
-            //            legsState.attributes.passive.forEach(function (passiveStat) {
-            //                legs.push(React.DOM.li({key: legsState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (legsState.set && legsState.set.ranks) {
-            //        for (i = 0; i < legsState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (legsState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            legsCount = setPool[m][1]++;
-            //                        } else {
-            //                            legsCount = setPool[m][1];
-            //                        }
-            //                    } else if (legsState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        legsCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (legsState.set.ranks[i].required === k && legsState.set.ranks[i].required <= legsCount) {
-            //                    legsState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        legs.push(React.DOM.li({
-            //                            key: legsState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (legsState.set.ranks[i].required === k) {
-            //                    legsState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        legs.push(React.DOM.li({
-            //                            key: legsState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (legsState.set.ranks[i].required === k && legsState.set.ranks[i].required <= legsCount) {
-            //                    legsState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        legs.push(React.DOM.li({
-            //                            key: legsState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (legsState.set.ranks[i].required === k) {
-            //                    legsState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        legs.push(React.DOM.li({
-            //                            key: legsState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (legsState.set.ranks[i].required === k && legsState.set.ranks[i].required <= legsCount) {
-            //                    legsState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        legs.push(React.DOM.li({
-            //                            key: legsState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (legsState.set.ranks[i].required === k) {
-            //                    legsState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        legs.push(React.DOM.li({
-            //                            key: legsState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //
-            //    if (legsState.attributesRaw && legsState.attributesRaw.Sockets && legsState.gems[0]) {
-            //        gemLink = itemIconBaseUrl.concat(legsState.gems[0].item.icon, '.png');
-            //
-            //        if (legsState.gems[0].attributes.primary) {
-            //            legsState.gems[0].attributes.primary.forEach(function (Stat) {
-            //                legs.push(React.DOM.li({
-            //                    key: legsState.key,
-            //                    className: 'socket',
-            //                    style: {backgroundImage: 'url(' + gemLink + ')'}
-            //                }));
-            //                legs.push(React.DOM.li({key: legsState.key, className: 'gem-passive'}, Stat.text));
-            //                legs.push(React.DOM.li({
-            //                    key: legsState.key,
-            //                    className: 'socket',
-            //                    style: {backgroundImage: 'url(' + gemLink + ')'}
-            //                }));
-            //                legs.push(React.DOM.li({key: legsState.key, className: 'gem-passive'}, Stat.text));
-            //            });
-            //        }
-            //    } else if (legsState.attributesRaw && legsState.attributesRaw.Sockets) {
-            //        legs.push(React.DOM.li({key: legsState.key, className: 'socket'}));
-            //        legs.push(React.DOM.li({key: legsState.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' legs',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: legsState.key, className: 'desc'}, React.DOM.ul({
-            //            key: legsState.key,
-            //            className: 'stats'
-            //        }, legs)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item legs'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.bracers && bracersState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.bracers.icon, '.png');
-            //
-            //    switch (itemsState.bracers.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (bracersState.attributesRaw) {
-            //        if (bracersState.attributesRaw.Ancient_Rank && bracersState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            bracers.push(React.DOM.li({
-            //                key: bracersState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.bracers.name));
-            //        } else {
-            //            isAncient = '';
-            //
-            //            bracers.push(React.DOM.li({
-            //                key: bracersState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.bracers.name));
-            //        }
-            //    }
-            //
-            //
-            //    if (bracersState.attributes) {
-            //        if (bracersState.attributes.primary) {
-            //            bracersState.attributes.primary.forEach(function (primaryStat) {
-            //                bracers.push(React.DOM.li({key: bracersState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //        if (bracersState.attributes.secondary) {
-            //            bracersState.attributes.secondary.forEach(function (secondaryStat) {
-            //                bracers.push(React.DOM.li({
-            //                    key: bracersState.key,
-            //                    className: 'secondary'
-            //                }, secondaryStat.text));
-            //            });
-            //        }
-            //        if (bracersState.attributes.passive) {
-            //            bracersState.attributes.passive.forEach(function (passiveStat) {
-            //                bracers.push(React.DOM.li({key: bracersState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (bracersState.set && bracersState.set.ranks) {
-            //        for (i = 0; i < bracersState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (bracersState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            bracersCount = setPool[m][1]++;
-            //                        } else {
-            //                            bracersCount = setPool[m][1];
-            //                        }
-            //                    } else if (bracersState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        bracersCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (bracersState.set.ranks[i].required === k && bracersState.set.ranks[i].required <= bracersCount) {
-            //                    bracersState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        bracers.push(React.DOM.li({
-            //                            key: bracersState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (bracersState.set.ranks[i].required === k) {
-            //                    bracersState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        bracers.push(React.DOM.li({
-            //                            key: bracersState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (bracersState.set.ranks[i].required === k && bracersState.set.ranks[i].required <= bracersCount) {
-            //                    bracersState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        bracers.push(React.DOM.li({
-            //                            key: bracersState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (bracersState.set.ranks[i].required === k) {
-            //                    bracersState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        bracers.push(React.DOM.li({
-            //                            key: bracersState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (bracersState.set.ranks[i].required === k && bracersState.set.ranks[i].required <= bracersCount) {
-            //                    bracersState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        bracers.push(React.DOM.li({
-            //                            key: bracersState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (bracersState.set.ranks[i].required === k) {
-            //                    bracersState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        bracers.push(React.DOM.li({
-            //                            key: bracersState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' bracers',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: bracersState.key, className: 'desc'}, React.DOM.ul({
-            //            key: bracersState.key,
-            //            className: 'stats'
-            //        }, bracers)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item bracers'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.mainHand && mainHandState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.mainHand.icon, '.png');
-            //
-            //    switch (itemsState.mainHand.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (mainHandState.attributesRaw && mainHandState.type) {
-            //        var mainHanded = '';
-            //        if (mainHandState.type.twoHanded === true) {
-            //            mainHanded = '(2h)';
-            //        } else {
-            //            mainHanded = '(1h)';
-            //        }
-            //
-            //        if (mainHandState.attributesRaw.Ancient_Rank && mainHandState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            mainHand.push(React.DOM.li({
-            //                key: mainHandState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.mainHand.name + ' ' + mainHanded));
-            //        } else {
-            //            isAncient = '';
-            //            mainHand.push(React.DOM.li({
-            //                key: mainHandState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.mainHand.name + ' ' + mainHanded));
-            //        }
-            //    }
-            //
-            //    if (mainHandState.dps) {
-            //        mainHand.push(React.DOM.li({
-            //            key: mainHandState.key,
-            //            className: 'dps'
-            //        }, mainHandState.dps.max.toString().substring(0, 7) + ' DPS'));
-            //    }
-            //
-            //    if (mainHandState.minDamage && mainHandState.maxDamage && mainHandState.attributesRaw) {
-            //        for (i = 0; i < weaponElementsMin.length; i++) {
-            //            if (mainHandState.attributesRaw[weaponElementsMin[i]]) {
-            //                if (mainHandState.attributesRaw[DamagePercentAll] && !mainHandState.attributesRaw[DamageBonusMinPhysical]) {
-            //                    minDmgCalc = mainHandState.minDamage.max +
-            //                        mainHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                        (mainHandState.attributesRaw[weaponElementsMin[i]].max *
-            //                        mainHandState.attributesRaw[DamagePercentAll].max);
-            //                    maxDmgCalc = mainHandState.maxDamage.max +
-            //                        mainHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                        mainHandState.attributesRaw[weaponElementsDelta[i]].max +
-            //                        ((mainHandState.attributesRaw[weaponElementsMin[i]].max + mainHandState.attributesRaw[weaponElementsDelta[i]].max) *
-            //                        mainHandState.attributesRaw[DamagePercentAll].max);
-            //                    mainHand.push(React.DOM.li({
-            //                        key: mainHandState.key,
-            //                        className: 'raw-damage'
-            //                    }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
-            //                } else if (!mainHandState.attributesRaw[DamagePercentAll] && !mainHandState.attributesRaw[DamageBonusMinPhysical]) {
-            //                    minDmgCalc = mainHandState.minDamage.max +
-            //                        mainHandState.attributesRaw[weaponElementsMin[i]].max;
-            //                    maxDmgCalc = mainHandState.maxDamage.max +
-            //                        mainHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                        mainHandState.attributesRaw[weaponElementsDelta[i]].max;
-            //                    mainHand.push(React.DOM.li({
-            //                        key: mainHandState.key,
-            //                        className: 'raw-damage'
-            //                    }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
-            //                } else {
-            //                    minDmgCalc = mainHandState.minDamage.max;
-            //                    maxDmgCalc = mainHandState.maxDamage.max;
-            //                    mainHand.push(React.DOM.li({
-            //                        key: mainHandState.key,
-            //                        className: 'raw-damage'
-            //                    }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (mainHandState.attributes) {
-            //        if (mainHandState.attributes.primary) {
-            //            mainHandState.attributes.primary.forEach(function (primaryStat) {
-            //                mainHand.push(React.DOM.li({
-            //                    key: mainHandState.key,
-            //                    className: 'primary'
-            //                }, primaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (mainHandState.attributes.secondary) {
-            //            mainHandState.attributes.secondary.forEach(function (secondaryStat) {
-            //                mainHand.push(React.DOM.li({
-            //                    key: mainHandState.key,
-            //                    className: 'secondary'
-            //                }, secondaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (mainHandState.attributes.passive) {
-            //            mainHandState.attributes.passive.forEach(function (passiveStat) {
-            //                mainHand.push(React.DOM.li({
-            //                    key: mainHandState.key,
-            //                    className: 'passive'
-            //                }, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (mainHandState.set && mainHandState.set.ranks) {
-            //        for (i = 0; i < mainHandState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (mainHandState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            mainCount = setPool[m][1]++;
-            //                        } else {
-            //                            mainCount = setPool[m][1];
-            //                        }
-            //                    } else if (mainHandState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        mainCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (mainHandState.set.ranks[i].required === k && mainHandState.set.ranks[i].required <= mainCount) {
-            //                    mainHandState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        mainHand.push(React.DOM.li({
-            //                            key: mainHandState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (mainHandState.set.ranks[i].required === k) {
-            //                    mainHandState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        mainHand.push(React.DOM.li({
-            //                            key: mainHandState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (mainHandState.set.ranks[i].required === k && mainHandState.set.ranks[i].required <= mainCount) {
-            //                    mainHandState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        mainHand.push(React.DOM.li({
-            //                            key: mainHandState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (mainHandState.set.ranks[i].required === k) {
-            //                    mainHandState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        mainHand.push(React.DOM.li({
-            //                            key: mainHandState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (mainHandState.set.ranks[i].required === k && mainHandState.set.ranks[i].required <= mainCount) {
-            //                    mainHandState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        mainHand.push(React.DOM.li({
-            //                            key: mainHandState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (mainHandState.set.ranks[i].required === k) {
-            //                    mainHandState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        mainHand.push(React.DOM.li({
-            //                            key: mainHandState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (mainHandState.attributesRaw && mainHandState.attributesRaw.Sockets && mainHandState.gems[0]) {
-            //        if (!mainHandState.gems[0].attributesRaw.Jewel_Rank) {
-            //            gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
-            //            mainHand.push(React.DOM.li({
-            //                key: mainHandState.key,
-            //                className: 'socket',
-            //                style: {backgroundImage: 'url(' + gemLink + ')'}
-            //            }));
-            //        } else if (mainHandState.gems[0].attributesRaw.Jewel_Rank) {
-            //            gemLink = itemIconBaseUrl.concat(mainHandState.gems[0].item.icon, '.png');
-            //            mainHand.push(React.DOM.li({
-            //                key: mainHandState.key,
-            //                className: 'socket',
-            //                style: {backgroundImage: 'url(' + gemLink + ')'}
-            //            }, React.DOM.span({
-            //                key: mainHandState.key,
-            //                className: 'gem-level'
-            //            }, mainHandState.gems[0].attributesRaw.Jewel_Rank.min)));
-            //        }
-            //
-            //        if (mainHandState.gems[0].attributes.primary) {
-            //            mainHandState.gems[0].attributes.primary.forEach(function (Stat) {
-            //                mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
-            //            });
-            //        }
-            //        // exception for the new unique gem
-            //        if (mainHandState.gems[0].attributes.passive) {
-            //            mainHandState.gems[0].attributes.passive.forEach(function (Stat) {
-            //                mainHand.push(React.DOM.li({key: mainHandState.key, className: 'gem-passive'}, Stat.text));
-            //            });
-            //        }
-            //
-            //    } else if (mainHandState.attributesRaw && mainHandState.attributesRaw.Sockets) {
-            //        mainHand.push(React.DOM.li({key: mainHandState.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' mainHand',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: mainHandState.key, className: 'desc'}, React.DOM.ul({
-            //            key: mainHandState.key,
-            //            className: 'stats'
-            //        }, mainHand)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item mainHand'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.offHand && offHandState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.offHand.icon, '.png');
-            //
-            //    switch (itemsState.offHand.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (offHandState.attributesRaw && offHandState.type) {
-            //        var offHanded = '';
-            //        if (offHandState.type.twoHanded === true) {
-            //            offHanded = '(2h)';
-            //        } else if (offHandState.type.twoHanded !== true && offHandState.dps) {
-            //            offHanded = '(1h)';
-            //        } else {
-            //            offHanded = '';
-            //        }
-            //        if (offHandState.attributesRaw.Ancient_Rank && offHandState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            offHand.push(React.DOM.li({
-            //                key: offHandState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.offHand.name + ' ' + offHanded));
-            //        } else {
-            //            isAncient = '';
-            //            offHand.push(React.DOM.li({
-            //                key: offHandState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.offHand.name + ' ' + offHanded));
-            //        }
-            //    }
-            //
-            //    if (offHandState.dps) {
-            //        offHand.push(React.DOM.li({
-            //            key: offHandState.key,
-            //            className: 'dps'
-            //        }, offHandState.dps.max.toString().substring(0, 8) + ' DPS'));
-            //    }
-            //
-            //    if (offHandState.minDamage && offHandState.maxDamage && offHandState.attributesRaw) {
-            //        for (i = 0; i < weaponElementsMin.length; i++) {
-            //            if (offHandState.attributesRaw[weaponElementsMin[i]]) {
-            //                if (offHandState.attributesRaw[DamagePercentAll] && !offHandState.attributesRaw[DamageBonusMinPhysical]) {
-            //                    offHand.push(React.DOM.li({
-            //                        key: offHandState.key,
-            //                        className: 'raw-damage'
-            //                    }, Math.round(offHandState.minDamage.max +
-            //                            offHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                            (offHandState.attributesRaw[weaponElementsMin[i]].max *
-            //                            offHandState.attributesRaw[DamagePercentAll].max)) +
-            //                        ' - ' +
-            //                        Math.round(offHandState.maxDamage.max +
-            //                            offHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                            offHandState.attributesRaw[weaponElementsDelta[i]].max +
-            //                            ((offHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                            offHandState.attributesRaw[weaponElementsDelta[i]].max) *
-            //                            offHandState.attributesRaw[DamagePercentAll].max)
-            //                        ) + ' Damage'));
-            //                } else if (!offHandState.attributesRaw[DamagePercentAll] && !offHandState.attributesRaw[DamageBonusMinPhysical]) {
-            //                    offHand.push(React.DOM.li({
-            //                        key: offHandState.key,
-            //                        className: 'raw-damage'
-            //                    }, Math.round(offHandState.minDamage.max +
-            //                            offHandState.attributesRaw[weaponElementsMin[i]].max) +
-            //                        ' - ' +
-            //                        Math.round(offHandState.maxDamage.max +
-            //                            offHandState.attributesRaw[weaponElementsMin[i]].max +
-            //                            offHandState.attributesRaw[weaponElementsDelta[i]].max) +
-            //                        ' Damage'));
-            //                } else {
-            //                    offHand.push(React.DOM.li({
-            //                        key: offHandState.key,
-            //                        className: 'raw-damage'
-            //                    }, Math.round(offHandState.minDamage.max) +
-            //                        ' - ' +
-            //                        Math.round(offHandState.maxDamage.max) +
-            //                        ' Damage'));
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (offHandState.attributes) {
-            //        if (offHandState.attributes.primary) {
-            //            offHandState.attributes.primary.forEach(function (primaryStat) {
-            //                offHand.push(React.DOM.li({key: offHandState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //        if (offHandState.attributes.secondary) {
-            //            offHandState.attributes.secondary.forEach(function (secondaryStat) {
-            //                offHand.push(React.DOM.li({
-            //                    key: offHandState.key,
-            //                    className: 'secondary'
-            //                }, secondaryStat.text));
-            //            });
-            //        }
-            //        if (offHandState.attributes.passive) {
-            //            offHandState.attributes.passive.forEach(function (passiveStat) {
-            //                offHand.push(React.DOM.li({key: offHandState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (offHandState.set && offHandState.set.ranks) {
-            //        for (i = 0; i < offHandState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (offHandState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            offCount = setPool[m][1]++;
-            //                        } else {
-            //                            offCount = setPool[m][1];
-            //                        }
-            //                    } else if (offHandState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        offCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (offHandState.set.ranks[i].required === k && offHandState.set.ranks[i].required <= offCount) {
-            //                    offHandState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        offHand.push(React.DOM.li({
-            //                            key: offHandState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (offHandState.set.ranks[i].required === k) {
-            //                    offHandState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        offHand.push(React.DOM.li({
-            //                            key: offHandState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (offHandState.set.ranks[i].required === k && offHandState.set.ranks[i].required <= offCount) {
-            //                    offHandState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        offHand.push(React.DOM.li({
-            //                            key: offHandState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (offHandState.set.ranks[i].required === k) {
-            //                    offHandState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        offHand.push(React.DOM.li({
-            //                            key: offHandState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (offHandState.set.ranks[i].required === k && offHandState.set.ranks[i].required <= offCount) {
-            //                    offHandState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        offHand.push(React.DOM.li({
-            //                            key: offHandState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (offHandState.set.ranks[i].required === k) {
-            //                    offHandState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        offHand.push(React.DOM.li({
-            //                            key: offHandState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (offHandState.attributesRaw && offHandState.attributesRaw.Sockets && offHandState.gems[0]) {
-            //        if (!offHandState.gems[0].attributesRaw.Jewel_Rank) {
-            //            gemLink = itemIconBaseUrl.concat(offHandState.gems[0].item.icon, '.png');
-            //            offHand.push(React.DOM.li({
-            //                key: offHandState.key,
-            //                className: 'socket',
-            //                style: {backgroundImage: 'url(' + gemLink + ')'}
-            //            }));
-            //        } else if (offHandState.gems[0].attributesRaw.Jewel_Rank) {
-            //            gemLink = itemIconBaseUrl.concat(offHandState.gems[0].item.icon, '.png');
-            //            offHand.push(React.DOM.li({
-            //                key: offHandState.key,
-            //                className: 'socket',
-            //                style: {backgroundImage: 'url(' + gemLink + ')'}
-            //            }, React.DOM.span({
-            //                key: offHandState.key,
-            //                className: 'gem-level'
-            //            }, offHandState.gems[0].attributesRaw.Jewel_Rank.min)));
-            //        }
-            //
-            //        if (offHandState.gems[0].attributes.primary) {
-            //            offHandState.gems[0].attributes.primary.forEach(function (Stat) {
-            //                offHand.push(React.DOM.li({key: offHandState.key, className: 'gem-passive'}, Stat.text));
-            //            });
-            //        }
-            //        // exception for the new unique gem
-            //        if (offHandState.gems[0].attributes.passive) {
-            //            offHandState.gems[0].attributes.passive.forEach(function (Stat) {
-            //                offHand.push(React.DOM.li({key: offHandState.key, className: 'gem-passive'}, Stat.text));
-            //            });
-            //        }
-            //
-            //    } else if (offHandState.attributesRaw && offHandState.attributesRaw.Sockets) {
-            //        offHand.push(React.DOM.li({key: offHandState.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' offHand',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: offHandState.key, className: 'desc'}, React.DOM.ul({
-            //            key: offHandState.key,
-            //            className: 'stats'
-            //        }, offHand)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item offHand'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.waist && beltState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.waist.icon, '.png');
-            //
-            //    switch (itemsState.waist.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (beltState.attributesRaw) {
-            //        if (beltState.attributesRaw.Ancient_Rank && beltState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            belt.push(React.DOM.li({
-            //                key: beltState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.waist.name));
-            //        } else {
-            //            isAncient = '';
-            //            belt.push(React.DOM.li({
-            //                key: beltState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.waist.name));
-            //        }
-            //    }
-            //
-            //    if (beltState.attributes) {
-            //        if (beltState.attributes.primary) {
-            //            beltState.attributes.primary.forEach(function (primaryStat) {
-            //                belt.push(React.DOM.li({key: beltState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //        if (beltState.attributes.secondary) {
-            //            beltState.attributes.secondary.forEach(function (secondaryStat) {
-            //                belt.push(React.DOM.li({key: beltState.key, className: 'secondary'}, secondaryStat.text));
-            //            });
-            //        }
-            //        if (beltState.attributes.passive) {
-            //            beltState.attributes.passive.forEach(function (passiveStat) {
-            //                belt.push(React.DOM.li({key: beltState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (beltState.set && beltState.set.ranks) {
-            //        for (i = 0; i < beltState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (beltState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            beltCount = setPool[m][1]++;
-            //                        } else {
-            //                            beltCount = setPool[m][1];
-            //                        }
-            //                    } else if (beltState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        beltCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (beltState.set.ranks[i].required === k && beltState.set.ranks[i].required <= beltCount) {
-            //                    beltState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        belt.push(React.DOM.li({
-            //                            key: beltState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (beltState.set.ranks[i].required === k) {
-            //                    beltState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        belt.push(React.DOM.li({
-            //                            key: beltState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (beltState.set.ranks[i].required === k && beltState.set.ranks[i].required <= beltCount) {
-            //                    beltState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        belt.push(React.DOM.li({
-            //                            key: beltState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (beltState.set.ranks[i].required === k) {
-            //                    beltState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        belt.push(React.DOM.li({
-            //                            key: beltState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (beltState.set.ranks[i].required === k && beltState.set.ranks[i].required <= beltCount) {
-            //                    beltState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        belt.push(React.DOM.li({
-            //                            key: beltState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (beltState.set.ranks[i].required === k) {
-            //                    beltState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        belt.push(React.DOM.li({
-            //                            key: beltState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' waist',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: beltState.key, className: 'desc'}, React.DOM.ul({
-            //            key: beltState.key,
-            //            className: 'stats'
-            //        }, belt)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item waist'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.rightFinger && ringStateRight) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.rightFinger.icon, '.png');
-            //
-            //    switch (itemsState.rightFinger.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (ringStateRight.attributesRaw) {
-            //        if (ringStateRight.attributesRaw.Ancient_Rank && ringStateRight.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            ringRight.push(React.DOM.li({
-            //                key: ringStateRight.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.rightFinger.name));
-            //        } else {
-            //            isAncient = '';
-            //            ringRight.push(React.DOM.li({
-            //                key: ringStateRight.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.rightFinger.name));
-            //        }
-            //    }
-            //
-            //
-            //    if (ringStateRight.attributes) {
-            //        if (ringStateRight.attributes.primary) {
-            //            ringStateRight.attributes.primary.forEach(function (primaryStat) {
-            //                ringRight.push(React.DOM.li({
-            //                    key: ringStateRight.key,
-            //                    className: 'primary'
-            //                }, primaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (ringStateRight.attributes.secondary) {
-            //            ringStateRight.attributes.secondary.forEach(function (secondaryStat) {
-            //                if (secondaryStat.color !== 'orange') {
-            //                    ringRight.push(React.DOM.li({
-            //                        key: ringStateRight.key,
-            //                        className: 'secondary'
-            //                    }, secondaryStat.text));
-            //                } else {
-            //                    // handle a dumb exception for the wrongly entered ring of royal grandeur passive
-            //                    ringRight.push(React.DOM.li({
-            //                        key: ringStateRight.key,
-            //                        className: 'passive'
-            //                    }, secondaryStat.text));
-            //                }
-            //            });
-            //        }
-            //
-            //        if (ringStateRight.attributes.passive) {
-            //            ringStateRight.attributes.passive.forEach(function (passiveStat) {
-            //                ringRight.push(React.DOM.li({
-            //                    key: ringStateRight.key,
-            //                    className: 'passive'
-            //                }, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (ringStateRight.set && ringStateRight.set.ranks) {
-            //        for (i = 0; i < ringStateRight.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (ringStateRight.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            ringRCount = setPool[m][1]++;
-            //                        } else {
-            //                            ringRCount = setPool[m][1];
-            //                        }
-            //                    } else if (ringStateRight.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        ringRCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (ringStateRight.set.ranks[i].required === k && ringStateRight.set.ranks[i].required <= ringRCount) {
-            //                    ringStateRight.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        ringRight.push(React.DOM.li({
-            //                            key: ringStateRight.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (ringStateRight.set.ranks[i].required === k) {
-            //                    ringStateRight.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        ringRight.push(React.DOM.li({
-            //                            key: ringStateRight.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (ringStateRight.set.ranks[i].required === k && ringStateRight.set.ranks[i].required <= ringRCount) {
-            //                    ringStateRight.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        ringRight.push(React.DOM.li({
-            //                            key: ringStateRight.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (ringStateRight.set.ranks[i].required === k) {
-            //                    ringStateRight.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        ringRight.push(React.DOM.li({
-            //                            key: ringStateRight.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (ringStateRight.set.ranks[i].required === k && ringStateRight.set.ranks[i].required <= ringRCount) {
-            //                    ringStateRight.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        ringRight.push(React.DOM.li({
-            //                            key: ringStateRight.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (ringStateRight.set.ranks[i].required === k) {
-            //                    ringStateRight.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        ringRight.push(React.DOM.li({
-            //                            key: ringStateRight.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (ringStateRight.attributesRaw && ringStateRight.attributesRaw.Sockets && ringStateRight.gems[0] && ringStateRight.gems[0].attributesRaw.Jewel_Rank) {
-            //        gemLink = itemIconBaseUrl.concat(ringStateRight.gems[0].item.icon, '.png');
-            //        ringRight.push(React.DOM.li({
-            //            key: ringStateRight.key,
-            //            className: 'socket',
-            //            style: {backgroundImage: 'url(' + gemLink + ')'}
-            //        }, React.DOM.span({
-            //            key: ringStateRight.key,
-            //            className: 'gem-level'
-            //        }, ringStateRight.gems[0].attributesRaw.Jewel_Rank.min)));
-            //
-            //        ringStateRight.gems[0].attributes.passive.forEach(function (passiveStat) {
-            //            ringRight.push(React.DOM.li({
-            //                key: ringStateRight.key,
-            //                className: 'gem-passive unique'
-            //            }, passiveStat.text));
-            //        });
-            //    } else if (ringStateRight.attributesRaw && ringStateRight.attributesRaw.Sockets) {
-            //        ringRight.push(React.DOM.li({key: ringStateRight.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' rightFinger',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: ringStateRight.key, className: 'desc'}, React.DOM.ul({
-            //            key: ringStateRight.key,
-            //            className: 'stats'
-            //        }, ringRight)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item rightFinger'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.leftFinger && ringStateLeft) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.leftFinger.icon, '.png');
-            //
-            //    switch (itemsState.leftFinger.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (ringStateLeft.attributesRaw) {
-            //        if (ringStateLeft.attributesRaw.Ancient_Rank && ringStateLeft.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            ringLeft.push(React.DOM.li({
-            //                key: ringStateLeft.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.leftFinger.name));
-            //        } else {
-            //            isAncient = '';
-            //            ringLeft.push(React.DOM.li({
-            //                key: ringStateLeft.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.leftFinger.name));
-            //        }
-            //    }
-            //
-            //    if (ringStateLeft.attributes) {
-            //        if (ringStateLeft.attributes.primary) {
-            //            ringStateLeft.attributes.primary.forEach(function (primaryStat) {
-            //                ringLeft.push(React.DOM.li({
-            //                    key: ringStateLeft.key,
-            //                    className: 'primary'
-            //                }, primaryStat.text));
-            //            });
-            //        }
-            //        if (ringStateLeft.attributes.secondary) {
-            //            ringStateLeft.attributes.secondary.forEach(function (secondaryStat) {
-            //                ringLeft.push(React.DOM.li({
-            //                    key: ringStateLeft.key,
-            //                    className: 'secondary'
-            //                }, secondaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (ringStateLeft.attributes.passive) {
-            //            ringStateLeft.attributes.passive.forEach(function (passiveStat) {
-            //                ringLeft.push(React.DOM.li({
-            //                    key: ringStateLeft.key,
-            //                    className: 'passive'
-            //                }, passiveStat.text));
-            //            });
-            //        } else {
-            //            isAncient = '';
-            //        }
-            //    }
-            //
-            //    if (ringStateLeft.set && ringStateLeft.set.ranks) {
-            //        for (i = 0; i < ringStateLeft.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (ringStateLeft.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            ringLCount = setPool[m][1]++;
-            //                        } else {
-            //                            ringLCount = setPool[m][1];
-            //                        }
-            //                    } else if (ringStateLeft.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        ringLCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (ringStateLeft.set.ranks[i].required === k && ringStateLeft.set.ranks[i].required <= ringLCount) {
-            //                    ringStateLeft.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        ringLeft.push(React.DOM.li({
-            //                            key: ringStateLeft.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (ringStateLeft.set.ranks[i].required === k) {
-            //                    ringStateLeft.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        ringLeft.push(React.DOM.li({
-            //                            key: ringStateLeft.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (ringStateLeft.set.ranks[i].required === k && ringStateLeft.set.ranks[i].required <= ringLCount) {
-            //                    ringStateLeft.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        ringLeft.push(React.DOM.li({
-            //                            key: ringStateLeft.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (ringStateLeft.set.ranks[i].required === k) {
-            //                    ringStateLeft.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        ringLeft.push(React.DOM.li({
-            //                            key: ringStateLeft.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (ringStateLeft.set.ranks[i].required === k && ringStateLeft.set.ranks[i].required <= ringLCount) {
-            //                    ringStateLeft.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        ringLeft.push(React.DOM.li({
-            //                            key: ringStateLeft.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (ringStateLeft.set.ranks[i].required === k) {
-            //                    ringStateLeft.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        ringLeft.push(React.DOM.li({
-            //                            key: ringStateLeft.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets && ringStateLeft.gems[0] && ringStateLeft.gems[0].attributesRaw.Jewel_Rank) {
-            //        gemLink = itemIconBaseUrl.concat(ringStateLeft.gems[0].item.icon, '.png');
-            //        ringLeft.push(React.DOM.li({
-            //            key: ringStateLeft.key,
-            //            className: 'socket',
-            //            style: {backgroundImage: 'url(' + gemLink + ')'}
-            //        }, React.DOM.span({
-            //            key: ringStateLeft.key,
-            //            className: 'gem-level'
-            //        }, ringStateLeft.gems[0].attributesRaw.Jewel_Rank.min)));
-            //        ringStateLeft.gems[0].attributes.passive.forEach(function (passiveStat) {
-            //            ringLeft.push(React.DOM.li({
-            //                key: ringStateLeft.key,
-            //                className: 'gem-passive unique'
-            //            }, passiveStat.text));
-            //        });
-            //    } else if (ringStateLeft.attributesRaw && ringStateLeft.attributesRaw.Sockets) {
-            //        ringLeft.push(React.DOM.li({key: ringStateLeft.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' leftFinger',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: ringStateLeft.key, className: 'desc'}, React.DOM.ul({
-            //            key: ringStateLeft.key,
-            //            className: 'stats'
-            //        }, ringLeft)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item leftFinger'
-            //    }));
-            //}
-            //
-            //if (itemsIconState && itemsIconState.neck && neckState) {
-            //    constructedLink = itemIconBaseUrl.concat(itemsIconState.neck.icon, '.png');
-            //
-            //    switch (itemsState.neck.displayColor) {
-            //        case 'green':
-            //            itemQuality = 'set';
-            //            break;
-            //        case 'orange':
-            //            itemQuality = 'unique';
-            //            break;
-            //        case 'blue':
-            //            itemQuality = 'magic';
-            //            break;
-            //        case 'yellow':
-            //            itemQuality = 'rare';
-            //            break;
-            //        case 'white':
-            //            itemQuality = 'white';
-            //            break;
-            //        case 'gray':
-            //            itemQuality = 'common';
-            //            break;
-            //        default:
-            //    }
-            //
-            //    if (neckState.attributesRaw) {
-            //        if (neckState.attributesRaw.Ancient_Rank && neckState.attributesRaw.Ancient_Rank.min === 1.0) {
-            //            isAncient = 'ancient';
-            //            neck.push(React.DOM.li({
-            //                key: neckState.key,
-            //                className: itemQuality + ' name'
-            //            }, isAncient + ' ' + itemsState.neck.name));
-            //        } else {
-            //            isAncient = '';
-            //            neck.push(React.DOM.li({
-            //                key: neckState.key,
-            //                className: itemQuality + ' name'
-            //            }, itemsState.neck.name));
-            //        }
-            //    }
-            //
-            //    if (neckState.attributes) {
-            //        if (neckState.attributes.primary) {
-            //            neckState.attributes.primary.forEach(function (primaryStat) {
-            //                neck.push(React.DOM.li({key: neckState.key, className: 'primary'}, primaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (neckState.attributes.secondary) {
-            //            neckState.attributes.secondary.forEach(function (secondaryStat) {
-            //                neck.push(React.DOM.li({key: neckState.key, className: 'secondary'}, secondaryStat.text));
-            //            });
-            //        }
-            //
-            //        if (neckState.attributes.passive) {
-            //            neckState.attributes.passive.forEach(function (passiveStat) {
-            //                neck.push(React.DOM.li({key: neckState.key, className: 'passive'}, passiveStat.text));
-            //            });
-            //        }
-            //    }
-            //
-            //    if (neckState.set && neckState.set.ranks) {
-            //        for (i = 0; i < neckState.set.ranks.length; i++) {
-            //            for (k = 1; k <= 6; k++) {
-            //                for (m = 0; m < setPool.length; m++) {
-            //                    if (neckState.set.name === setPool[m][0] && this.state.setRing) {
-            //                        if (setPool[m][1] >= 2) {
-            //                            neckCount = setPool[m][1]++;
-            //                        } else {
-            //                            neckCount = setPool[m][1];
-            //                        }
-            //                    } else if (neckState.set.name === setPool[m][0] && !this.state.setRing) {
-            //                        neckCount = setPool[m][1];
-            //                    }
-            //                }
-            //
-            //                if (neckState.set.ranks[i].required === k && neckState.set.ranks[i].required <= neckCount) {
-            //                    neckState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        neck.push(React.DOM.li({
-            //                            key: neckState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, primaryStat.text));
-            //                    });
-            //                } else if (neckState.set.ranks[i].required === k) {
-            //                    neckState.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-            //                        neck.push(React.DOM.li({
-            //                            key: neckState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, primaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (neckState.set.ranks[i].required === k && neckState.set.ranks[i].required <= neckCount) {
-            //                    neckState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        neck.push(React.DOM.li({
-            //                            key: neckState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, secondaryStat.text));
-            //                    });
-            //                } else if (neckState.set.ranks[i].required === k) {
-            //                    neckState.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-            //                        neck.push(React.DOM.li({
-            //                            key: neckState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, secondaryStat.text));
-            //                    });
-            //                }
-            //
-            //                if (neckState.set.ranks[i].required === k && neckState.set.ranks[i].required <= neckCount) {
-            //                    neckState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        neck.push(React.DOM.li({
-            //                            key: neckState.key,
-            //                            className: 'set-bonus-' + k
-            //                        }, passiveStat.text));
-            //                    });
-            //                } else if (neckState.set.ranks[i].required === k) {
-            //                    neckState.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-            //                        neck.push(React.DOM.li({
-            //                            key: neckState.key,
-            //                            className: 'set-bonus-' + k + ' inactive'
-            //                        }, passiveStat.text));
-            //                    });
-            //                }
-            //            }
-            //        }
-            //    }
-            //
-            //    if (neckState.attributesRaw && neckState.attributesRaw.Sockets && neckState.gems[0] && neckState.gems[0].attributesRaw.Jewel_Rank) {
-            //        gemLink = itemIconBaseUrl.concat(neckState.gems[0].item.icon, '.png');
-            //        neck.push(React.DOM.li({
-            //            key: neckState.key,
-            //            className: 'socket',
-            //            style: {backgroundImage: 'url(' + gemLink + ')'}
-            //        }, React.DOM.span({
-            //            key: neckState.key,
-            //            className: 'gem-level'
-            //        }, neckState.gems[0].attributesRaw.Jewel_Rank.min)));
-            //
-            //        neckState.gems[0].attributes.passive.forEach(function (passiveStat) {
-            //            neck.push(React.DOM.li({
-            //                key: neckState.key,
-            //                className: 'gem-passive unique'
-            //            }, passiveStat.text));
-            //        });
-            //
-            //    } else if (neckState.attributesRaw && neckState.attributesRaw.Sockets) {
-            //        neck.push(React.DOM.li({key: neckState.key, className: 'socket'}));
-            //    }
-            //
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' neck',
-            //        onClick: this.handleItemClick,
-            //        style: {backgroundImage: 'url(' + constructedLink + ')'}
-            //    }, React.DOM.div({key: neckState.key, className: 'desc'}, React.DOM.ul({
-            //            key: neckState.key,
-            //            className: 'stats'
-            //        }, neck)
-            //    )));
-            //} else {
-            //    items.push(React.DOM.div({
-            //        key: itemsIconState.key,
-            //        className: 'empty item neck'
-            //    }));
-            //}
 
             if (amuletState.attributes && itemsState) {
                 if (amuletState.attributes.passive[0] && amuletState.attributes.passive[0].text.search('passive') !== -1 && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
@@ -4251,15 +2309,35 @@ var statPool = [
                                             this.state.paragonStats.paragonArmor[1] / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
                                 );
                             } else {
-                                stats.push(
-                                    React.DOM.div({key: primaryStat}, primaryStats[primaryStat][0] + ': ',
-                                        Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
-                                );
+                                if (statsState[primaryStat] > 100 ) {
+                                    stats.push(
+                                        React.DOM.div({key: primaryStat}, primaryStats[primaryStat][0] + ': ',
+                                            Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
+                                    );
+                                }
                             }
                         }
                     }
                 }
             }
+
+            var offensiveStatCollection = {
+                'critChance': {
+                    name: 'Critical Hit Chance',
+                    modifier: this.state.paragonStats.paragonCritChance[1]
+                },
+                'critDamage': {
+                    name: 'Critical Hit Damage',
+                    modifier: this.state.paragonStats.paragonCritDmg[1],
+                    errorCorrection: -100
+                },
+                'primaryResource': {
+                    name: 'Primary Resource',
+                    modifier: this.state.paragonStats.paragonResource[1]
+                }
+            };
+
+           //  TODO  continue here
 
             if (additionalStatsOffensive && statsState) {
 
@@ -4488,113 +2566,114 @@ var statPool = [
                     ));
                 }
             }
+            // TODO add Paragon on hit
+            var defensiveStatCollection = {
+                'secondaryResource': {
+                    name: 'Secondary Resource'
+                },
+                'fireResist': {
+                    name: 'Fire Resist',
+                    modifier: this.state.paragonStats.paragonResistAll[1]
+                },
+                'coldResist': {
+                    name: 'Cold Resist',
+                    modifier: this.state.paragonStats.paragonResistAll[1]
+                },
+                'lightningResist': {
+                    name: 'Lightning Resist',
+                    modifier: this.state.paragonStats.paragonResistAll[1]
+                },
+                'physicalResist': {
+                    name: 'Physical Resist',
+                    modifier: this.state.paragonStats.paragonResistAll[1]
+                },
+                'poisonResist': {
+                    name: 'Poison Resist',
+                    modifier: this.state.paragonStats.paragonResistAll[1]
+                },
+                'lifeOnHit': {
+                    name: 'Life on Hit',
+                    modifier: 0
+                }
+            };
+
+
+            var combinedStatCollection = Object.assign(defensiveStatCollection, this.state.customDefensiveStats);
+
+            console.log(combinedStatCollection);
+            // TODO fix conversion
 
             if (additionalStatsDefensive && statsState) {
-                if (statsState.secondaryResource) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Secondary Resource: ' + statsState.secondaryResource));
+                for (var defenseStat in combinedStatCollection) {
+                    if (combinedStatCollection.hasOwnProperty(defenseStat)) {
+                        if (statsState[defenseStat]) {
+                            if (!combinedStatCollection[defenseStat].modifier) {
+                                additionalStatsDefensive.push(React.DOM.div({
+                                    key: defenseStat,
+                                    className: 'bonusstat'
+                                }, combinedStatCollection[defenseStat].name + ': ' + statsState[defenseStat]));
+                            } else {
+                                additionalStatsDefensive.push(React.DOM.div({
+                                    key: defenseStat,
+                                    className: 'bonusstat'
+                                }, combinedStatCollection[defenseStat].name + ': ' + (combinedStatCollection[defenseStat].modifier + statsState[defenseStat])));
+                            }
+                        } else {
+                            if (!combinedStatCollection[defenseStat].modifier) {
+                                additionalStatsDefensive.push(React.DOM.div({
+                                    key: defenseStat,
+                                    className: 'bonusstat'
+                                }, combinedStatCollection[defenseStat].name + ': ' + combinedStatCollection[defenseStat].value));
+                            } else {
+                                additionalStatsDefensive.push(React.DOM.div({
+                                    key: defenseStat,
+                                    className: 'bonusstat'
+                                }, combinedStatCollection[defenseStat].name + ': ' + (combinedStatCollection[defenseStat].modifier + combinedStatCollection[defenseStat].value)));
+                            }
+                        }
+                    }
                 }
 
-                if (statsState.physicalResist) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Physical Resist: ' + (statsState.physicalResist + this.state.paragonStats.paragonResistAll[1])));
-                } else if (this.state.paragonStats.paragonResistAll[1] !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Physical Resist: ' + this.state.paragonStats.paragonResistAll[1]));
-                }
-
-                if (statsState.fireResist) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Fire Resist: ' + (statsState.fireResist + this.state.paragonStats.paragonResistAll[1])));
-                } else if (this.state.paragonStats.paragonResistAll[1] !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Fire Resist: ' + this.state.paragonStats.paragonResistAll[1]));
-                }
-
-                if (statsState.coldResist) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Cold Resist: ' + (statsState.coldResist + this.state.paragonStats.paragonResistAll[1])));
-                } else if (this.state.paragonStats.paragonResistAll[1] !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Cold Resist: ' + this.state.paragonStats.paragonResistAll[1]));
-                }
-
-                if (statsState.lightningResist) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Lighting Resist: ' + (statsState.lightningResist + this.state.paragonStats.paragonResistAll[1])));
-                } else if (this.state.paragonStats.paragonResistAll[1] !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Lighting Resist: ' + this.state.paragonStats.paragonResistAll[1]));
-                }
-
-                if (statsState.poisonResist) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Poison Resist: ' + (statsState.poisonResist + this.state.paragonStats.paragonResistAll[1])));
-                } else if (this.state.paragonStats.paragonResistAll[1] !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Poison Resist: ' + this.state.paragonStats.paragonResistAll[1]));
-                }
-
-                if (goldPickUpState !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Gold Pick-up Radius: ' + goldPickUpState + ' yards'));
-                }
-
-                if (dmgRedMeleeState !== 1) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Melee Damage Reduction: ' + Math.round((1 - dmgRedMeleeState) * 100 * 1000) / 1000 + '%'));
-                }
-
-                if (dmgRedRangedState !== 1) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Ranged Damage Reduction: ' + Math.round((1 - dmgRedRangedState) * 100 * 1000) / 1000 + '%'));
-                }
-
-                if (eliteDmgRedState !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Damage Reduction from Elites: ' + eliteDmgRedState + '%'));
-                }
-                if (maxHealthState) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Bonus Max Health: ' + (maxHealthState + this.state.paragonStats.paragonMaxHealth[1]) + '%'));
-                } else if (this.state.paragonStats.paragonMaxHealth[1] !== 0) {
-                    additionalStatsDefensive.push(React.DOM.div({
-                        key: additionalStatsDefensive.key,
-                        className: 'bonusstat'
-                    }, 'Bonus Max Health: ' + this.state.paragonStats.paragonMaxHealth[1] + '%'));
-                }
+                // TODO continue here
+                //
+                //if (goldPickUpState !== 0) {
+                //    additionalStatsDefensive.push(React.DOM.div({
+                //        key: additionalStatsDefensive.key,
+                //        className: 'bonusstat'
+                //    }, 'Gold Pick-up Radius: ' + goldPickUpState + ' yards'));
+                //}
+                //
+                //if (dmgRedMeleeState !== 1) {
+                //    additionalStatsDefensive.push(React.DOM.div({
+                //        key: additionalStatsDefensive.key,
+                //        className: 'bonusstat'
+                //    }, 'Melee Damage Reduction: ' + Math.round((1 - dmgRedMeleeState) * 100 * 1000) / 1000 + '%'));
+                //}
+                //
+                //if (dmgRedRangedState !== 1) {
+                //    additionalStatsDefensive.push(React.DOM.div({
+                //        key: additionalStatsDefensive.key,
+                //        className: 'bonusstat'
+                //    }, 'Ranged Damage Reduction: ' + Math.round((1 - dmgRedRangedState) * 100 * 1000) / 1000 + '%'));
+                //}
+                //
+                //if (eliteDmgRedState !== 0) {
+                //    additionalStatsDefensive.push(React.DOM.div({
+                //        key: additionalStatsDefensive.key,
+                //        className: 'bonusstat'
+                //    }, 'Damage Reduction from Elites: ' + eliteDmgRedState + '%'));
+                //}
+                //if (maxHealthState) {
+                //    additionalStatsDefensive.push(React.DOM.div({
+                //        key: additionalStatsDefensive.key,
+                //        className: 'bonusstat'
+                //    }, 'Bonus Max Health: ' + (maxHealthState + this.state.paragonStats.paragonMaxHealth[1]) + '%'));
+                //} else if (this.state.paragonStats.paragonMaxHealth[1] !== 0) {
+                //    additionalStatsDefensive.push(React.DOM.div({
+                //        key: additionalStatsDefensive.key,
+                //        className: 'bonusstat'
+                //    }, 'Bonus Max Health: ' + this.state.paragonStats.paragonMaxHealth[1] + '%'));
+                //}
             }
 
             var self = this;
