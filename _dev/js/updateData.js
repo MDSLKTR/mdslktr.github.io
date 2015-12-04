@@ -2095,66 +2095,67 @@ var statPool = [
                 }
             }
 
+            // Active Skill Parser
             if (skillsState) {
-                skillsState.forEach(function (skillName) {
-                    if (skillName.rune) {
-                        constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                        if (skillName.rune.type === runeMap[skillName.rune.type].key) {
+                skillsState.forEach(function (skillData) {
+                    if (skillData.rune) {
+                        constructedLink = skillIconBaseUrl.concat(skillData.skill.icon);
+                        if (skillData.rune.type === runeMap[skillData.rune.type].key) {
                             runeType = {
-                                backgroundPosition: '0 ' + runeMap[skillName.rune.type].position
+                                backgroundPosition: '0 ' + runeMap[skillData.rune.type].position
                             };
                         }
 
-                        skills.push(React.DOM.div({key: skillName.skill.name + '-icon', className: 'hasIcon'},
-                                skillName.skill.name,
+                        skills.push(React.DOM.div({key: skillData.skill.name + '-icon', className: 'hasIcon'},
+                                skillData.skill.name,
                                 ' with ',
-                                skillName.rune.name,
+                                skillData.rune.name,
                                 React.DOM.div({
-                                    key: skillName.skill.name,
+                                    key: skillData.skill.name + '-icon-front',
                                     className: 'icon-front',
                                     style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                                 }),
-                                React.DOM.div({key: skillName.rune.name, className: 'icon-back', style: runeType})
+                                React.DOM.div({key: skillData.rune.name + '-icon-back', className: 'icon-back', style: runeType})
                             )
                         );
-                        skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
+                        skillsDesc.push(React.DOM.div({key: skillData.skill.name + '-description', className: 'description'},
                             React.DOM.div({
-                                key: skillsState.key,
+                                key: skillData.skill.name + '-desc-icon',
                                 className: 'desc-icon',
                                 style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                             }),
-                            skillName.skill.name + ' with ' + skillName.rune.name,
+                            skillData.skill.name + ' with ' + skillData.rune.name,
                             React.DOM.p({
-                                dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
-                                key: skillsState.key,
+                                dangerouslySetInnerHTML: {__html: skillData.skill.description.replace(/\n/g, '<br/>')},
+                                key: skillData.skill.name + '-desc',
                                 className: 'skill-desc'
                             }),
                             React.DOM.p({
-                                dangerouslySetInnerHTML: {__html: skillName.rune.description.replace(/\n/g, '<br/>')},
-                                key: skillsState.key,
+                                dangerouslySetInnerHTML: {__html: skillData.rune.description.replace(/\n/g, '<br/>')},
+                                key: skillData.rune.name + '-desc',
                                 className: 'rune-desc'
                             })
                         ));
-                    } else if (skillName.skill) {
-                        constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
+                    } else if (skillData.skill) {
+                        constructedLink = skillIconBaseUrl.concat(skillData.skill.icon);
                         skills.push(React.DOM.div({
-                            key: skillsState.key,
+                            key: skillData.skill.name + '-icon',
                             className: 'hasIcon'
-                        }, skillName.skill.name, React.DOM.div({
-                            key: skillsState.key,
+                        }, skillData.skill.name, React.DOM.div({
+                            key: skillData.skill.name + '-icon-front',
                             className: 'icon-front no-rune',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         })));
-                        skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
+                        skillsDesc.push(React.DOM.div({key: skillData.skill.name + '-description', className: 'description'},
                             React.DOM.div({
-                                key: skillsState.key,
+                                key: skillData.skill.name + '-desc-icon',
                                 className: 'desc-icon',
                                 style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                             }),
-                            skillName.skill.name,
+                            skillData.skill.name,
                             React.DOM.p({
-                                dangerouslySetInnerHTML: {__html: skillName.skill.description.replace(/\n/g, '<br/>')},
-                                key: skillsState.key,
+                                dangerouslySetInnerHTML: {__html: skillData.skill.description.replace(/\n/g, '<br/>')},
+                                key: skillData.skill.name + '-desc',
                                 className: 'skill-desc'
                             })
                         ));
@@ -2162,6 +2163,7 @@ var statPool = [
                 });
             }
 
+            // Passive Skill Parser
             if (passivesState) {
                 passivesState.forEach(function (passive) {
                     if (passive.skill) {
@@ -2191,6 +2193,7 @@ var statPool = [
                 });
             }
 
+            // Item Parser
             if (this.state.items) {
                 for (var item in itemCollection) {
                     if (itemCollection.hasOwnProperty(item)) {
@@ -2252,7 +2255,7 @@ var statPool = [
                                                         itemCollection[item].itemData.attributesRaw[weaponElementsDelta[i]].max) *
                                                         itemCollection[item].itemData.attributesRaw[DamagePercentAll].max);
                                                     itemCollection[item].view.push(React.DOM.li({
-                                                        key: itemCollection[item].itemData.key,
+                                                        key: itemCollection[item].itemData.name + 'raw-damage',
                                                         className: 'raw-damage'
                                                     }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                                                 } else if (!itemCollection[item].itemData.attributesRaw[DamagePercentAll] && !itemCollection[item].itemData.attributesRaw[DamageBonusMinPhysical]) {
@@ -2262,14 +2265,14 @@ var statPool = [
                                                         itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max +
                                                         itemCollection[item].itemData.attributesRaw[weaponElementsDelta[i]].max;
                                                     itemCollection[item].view.push(React.DOM.li({
-                                                        key: itemCollection[item].itemData.key,
+                                                        key: itemCollection[item].itemData.name + 'raw-damage',
                                                         className: 'raw-damage'
                                                     }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                                                 } else {
                                                     minDmgCalc = itemCollection[item].itemData.minDamage.max;
                                                     maxDmgCalc = itemCollection[item].itemData.maxDamage.max;
                                                     itemCollection[item].view.push(React.DOM.li({
-                                                        key: itemCollection[item].itemData.key,
+                                                        key: itemCollection[item].itemData.name + 'raw-damage',
                                                         className: 'raw-damage'
                                                     }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                                                 }
