@@ -117,7 +117,7 @@ var statPool = [
     realmList = [
         'eu',
         'us',
-        'kr'
+        'kr',
     ],
     backgroundImage,
     itemSetCount,
@@ -204,19 +204,36 @@ var statPool = [
     neck = [],
     additionalStatsOffensive = [],
     additionalStatsDefensive = [],
-    calculatedAttackSpeed,
     minDmgCalc,
     maxDmgCalc,
     primaryStats = {
-        'life': ['Life', 0],
-        'toughness': ['Toughness', 0],
-        'dexterity': ['Dexterity', 0],
-        'strength': ['Strength', 0],
-        'intelligence': ['Intelligence', 0],
-        'vitality': ['Vitality', 0],
-        'armor': ['Armor', 0],
-        'damageIncrease': ['Damage Increase', 0],
-        'healing': ['Healing', 0]
+        'life': {
+            name: 'Life'
+        },
+        'toughness': {
+            name: 'Toughness'
+        },
+        'dexterity': {
+            name: 'Dexterity'
+        },
+        'strength': {
+            name: 'Strength'
+        },
+        'intelligence': {
+            name: 'Intelligence'
+        },
+        'vitality': {
+            name: 'Vitality'
+        },
+        'armor': {
+            name: 'Armor'
+        },
+        'damageIncrease': {
+            name: 'Damage Increase'
+        },
+        'healing': {
+            name: 'Healing'
+        }
     },
     d3Profile = React.createClass({
         displayName: 'd3Profile',
@@ -240,21 +257,19 @@ var statPool = [
                 name: '',
                 level: '',
                 paragon: '',
-
                 helmItem: {},
                 amuletItem: {},
-                shouldersItem: {},
-                bracersItem: {},
                 chestItem: {},
-                ringItemLeft: {},
-                ringItemRight: {},
-                mainItem: {},
-                offItem: {},
-                legsItem: {},
                 bootsItem: {},
                 glovesItem: {},
+                shouldersItem: {},
+                legsItem: {},
+                bracersItem: {},
+                mainItem: {},
+                offItem: {},
                 beltItem: {},
-
+                ringItemLeft: {},
+                ringItemRight: {},
                 additionalStats: [],
                 atkSpd: 0,
                 eliteDmg: 0,
@@ -279,16 +294,83 @@ var statPool = [
                 panelAnimationComplete: false,
                 realm: initialRealm,
                 paragonStats: {
-                    'paragonCdr': ['Cooldown Reduction', 0, 0.2, 10, '%'],
-                    'paragonResRed': ['Resource Reduction', 0, 0.2, 10, '%'],
-                    'paragonAtkSpd': ['Attack Speed', 0, 0.2, 10, '%'],
-                    'paragonCritChance': ['Crit Chance', 0, 0.1, 5, '%'],
-                    'paragonCritDmg': ['Crit Damage', 0, 1, 50, '%'],
-                    'paragonAreaDmg': ['Area Damage', 0, 1, 50, '%'],
-                    'paragonResource': ['Primary Resource', 0, 0.5, 25, ''],
-                    'paragonResistAll': ['Resist All', 0, 5, 250, ''],
-                    'paragonArmor': ['Armor', 0, 0.5, 25, '%'],
-                    'paragonMaxHealth': ['Max Health', 0, 0.5, 25, '%']
+                    'paragonCdr': {
+                        name: 'Cooldown Reduction',
+                        value: 0,
+                        increment: 0.2,
+                        max: 10,
+                        unit: '%'
+                    },
+                    'paragonResRed': {
+                        name: 'Resource Reduction',
+                        value: 0,
+                        increment: 0.2,
+                        max: 10,
+                        unit: '%'
+                    },
+                    'paragonAtkSpd': {
+                        name: 'Attack Speed',
+                        value: 0,
+                        increment: 0.2,
+                        max: 10,
+                        unit: '%'
+                    },
+                    'paragonCritChance': {
+                        name: 'Crit Chance',
+                        value: 0,
+                        increment: 0.1,
+                        max: 5,
+                        unit: '%'
+                    },
+                    'paragonCritDmg': {
+                        name: 'Crit Damage',
+                        value: 0,
+                        increment: 1,
+                        max: 50,
+                        unit: '%'
+                    },
+                    'paragonAreaDmg': {
+                        name: 'Area Damage',
+                        value: 0,
+                        increment: 1,
+                        max: 50,
+                        unit: '%'
+                    },
+                    'paragonResource': {
+                        name: 'Primary Resource',
+                        value: 0,
+                        increment: 0.5,
+                        max: 25,
+                        unit: ''
+                    },
+                    'paragonResistAll': {
+                        name: 'Resist All',
+                        value: 0,
+                        increment: 5,
+                        max: 250,
+                        unit: ''
+                    },
+                    'paragonArmor': {
+                        name: 'Armor',
+                        value: 0,
+                        increment: 0.5,
+                        max: 25,
+                        unit: '%'
+                    },
+                    'paragonMaxHealth': {
+                        name: 'Max Health',
+                        value: 0,
+                        increment: 0.5,
+                        max: 25,
+                        unit: '%'
+                    },
+                    'paragonLifeOnHit': {
+                        name: 'Life on Hit',
+                        value: 0,
+                        increment: 160.9,
+                        max: 8046.3,
+                        unit: ''
+                    }
                 },
                 battleTag: localStorage.getItem('battleTag'),
                 apiKey: '?locale=en_GB&apikey=65d63bvh7spjgmce3gjq2mv5nzjfsggy',
@@ -564,9 +646,9 @@ var statPool = [
             for (stat in this.state.paragonStats) {
                 if (this.state.paragonStats.hasOwnProperty(stat)) {
                     if (localStorage.getItem(stat)) {
-                        this.state.paragonStats[stat][1] = parseInt(localStorage.getItem(stat));
+                        this.state.paragonStats[stat].value = parseInt(localStorage.getItem(stat));
                     } else {
-                        this.state.paragonStats[stat][1] = 0;
+                        this.state.paragonStats[stat].value = 0;
                     }
                 }
             }
@@ -1020,7 +1102,7 @@ var statPool = [
             for (var pstat in this.state.paragonStats) {
                 if (this.state.paragonStats.hasOwnProperty(pstat)) {
                     var node = this.refs[pstat].getDOMNode();
-                    if (this.state.paragonStats[pstat][1] === this.state.paragonStats[pstat][3]) {
+                    if (this.state.paragonStats[pstat].value === this.state.paragonStats[pstat].max) {
                         node.classList.add('maxed');
                     }
                 }
@@ -1033,26 +1115,26 @@ var statPool = [
 
             for (var pstat in this.state.paragonStats) {
                 if (this.state.paragonStats.hasOwnProperty(pstat)) {
-                    console.log(this.state.paragonStats[pstat][2], pstat);
+                    console.log(this.state.paragonStats[pstat].increment, pstat);
                     if (parentElement.classList.contains(pstat)) {
                         if (target.classList.contains('paragon-stat-increment')) {
-                            if (this.state.paragonStats[pstat][1] < this.state.paragonStats[pstat][3]) {
-                                this.state.paragonStats[pstat][1] = Math.round((this.state.paragonStats[pstat][1] + this.state.paragonStats[pstat][2] ) * 10) / 10;
+                            if (this.state.paragonStats[pstat].value < this.state.paragonStats[pstat].max) {
+                                this.state.paragonStats[pstat].value = Math.round((this.state.paragonStats[pstat].value + this.state.paragonStats[pstat].increment ) * 10) / 10;
                             }
                         } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
                             target.classList.add('maxed');
-                            this.state.paragonStats[pstat][1] = this.state.paragonStats[pstat][3];
+                            this.state.paragonStats[pstat].value = this.state.paragonStats[pstat].max;
                         } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
                             target.classList.remove('maxed');
-                            this.state.paragonStats[pstat][1] = 0;
+                            this.state.paragonStats[pstat].value = 0;
                         } else {
-                            if (this.state.paragonStats[pstat][1] > 0) {
-                                this.state.paragonStats[pstat][1] = Math.round((this.state.paragonStats[pstat][1] - this.state.paragonStats[pstat][2]) * 10) / 10;
+                            if (this.state.paragonStats[pstat].value > 0) {
+                                this.state.paragonStats[pstat].value = Math.round((this.state.paragonStats[pstat].value - this.state.paragonStats[pstat].increment) * 10) / 10;
                             }
                         }
                     }
 
-                    localStorage.setItem(pstat, this.state.paragonStats[pstat][1]);
+                    localStorage.setItem(pstat, this.state.paragonStats[pstat].value);
                 }
             }
             this.triggerStatCollector();
@@ -1635,52 +1717,68 @@ var statPool = [
                         cdrRed: {
                             name: 'Cooldown Reduction',
                             value: cdr,
-                            modifier: this.state.paragonStats.paragonCdr[1]
+                            modifier: this.state.paragonStats.paragonCdr[1],
+                            unit: '%'
                         },
                         resRed: {
                             name: 'Resource Cost Reduction',
                             value: resRed,
-                            modifier: this.state.paragonStats.paragonResRed[1]
+                            modifier: this.state.paragonStats.paragonResRed[1],
+                            unit: '%'
                         },
                         eliteDmg: {
                             name: 'Elite Damage Bonus',
-                            value: eliteDmg
-                        },
-                        eliteDmgRed: {
-                            name: 'Elite Damage Reduction',
-                            value: eliteDmgRed
+                            value: eliteDmg,
+                            modifier: 0,
+                            unit: '%'
                         },
                         areaDmg: {
                             name: 'Area Damage Bonus',
                             value: areaDmg,
-                            modifier: this.state.paragonStats.paragonAreaDmg[1]
+                            modifier: this.state.paragonStats.paragonAreaDmg[1],
+                            unit: '%'
                         },
                         atkSpd: {
                             name: 'Attack Speed Bonus',
                             value: atkSpd,
-                            modifier: this.state.paragonStats.paragonAtkSpd[1]
+                            modifier: this.state.paragonStats.paragonAtkSpd[1],
+                            unit: ''
                         }
                     },
                     customDefensiveStats: {
                         goldPickup: {
                             name: 'Gold Pick-up Range',
-                            value: goldPickUp
+                            value: goldPickUp,
+                            modifier: 0,
+                            unit: ' yards'
                         },
                         dmgRedMelee: {
                             name: 'Melee Damage Reduction',
-                            value: dmgRedMelee
+                            value: Math.round((1 - dmgRedMelee) * 100 * 1000) / 1000,
+                            modifier: 0,
+                            unit: '%'
                         },
 
                         dmgRedRanged: {
                             name: 'Ranged Damage Reduction',
-                            value: dmgRedRanged
+                            value: Math.round((1 - dmgRedRanged) * 100 * 1000) / 1000,
+                            modifier: 0,
+                            unit: '%'
+                        },
+
+                        eliteDmgRed: {
+                            name: 'Elite Damage Reduction',
+                            value: eliteDmgRed,
+                            modifier: 0,
+                            unit: '%'
                         },
 
                         maxHealth: {
                             name: 'Max Health Bonus',
                             value: maxHealth,
-                            modifier: this.state.paragonStats.paragonMaxHealth[1]
-                        },
+                            modifier: this.state.paragonStats.paragonMaxHealth[1],
+                            unit: '%'
+                        }
                     }
                 });
             }
@@ -1697,8 +1795,24 @@ var statPool = [
             });
         },
 
+        normalizeMultiplicativeStat: function (value, modifier) {
+            console.log(value);
+            return Math.round((1 - value + (modifier / 100)) * 100 * 100) / 100;
+        },
+
+        normalizeWeaponAttackSpeed: function (value, modifier, mainHandSpeed, offHandModifier) {
+            if (offHandModifier) {
+                return Math.round((mainHandSpeed + mainHandSpeed * (offHandModifier + value + modifier / 100)) * 100) / 100;
+            } else {
+                return Math.round((mainHandSpeed + mainHandSpeed * (value + modifier / 100)) * 100) / 100;
+            }
+        },
+
         render: function () {
-            var skillsState = this.state.skills,
+            var self = this,
+                pstat,
+                itemIterator,
+                skillsState = this.state.skills,
                 passivesState = this.state.passives,
                 statsState = this.state.stats,
                 nameState = this.state.name,
@@ -1714,74 +1828,173 @@ var statPool = [
                 skillIconBaseUrl = this.state.skillIconBase,
                 itemIconBaseUrl = this.state.itemIconBase,
                 timeStamp = this.state.time,
-                cdrState = this.state.cdrRed,
-                resState = this.state.resRed,
-                eliteDmgState = this.state.eliteDmg,
-                eliteDmgRedState = this.state.eliteDmgRed,
-                areaDmgState = this.state.areaDmg,
-                goldPickUpState = this.state.goldPickup,
-                dmgRedMeleeState = this.state.dmgRedMelee,
-                dmgRedRangedState = this.state.dmgRedRanged,
                 maxElementDmg = this.state.maxEleDmg,
-                maxHealthState = this.state.maxHealth,
                 skillDmgState = this.state.skillDmg,
                 skillDmgStateRaw = this.state.skillDmgRaw,
-                itemAtkSpeedState = this.state.atkSpd,
-                itemSlots = [
-                    this.state.helmItem,
-                    this.state.amuletItem,
-                    this.state.chestItem,
-                    this.state.bootsItem,
-                    this.state.glovesItem,
-                    this.state.shouldersItem,
-                    this.state.legsItem,
-                    this.state.bracersItem,
-                    this.state.mainItem,
-                    this.state.offItem,
-                    this.state.beltItem,
-                    this.state.ringItemLeft,
-                    this.state.ringItemRight
-                ],
+                calculatedAttackSpeed = 0,
+                defensiveStatCollection = {
+                    'secondaryResource': {
+                        name: 'Secondary Resource',
+                        modifier: 0,
+                        value: 0,
+                        unit: ''
+                    },
+                    'fireResist': {
+                        name: 'Fire Resist',
+                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        value: 0,
+                        unit: ''
+                    },
+                    'coldResist': {
+                        name: 'Cold Resist',
+                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        value: 0,
+                        unit: ''
+                    },
+                    'lightningResist': {
+                        name: 'Lightning Resist',
+                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        value: 0,
+                        unit: ''
+                    },
+                    'physicalResist': {
+                        name: 'Physical Resist',
+                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        value: 0,
+                        unit: ''
+                    },
+                    'poisonResist': {
+                        name: 'Poison Resist',
+                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        value: 0,
+                        unit: ''
+                    },
+                    'lifeOnHit': {
+                        name: 'Life on Hit',
+                        modifier: this.state.paragonStats.paragonLifeOnHit[1],
+                        value: 0,
+                        unit: ''
+                    }
+                },
+                offensiveStatCollection = {
+                    'critChance': {
+                        name: 'Critical Hit Chance',
+                        modifier: this.state.paragonStats.paragonCritChance[1],
+                        value: 0,
+                        unit: '%'
+                    },
+                    'critDamage': {
+                        name: 'Critical Hit Damage',
+                        modifier: this.state.paragonStats.paragonCritDmg[1],
+                        value: 0,
+                        unit: '%',
+                        errorCorrection: -100,
+                    },
+                    'primaryResource': {
+                        name: 'Primary Resource',
+                        modifier: this.state.paragonStats.paragonResource[1],
+                        value: 0,
+                        unit: '%'
+                    }
+                },
+                defenseStats = Object.assign(defensiveStatCollection, this.state.customDefensiveStats),
+                offensiveStats = Object.assign(offensiveStatCollection, this.state.customOffensiveStats),
+                content,
+                itemCollection = {
+                    'head': {
+                        itemData: this.state.helmItem,
+                        view: helmet
+                    },
+                    'neck': {
+                        itemData: this.state.amuletItem,
+                        view: neck
+                    },
+                    'torso': {
+                        itemData: this.state.chestItem,
+                        view: torso
+                    },
+                    'feet': {
+                        itemData: this.state.bootsItem,
+                        view: feet
+                    },
+                    'hands': {
+                        itemData: this.state.glovesItem,
+                        view: hands
+                    },
+                    'shoulders': {
+                        itemData: this.state.shouldersItem,
+                        view: shoulders
+                    },
+                    'legs': {
+                        itemData: this.state.legsItem,
+                        view: legs
+                    },
+                    'bracers': {
+                        itemData: this.state.bracersItem,
+                        view: bracers
+                    },
+                    'mainHand': {
+                        itemData: this.state.mainItem,
+                        view: mainHand
+                    },
+                    'offHand': {
+                        itemData: this.state.offItem,
+                        view: offHand
+                    },
+                    'leftFinger': {
+                        itemData: this.state.ringItemLeft,
+                        view: ringLeft
+                    },
+                    'rightFinger': {
+                        itemData: this.state.ringItemRight,
+                        view: ringRight
+                    },
+                    'waist': {
+                        itemData: this.state.beltItem,
+                        view: belt
+                    }
+                };
 
-                calculatedAttackSpeed = 0;
             minDmgCalc = 0;
             maxDmgCalc = 0;
-            additionalStatsOffensive.length = 0;
-            additionalStatsDefensive.length = 0;
-            skills.length = 0;
-            skillsDesc.length = 0;
-            heroes.length = 0;
-            passives.length = 0;
-            passivesDesc.length = 0;
-            stats.length = 0;
-            paragon.length = 0;
-            specialPassive.length = 0;
-            base.length = 0;
-            style.length = 0;
-            shoulders.length = 0;
-            helmet.length = 0;
-            torso.length = 0;
-            hands.length = 0;
-            feet.length = 0;
-            ringLeft.length = 0;
-            ringRight.length = 0;
-            bracers.length = 0;
-            legs.length = 0;
-            items.length = 0;
-            mainHand.length = 0;
-            offHand.length = 0;
-            belt.length = 0;
-            neck.length = 0;
+            additionalStatsOffensive = [];
+            additionalStatsDefensive = [];
+            skills = [];
+            skillsDesc = [];
+            heroes = [];
+            passives = [];
+            passivesDesc = [];
+            stats = [];
+            paragon = [];
+            specialPassive = [];
+            base = [];
+            style = [];
+            shoulders = [];
+            helmet = [];
+            torso = [];
+            hands = [];
+            feet = [];
+            ringLeft = [];
+            ringRight = [];
+            bracers = [];
+            legs = [];
+            items = [];
+            mainHand = [];
+            offHand = [];
+            belt = [];
+            neck = [];
 
             for (m = 0; m < setPool.length; m++) {
                 setPool[m][1] = 0;
             }
 
-            for (i = 0; i < itemSlots.length; i++) {
-                for (m = 0; m < setPool.length; m++) {
-                    if (itemSlots[i] && itemSlots[i].set) {
-                        if (itemSlots[i].set.name === setPool[m][0]) {
-                            setPool[m][1]++;
+            for (itemIterator in itemCollection) {
+                if (itemCollection.hasOwnProperty(itemIterator)) {
+                    for (m = 0; m < setPool.length; m++) {
+                        if (itemCollection[itemIterator].itemData && itemCollection[itemIterator].itemData.set) {
+                            if (itemCollection[itemIterator].itemData.set.name === setPool[m][0]) {
+                                setPool[m][1]++;
+                            }
                         }
                     }
                 }
@@ -1971,23 +2184,6 @@ var statPool = [
                 });
             }
 
-            var itemCollection = {
-                'head': [this.state.helmItem, helmet],
-                'neck': [this.state.amuletItem, neck],
-                'torso': [this.state.chestItem, torso],
-                'feet': [this.state.bootsItem, feet],
-                'hands': [this.state.glovesItem, hands],
-                'shoulders': [this.state.shouldersItem, shoulders],
-                'legs': [this.state.legsItem, legs],
-                'bracers': [this.state.bracersItem, bracers],
-                'mainHand': [this.state.mainItem, mainHand],
-                'offHand': [this.state.offItem, offHand],
-                'waist': [this.state.beltItem, belt],
-                'leftFinger': [this.state.ringItemLeft, ringLeft],
-                'rightFinger': [this.state.ringItemRight, ringRight]
-            };
-
-
             if (this.state.items) {
                 for (var item in itemCollection) {
                     if (itemCollection.hasOwnProperty(item)) {
@@ -2016,58 +2212,59 @@ var statPool = [
                                 default:
                             }
 
-                            if (itemCollection[item][0].attributesRaw) {
-                                isAncient = itemCollection[item][0].attributesRaw.Ancient_Rank && itemCollection[item][0].attributesRaw.Ancient_Rank.min === 1.0 ? 'ancient' : '';
+                            if (itemCollection[item].itemData.attributesRaw) {
+                                isAncient = itemCollection[item].itemData.attributesRaw.Ancient_Rank && itemCollection[item].itemData.attributesRaw.Ancient_Rank.min === 1.0 ? 'ancient' : '';
                                 if (item === 'mainHand' || item === 'offHand' ) {
-                                    if (itemCollection[item][0].type) {
+                                    if (itemCollection[item].itemData.type) {
                                         var mainHanded = '';
-                                        mainHanded = itemCollection[item][0].type.twoHanded ? '(2h)' : '(1h)';
+                                        mainHanded = itemCollection[item].itemData.type.twoHanded ? '(2h)' : '(1h)';
 
-                                        itemCollection[item][1].push(React.DOM.li({
+                                        itemCollection[item].view.push(React.DOM.li({
                                             key: 'item-name',
                                             className: itemQuality + ' name'
-                                        }, isAncient + ' ' + itemCollection[item][0].name + ' ' + mainHanded));
+                                        }, isAncient + ' ' + itemCollection[item].itemData.name + ' ' + mainHanded));
                                     }
 
-                                    if (itemCollection[item][0].dps) {
-                                        itemCollection[item][1].push(React.DOM.li({
+                                    if (itemCollection[item].itemData.dps) {
+                                        itemCollection[item].view.push(React.DOM.li({
                                             key: 'dps',
                                             className: 'dps'
-                                        }, itemCollection[item][0].dps.max.toString().substring(0, 7) + ' DPS'));
+                                        }, itemCollection[item].itemData.dps.max.toString().substring(0, 7) + ' DPS'));
                                     }
 
-                                    if (itemCollection[item][0].minDamage && itemCollection[item][0].maxDamage && itemCollection[item][0].attributesRaw) {
+                                    if (itemCollection[item].itemData.minDamage && itemCollection[item].itemData.maxDamage && itemCollection[item].itemData.attributesRaw) {
                                         for (i = 0; i < weaponElementsMin.length; i++) {
-                                            if (itemCollection[item][0].attributesRaw[weaponElementsMin[i]]) {
-                                                if (itemCollection[item][0].attributesRaw[DamagePercentAll] && !itemCollection[item][0].attributesRaw[DamageBonusMinPhysical]) {
-                                                    minDmgCalc = itemCollection[item][0].minDamage.max +
-                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max +
-                                                        (itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max *
-                                                        itemCollection[item][0].attributesRaw[DamagePercentAll].max);
-                                                    maxDmgCalc = itemCollection[item][0].maxDamage.max +
-                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max +
-                                                        itemCollection[item][0].attributesRaw[weaponElementsDelta[i]].max +
-                                                        ((itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max + itemCollection[item][0].attributesRaw[weaponElementsDelta[i]].max) *
-                                                        itemCollection[item][0].attributesRaw[DamagePercentAll].max);
-                                                    itemCollection[item][1].push(React.DOM.li({
-                                                        key: itemCollection[item][0].key,
+                                            if (itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]]) {
+                                                if (itemCollection[item].itemData.attributesRaw[DamagePercentAll] && !itemCollection[item].itemData.attributesRaw[DamageBonusMinPhysical]) {
+                                                    minDmgCalc = itemCollection[item].itemData.minDamage.max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max +
+                                                        (itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max *
+                                                        itemCollection[item].itemData.attributesRaw[DamagePercentAll].max);
+                                                    maxDmgCalc = itemCollection[item].itemData.maxDamage.max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsDelta[i]].max +
+                                                        ((itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsDelta[i]].max) *
+                                                        itemCollection[item].itemData.attributesRaw[DamagePercentAll].max);
+                                                    itemCollection[item].view.push(React.DOM.li({
+                                                        key: itemCollection[item].itemData.key,
                                                         className: 'raw-damage'
                                                     }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
-                                                } else if (!itemCollection[item][0].attributesRaw[DamagePercentAll] && !itemCollection[item][0].attributesRaw[DamageBonusMinPhysical]) {
-                                                    minDmgCalc = itemCollection[item][0].minDamage.max +
-                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max;
-                                                    maxDmgCalc = itemCollection[item][0].maxDamage.max +
-                                                        itemCollection[item][0].attributesRaw[weaponElementsMin[i]].max +
-                                                        itemCollection[item][0].attributesRaw[weaponElementsDelta[i]].max;
-                                                    itemCollection[item][1].push(React.DOM.li({
-                                                        key: itemCollection[item][0].key,
+                                                } else if (!itemCollection[item].itemData.attributesRaw[DamagePercentAll] && !itemCollection[item].itemData.attributesRaw[DamageBonusMinPhysical]) {
+                                                    minDmgCalc = itemCollection[item].itemData.minDamage.max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max;
+                                                    maxDmgCalc = itemCollection[item].itemData.maxDamage.max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsMin[i]].max +
+                                                        itemCollection[item].itemData.attributesRaw[weaponElementsDelta[i]].max;
+                                                    itemCollection[item].view.push(React.DOM.li({
+                                                        key: itemCollection[item].itemData.key,
                                                         className: 'raw-damage'
                                                     }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                                                 } else {
-                                                    minDmgCalc = itemCollection[item][0].minDamage.max;
-                                                    maxDmgCalc = itemCollection[item][0].maxDamage.max;
-                                                    itemCollection[item][1].push(React.DOM.li({
-                                                        key: itemCollection[item][0].key,
+                                                    minDmgCalc = itemCollection[item].itemData.minDamage.max;
+                                                    maxDmgCalc = itemCollection[item].itemData.maxDamage.max;
+                                                    itemCollection[item].view.push(React.DOM.li({
+                                                        key: itemCollection[item].itemData.key,
                                                         className: 'raw-damage'
                                                     }, Math.round(minDmgCalc) + ' - ' + Math.round(maxDmgCalc) + ' Damage'));
                                                 }
@@ -2077,34 +2274,34 @@ var statPool = [
 
 
                                 } else {
-                                    itemCollection[item][1].push(React.DOM.li({
+                                    itemCollection[item].view.push(React.DOM.li({
                                         key: 'item-name',
                                         className: itemQuality + ' name'
-                                    }, isAncient + ' ' + itemCollection[item][0].name));
+                                    }, isAncient + ' ' + itemCollection[item].itemData.name));
                                 }
                             }
 
-                            if (itemCollection[item][0].attributes) {
-                                if (itemCollection[item][0].attributes.primary) {
-                                    itemCollection[item][0].attributes.primary.forEach(function (primaryStat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({
+                            if (itemCollection[item].itemData.attributes) {
+                                if (itemCollection[item].itemData.attributes.primary) {
+                                    itemCollection[item].itemData.attributes.primary.forEach(function (primaryStat, currentIndex) {
+                                        itemCollection[item].view.push(React.DOM.li({
                                             key: 'primary-stat-' + currentIndex,
                                             className: 'primary'
                                         }, primaryStat.text));
                                     });
                                 }
-                                if (itemCollection[item][0].attributes.secondary) {
-                                    itemCollection[item][0].attributes.secondary.forEach(function (secondaryStat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({
+                                if (itemCollection[item].itemData.attributes.secondary) {
+                                    itemCollection[item].itemData.attributes.secondary.forEach(function (secondaryStat, currentIndex) {
+                                        itemCollection[item].view.push(React.DOM.li({
                                             key: 'secondary-stat-' + currentIndex,
                                             className: 'secondary'
                                         }, secondaryStat.text));
                                     });
                                 }
 
-                                if (itemCollection[item][0].attributes.passive) {
-                                    itemCollection[item][0].attributes.passive.forEach(function (passiveStat, currentIndex) {
-                                        itemCollection[item][1].push(React.DOM.li({
+                                if (itemCollection[item].itemData.attributes.passive) {
+                                    itemCollection[item].itemData.attributes.passive.forEach(function (passiveStat, currentIndex) {
+                                        itemCollection[item].view.push(React.DOM.li({
                                             key: 'passive-stat-' + currentIndex,
                                             className: 'passive'
                                         }, passiveStat.text));
@@ -2112,67 +2309,67 @@ var statPool = [
                                 }
                             }
 
-                            if (itemCollection[item][0].set && itemCollection[item][0].set.ranks) {
-                                for (i = 0; i < itemCollection[item][0].set.ranks.length; i++) {
+                            if (itemCollection[item].itemData.set && itemCollection[item].itemData.set.ranks) {
+                                for (i = 0; i < itemCollection[item].itemData.set.ranks.length; i++) {
                                     // count of ranks eg. 2, 3, 6
 
                                     for (k = 1; k <= 6; k++) {
                                         // count of max set boni - 6
                                         for (m = 0; m < setPool.length; m++) {
-                                            if (itemCollection[item][0].set.name === setPool[m][0] && this.state.setRing) {
+                                            if (itemCollection[item].itemData.set.name === setPool[m][0] && this.state.setRing) {
                                                 if (setPool[m][1] >= 2) {
                                                     itemSetCount = setPool[m][1]++;
                                                 } else {
                                                     itemSetCount = setPool[m][1];
                                                 }
-                                            } else if (itemCollection[item][0].set.name === setPool[m][0] && !this.state.setRing) {
+                                            } else if (itemCollection[item].itemData.set.name === setPool[m][0] && !this.state.setRing) {
                                                 itemSetCount = setPool[m][1];
                                             }
                                         }
 
-                                        if (itemCollection[item][0].set.ranks[i].required === k && itemCollection[item][0].set.ranks[i].required <= itemSetCount) {
-                                            itemCollection[item][0].set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-                                                itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-' + itemCollection[item][0].set.name + '-primary-bonus-' + primaryStat.text,
+                                        if (itemCollection[item].itemData.set.ranks[i].required === k && itemCollection[item].itemData.set.ranks[i].required <= itemSetCount) {
+                                            itemCollection[item].itemData.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
+                                                itemCollection[item].view.push(React.DOM.li({
+                                                    key: 'set-' + itemCollection[item].itemData.set.name + '-primary-bonus-' + primaryStat.text,
                                                     className: 'set-bonus-' + k
                                                 }, primaryStat.text));
                                             });
-                                        } else if (itemCollection[item][0].set.ranks[i].required === k) {
-                                            itemCollection[item][0].set.ranks[i].attributes.primary.forEach(function (primaryStat) {
-                                                itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-' + itemCollection[item][0].set.name + '-primary-bonus-' + primaryStat.text + '-inactive',
+                                        } else if (itemCollection[item].itemData.set.ranks[i].required === k) {
+                                            itemCollection[item].itemData.set.ranks[i].attributes.primary.forEach(function (primaryStat) {
+                                                itemCollection[item].view.push(React.DOM.li({
+                                                    key: 'set-' + itemCollection[item].itemData.set.name + '-primary-bonus-' + primaryStat.text + '-inactive',
                                                     className: 'set-bonus-' + k + ' inactive'
                                                 }, primaryStat.text));
                                             });
                                         }
 
-                                        if (itemCollection[item][0].set.ranks[i].required === k && itemCollection[item][0].set.ranks[i].required <= itemSetCount) {
-                                            itemCollection[item][0].set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-                                                itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-' + itemCollection[item][0].set.name + '-secondary bonus-' + secondaryStat.text,
+                                        if (itemCollection[item].itemData.set.ranks[i].required === k && itemCollection[item].itemData.set.ranks[i].required <= itemSetCount) {
+                                            itemCollection[item].itemData.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
+                                                itemCollection[item].view.push(React.DOM.li({
+                                                    key: 'set-' + itemCollection[item].itemData.set.name + '-secondary bonus-' + secondaryStat.text,
                                                     className: 'set-bonus-' + k
                                                 }, secondaryStat.text));
                                             });
-                                        } else if (itemCollection[item][0].set.ranks[i].required === k) {
-                                            itemCollection[item][0].set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
-                                                itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-' + itemCollection[item][0].set.name + '-secondary bonus-' + secondaryStat.text + '-inactive',
+                                        } else if (itemCollection[item].itemData.set.ranks[i].required === k) {
+                                            itemCollection[item].itemData.set.ranks[i].attributes.secondary.forEach(function (secondaryStat) {
+                                                itemCollection[item].view.push(React.DOM.li({
+                                                    key: 'set-' + itemCollection[item].itemData.set.name + '-secondary bonus-' + secondaryStat.text + '-inactive',
                                                     className: 'set-bonus-' + k + ' inactive'
                                                 }, secondaryStat.text));
                                             });
                                         }
 
-                                        if (itemCollection[item][0].set.ranks[i].required === k && itemCollection[item][0].set.ranks[i].required <= itemSetCount) {
-                                            itemCollection[item][0].set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-                                                itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-' + itemCollection[item][0].set.name + '-passive bonus-' + passiveStat.text,
+                                        if (itemCollection[item].itemData.set.ranks[i].required === k && itemCollection[item].itemData.set.ranks[i].required <= itemSetCount) {
+                                            itemCollection[item].itemData.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
+                                                itemCollection[item].view.push(React.DOM.li({
+                                                    key: 'set-' + itemCollection[item].itemData.set.name + '-passive bonus-' + passiveStat.text,
                                                     className: 'set-bonus-' + k
                                                 }, passiveStat.text));
                                             });
-                                        } else if (itemCollection[item][0].set.ranks[i].required === k) {
-                                            itemCollection[item][0].set.ranks[i].attributes.passive.forEach(function (passiveStat) {
-                                                itemCollection[item][1].push(React.DOM.li({
-                                                    key: 'set-' + itemCollection[item][0].set.name + '-passive bonus-' + passiveStat.text + '-inactive',
+                                        } else if (itemCollection[item].itemData.set.ranks[i].required === k) {
+                                            itemCollection[item].itemData.set.ranks[i].attributes.passive.forEach(function (passiveStat) {
+                                                itemCollection[item].view.push(React.DOM.li({
+                                                    key: 'set-' + itemCollection[item].itemData.set.name + '-passive bonus-' + passiveStat.text + '-inactive',
                                                     className: 'set-bonus-' + k + ' inactive'
                                                 }, passiveStat.text));
                                             });
@@ -2181,51 +2378,51 @@ var statPool = [
                                 }
                             }
 
-                            if (itemCollection[item][0].attributesRaw && itemCollection[item][0].attributesRaw.Sockets) {
-                                for (i = 0; i < itemCollection[item][0].attributesRaw.Sockets.min; i++) {
-                                    if (itemCollection[item][0].gems[i]) {
-                                        gemLink = itemIconBaseUrl.concat(itemCollection[item][0].gems[0].item.icon, '.png');
+                            if (itemCollection[item].itemData.attributesRaw && itemCollection[item].itemData.attributesRaw.Sockets) {
+                                for (i = 0; i < itemCollection[item].itemData.attributesRaw.Sockets.min; i++) {
+                                    if (itemCollection[item].itemData.gems[i]) {
+                                        gemLink = itemIconBaseUrl.concat(itemCollection[item].itemData.gems[0].item.icon, '.png');
 
-                                        if (itemCollection[item][0].gems[i].attributesRaw.Jewel_Rank) {
-                                            itemCollection[item][1].push(React.DOM.li({
+                                        if (itemCollection[item].itemData.gems[i].attributesRaw.Jewel_Rank) {
+                                            itemCollection[item].view.push(React.DOM.li({
                                                 key: 'socket-' + i,
                                                 className: 'socket',
                                                 style: {backgroundImage: 'url(' + gemLink + ')'}
                                             }, React.DOM.span({
                                                 key: 'socket-gem-level' + i,
                                                 className: 'gem-level'
-                                            }, itemCollection[item][0].gems[i].attributesRaw.Jewel_Rank.min)));
+                                            }, itemCollection[item].itemData.gems[i].attributesRaw.Jewel_Rank.min)));
                                         } else {
-                                            itemCollection[item][1].push(React.DOM.li({
+                                            itemCollection[item].view.push(React.DOM.li({
                                                 key: 'socket-' + i,
                                                 className: 'socket',
                                                 style: {backgroundImage: 'url(' + gemLink + ')'}
                                             }));
                                         }
 
-                                        if (itemCollection[item][0].gems[i].attributes.primary[0]) {
-                                            itemCollection[item][1].push(React.DOM.li({
+                                        if (itemCollection[item].itemData.gems[i].attributes.primary[0]) {
+                                            itemCollection[item].view.push(React.DOM.li({
                                                 key: 'gem-passive-primary' + i,
                                                 className: 'gem-passive'
-                                            }, itemCollection[item][0].gems[i].attributes.primary[0].text));
+                                            }, itemCollection[item].itemData.gems[i].attributes.primary[0].text));
                                         }
 
-                                        if (itemCollection[item][0].gems[i].attributes.secondary[0]) {
-                                            itemCollection[item][1].push(React.DOM.li({
+                                        if (itemCollection[item].itemData.gems[i].attributes.secondary[0]) {
+                                            itemCollection[item].view.push(React.DOM.li({
                                                 key: 'gem-passive-secondary' + i,
                                                 className: 'gem-passive'
-                                            }, itemCollection[item][0].gems[i].attributes.secondary[0].text));
+                                            }, itemCollection[item].itemData.gems[i].attributes.secondary[0].text));
                                         }
 
-                                        if (itemCollection[item][0].gems[i].attributes.passive[0]) {
-                                            itemCollection[item][1].push(React.DOM.li({
+                                        if (itemCollection[item].itemData.gems[i].attributes.passive[0]) {
+                                            itemCollection[item].view.push(React.DOM.li({
                                                 key: 'gem-passive-secondary' + i,
                                                 className: 'gem-passive'
-                                            }, itemCollection[item][0].gems[i].attributes.passive[0].text));
+                                            }, itemCollection[item].itemData.gems[i].attributes.passive[0].text));
                                         }
 
                                     } else {
-                                        itemCollection[item][1].push(React.DOM.li({
+                                        itemCollection[item].view.push(React.DOM.li({
                                             key: 'socket-' + i,
                                             className: 'socket'
                                         }));
@@ -2240,7 +2437,7 @@ var statPool = [
                                 style: {backgroundImage: 'url(' + constructedLink + ')'}
                             }, React.DOM.div({className: 'desc'}, React.DOM.ul({
                                     className: 'stats'
-                                }, itemCollection[item][1])
+                                }, itemCollection[item].view)
                             )));
 
                         } else {
@@ -2253,6 +2450,7 @@ var statPool = [
                 }
             }
 
+            // Hellfire Stat Parser
             if (amuletState.attributes && itemsState) {
                 if (amuletState.attributes.passive[0] && amuletState.attributes.passive[0].text.search('passive') !== -1 && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
                     hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase();
@@ -2290,172 +2488,167 @@ var statPool = [
                 }
             }
 
+            // Primary Stat Parser
             if (this.state.id) {
                 for (var primaryStat in primaryStats) {
                     if (primaryStats.hasOwnProperty(primaryStat)) {
-                        if (statsState[primaryStat] !== 0 && statsState[primaryStat]) {
+                        content = '';
+                        if (statsState[primaryStat] > 100) {
                             if (primaryStat === 'life') {
-                                stats.push(
-                                    React.DOM.div({key: primaryStat}, primaryStats[primaryStat][0] + ': ',
-                                        Math.round(statsState[primaryStat] +
-                                            statsState[primaryStat] *
-                                            this.state.paragonStats.paragonMaxHealth[1] / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
-                                );
+                                content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
+                                    statsState[primaryStat] *
+                                    this.state.paragonStats.paragonMaxHealth.value / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                             } else if (primaryStat === 'armor') {
-                                stats.push(
-                                    React.DOM.div({key: primaryStat}, primaryStats[primaryStat][0] + ': ',
-                                        Math.round(statsState[primaryStat] +
-                                            statsState[primaryStat] *
-                                            this.state.paragonStats.paragonArmor[1] / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
-                                );
+                                content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
+                                    statsState[primaryStat] *
+                                    this.state.paragonStats.paragonArmor.value / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                             } else {
-                                if (statsState[primaryStat] > 100 ) {
-                                    stats.push(
-                                        React.DOM.div({key: primaryStat}, primaryStats[primaryStat][0] + ': ',
-                                            Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'))
-                                    );
-                                }
+                                content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                             }
+
+                            stats.push(
+                                React.DOM.div({key: primaryStat}, content
+                            ));
                         }
                     }
                 }
             }
 
-            var offensiveStatCollection = {
-                'critChance': {
-                    name: 'Critical Hit Chance',
-                    modifier: this.state.paragonStats.paragonCritChance[1]
-                },
-                'critDamage': {
-                    name: 'Critical Hit Damage',
-                    modifier: this.state.paragonStats.paragonCritDmg[1],
-                    errorCorrection: -100
-                },
-                'primaryResource': {
-                    name: 'Primary Resource',
-                    modifier: this.state.paragonStats.paragonResource[1]
-                }
-            };
-
-           //  TODO  continue here
-
+            // Offensive Stat Parser
             if (additionalStatsOffensive && statsState) {
+                for (var offensiveStat in offensiveStats) {
+                    if (offensiveStats.hasOwnProperty(offensiveStat)) {
+                        content = '';
 
-                if (statsState.critChance) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Critical Hit Chance: ' + Math.round((statsState.critChance * 100 + this.state.paragonStats.paragonCritChance[1]) * 1000) / 1000 + '%'));
-                } else if (!statsState.critChance && this.state.paragonStats.paragonCritChance[1] !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Critical Hit Chance: ' + Math.round(this.state.paragonStats.paragonCritChance[1] * 1000) / 1000 + '%'));
-                }
+                        if (statsState[offensiveStat]) {
+                            if (offensiveStats[offensiveStat].name) {
+                                content += offensiveStats[offensiveStat].name;
+                                content += ': ';
+                            }
 
-                if (statsState.critDamage) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                        // - 100 because for some reason the crit dmg from the ajax call responds with 100 too much, maybe paragon bug?
-                    }, 'Critical Damage increase: ' + Math.round(((statsState.critDamage * 100 + this.state.paragonStats.paragonCritDmg[1]) - 100) * 1000) / 1000 + '%'));
-                } else if (!statsState.critDamage && this.state.paragonStats.paragonCritDmg[1] !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Critical Damage increase: ' + Math.round((this.state.paragonStats.paragonCritDmg[1] - 100) * 1000) / 1000 + '%'));
-                }
+                            switch (offensiveStat) {
+                                case 'critChance':
+                                case 'critDamage':
+                                    if (offensiveStats[offensiveStat].errorCorrection) {
+                                        content += Math.round((statsState[offensiveStat] * 100 +
+                                                offensiveStats[offensiveStat].modifier +
+                                                offensiveStats[offensiveStat].errorCorrection) * 1000) / 1000 + '%';
+                                    } else {
+                                        content += Math.round((statsState[offensiveStat] * 100 +
+                                                offensiveStats[offensiveStat].modifier) * 1000) / 1000 + '%';
+                                    }
+                                    break;
+                                default:
+                                    content += offensiveStats[offensiveStat].modifier + statsState[offensiveStat];
+                            }
+                        } else if (offensiveStats[offensiveStat].value || offensiveStats[offensiveStat].modifier) {
+                            if (offensiveStats[offensiveStat].name) {
+                                content += offensiveStats[offensiveStat].name;
+                                content += ': ';
+                            }
 
-                if (cdrState !== 1) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Cooldown Reduction: ' + Math.round((1 - cdrState + (this.state.paragonStats.paragonCdr[1] / 100)) * 100 * 100) / 100 + '%'));
-                } else if (this.state.paragonStats.paragonCdr[1] !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Cooldown Reduction: ' + this.state.paragonStats.paragonCdr[1] + '%'));
-                }
-                if (resState !== 1) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Resource Cost Reduction: ' + Math.round((1 - resState + (this.state.paragonStats.paragonResRed[1] / 100)) * 100 * 100) / 100 + '%'));
-                } else if (this.state.paragonStats.paragonResRed[1] !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Resource Cost Reduction: ' + this.state.paragonStats.paragonResRed[1] + '%'));
-                }
-                if (mainHandState.attacksPerSecond && offHandState.attacksPerSecond) {
-                    calculatedAttackSpeed = mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (0.15 + itemAtkSpeedState + this.state.paragonStats.paragonAtkSpd[1] / 100);
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                        // apparently the second weapon gives you a 15% attackspeed bonus flat
-                    }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
-                } else if (mainHandState.attacksPerSecond) {
-                    calculatedAttackSpeed = mainHandState.attacksPerSecond.max + mainHandState.attacksPerSecond.max * (itemAtkSpeedState + this.state.paragonStats.paragonAtkSpd[1] / 100);
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
-                } else if (!mainHandState.attacksPerSecond && this.state.paragonStats.paragonAtkSpd[1] !== 0) {
-                    calculatedAttackSpeed = this.state.paragonStats.paragonAtkSpd[1] / 100;
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Attacks per Second: ' + Math.round(calculatedAttackSpeed * 100) / 100));
+                            switch (offensiveStat) {
+                                case 'resRed':
+                                case 'cdrRed':
+                                    content += this.normalizeMultiplicativeStat(
+                                            offensiveStats[offensiveStat].value,
+                                            offensiveStats[offensiveStat].modifier
+                                        ) + offensiveStats[offensiveStat].unit;
+                                    break;
+                                case 'atkSpd':
+                                    content += this.normalizeWeaponAttackSpeed(
+                                        offensiveStats[offensiveStat].value,
+                                        offensiveStats[offensiveStat].modifier,
+                                        mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
+                                        offHandState.attacksPerSecond ? 0.15 : 0
+                                    );
+                                    break;
+                                default:
+                                    content += (offensiveStats[offensiveStat].modifier +
+                                        offensiveStats[offensiveStat].value) +
+                                        offensiveStats[offensiveStat].unit;
+                            }
+                        }
+
+                        additionalStatsOffensive.push(React.DOM.div({
+                            key: offensiveStat,
+                            className: 'bonusstat'
+                        }, content));
+                    }
                 }
 
-                if (eliteDmgState !== 0) {
+                if (maxElementDmg) {
                     additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Bonus Damage to Elites: ' + eliteDmgState + '%'));
-                }
-
-                if (areaDmgState !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Area Bonus Damage: ' + (areaDmgState + this.state.paragonStats.paragonAreaDmg[1]) + '%'));
-                } else if (this.state.paragonStats.paragonAreaDmg[1] !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Area Bonus Damage: ' + this.state.paragonStats.paragonAreaDmg[1] + '%'));
-                }
-
-                if (maxElementDmg !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
+                        key: 'Elemental Bonus Damage Stat',
                         className: 'bonusstat'
                     }, maxElementDmg));
-                }
-
-                if (statsState.primaryResource) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Primary Resource: ' + (statsState.primaryResource + this.state.paragonStats.paragonResource[1])));
-                } else if (this.state.paragonStats.paragonResource[1] !== 0) {
-                    additionalStatsOffensive.push(React.DOM.div({
-                        key: additionalStatsOffensive.key,
-                        className: 'bonusstat'
-                    }, 'Primary Resource: ' + this.state.paragonStats.paragonResource[1]));
                 }
 
                 if (skillDmgState) {
                     additionalStatsOffensive.push(React.DOM.div({
                         dangerouslySetInnerHTML: {__html: 'Skill Damage: ' + skillDmgState},
-                        key: additionalStatsOffensive.key,
+                        key: 'Skill Damage Stat',
                         className: 'bonusstat'
                     }));
                 }
             }
 
+            // Defensive Stat Parser
+            if (additionalStatsDefensive && statsState) {
+                for (var defenseStat in defenseStats) {
+                    if (defenseStats.hasOwnProperty(defenseStat)) {
+                        content = '';
+
+                        // try to find them in the REST data
+                        if (statsState[defenseStat]) {
+                            if (defenseStats[defenseStat].name) {
+                                content += defenseStats[defenseStat].name;
+                                content += ': ';
+                            }
+
+                            content += defenseStats[defenseStat].modifier + statsState[defenseStat];
+
+                        } else if (defenseStats[defenseStat].value || defenseStats[defenseStat].modifier) {
+                            if (defenseStats[defenseStat].name) {
+                                content += defenseStats[defenseStat].name;
+                                content += ': ';
+                            }
+
+                            content += (defenseStats[defenseStat].modifier +
+                                defenseStats[defenseStat].value) +
+                                defenseStats[defenseStat].unit;
+                        }
+
+                        additionalStatsDefensive.push(React.DOM.div({
+                            key: defenseStat,
+                            className: 'bonusstat'
+                        }, content));
+                    }
+                }
+            }
+
+            for (pstat in this.state.paragonStats) {
+                if (this.state.paragonStats.hasOwnProperty(pstat)) {
+                    paragon.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
+                        this.state.paragonStats[pstat].name + ' ' + Math.round(this.state.paragonStats[pstat].value * 10) / 10 + this.state.paragonStats[pstat].unit,
+                        React.DOM.span({
+                            className: 'paragon-stat-increment',
+                            onClick: self.handleParagon
+                        }, '+'),
+                        React.DOM.span({
+                            className: 'paragon-stat-decrement',
+                            onClick: self.handleParagon
+                        }, '-'),
+                        React.DOM.span({
+                            ref: pstat,
+                            className: 'paragon-stat-max',
+                            onClick: self.handleParagon
+                        })
+                    ));
+                }
+            }
+
+            // TODO custom dps shit
             if (statsState && statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
                 var statCalc,
                     minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
@@ -2563,137 +2756,6 @@ var statPool = [
                         Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                         ' | EDPS: ',
                         Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
-                    ));
-                }
-            }
-            // TODO add Paragon on hit
-            var defensiveStatCollection = {
-                'secondaryResource': {
-                    name: 'Secondary Resource'
-                },
-                'fireResist': {
-                    name: 'Fire Resist',
-                    modifier: this.state.paragonStats.paragonResistAll[1]
-                },
-                'coldResist': {
-                    name: 'Cold Resist',
-                    modifier: this.state.paragonStats.paragonResistAll[1]
-                },
-                'lightningResist': {
-                    name: 'Lightning Resist',
-                    modifier: this.state.paragonStats.paragonResistAll[1]
-                },
-                'physicalResist': {
-                    name: 'Physical Resist',
-                    modifier: this.state.paragonStats.paragonResistAll[1]
-                },
-                'poisonResist': {
-                    name: 'Poison Resist',
-                    modifier: this.state.paragonStats.paragonResistAll[1]
-                },
-                'lifeOnHit': {
-                    name: 'Life on Hit',
-                    modifier: 0
-                }
-            };
-
-
-            var combinedStatCollection = Object.assign(defensiveStatCollection, this.state.customDefensiveStats);
-
-            console.log(combinedStatCollection);
-            // TODO fix conversion
-
-            if (additionalStatsDefensive && statsState) {
-                for (var defenseStat in combinedStatCollection) {
-                    if (combinedStatCollection.hasOwnProperty(defenseStat)) {
-                        if (statsState[defenseStat]) {
-                            if (!combinedStatCollection[defenseStat].modifier) {
-                                additionalStatsDefensive.push(React.DOM.div({
-                                    key: defenseStat,
-                                    className: 'bonusstat'
-                                }, combinedStatCollection[defenseStat].name + ': ' + statsState[defenseStat]));
-                            } else {
-                                additionalStatsDefensive.push(React.DOM.div({
-                                    key: defenseStat,
-                                    className: 'bonusstat'
-                                }, combinedStatCollection[defenseStat].name + ': ' + (combinedStatCollection[defenseStat].modifier + statsState[defenseStat])));
-                            }
-                        } else {
-                            if (!combinedStatCollection[defenseStat].modifier) {
-                                additionalStatsDefensive.push(React.DOM.div({
-                                    key: defenseStat,
-                                    className: 'bonusstat'
-                                }, combinedStatCollection[defenseStat].name + ': ' + combinedStatCollection[defenseStat].value));
-                            } else {
-                                additionalStatsDefensive.push(React.DOM.div({
-                                    key: defenseStat,
-                                    className: 'bonusstat'
-                                }, combinedStatCollection[defenseStat].name + ': ' + (combinedStatCollection[defenseStat].modifier + combinedStatCollection[defenseStat].value)));
-                            }
-                        }
-                    }
-                }
-
-                // TODO continue here
-                //
-                //if (goldPickUpState !== 0) {
-                //    additionalStatsDefensive.push(React.DOM.div({
-                //        key: additionalStatsDefensive.key,
-                //        className: 'bonusstat'
-                //    }, 'Gold Pick-up Radius: ' + goldPickUpState + ' yards'));
-                //}
-                //
-                //if (dmgRedMeleeState !== 1) {
-                //    additionalStatsDefensive.push(React.DOM.div({
-                //        key: additionalStatsDefensive.key,
-                //        className: 'bonusstat'
-                //    }, 'Melee Damage Reduction: ' + Math.round((1 - dmgRedMeleeState) * 100 * 1000) / 1000 + '%'));
-                //}
-                //
-                //if (dmgRedRangedState !== 1) {
-                //    additionalStatsDefensive.push(React.DOM.div({
-                //        key: additionalStatsDefensive.key,
-                //        className: 'bonusstat'
-                //    }, 'Ranged Damage Reduction: ' + Math.round((1 - dmgRedRangedState) * 100 * 1000) / 1000 + '%'));
-                //}
-                //
-                //if (eliteDmgRedState !== 0) {
-                //    additionalStatsDefensive.push(React.DOM.div({
-                //        key: additionalStatsDefensive.key,
-                //        className: 'bonusstat'
-                //    }, 'Damage Reduction from Elites: ' + eliteDmgRedState + '%'));
-                //}
-                //if (maxHealthState) {
-                //    additionalStatsDefensive.push(React.DOM.div({
-                //        key: additionalStatsDefensive.key,
-                //        className: 'bonusstat'
-                //    }, 'Bonus Max Health: ' + (maxHealthState + this.state.paragonStats.paragonMaxHealth[1]) + '%'));
-                //} else if (this.state.paragonStats.paragonMaxHealth[1] !== 0) {
-                //    additionalStatsDefensive.push(React.DOM.div({
-                //        key: additionalStatsDefensive.key,
-                //        className: 'bonusstat'
-                //    }, 'Bonus Max Health: ' + this.state.paragonStats.paragonMaxHealth[1] + '%'));
-                //}
-            }
-
-            var self = this;
-            for (var pstat in this.state.paragonStats) {
-                if (this.state.paragonStats.hasOwnProperty(pstat)) {
-                    paragon.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
-                        this.state.paragonStats[pstat][0] + ' ' + Math.round(this.state.paragonStats[pstat][1] * 10) / 10 + this.state.paragonStats[pstat][4],
-                        React.DOM.span({
-                            className: 'paragon-stat-increment',
-                            onClick: self.handleParagon
-                        }, '+'),
-                        React.DOM.span({
-                            className: 'paragon-stat-decrement',
-                            onClick: self.handleParagon
-                        }, '-'),
-                        React.DOM.span({
-                            ref: pstat,
-                            className: 'paragon-stat-max',
-                            onClick: self.handleParagon
-                        })
                     ));
                 }
             }
@@ -2819,3 +2881,4 @@ React.render(React.createElement(d3Profile, {
 
 // todo find out how the % dmg of the skill can be gathered
 // todo add more buffs
+// todo add cube passives + add new interface + refactor data
