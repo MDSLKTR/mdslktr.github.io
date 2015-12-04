@@ -713,17 +713,6 @@ var statPool = [
 
         setBattleTag: function (e) {
             this.setState({
-                heroes: {},
-                items: {},
-                skills: [],
-                passives: [],
-                stats: [],
-                attributes: [],
-                class: {},
-                name: {},
-                level: {},
-                paragon: {},
-                time: 0,
                 setRing: false,
                 toggle: 'hidden',
                 paragonToggle: 'hidden',
@@ -749,17 +738,6 @@ var statPool = [
 
         setRealm: function (e) {
             this.setState({
-                heroes: {},
-                items: {},
-                skills: [],
-                passives: [],
-                stats: [],
-                attributes: [],
-                class: {},
-                name: {},
-                level: {},
-                paragon: {},
-                time: 0,
                 setRing: false,
                 toggle: 'hidden',
                 paragonToggle: 'hidden',
