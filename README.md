@@ -1,11 +1,14 @@
 # D3 Project with react.js
 D3 Profile Page build with react.js
 
-## used technologies
+## NOTE
+currently undergoing refactoring in a different branch considering a new patch (2.4) to be released.
+
+## used stuff
 - react.js
 - GSAP
-- appcache
 - localStorage
+- ES6 Promises
 - Grunt
 - Bower
 - Vagrant
@@ -13,7 +16,6 @@ D3 Profile Page build with react.js
 ## information
 - vagrant up -> port: 1234
 - grunt css/js to compile
-- grunt appcache to generate new manifest
 - autoprefixer is available
 - grunt browsersync is available
 
@@ -23,3 +25,5 @@ source code used to format and display that content is licensed under the MIT li
 
 ## EDPS
 purely experimental and most likely not accounting for all your buffs and calculation may be wrong.
+
+
