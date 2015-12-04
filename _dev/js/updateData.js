@@ -246,7 +246,7 @@ var statPool = [
             }
 
             return {
-                debugMode: false,
+                debugMode: true,
                 skills: [],
                 passives: [],
                 stats: [],
@@ -428,14 +428,34 @@ var statPool = [
                     }
 
                     self.setState({
-                        name: data.name,
-                        id: data.id,
-                        class: data.class,
-                        level: data.level,
-                        paragon: data.paragonLevel,
-                        stats: data.stats,
+                        generalStats: {
+                            'name': {
+                                name: 'Name',
+                                value: data.name
+                            },
+                            'id': {
+                                name: 'Id',
+                                value: data.id
+                            },
+                            'class': {
+                                name: 'Class',
+                                value: data.class
+                            },
+                            'level': {
+                                name: 'Level',
+                                value: data.level
+                            },
+                            'paragonLevel': {
+                                name: 'Paragon Level',
+                                value: data.paragonLevel
+                            },
+                            'lastUpdated': {
+                                name: 'Last updated on',
+                                value: data['last-updated']
+                            }
+                        },
                         items: data.items,
-                        time: data['last-updated']
+                        stats: data.stats
                     });
 
                     if (data.skills) {
@@ -1115,7 +1135,6 @@ var statPool = [
 
             for (var pstat in this.state.paragonStats) {
                 if (this.state.paragonStats.hasOwnProperty(pstat)) {
-                    console.log(this.state.paragonStats[pstat].increment, pstat);
                     if (parentElement.classList.contains(pstat)) {
                         if (target.classList.contains('paragon-stat-increment')) {
                             if (this.state.paragonStats[pstat].value < this.state.paragonStats[pstat].max) {
@@ -1490,10 +1509,10 @@ var statPool = [
                     this.state.ringItemRight
                 ];
 
-                if (this.state.class && this.state.skills && this.state.skills.length > 0) {
+                if (this.state.generalStats.class.name && this.state.skills && this.state.skills.length > 0) {
                     for (m = 0; m < this.state.skills.length; m++) {
                         if (this.state.skills[m].skill) {
-                            switch (this.state.class) {
+                            switch (this.state.generalStats.class.name) {
                                 case 'demon-hunter':
                                     saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
                                     break;
@@ -1650,7 +1669,7 @@ var statPool = [
                 }
 
                 // ignoring mf,gf,thorns and block since they are useless stats
-                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0] && this.state.helmItem.attributesRaw) {
+                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0] && this.state.helmItem.attributesRaw && this.state.helmItem.gems[0].attributesRaw) {
                     if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                         // increment for cdr gem
                         cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min -
@@ -1717,13 +1736,13 @@ var statPool = [
                         cdrRed: {
                             name: 'Cooldown Reduction',
                             value: cdr,
-                            modifier: this.state.paragonStats.paragonCdr[1],
+                            modifier: this.state.paragonStats.paragonCdr.value,
                             unit: '%'
                         },
                         resRed: {
                             name: 'Resource Cost Reduction',
                             value: resRed,
-                            modifier: this.state.paragonStats.paragonResRed[1],
+                            modifier: this.state.paragonStats.paragonResRed.value,
                             unit: '%'
                         },
                         eliteDmg: {
@@ -1735,13 +1754,13 @@ var statPool = [
                         areaDmg: {
                             name: 'Area Damage Bonus',
                             value: areaDmg,
-                            modifier: this.state.paragonStats.paragonAreaDmg[1],
+                            modifier: this.state.paragonStats.paragonAreaDmg.value,
                             unit: '%'
                         },
                         atkSpd: {
                             name: 'Attack Speed Bonus',
                             value: atkSpd,
-                            modifier: this.state.paragonStats.paragonAtkSpd[1],
+                            modifier: this.state.paragonStats.paragonAtkSpd.value,
                             unit: ''
                         }
                     },
@@ -1776,7 +1795,7 @@ var statPool = [
                         maxHealth: {
                             name: 'Max Health Bonus',
                             value: maxHealth,
-                            modifier: this.state.paragonStats.paragonMaxHealth[1],
+                            modifier: this.state.paragonStats.paragonMaxHealth.value,
                             unit: '%'
                         }
                     }
@@ -1796,7 +1815,6 @@ var statPool = [
         },
 
         normalizeMultiplicativeStat: function (value, modifier) {
-            console.log(value);
             return Math.round((1 - value + (modifier / 100)) * 100 * 100) / 100;
         },
 
@@ -1815,19 +1833,15 @@ var statPool = [
                 skillsState = this.state.skills,
                 passivesState = this.state.passives,
                 statsState = this.state.stats,
-                nameState = this.state.name,
                 heroesState = this.state.heroes,
                 itemsState = this.state.items,
-                classState = this.state.class,
-                levelState = this.state.level,
-                paragonState = this.state.paragon,
+                generalStats = this.state.generalStats,
                 amuletState = this.state.amuletItem,
                 mainHandState = this.state.mainItem,
                 offHandState = this.state.offItem,
                 itemsIconState = this.state.items,
                 skillIconBaseUrl = this.state.skillIconBase,
                 itemIconBaseUrl = this.state.itemIconBase,
-                timeStamp = this.state.time,
                 maxElementDmg = this.state.maxEleDmg,
                 skillDmgState = this.state.skillDmg,
                 skillDmgStateRaw = this.state.skillDmgRaw,
@@ -1841,37 +1855,37 @@ var statPool = [
                     },
                     'fireResist': {
                         name: 'Fire Resist',
-                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        modifier: this.state.paragonStats.paragonResistAll.value,
                         value: 0,
                         unit: ''
                     },
                     'coldResist': {
                         name: 'Cold Resist',
-                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        modifier: this.state.paragonStats.paragonResistAll.value,
                         value: 0,
                         unit: ''
                     },
                     'lightningResist': {
                         name: 'Lightning Resist',
-                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        modifier: this.state.paragonStats.paragonResistAll.value,
                         value: 0,
                         unit: ''
                     },
                     'physicalResist': {
                         name: 'Physical Resist',
-                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        modifier: this.state.paragonStats.paragonResistAll.value,
                         value: 0,
                         unit: ''
                     },
                     'poisonResist': {
                         name: 'Poison Resist',
-                        modifier: this.state.paragonStats.paragonResistAll[1],
+                        modifier: this.state.paragonStats.paragonResistAll.value,
                         value: 0,
                         unit: ''
                     },
                     'lifeOnHit': {
                         name: 'Life on Hit',
-                        modifier: this.state.paragonStats.paragonLifeOnHit[1],
+                        modifier: this.state.paragonStats.paragonLifeOnHit.value,
                         value: 0,
                         unit: ''
                     }
@@ -1879,27 +1893,24 @@ var statPool = [
                 offensiveStatCollection = {
                     'critChance': {
                         name: 'Critical Hit Chance',
-                        modifier: this.state.paragonStats.paragonCritChance[1],
+                        modifier: this.state.paragonStats.paragonCritChance.value,
                         value: 0,
                         unit: '%'
                     },
                     'critDamage': {
                         name: 'Critical Hit Damage',
-                        modifier: this.state.paragonStats.paragonCritDmg[1],
+                        modifier: this.state.paragonStats.paragonCritDmg.value,
                         value: 0,
                         unit: '%',
-                        errorCorrection: -100,
+                        errorCorrection: -100
                     },
                     'primaryResource': {
                         name: 'Primary Resource',
-                        modifier: this.state.paragonStats.paragonResource[1],
+                        modifier: this.state.paragonStats.paragonResource.value,
                         value: 0,
                         unit: '%'
                     }
                 },
-                defenseStats = Object.assign(defensiveStatCollection, this.state.customDefensiveStats),
-                offensiveStats = Object.assign(offensiveStatCollection, this.state.customOffensiveStats),
-                content,
                 itemCollection = {
                     'head': {
                         itemData: this.state.helmItem,
@@ -1953,7 +1964,10 @@ var statPool = [
                         itemData: this.state.beltItem,
                         view: belt
                     }
-                };
+                },
+                defenseStats = Object.assign(defensiveStatCollection, this.state.customDefensiveStats),
+                offensiveStats = Object.assign(offensiveStatCollection, this.state.customOffensiveStats),
+                content;
 
             minDmgCalc = 0;
             maxDmgCalc = 0;
@@ -2000,9 +2014,9 @@ var statPool = [
                 }
             }
 
-            if (classState) {
+            if (this.state.generalStats) {
                 backgroundImage = {
-                    backgroundImage: 'url(assets/images/' + classState + '.png)'
+                    backgroundImage: 'url(assets/images/' + this.state.generalStats.class.value + '.png)'
                 };
             } else {
                 backgroundImage = {
@@ -2037,36 +2051,27 @@ var statPool = [
                 heroes.push(React.DOM.option({value: '', style: {display: 'none'}}, 'loading herolist...'));
             }
 
-            if (nameState && classState && levelState) {
-                var sanitizeName =
-                    classState.toString().replace(/-/g, '').charAt(0).toUpperCase() +
-                    classState.toString().replace(/-/g, '').slice(1).toLowerCase();
+            for (var generalStat in this.state.generalStats) {
+                if (this.state.generalStats.hasOwnProperty(generalStat)) {
+                    content = '';
+                    content += this.state.generalStats[generalStat].value;
 
-                base.push(React.DOM.div({key: nameState.key}, 'Name: ', nameState));
-                base.push(React.DOM.div({key: 'class-name'},
-                    'Class: ',
-                    sanitizeName
-                ));
-                base.push(React.DOM.div({key: levelState.key}, 'Level: ', levelState));
-                if (paragonState) {
-                    base.push(React.DOM.div({key: paragonState.key}, 'Paragon: ', paragonState));
+                    if (generalStat === 'class') {
+                        content =
+                            this.state.generalStats[generalStat].value.toString().replace(/-/g, '').charAt(0).toUpperCase() +
+                            this.state.generalStats[generalStat].value.toString().replace(/-/g, '').slice(1).toLowerCase();
+                    }
+
+                    if (generalStat === 'lastUpdated') {
+                        var t = new Date(this.state.generalStats[generalStat].value * 1000);
+                        content = t.toLocaleDateString() + ' - ' + t.toLocaleTimeString();
+                    }
+
+                    base.push(React.DOM.div({key: generalStat}, this.state.generalStats[generalStat].name + ': ' + content));
                 }
-            } else {
-                base.push(React.DOM.div({key: 'class-name'},
-                    'Class: '
-                ));
             }
 
-            if (timeStamp && timeStamp * 1000 !== 0) {
-                var t = new Date(timeStamp * 1000),
-                    formatted = t.toLocaleDateString() + ' - ' + t.toLocaleTimeString();
-                base.push(React.DOM.div({
-                    key: timeStamp,
-                    className: 'last-updated'
-                }, 'last-updated on: ' + formatted));
-            }
-
-            if (skillsState !== []) {
+            if (skillsState) {
                 skillsState.forEach(function (skillName) {
                     var runeType;
                     if (skillName.rune) {
@@ -2451,11 +2456,11 @@ var statPool = [
             }
 
             // Hellfire Stat Parser
-            if (amuletState.attributes && itemsState) {
+            if (amuletState.attributes && itemsState && this.state.generalStats) {
                 if (amuletState.attributes.passive[0] && amuletState.attributes.passive[0].text.search('passive') !== -1 && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
                     hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase();
                     hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
-                    switch (classState) {
+                    switch (this.state.generalStats.class.value) {
                         case 'demon-hunter':
                             constructedLink = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
                             break;
@@ -2489,33 +2494,31 @@ var statPool = [
             }
 
             // Primary Stat Parser
-            if (this.state.id) {
-                for (var primaryStat in primaryStats) {
-                    if (primaryStats.hasOwnProperty(primaryStat)) {
-                        content = '';
-                        if (statsState[primaryStat] > 100) {
-                            if (primaryStat === 'life') {
-                                content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
+            for (var primaryStat in primaryStats) {
+                if (primaryStats.hasOwnProperty(primaryStat)) {
+                    content = '';
+                    console.log(primaryStat);
+                    if (statsState[primaryStat] > 100) {
+                        if (primaryStat === 'life') {
+                            content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
                                     statsState[primaryStat] *
                                     this.state.paragonStats.paragonMaxHealth.value / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                            } else if (primaryStat === 'armor') {
-                                content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
+                        } else if (primaryStat === 'armor') {
+                            content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
                                     statsState[primaryStat] *
                                     this.state.paragonStats.paragonArmor.value / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                            } else {
-                                content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                            }
-
-                            stats.push(
-                                React.DOM.div({key: primaryStat}, content
-                            ));
+                        } else {
+                            content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                         }
+
+                        stats.push(
+                            React.DOM.div({key: primaryStat}, content));
                     }
                 }
             }
 
             // Offensive Stat Parser
-            if (additionalStatsOffensive && statsState) {
+            if (statsState) {
                 for (var offensiveStat in offensiveStats) {
                     if (offensiveStats.hasOwnProperty(offensiveStat)) {
                         content = '';
@@ -2594,7 +2597,7 @@ var statPool = [
             }
 
             // Defensive Stat Parser
-            if (additionalStatsDefensive && statsState) {
+            if (statsState) {
                 for (var defenseStat in defenseStats) {
                     if (defenseStats.hasOwnProperty(defenseStat)) {
                         content = '';
@@ -2648,12 +2651,12 @@ var statPool = [
                 }
             }
 
-            // TODO custom dps shit
-            if (statsState && statsState.critDamage && statsState.critChance && calculatedAttackSpeed && minDmgCalc !== 0 && maxDmgCalc !== 0) {
+            // TODO custom dps shit unbreak this
+            if (statsState && statsState.critDamage && statsState.critChance && minDmgCalc !== 0 && maxDmgCalc !== 0 && this.state.generalStats) {
                 var statCalc,
                     minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
-                    critChanceCalc = statsState.critChance + (this.state.paragonStats.paragonCritChance[1] / 100),
-                    critDmgCalc = statsState.critDamage - 1 + (this.state.paragonStats.paragonCritDmg[1] / 100),
+                    critChanceCalc = statsState.critChance + (this.state.paragonStats.paragonCritChance.value / 100),
+                    critDmgCalc = statsState.critDamage - 1 + (this.state.paragonStats.paragonCritDmg.value / 100),
                     sheetDpsCalc,
 
                     effectiveCritChance = critChanceCalc,
@@ -2671,11 +2674,11 @@ var statPool = [
 
                 pushedValues.length = 0;
 
-                if (classState === 'demon-hunter' || classState === 'monk') {
+                if (generalStats.class.value === 'demon-hunter' || generalStats.class.value === 'monk') {
                     statCalc = statsState.dexterity / 100;
-                } else if (classState === 'barbarian' || classState === 'crusader') {
+                } else if (generalStats.class.value === 'barbarian' || generalStats.class.value === 'crusader') {
                     statCalc = statsState.strength / 100;
-                } else if (classState === 'wizard' || classState === 'witch-doctor') {
+                } else if (generalStats.class.value === 'wizard' || generalStats.class.value === 'witch-doctor') {
                     statCalc = statsState.intelligence / 100;
                 } else {
                     statCalc = 1;
@@ -2742,6 +2745,9 @@ var statPool = [
                 } else {
                     nativeSkillDamage = 1;
                 }
+
+                // todo fix this as it is garbage
+                calculatedAttackSpeed = 1;
 
                 effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage * (1 + buffMult) * (1 + gemMult);
 
