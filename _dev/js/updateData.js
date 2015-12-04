@@ -699,16 +699,16 @@ var statPool = [
             this.createRealmList();
 
             // panel shorthands p = panel, l = left and so forth TODO redo this shit
-            panelLeft = this.refs.pl.getDOMNode();
-            panelRight = this.refs.pr.getDOMNode();
-            panelBottomLeft = this.refs.pbl.getDOMNode();
-            panelBottomRight = this.refs.pbr.getDOMNode();
-            panelRightAdditional = this.refs.pra.getDOMNode();
-            panelLeftAdditional = this.refs.pla.getDOMNode();
-            panelBottomLeftAdditional = this.refs.pbla.getDOMNode();
-            panelBottomRightAdditional = this.refs.pbra.getDOMNode();
-            itemWrapper = this.refs.items.getDOMNode();
-            charBgWrapper = this.refs.charbg.getDOMNode();
+            panelLeft = ReactDOM.findDOMNode(this.refs.pl);
+            panelRight = ReactDOM.findDOMNode(this.refs.pr);
+            panelBottomLeft = ReactDOM.findDOMNode(this.refs.pbl);
+            panelBottomRight = ReactDOM.findDOMNode(this.refs.pbr);
+            panelRightAdditional = ReactDOM.findDOMNode(this.refs.pra);
+            panelLeftAdditional = ReactDOM.findDOMNode( this.refs.pla);
+            panelBottomLeftAdditional = ReactDOM.findDOMNode( this.refs.pbla);
+            panelBottomRightAdditional = ReactDOM.findDOMNode(this.refs.pbra);
+            itemWrapper = ReactDOM.findDOMNode(this.refs.items);
+            charBgWrapper = ReactDOM.findDOMNode(this.refs.charbg);
         },
 
         setBattleTag: function (e) {
@@ -2864,7 +2864,7 @@ var statPool = [
         }
     });
 
-React.render(React.createElement(d3Profile, {
+ReactDOM.render(React.createElement(d3Profile, {
         pollInterval: 600000
     }),
     document.querySelector('.d3-profile'));

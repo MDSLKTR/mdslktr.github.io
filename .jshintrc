@@ -86,6 +86,7 @@
 	// additional predefined global variables
 	"globals": {
 		"React": true,
+        "ReactDOM": true,
 		"TweenMax": true,
         "TweenLite": true,
 		"Elastic": true,

@@ -73,9 +73,10 @@ module.exports = function (grunt) {
                         '_vendor/promise-polyfill/Promise.min.js',
                         '_vendor/object-assign-polyfill/object-assign-polyfill.js',
                         '_vendor/react/react.js',
-                        '_vendor/greensock/src/minified/easing/EasePack.min.js',
-                        '_vendor/greensock/src/uncompressed/plugins/CSSPlugin.js',
-                        '_vendor/greensock/src/uncompressed/TweenLite.js'
+                        '_vendor/react/react-dom.min.js',
+                        '_vendor/gsap/src/uncompressed/easing/EasePack.js',
+                        '_vendor/gsap/src/uncompressed/plugins/CSSPlugin.js',
+                        '_vendor/gsap/src/uncompressed/TweenLite.js'
                     ]
                 }
             },
