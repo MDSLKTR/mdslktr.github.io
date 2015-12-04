@@ -269,7 +269,7 @@ var statPool = [
             }
 
             return {
-                debugMode: true,
+                debugMode: false,
                 skills: [],
                 passives: [],
                 stats: [],
@@ -314,6 +314,7 @@ var statPool = [
                 heroesDataUrl: '',
                 heroDataUrl: '',
                 itemUrl: '',
+                cubeItems: {},
                 panelAnimationComplete: false,
                 realm: initialRealm,
                 paragonStats: {
@@ -603,6 +604,21 @@ var statPool = [
                         self.setState({amuletItem: data});
                         break;
                 }
+            });
+        },
+
+        loadKanaiItems: function (itemKey, index) {
+            var self = this,
+                url = 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey);
+
+            this.getData(url).then(function (response) {
+                var data = JSON.parse(response);
+
+                if (self.state.debugMode) {
+                    console.log(data);
+                }
+
+                self.state.cubeItems[index] = data;
             });
         },
 
@@ -2173,8 +2189,11 @@ var statPool = [
 
             // Kanai Power Parser TODO own panel
             if (this.state.kanai) {
-                this.state.kanai.forEach(function (power) {
+
+                this.state.kanai.forEach(function (power, currentIndex) {
+                    self.loadKanaiItems(power.tooltipParams, currentIndex);
                     if (power) {
+                        console.log(power);
                         constructedLink = itemIconBaseUrl.concat(power.icon);
                         passives.push(React.DOM.div({
                             key: power.name,
@@ -2184,6 +2203,28 @@ var statPool = [
                             className: 'icon',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         })));
+                    }
+
+                    if (self.state.cubeItems !== {}) {
+                        for (var cubeItem in self.state.cubeItems) {
+                            if (self.state.cubeItems.hasOwnProperty(cubeItem)) {
+                                if (cubeItem && self.state.cubeItems[cubeItem].name === power.name) {
+                                    passivesDesc.push(React.DOM.div({key: self.state.cubeItems[cubeItem].name + '-description', className: 'description'},
+                                        React.DOM.div({
+                                            key: self.state.cubeItems[cubeItem].name + '-desc-icon',
+                                            className: 'desc-icon',
+                                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                                        }),
+                                        self.state.cubeItems[cubeItem].name,
+                                        React.DOM.p({
+                                            dangerouslySetInnerHTML: {__html: self.state.cubeItems[cubeItem].attributes.passive[0].text.replace(/\n/g, '<br/>')},
+                                            key: cubeItem.name + '-description-text',
+                                            className: 'passive-desc'
+                                        })
+                                    ));
+                                }
+                            }
+                        }
                     }
                 });
             }

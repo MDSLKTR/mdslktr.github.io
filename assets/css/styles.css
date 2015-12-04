@@ -583,7 +583,8 @@ main {
             flex: 0 48px;
     height: 48px;
     background-repeat: no-repeat;
-    background-size: contain; }
+    background-size: contain;
+    background-position: center center; }
   .panel-bottom-left-desc span,
   .panel-bottom-right-desc span {
     color: wheat;
