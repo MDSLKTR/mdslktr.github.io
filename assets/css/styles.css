@@ -730,13 +730,14 @@ main {
   position: absolute;
   height: 64px;
   width: 64px;
-  background-repeat: no-repeat;
   background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
   top: 50%;
   -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
           transform: translateY(-50%);
-  background: black;
+  background-color: black;
   border: 2px solid rgba(255, 0, 0, 0.5); }
 
 .icon-front,

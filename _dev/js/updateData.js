@@ -2171,6 +2171,23 @@ var statPool = [
                 });
             }
 
+            // Kanai Power Parser TODO own panel
+            if (this.state.kanai) {
+                this.state.kanai.forEach(function (power) {
+                    if (power) {
+                        constructedLink = itemIconBaseUrl.concat(power.icon);
+                        passives.push(React.DOM.div({
+                            key: power.name,
+                            className: 'hasIcon'
+                        }, power.name, React.DOM.div({
+                            key: power.name + '-icon',
+                            className: 'icon',
+                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                        })));
+                    }
+                });
+            }
+
             // Item Parser
             if (this.state.items) {
                 for (var item in itemCollection) {
