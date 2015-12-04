@@ -1669,7 +1669,7 @@ var statPool = [
                 }
 
                 // ignoring mf,gf,thorns and block since they are useless stats
-                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.gems[0] && this.state.helmItem.attributesRaw && this.state.helmItem.gems[0].attributesRaw) {
+                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.attributesRaw && this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item) {
                     if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                         // increment for cdr gem
                         cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min -
