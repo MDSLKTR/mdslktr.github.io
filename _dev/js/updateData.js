@@ -235,6 +235,29 @@ var statPool = [
             name: 'Healing'
         }
     },
+    runeType,
+    runeMap = {
+        'a': {
+            position: '49%',
+            key: 'a'
+        },
+        'b': {
+            position: '97%',
+            key: 'b'
+        },
+        'c': {
+            position: '73',
+            key: 'c'
+        },
+        'd': {
+            position: '49%',
+            key: 'd'
+        },
+        'e': {
+            position: '0',
+            key: 'e'
+        }
+    },
     d3Profile = React.createClass({
         displayName: 'd3Profile',
         getInitialState: function () {
@@ -455,7 +478,8 @@ var statPool = [
                             }
                         },
                         items: data.items,
-                        stats: data.stats
+                        stats: data.stats,
+                        kanai: data.legendaryPowers
                     });
 
                     if (data.skills) {
@@ -653,15 +677,14 @@ var statPool = [
         },
 
         componentDidMount: function () {
-            var savedBattleTag = localStorage.getItem('battleTag');
+            var savedBattleTag = localStorage.getItem('battleTag'),
+                stat;
             if (savedBattleTag) {
                 this.loadHeroesList(savedBattleTag);
             }
             setInterval(this.startStatCollectorRunner, 3000);
             setInterval(this.loadHeroesList(this.state.battleTag), this.props.pollInterval);
             setInterval(this.loadHeroData(this.state.selectedChar), this.props.pollInterval);
-
-            var stat;
 
             for (stat in this.state.paragonStats) {
                 if (this.state.paragonStats.hasOwnProperty(stat)) {
@@ -1509,7 +1532,7 @@ var statPool = [
                     this.state.ringItemRight
                 ];
 
-                if (this.state.generalStats.class.name && this.state.skills && this.state.skills.length > 0) {
+                if (this.state.generalStats && this.state.skills && this.state.skills.length > 0) {
                     for (m = 0; m < this.state.skills.length; m++) {
                         if (this.state.skills[m].skill) {
                             switch (this.state.generalStats.class.name) {
@@ -2026,29 +2049,30 @@ var statPool = [
 
             if (heroesState.heroes) {
                 heroes.push(React.DOM.option({
-                    key: heroesState.heroes.key,
+                    key: 'heroes-list',
                     value: '',
                     style: {display: 'none'}
                 }, 'click to select hero'));
                 heroesState.heroes.forEach(function (heroName) {
                     heroes.push(React.DOM.option({
-                        key: heroesState.heroes.key,
+                        key: 'heroes-list' + heroName.id,
                         value: heroName.id
                     }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
                 });
             } else if (heroesState.code) {
                 heroes.push(React.DOM.option({
-                    key: heroesState.code.key,
+                    key: 'heroes-list-invalid',
                     value: '',
                     style: {display: 'none'}
                 }, 'invalid battleTag'));
-            } else if (this.state.battleTag === null || this.state.battleTag === '') {
+            } else if (!this.state.battleTag || this.state.battleTag === '') {
                 heroes.push(React.DOM.option({
+                    key: 'heroes-list-empty',
                     value: '',
                     style: {display: 'none'}
                 }, 'enter your battleTag in the field below'));
             } else {
-                heroes.push(React.DOM.option({value: '', style: {display: 'none'}}, 'loading herolist...'));
+                heroes.push(React.DOM.option({key: 'heroes-list-loading', value: '', style: {display: 'none'}}, 'loading herolist...'));
             }
 
             for (var generalStat in this.state.generalStats) {
@@ -2073,46 +2097,24 @@ var statPool = [
 
             if (skillsState) {
                 skillsState.forEach(function (skillName) {
-                    var runeType;
                     if (skillName.rune) {
                         constructedLink = skillIconBaseUrl.concat(skillName.skill.icon);
-                        switch (skillName.rune.type) {
-                            case 'a':
-                                runeType = {
-                                    backgroundPosition: '0 49%'
-                                };
-                                break;
-                            case 'b':
-                                runeType = {
-                                    backgroundPosition: '0 97%'
-                                };
-                                break;
-                            case 'c':
-                                runeType = {
-                                    backgroundPosition: '0 73%'
-                                };
-                                break;
-                            case 'd':
-                                runeType = {
-                                    backgroundPosition: '0 0'
-                                };
-                                break;
-                            case 'e':
-                                runeType = {
-                                    backgroundPosition: '0 25%'
-                                };
-                                break;
+                        if (skillName.rune.type === runeMap[skillName.rune.type].key) {
+                            runeType = {
+                                backgroundPosition: '0 ' + runeMap[skillName.rune.type].position
+                            };
                         }
-                        skills.push(React.DOM.div({key: skillsState.key, className: 'hasIcon'},
+
+                        skills.push(React.DOM.div({key: skillName.skill.name + '-icon', className: 'hasIcon'},
                                 skillName.skill.name,
                                 ' with ',
                                 skillName.rune.name,
                                 React.DOM.div({
-                                    key: skillsState.key,
+                                    key: skillName.skill.name,
                                     className: 'icon-front',
                                     style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                                 }),
-                                React.DOM.div({key: skillsState.key, className: 'icon-back', style: runeType})
+                                React.DOM.div({key: skillName.rune.name, className: 'icon-back', style: runeType})
                             )
                         );
                         skillsDesc.push(React.DOM.div({key: skillsState.key, className: 'description'},
@@ -2160,28 +2162,28 @@ var statPool = [
                 });
             }
 
-            if (passivesState !== []) {
-                passivesState.forEach(function (passiveName) {
-                    if (passiveName.skill) {
-                        constructedLink = skillIconBaseUrl.concat(passiveName.skill.icon);
+            if (passivesState) {
+                passivesState.forEach(function (passive) {
+                    if (passive.skill) {
+                        constructedLink = skillIconBaseUrl.concat(passive.skill.icon);
                         passives.push(React.DOM.div({
-                            key: passivesState.key,
+                            key: passive.skill.name,
                             className: 'hasIcon'
-                        }, passiveName.skill.name, React.DOM.div({
-                            key: passivesState.key,
+                        }, passive.skill.name, React.DOM.div({
+                            key: passive.skill.name + '-icon',
                             className: 'icon',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         })));
-                        passivesDesc.push(React.DOM.div({key: passivesState.key, className: 'description'},
+                        passivesDesc.push(React.DOM.div({key: passive.skill.name + '-description', className: 'description'},
                             React.DOM.div({
-                                key: passivesState.key,
+                                key: passive.skill.name + '-desc-icon',
                                 className: 'desc-icon',
                                 style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                             }),
-                            passiveName.skill.name,
+                            passive.skill.name,
                             React.DOM.p({
-                                dangerouslySetInnerHTML: {__html: passiveName.skill.description.replace(/\n/g, '<br/>')},
-                                key: passivesState.key,
+                                dangerouslySetInnerHTML: {__html: passive.skill.description.replace(/\n/g, '<br/>')},
+                                key: passive.skill.name + '-description-text',
                                 className: 'passive-desc'
                             })
                         ));
@@ -2211,10 +2213,8 @@ var statPool = [
                                 case 'white':
                                     itemQuality = 'white';
                                     break;
-                                case 'gray':
-                                    itemQuality = 'common';
-                                    break;
                                 default:
+                                    itemQuality = 'common';
                             }
 
                             if (itemCollection[item].itemData.attributesRaw) {
@@ -2456,10 +2456,15 @@ var statPool = [
             }
 
             // Hellfire Stat Parser
-            if (amuletState.attributes && itemsState && this.state.generalStats) {
-                if (amuletState.attributes.passive[0] && amuletState.attributes.passive[0].text.search('passive') !== -1 && itemsState.neck && itemsState.neck.name === 'Hellfire Amulet') {
-                    hellfirePassiveLink = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '').replace(/ /g, '').toLowerCase();
-                    hellfirePassiveDisplay = amuletState.attributes.passive[0].text.substring(9).replace(' passive.', '');
+            if (amuletState.attributes && this.state.generalStats) {
+                if (amuletState.name === 'Hellfire Amulet') {
+                    hellfirePassiveLink = amuletState.attributes.passive[0].text
+                        .substring(9)
+                        .replace(' passive.', '')
+                        .replace(/ /g, '').toLowerCase();
+                    hellfirePassiveDisplay = amuletState.attributes.passive[0].text
+                        .substring(9)
+                        .replace(' passive.', '');
                     switch (this.state.generalStats.class.value) {
                         case 'demon-hunter':
                             constructedLink = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
@@ -2483,10 +2488,10 @@ var statPool = [
                             console.log('new class?');
                     }
                     specialPassive.push(React.DOM.div({
-                        key: amuletState.key,
+                        key: hellfirePassiveDisplay,
                         className: 'hasIcon'
                     }, hellfirePassiveDisplay, ' (HA)', React.DOM.div({
-                        key: amuletState.key,
+                        key: hellfirePassiveDisplay,
                         className: 'icon',
                         style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                     })));
@@ -2497,7 +2502,6 @@ var statPool = [
             for (var primaryStat in primaryStats) {
                 if (primaryStats.hasOwnProperty(primaryStat)) {
                     content = '';
-                    console.log(primaryStat);
                     if (statsState[primaryStat] > 100) {
                         if (primaryStat === 'life') {
                             content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat] +
@@ -2511,8 +2515,7 @@ var statPool = [
                             content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                         }
 
-                        stats.push(
-                            React.DOM.div({key: primaryStat}, content));
+                        stats.push(React.DOM.div({key: primaryStat}, content));
                     }
                 }
             }
