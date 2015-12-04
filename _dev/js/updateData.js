@@ -1015,7 +1015,7 @@ var statPool = [
                 this.animateBonusPanelIn(panelRightAdditional, panelRightAdditionalHeight, true);
                 this.setState({toggle: 'visible'});
             } else {
-                this.animateBonusPanelOut(panelRightAdditional, panelRightAdditionalHeight);
+                this.animateBonusPanelOut(panelRightAdditional, panelRightAdditionalHeight, -1);
                 this.setState({toggle: 'hidden'});
             }
         },
@@ -1029,7 +1029,7 @@ var statPool = [
                 this.animateBonusPanelIn(panelLeftAdditional, panelLeftAdditionalHeight, false);
                 this.setState({paragonToggle: 'visible'});
             } else {
-                this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight);
+                this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight, -1);
                 this.setState({paragonToggle: 'hidden'});
             }
         },
