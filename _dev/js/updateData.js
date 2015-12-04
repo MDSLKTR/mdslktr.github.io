@@ -1122,7 +1122,7 @@ var statPool = [
         checkParagon: function () {
             for (var pstat in this.state.paragonStats) {
                 if (this.state.paragonStats.hasOwnProperty(pstat)) {
-                    var node = this.refs[pstat].getDOMNode();
+                    var node = ReactDOM.findDOMNode(this.refs[pstat]);
                     if (this.state.paragonStats[pstat].value === this.state.paragonStats[pstat].max) {
                         node.classList.add('maxed');
                     }
@@ -2601,8 +2601,8 @@ var statPool = [
                                 content += ': ';
                             }
 
-                            content += (defenseStats[defenseStat].modifier +
-                                defenseStats[defenseStat].value) +
+                            content += Math.round(defenseStats[defenseStat].modifier +
+                                defenseStats[defenseStat].value)  * 10000 / 10000  +
                                 defenseStats[defenseStat].unit;
                         }
 
