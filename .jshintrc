@@ -87,8 +87,8 @@
 	"globals": {
 		"React": true,
         "ReactDOM": true,
-		"TweenMax": true,
         "TweenLite": true,
+        "self": true,
 		"Elastic": true,
 		"Power4": true,
         "SlowMo": true,

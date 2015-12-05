@@ -317,6 +317,7 @@ var statPool = [
                 cubeItems: {},
                 panelAnimationComplete: false,
                 realm: initialRealm,
+                calculating: false,
                 paragonStats: {
                     'paragonCdr': {
                         name: 'Cooldown Reduction',
@@ -720,8 +721,8 @@ var statPool = [
             panelBottomLeft = ReactDOM.findDOMNode(this.refs.pbl);
             panelBottomRight = ReactDOM.findDOMNode(this.refs.pbr);
             panelRightAdditional = ReactDOM.findDOMNode(this.refs.pra);
-            panelLeftAdditional = ReactDOM.findDOMNode( this.refs.pla);
-            panelBottomLeftAdditional = ReactDOM.findDOMNode( this.refs.pbla);
+            panelLeftAdditional = ReactDOM.findDOMNode(this.refs.pla);
+            panelBottomLeftAdditional = ReactDOM.findDOMNode(this.refs.pbla);
             panelBottomRightAdditional = ReactDOM.findDOMNode(this.refs.pbra);
             itemWrapper = ReactDOM.findDOMNode(this.refs.items);
             charBgWrapper = ReactDOM.findDOMNode(this.refs.charbg);
@@ -1266,11 +1267,7 @@ var statPool = [
         },
 
         collectSetNoRingStats: function () {
-            var repeatSet = [],
-                i,
-                j,
-                k,
-                m;
+            var that = this;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -1288,88 +1285,194 @@ var statPool = [
                     this.state.ringItemLeft,
                     this.state.ringItemRight
                 ];
-                for (i = 0; i < itemSlots.length; i++) {
-                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
 
-                        for (m = 0; m < setPool.length; m++) {
-                            if (itemSlots[i].set.name === setPool[m][0]) {
-                                setPool[m][1]++;
-                            }
-                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
-                                if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
-                                    for (k = 0; k < statPool.length; k++) {
-                                        // check if the stats are releveant for stat building
-                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                                switch (statPool[k]) {
-                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
-                                                        fireDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
-                                                        coldDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                                        lightningDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
-                                                        physicalDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
-                                                        poisonDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Power_Cooldown_Reduction_Percent_All':
-                                                        cdr *= (1 - results[k]);
-                                                        break;
-                                                    case 'Resource_Cost_Reduction_Percent_All':
-                                                        resRed *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Bonus_Vs_Elites':
-                                                        eliteDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Elites':
-                                                        eliteDmgRed += results[k] * 100;
-                                                        break;
-                                                    case 'Splash_Damage_Effect_Percent':
-                                                        areaDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Gold_PickUp_Radius':
-                                                        goldPickUp += results[k];
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Melee':
-                                                        dmgRedMelee *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Ranged':
-                                                        dmgRedRanged *= (1 - results[k]);
-                                                        break;
-                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
-                                                        maxHealth += results[k] * 100;
-                                                        break;
-                                                    case 'Attacks_Per_Second_Percent':
-                                                        atkSpd += results[k];
-                                                        break;
+                if (this.state.calculating) {
+                    return;
+                }
+                return new Promise(function (resolve, reject) {
+                    that.setState({
+                        calculating: true
+                    });
+                    Worker.create = function (workerJob) {
+                        var str = workerJob.toString();
+                        var blob = new Blob(
+                            ['\'use strict\';\nself.onmessage =' + str],
+                            {type: 'text/javascript'}
+                        );
+                        return window.URL.createObjectURL(blob);
+                    };
+
+                    // worker job
+                    var workerBlob = Worker.create(function (e) {
+                        // image modification data goes here
+                        var itemSlots = e.data.itemSlots,
+                            setPool = e.data.setPool,
+                            statPool = e.data.statPool,
+                            fireDmg = e.data.fireDmg,
+                            lightningDmg = e.data.lightningDmg,
+                            coldDmg = e.data.coldDmg,
+                            physicalDmg = e.data.physicalDmg,
+                            poisonDmg = e.data.poisonDmg,
+                            cdr = e.data.cdr,
+                            resRed = e.data.resRed,
+                            eliteDmg = e.data.eliteDmg,
+                            eliteDmgRed = e.data.eliteDmgRed,
+                            areaDmg = e.data.areaDmg,
+                            goldPickUp = e.data.goldPickUp,
+                            dmgRedMelee = e.data.dmgRedMelee,
+                            dmgRedRanged = e.data.dmgRedRanged,
+                            maxHealth = e.data.maxHealth,
+                            atkSpd = e.data.atkSpd,
+                            repeatSet = [],
+                            results = [];
+
+                        for (var i = 0; i < itemSlots.length; i++) {
+                            if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
+
+                                for (var m = 0; m < setPool.length; m++) {
+                                    if (itemSlots[i].set.name === setPool[m][0]) {
+                                        setPool[m][1]++;
+                                    }
+                                    for (var j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                                        if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
+                                            for (var k = 0; k < statPool.length; k++) {
+                                                // check if the stats are releveant for stat building
+                                                if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                                    if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                                        results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                                        switch (statPool[k]) {
+                                                            case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                                fireDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                                coldDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                                lightningDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                                physicalDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                                poisonDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Power_Cooldown_Reduction_Percent_All':
+                                                                cdr *= (1 - results[k]);
+                                                                break;
+                                                            case 'Resource_Cost_Reduction_Percent_All':
+                                                                resRed *= (1 - results[k]);
+                                                                break;
+                                                            case 'Damage_Percent_Bonus_Vs_Elites':
+                                                                eliteDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Percent_Reduction_From_Elites':
+                                                                eliteDmgRed += results[k] * 100;
+                                                                break;
+                                                            case 'Splash_Damage_Effect_Percent':
+                                                                areaDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Gold_PickUp_Radius':
+                                                                goldPickUp += results[k];
+                                                                break;
+                                                            case 'Damage_Percent_Reduction_From_Melee':
+                                                                dmgRedMelee *= (1 - results[k]);
+                                                                break;
+                                                            case 'Damage_Percent_Reduction_From_Ranged':
+                                                                dmgRedRanged *= (1 - results[k]);
+                                                                break;
+                                                            case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                                maxHealth += results[k] * 100;
+                                                                break;
+                                                            case 'Attacks_Per_Second_Percent':
+                                                                atkSpd += results[k];
+                                                                break;
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
+                                if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
+                                    continue;
+                                }
+                                repeatSet.push(itemSlots[i].set.name);
                             }
                         }
-                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
-                            continue;
-                        }
-                        repeatSet.push(itemSlots[i].set.name);
-                    }
-                }
+
+                        // send results back to the main thread
+                        self.postMessage({
+                            fireDmg: fireDmg,
+                            lightningDmg: lightningDmg,
+                            coldDmg: coldDmg,
+                            physicalDmg: physicalDmg,
+                            poisonDmg: poisonDmg,
+                            cdr: cdr,
+                            resRed: resRed,
+                            eliteDmg: eliteDmg,
+                            eliteDmgRed: eliteDmgRed,
+                            areaDmg: areaDmg,
+                            goldPickUp: goldPickUp,
+                            dmgRedMelee: dmgRedMelee,
+                            dmgRedRanged: dmgRedRanged,
+                            maxHealth: maxHealth,
+                            atkSpd: atkSpd
+                        });
+
+                        // die
+                        self.close();
+                    });
+
+                    // create worker instance
+                    var worker = new Worker(workerBlob);
+
+                    worker.onmessage = function (e) {
+                        resolve();
+
+                        that.setState({
+                            calculating: false
+                        });
+
+                        console.info('the web worker had a save journey');
+                    };
+
+                    // return a failure message if the worker didn't complete
+                    worker.onerror = function (e) {
+                        reject(Error(
+                                'one of the workers had an horrible accident\n' +
+                                e.message +
+                                ' in line ' +
+                                e.lineno)
+                        );
+                        this.terminate();
+                    };
+
+                    worker.postMessage({
+                        itemSlots: itemSlots,
+                        setPool: setPool,
+                        statPool: statPool,
+                        fireDmg: fireDmg,
+                        lightningDmg: lightningDmg,
+                        coldDmg: coldDmg,
+                        physicalDmg: physicalDmg,
+                        poisonDmg: poisonDmg,
+                        cdr: cdr,
+                        resRed: resRed,
+                        eliteDmg: eliteDmg,
+                        eliteDmgRed: eliteDmgRed,
+                        areaDmg: areaDmg,
+                        goldPickUp: goldPickUp,
+                        dmgRedMelee: dmgRedMelee,
+                        dmgRedRanged: dmgRedRanged,
+                        maxHealth: maxHealth,
+                        atkSpd: atkSpd
+                    });
+                });
             }
         },
 
         collectSetRingStats: function () {
-            var repeatSet = [],
-                i,
-                j,
-                k,
-                m;
+            var that = this;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -1387,88 +1490,199 @@ var statPool = [
                     this.state.ringItemLeft,
                     this.state.ringItemRight
                 ];
-                for (i = 0; i < itemSlots.length; i++) {
-                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
 
-                        for (m = 0; m < setPool.length; m++) {
-                            if (itemSlots[i].set.name === setPool[m][0]) {
-                                setPool[m][1]++;
-                            }
-                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
-                                if (
-                                    itemSlots[i].set.name === setPool[m][0] &&
-                                    itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
-                                    setPool[m][1] >= 2
-                                ) {
-                                    for (k = 0; k < statPool.length; k++) {
-                                        // check if the stats are releveant for stat building
-                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                                switch (statPool[k]) {
-                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
-                                                        fireDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
-                                                        coldDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                                        lightningDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
-                                                        physicalDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
-                                                        poisonDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Power_Cooldown_Reduction_Percent_All':
-                                                        cdr *= (1 - results[k]);
-                                                        break;
-                                                    case 'Resource_Cost_Reduction_Percent_All':
-                                                        resRed *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Bonus_Vs_Elites':
-                                                        eliteDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Elites':
-                                                        eliteDmgRed += results[k] * 100;
-                                                        break;
-                                                    case 'Splash_Damage_Effect_Percent':
-                                                        areaDmg += results[k] * 100;
-                                                        break;
-                                                    case 'Gold_PickUp_Radius':
-                                                        goldPickUp += results[k];
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Melee':
-                                                        dmgRedMelee *= (1 - results[k]);
-                                                        break;
-                                                    case 'Damage_Percent_Reduction_From_Ranged':
-                                                        dmgRedRanged *= (1 - results[k]);
-                                                        break;
-                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
-                                                        maxHealth += results[k] * 100;
-                                                        break;
-                                                    case 'Attacks_Per_Second_Percent':
-                                                        atkSpd += results[k];
-                                                        break;
+                if (this.state.calculating) {
+                    return;
+                }
+                return new Promise(function (resolve, reject) {
+                    that.setState({
+                        calculating: true
+                    });
+                    Worker.create = function (workerJob) {
+                        var str = workerJob.toString();
+                        var blob = new Blob(
+                            ['\'use strict\';\nself.onmessage =' + str],
+                            {type: 'text/javascript'}
+                        );
+                        return window.URL.createObjectURL(blob);
+                    };
+
+                    // worker job
+                    var workerBlob = Worker.create(function (e) {
+                        // image modification data goes here
+                        var itemSlots = e.data.itemSlots,
+                            setPool = e.data.setPool,
+                            statPool = e.data.statPool,
+                            fireDmg = e.data.fireDmg,
+                            lightningDmg = e.data.lightningDmg,
+                            coldDmg = e.data.coldDmg,
+                            physicalDmg = e.data.physicalDmg,
+                            poisonDmg = e.data.poisonDmg,
+                            cdr = e.data.cdr,
+                            resRed = e.data.resRed,
+                            eliteDmg = e.data.eliteDmg,
+                            eliteDmgRed = e.data.eliteDmgRed,
+                            areaDmg = e.data.areaDmg,
+                            goldPickUp = e.data.goldPickUp,
+                            dmgRedMelee = e.data.dmgRedMelee,
+                            dmgRedRanged = e.data.dmgRedRanged,
+                            maxHealth = e.data.maxHealth,
+                            atkSpd = e.data.atkSpd,
+                            repeatSet = [],
+                            results = [];
+
+                        for (var i = 0; i < itemSlots.length; i++) {
+                            if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
+
+                                for (var m = 0; m < setPool.length; m++) {
+                                    if (itemSlots[i].set.name === setPool[m][0]) {
+                                        setPool[m][1]++;
+                                    }
+                                    for (var j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                                        if (
+                                            itemSlots[i].set.name === setPool[m][0] &&
+                                            itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
+                                            setPool[m][1] >= 2
+                                        ) {
+                                            for (var k = 0; k < statPool.length; k++) {
+                                                // check if the stats are releveant for stat building
+                                                if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
+                                                    if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
+                                                        results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
+                                                        switch (statPool[k]) {
+                                                            case 'Damage_Dealt_Percent_Bonus#Fire':
+                                                                fireDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Cold':
+                                                                coldDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Lightning':
+                                                                lightningDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Physical':
+                                                                physicalDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Dealt_Percent_Bonus#Poison':
+                                                                poisonDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Power_Cooldown_Reduction_Percent_All':
+                                                                cdr *= (1 - results[k]);
+                                                                break;
+                                                            case 'Resource_Cost_Reduction_Percent_All':
+                                                                resRed *= (1 - results[k]);
+                                                                break;
+                                                            case 'Damage_Percent_Bonus_Vs_Elites':
+                                                                eliteDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Damage_Percent_Reduction_From_Elites':
+                                                                eliteDmgRed += results[k] * 100;
+                                                                break;
+                                                            case 'Splash_Damage_Effect_Percent':
+                                                                areaDmg += results[k] * 100;
+                                                                break;
+                                                            case 'Gold_PickUp_Radius':
+                                                                goldPickUp += results[k];
+                                                                break;
+                                                            case 'Damage_Percent_Reduction_From_Melee':
+                                                                dmgRedMelee *= (1 - results[k]);
+                                                                break;
+                                                            case 'Damage_Percent_Reduction_From_Ranged':
+                                                                dmgRedRanged *= (1 - results[k]);
+                                                                break;
+                                                            case 'Hitpoints_Max_Percent_Bonus_Item':
+                                                                maxHealth += results[k] * 100;
+                                                                break;
+                                                            case 'Attacks_Per_Second_Percent':
+                                                                atkSpd += results[k];
+                                                                break;
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
+                                if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
+                                    continue;
+                                }
+                                repeatSet.push(itemSlots[i].set.name);
                             }
                         }
-                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
-                            continue;
-                        }
-                        repeatSet.push(itemSlots[i].set.name);
-                    }
-                }
+
+                        // send results back to the main thread
+                        self.postMessage({
+                            fireDmg: fireDmg,
+                            lightningDmg: lightningDmg,
+                            coldDmg: coldDmg,
+                            physicalDmg: physicalDmg,
+                            poisonDmg: poisonDmg,
+                            cdr: cdr,
+                            resRed: resRed,
+                            eliteDmg: eliteDmg,
+                            eliteDmgRed: eliteDmgRed,
+                            areaDmg: areaDmg,
+                            goldPickUp: goldPickUp,
+                            dmgRedMelee: dmgRedMelee,
+                            dmgRedRanged: dmgRedRanged,
+                            maxHealth: maxHealth,
+                            atkSpd: atkSpd
+                        });
+
+                        // die
+                        self.close();
+                    });
+
+                    // create worker instance
+                    var worker = new Worker(workerBlob);
+
+                    worker.onmessage = function (e) {
+                        resolve();
+
+                        that.setState({
+                            calculating: false
+                        });
+
+                        console.info('the web worker had a save journey');
+                    };
+
+                    // return a failure message if the worker didn't complete
+                    worker.onerror = function (e) {
+                        reject(Error(
+                                'one of the workers had an horrible accident\n' +
+                                e.message +
+                                ' in line ' +
+                                e.lineno)
+                        );
+                        this.terminate();
+                    };
+
+                    worker.postMessage({
+                        itemSlots: itemSlots,
+                        setPool: setPool,
+                        statPool: statPool,
+                        fireDmg: fireDmg,
+                        lightningDmg: lightningDmg,
+                        coldDmg: coldDmg,
+                        physicalDmg: physicalDmg,
+                        poisonDmg: poisonDmg,
+                        cdr: cdr,
+                        resRed: resRed,
+                        eliteDmg: eliteDmg,
+                        eliteDmgRed: eliteDmgRed,
+                        areaDmg: areaDmg,
+                        goldPickUp: goldPickUp,
+                        dmgRedMelee: dmgRedMelee,
+                        dmgRedRanged: dmgRedRanged,
+                        maxHealth: maxHealth,
+                        atkSpd: atkSpd
+                    });
+                });
             }
         },
 
         checkSetItems: function () {
-            var checkSave = [];
+            var checkSave = [],
+                setRing = false;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -1491,11 +1705,17 @@ var statPool = [
                 for (i = 0; i < itemSlots.length; i++) {
                     checkSave.push(itemSlots[i].name);
                     if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
+                        setRing = true;
                         this.collectSetRingStats();
                     } else {
                         this.collectSetNoRingStats();
                     }
                 }
+
+                // putting this into the loop will cause a freeze, weird
+                this.setState({
+                    setRing: setRing
+                });
             }
         },
 
@@ -1686,12 +1906,13 @@ var statPool = [
                 }
 
                 // ignoring mf,gf,thorns and block since they are useless stats
-                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.attributesRaw && this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item) {
+                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.attributesRaw) {
                     if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
                         // increment for cdr gem
                         cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min -
                         (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min));
                     } else if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
+                        console.log('here');
                         cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min);
                     }
                     if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
@@ -1817,6 +2038,8 @@ var statPool = [
                         }
                     }
                 });
+
+                console.log(this.state.customOffensiveStats.resRed);
             }
         },
 
@@ -1832,7 +2055,9 @@ var statPool = [
         },
 
         normalizeMultiplicativeStat: function (value, modifier) {
-            return Math.round((1 - value + (modifier / 100)) * 100 * 100) / 100;
+            // TODO get rid of rounding error
+            var normalizedMod = modifier / 100;
+            return Math.round((1 - value * (1 - normalizedMod)) * 100 * 100) / 100;
         },
 
         normalizeWeaponAttackSpeed: function (value, modifier, mainHandSpeed, offHandModifier) {
@@ -2066,7 +2291,11 @@ var statPool = [
                     style: {display: 'none'}
                 }, 'enter your battleTag in the field below'));
             } else {
-                heroes.push(React.DOM.option({key: 'heroes-list-loading', value: '', style: {display: 'none'}}, 'loading herolist...'));
+                heroes.push(React.DOM.option({
+                    key: 'heroes-list-loading',
+                    value: '',
+                    style: {display: 'none'}
+                }, 'loading herolist...'));
             }
 
             for (var generalStat in this.state.generalStats) {
@@ -2109,10 +2338,17 @@ var statPool = [
                                     className: 'icon-front',
                                     style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                                 }),
-                                React.DOM.div({key: skillData.rune.name + '-icon-back', className: 'icon-back', style: runeType})
+                                React.DOM.div({
+                                    key: skillData.rune.name + '-icon-back',
+                                    className: 'icon-back',
+                                    style: runeType
+                                })
                             )
                         );
-                        skillsDesc.push(React.DOM.div({key: skillData.skill.name + '-description', className: 'description'},
+                        skillsDesc.push(React.DOM.div({
+                                key: skillData.skill.name + '-description',
+                                className: 'description'
+                            },
                             React.DOM.div({
                                 key: skillData.skill.name + '-desc-icon',
                                 className: 'desc-icon',
@@ -2140,7 +2376,10 @@ var statPool = [
                             className: 'icon-front no-rune',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         })));
-                        skillsDesc.push(React.DOM.div({key: skillData.skill.name + '-description', className: 'description'},
+                        skillsDesc.push(React.DOM.div({
+                                key: skillData.skill.name + '-description',
+                                className: 'description'
+                            },
                             React.DOM.div({
                                 key: skillData.skill.name + '-desc-icon',
                                 className: 'desc-icon',
@@ -2170,7 +2409,10 @@ var statPool = [
                             className: 'icon',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         })));
-                        passivesDesc.push(React.DOM.div({key: passive.skill.name + '-description', className: 'description'},
+                        passivesDesc.push(React.DOM.div({
+                                key: passive.skill.name + '-description',
+                                className: 'description'
+                            },
                             React.DOM.div({
                                 key: passive.skill.name + '-desc-icon',
                                 className: 'desc-icon',
@@ -2191,9 +2433,8 @@ var statPool = [
             if (this.state.kanai) {
 
                 this.state.kanai.forEach(function (power, currentIndex) {
-                    self.loadKanaiItems(power.tooltipParams, currentIndex);
                     if (power) {
-                        console.log(power);
+                        self.loadKanaiItems(power.tooltipParams, currentIndex);
                         constructedLink = itemIconBaseUrl.concat(power.icon);
                         passives.push(React.DOM.div({
                             key: power.name,
@@ -2203,25 +2444,27 @@ var statPool = [
                             className: 'icon',
                             style: {backgroundImage: 'url(' + constructedLink + '.png)'}
                         })));
-                    }
-
-                    if (self.state.cubeItems !== {}) {
-                        for (var cubeItem in self.state.cubeItems) {
-                            if (self.state.cubeItems.hasOwnProperty(cubeItem)) {
-                                if (cubeItem && self.state.cubeItems[cubeItem].name === power.name) {
-                                    passivesDesc.push(React.DOM.div({key: self.state.cubeItems[cubeItem].name + '-description', className: 'description'},
-                                        React.DOM.div({
-                                            key: self.state.cubeItems[cubeItem].name + '-desc-icon',
-                                            className: 'desc-icon',
-                                            style: {backgroundImage: 'url(' + constructedLink + '.png)'}
-                                        }),
-                                        self.state.cubeItems[cubeItem].name,
-                                        React.DOM.p({
-                                            dangerouslySetInnerHTML: {__html: self.state.cubeItems[cubeItem].attributes.passive[0].text.replace(/\n/g, '<br/>')},
-                                            key: cubeItem.name + '-description-text',
-                                            className: 'passive-desc'
-                                        })
-                                    ));
+                        if (self.state.cubeItems) {
+                            for (var cubeItem in self.state.cubeItems) {
+                                if (self.state.cubeItems.hasOwnProperty(cubeItem)) {
+                                    if (cubeItem && self.state.cubeItems[cubeItem].name === power.name) {
+                                        passivesDesc.push(React.DOM.div({
+                                                key: self.state.cubeItems[cubeItem].name + '-description',
+                                                className: 'description'
+                                            },
+                                            React.DOM.div({
+                                                key: self.state.cubeItems[cubeItem].name + '-desc-icon',
+                                                className: 'desc-icon',
+                                                style: {backgroundImage: 'url(' + constructedLink + '.png)'}
+                                            }),
+                                            self.state.cubeItems[cubeItem].name,
+                                            React.DOM.p({
+                                                dangerouslySetInnerHTML: {__html: self.state.cubeItems[cubeItem].attributes.passive[0].text.replace(/\n/g, '<br/>')},
+                                                key: cubeItem.name + '-description-text',
+                                                className: 'passive-desc'
+                                            })
+                                        ));
+                                    }
                                 }
                             }
                         }
@@ -2258,7 +2501,7 @@ var statPool = [
 
                             if (itemCollection[item].itemData.attributesRaw) {
                                 isAncient = itemCollection[item].itemData.attributesRaw.Ancient_Rank && itemCollection[item].itemData.attributesRaw.Ancient_Rank.min === 1.0 ? 'ancient' : '';
-                                if (item === 'mainHand' || item === 'offHand' ) {
+                                if (item === 'mainHand' || item === 'offHand') {
                                     if (itemCollection[item].itemData.type) {
                                         var mainHanded = '';
                                         mainHanded = itemCollection[item].itemData.type.twoHanded ? '(2h)' : '(1h)';
@@ -2354,9 +2597,9 @@ var statPool = [
                             }
 
                             if (itemCollection[item].itemData.set && itemCollection[item].itemData.set.ranks) {
+                                itemSetCount = 0;
                                 for (i = 0; i < itemCollection[item].itemData.set.ranks.length; i++) {
                                     // count of ranks eg. 2, 3, 6
-
                                     for (k = 1; k <= 6; k++) {
                                         // count of max set boni - 6
                                         for (m = 0; m < setPool.length; m++) {
@@ -2651,7 +2894,7 @@ var statPool = [
                                 content += ': ';
                             }
 
-                            content += defenseStats[defenseStat].modifier + statsState[defenseStat];
+                            content += Math.round((defenseStats[defenseStat].modifier + statsState[defenseStat]) * 100) / 100 ;
 
                         } else if (defenseStats[defenseStat].value || defenseStats[defenseStat].modifier) {
                             if (defenseStats[defenseStat].name) {
@@ -2659,8 +2902,8 @@ var statPool = [
                                 content += ': ';
                             }
 
-                            content += Math.round(defenseStats[defenseStat].modifier +
-                                defenseStats[defenseStat].value)  * 10000 / 10000  +
+                            content += Math.round((defenseStats[defenseStat].modifier +
+                                    defenseStats[defenseStat].value) * 100) / 100 +
                                 defenseStats[defenseStat].unit;
                         }
 
@@ -2693,7 +2936,7 @@ var statPool = [
                 }
             }
 
-            // TODO custom dps shit unbreak this
+             //TODO custom dps shit unbreak this
             if (statsState && statsState.critDamage && statsState.critChance && minDmgCalc !== 0 && maxDmgCalc !== 0 && this.state.generalStats) {
                 var statCalc,
                     minMaxCalc = (minDmgCalc + maxDmgCalc) * 0.5,
