@@ -1720,6 +1720,7 @@ var statPool = [
         },
 
         collectSkillDamage: function () {
+            // TODO webworker here
             var i,
                 k,
                 m,
@@ -1806,6 +1807,7 @@ var statPool = [
         },
 
         collectStats: function () {
+            // Todo webworker here
             var i,
                 k;
 
@@ -3174,4 +3176,5 @@ ReactDOM.render(React.createElement(d3Profile, {
 
 // todo find out how the % dmg of the skill can be gathered
 // todo add more buffs
-// todo add cube passives + add new interface + refactor data
+// todo add new interface + refactor data
+// todo split parser into components
