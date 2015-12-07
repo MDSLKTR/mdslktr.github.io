@@ -2055,9 +2055,11 @@ var statPool = [
         },
 
         normalizeMultiplicativeStat: function (value, modifier) {
-            // TODO get rid of rounding error
             var normalizedMod = modifier / 100;
-            return Math.round((1 - value * (1 - normalizedMod)) * 100 * 100) / 100;
+            if (value === 1) {
+                return modifier ;
+            }
+            return Math.floor((100 - Math.floor(value * (1 - normalizedMod) * 100 * 10000) / 10000) * 100) / 100;
         },
 
         normalizeWeaponAttackSpeed: function (value, modifier, mainHandSpeed, offHandModifier) {
