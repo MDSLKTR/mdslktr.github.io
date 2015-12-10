@@ -1,20 +1,54 @@
-var statPool = [
-        'Damage_Dealt_Percent_Bonus#Fire',
-        'Damage_Dealt_Percent_Bonus#Physical',
-        'Damage_Dealt_Percent_Bonus#Cold',
-        'Damage_Dealt_Percent_Bonus#Poison',
-        'Damage_Dealt_Percent_Bonus#Lightning',
-        'Power_Cooldown_Reduction_Percent_All',
-        'Resource_Cost_Reduction_Percent_All',
-        'Damage_Percent_Bonus_Vs_Elites',
-        'Damage_Percent_Reduction_From_Elites',
-        'Splash_Damage_Effect_Percent',
-        'Gold_PickUp_Radius',
-        'Damage_Percent_Reduction_From_Melee',
-        'Damage_Percent_Reduction_From_Ranged',
-        'Hitpoints_Max_Percent_Bonus_Item',
-        'Attacks_Per_Second_Percent'
-    ],
+var statPool = {
+        'Damage_Dealt_Percent_Bonus#Fire': {
+            value: 0
+        },
+        'Damage_Dealt_Percent_Bonus#Physical': {
+            value: 0
+        },
+        'Damage_Dealt_Percent_Bonus#Cold': {
+            value: 0
+        },
+        'Damage_Dealt_Percent_Bonus#Poison': {
+            value: 0
+        },
+        'Damage_Dealt_Percent_Bonus#Lightning': {
+            value: 0
+        },
+        'Power_Cooldown_Reduction_Percent_All': {
+            value: 1,
+            multiplicative: true
+        },
+        'Resource_Cost_Reduction_Percent_All': {
+            value: 1,
+            multiplicative: true
+        },
+        'Damage_Percent_Bonus_Vs_Elites': {
+            value: 0
+        },
+        'Damage_Percent_Reduction_From_Elites': {
+            value: 0
+        },
+        'Splash_Damage_Effect_Percent': {
+            value: 0
+        },
+        'Gold_PickUp_Radius': {
+            value: 0
+        },
+        'Damage_Percent_Reduction_From_Melee': {
+            value: 1,
+            multiplicative: true
+        },
+        'Damage_Percent_Reduction_From_Ranged': {
+            value: 1,
+            multiplicative: true
+        },
+        'Hitpoints_Max_Percent_Bonus_Item': {
+            value: 0
+        },
+        'Attacks_Per_Second_Percent': {
+            value: 0
+        }
+    },
     DamagePercentAll = 'Damage_Weapon_Percent_All',
     DamageBonusMinPhysical = 'Damage_Weapon_Bonus_Min_X1#Physical',
     weaponElementsMin = [
@@ -317,7 +351,9 @@ var statPool = [
                 cubeItems: {},
                 panelAnimationComplete: false,
                 realm: initialRealm,
-                calculating: false,
+                calculatingStatsSetRing: false,
+                calculatingStatsNoSetRing: false,
+                calculatingStats: false,
                 paragonStats: {
                     'paragonCdr': {
                         name: 'Cooldown Reduction',
@@ -674,7 +710,16 @@ var statPool = [
             this.loadHeroesList(tag);
         },
 
+        clearOldStats: function () {
+            for (var stat in statPool) {
+                if (statPool.hasOwnProperty(stat)) {
+                    statPool[stat].value = statPool[stat].multiplicative ? 1 : 0;
+                }
+            }
+        },
+
         triggerStatCollector: function () {
+            this.clearOldStats();
             this.collectStats();
             this.checkSetItems();
             this.collectSkillDamage();
@@ -683,6 +728,7 @@ var statPool = [
 
         startStatCollectorRunner: function () {
             if (this.state.panelAnimationComplete) {
+                this.clearOldStats();
                 this.collectStats();
                 this.checkSetItems();
                 this.collectSkillDamage();
@@ -1286,12 +1332,12 @@ var statPool = [
                     this.state.ringItemRight
                 ];
 
-                if (this.state.calculating) {
+                if (this.state.calculatingStatsNoSetRing) {
                     return;
                 }
                 return new Promise(function (resolve, reject) {
                     that.setState({
-                        calculating: true
+                        calculatingStatsNoSetRing: true
                     });
                     Worker.create = function (workerJob) {
                         var str = workerJob.toString();
@@ -1427,10 +1473,12 @@ var statPool = [
                     var worker = new Worker(workerBlob);
 
                     worker.onmessage = function (e) {
-                        resolve();
+                        // TODO shit needs to be applied too wtf
+                        console.log(e.data);
+                        resolve( e );
 
                         that.setState({
-                            calculating: false
+                            calculatingStatsNoSetRing: false
                         });
 
                         console.info('the web worker had a save journey');
@@ -1491,12 +1539,12 @@ var statPool = [
                     this.state.ringItemRight
                 ];
 
-                if (this.state.calculating) {
+                if (this.state.calculatingStatsSetRing) {
                     return;
                 }
                 return new Promise(function (resolve, reject) {
                     that.setState({
-                        calculating: true
+                        calculatingStatsSetRing: true
                     });
                     Worker.create = function (workerJob) {
                         var str = workerJob.toString();
@@ -1639,7 +1687,7 @@ var statPool = [
                         resolve();
 
                         that.setState({
-                            calculating: false
+                            calculatingStatsSetRing: false
                         });
 
                         console.info('the web worker had a save journey');
@@ -1808,27 +1856,7 @@ var statPool = [
 
         collectStats: function () {
             // Todo webworker here
-            var i,
-                k;
-
-            // stats that add multiplicatively
-            results = [];
-            cdr = 1;
-            resRed = 1;
-            dmgRedMelee = 1;
-            dmgRedRanged = 1;
-            // stats that add additively
-            eliteDmg = 0;
-            eliteDmgRed = 0;
-            areaDmg = 0;
-            fireDmg = 0;
-            coldDmg = 0;
-            lightningDmg = 0;
-            physicalDmg = 0;
-            poisonDmg = 0;
-            goldPickUp = 0;
-            maxHealth = 0;
-            atkSpd = 0;
+            var that = this;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -1846,202 +1874,232 @@ var statPool = [
                     this.state.ringItemLeft,
                     this.state.ringItemRight
                 ];
-                for (i = 0; i < itemSlots.length; i++) {
-                    if (itemSlots[i] && itemSlots[i].attributesRaw) {
-                        for (k = 0; k < statPool.length; k++) {
-                            if (itemSlots[i].attributesRaw[statPool[k]] && itemSlots[i].attributesRaw[statPool[k]].min) {
-                                if (typeof parseInt(itemSlots[i].attributesRaw[statPool[k]].min === 'number')) {
-                                    results[k] = Math.round(itemSlots[i].attributesRaw[statPool[k]].min * 1000) / 1000;
-                                    switch (statPool[k]) {
-                                        case 'Damage_Dealt_Percent_Bonus#Fire':
-                                            fireDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Cold':
-                                            coldDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Lightning':
-                                            lightningDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Physical':
-                                            physicalDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Dealt_Percent_Bonus#Poison':
-                                            poisonDmg += results[k] * 100;
-                                            break;
-                                        case 'Power_Cooldown_Reduction_Percent_All':
-                                            cdr *= (1 - results[k]);
-                                            break;
-                                        case 'Resource_Cost_Reduction_Percent_All':
-                                            resRed *= (1 - results[k]);
-                                            break;
-                                        case 'Damage_Percent_Bonus_Vs_Elites':
-                                            eliteDmg += results[k] * 100;
-                                            break;
-                                        case 'Damage_Percent_Reduction_From_Elites':
-                                            eliteDmgRed += results[k] * 100;
-                                            break;
-                                        case 'Splash_Damage_Effect_Percent':
-                                            areaDmg += results[k] * 100;
-                                            break;
-                                        case 'Gold_PickUp_Radius':
-                                            goldPickUp += results[k];
-                                            break;
-                                        case 'Damage_Percent_Reduction_From_Melee':
-                                            dmgRedMelee *= (1 - results[k]);
-                                            break;
-                                        case 'Damage_Percent_Reduction_From_Ranged':
-                                            dmgRedRanged *= (1 - results[k]);
-                                            break;
-                                        case 'Hitpoints_Max_Percent_Bonus_Item':
-                                            maxHealth += results[k] * 100;
-                                            break;
-                                        case 'Attacks_Per_Second_Percent':
-                                            atkSpd += results[k];
-                                            break;
-                                        default:
-                                            console.log('default');
+
+                if (this.state.calculatingStats) {
+                    return;
+                }
+                return new Promise(function (resolve, reject) {
+                    that.setState({
+                        calculatingStats: true
+                    });
+                    Worker.create = function (workerJob) {
+                        var str = workerJob.toString();
+                        var blob = new Blob(
+                            ['\'use strict\';\nself.onmessage =' + str],
+                            {type: 'text/javascript'}
+                        );
+                        return window.URL.createObjectURL(blob);
+                    };
+
+                    // worker job
+                    var workerBlob = Worker.create(function (e) {
+                        // image modification data goes here
+                        var itemSlots = e.data.itemSlots,
+                            statPool = e.data.statPool,
+                            fireDmg = e.data.fireDmg,
+                            lightningDmg = e.data.lightningDmg,
+                            coldDmg = e.data.coldDmg,
+                            physicalDmg = e.data.physicalDmg,
+                            poisonDmg = e.data.poisonDmg,
+                            result;
+
+                        for (var i = 0; i < itemSlots.length; i++) {
+                            if (itemSlots[i] && itemSlots[i].attributesRaw) {
+
+                                for (var stat in statPool) {
+                                    if (statPool.hasOwnProperty(stat)) {
+                                        if (itemSlots[i].attributesRaw[stat] && itemSlots[i].attributesRaw[stat].min) {
+                                            if (typeof parseInt(itemSlots[i].attributesRaw[stat].min === 'number')) {
+                                                result = Math.round(itemSlots[i].attributesRaw[stat].min * 1000) / 1000;
+                                                if (!statPool[stat].multiplicative) {
+                                                    statPool[stat].value += result;
+                                                } else {
+                                                    statPool[stat].value *= (1 - result);
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                }
 
-                // ignoring mf,gf,thorns and block since they are useless stats
-                if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.attributesRaw) {
-                    if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
-                        // increment for cdr gem
-                        cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min -
-                        (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min));
-                    } else if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
-                        console.log('here');
-                        cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min);
-                    }
-                    if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
-                        // increment for health gem
-                        maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 +
-                            (this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
-                    } else if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
-                        maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
-                    }
-                }
+                        //// ignoring mf,gf,thorns and block since they are useless stats
+                        //if (this.state.helmItem && this.state.helmItem.gems && this.state.helmItem.attributesRaw) {
+                        //    if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
+                        //        // increment for cdr gem
+                        //        cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min -
+                        //        (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min));
+                        //    } else if (this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
+                        //        console.log('here');
+                        //        cdr *= (1 - this.state.helmItem.gems[0].attributesRaw.Power_Cooldown_Reduction_Percent_All.min);
+                        //    }
+                        //    if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
+                        //        // increment for health gem
+                        //        maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 +
+                        //            (this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100 * this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier.min);
+                        //    } else if (this.state.helmItem.gems[0].attributesRaw.Hitpoints_Max_Percent_Bonus_Item && !this.state.helmItem.attributesRaw.Gem_Attributes_Multiplier) {
+                        //        maxHealth += this.state.helmItem.gems[0].Hitpoints_Max_Percent_Bonus_Item.min * 100;
+                        //    }
+                        //}
 
-                // reduce is a neat method
-                var eleDmg = [
-                        fireDmg,
-                        poisonDmg,
-                        lightningDmg,
-                        physicalDmg,
-                        coldDmg
-                    ],
-                    findElem = eleDmg.reduce(function (max, arr) {
-                        return max >= arr ? max : arr;
-                    }, -Infinity),
-                    maxElement;
+                        // reduce is a neat method
+                        var eleDmg = [
+                                fireDmg,
+                                poisonDmg,
+                                lightningDmg,
+                                physicalDmg,
+                                coldDmg
+                            ],
+                            findElem = eleDmg.reduce(function (max, arr) {
+                                return max >= arr ? max : arr;
+                            }, -Infinity),
+                            maxElement;
 
-                switch (findElem) {
-                    case fireDmg:
-                        maxElement = 'Fire Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
-                        break;
-                    case coldDmg:
-                        maxElement = 'Cold Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
-                        break;
-                    case physicalDmg:
-                        maxElement = 'Physical Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
-                        break;
-                    case lightningDmg:
-                        maxElement = 'Lightning Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
-                        break;
-                    case poisonDmg:
-                        maxElement = 'Poison Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
-                        break;
-                }
-
-                // Find max Elemental Damage Bonus
-                if (findElem !== 0) {
-                    this.setState({
-                        maxEleDmg: maxElement,
-                        maxEleDmgValue: findElem
-                    });
-                } else {
-                    this.setState({
-                        maxEleDmg: '',
-                        maxEleDmgValue: 0
-                    });
-                }
-
-                // set states of other stats
-                this.setState({
-                    customOffensiveStats: {
-                        cdrRed: {
-                            name: 'Cooldown Reduction',
-                            value: cdr,
-                            modifier: this.state.paragonStats.paragonCdr.value,
-                            unit: '%'
-                        },
-                        resRed: {
-                            name: 'Resource Cost Reduction',
-                            value: resRed,
-                            modifier: this.state.paragonStats.paragonResRed.value,
-                            unit: '%'
-                        },
-                        eliteDmg: {
-                            name: 'Elite Damage Bonus',
-                            value: eliteDmg,
-                            modifier: 0,
-                            unit: '%'
-                        },
-                        areaDmg: {
-                            name: 'Area Damage Bonus',
-                            value: areaDmg,
-                            modifier: this.state.paragonStats.paragonAreaDmg.value,
-                            unit: '%'
-                        },
-                        atkSpd: {
-                            name: 'Attack Speed Bonus',
-                            value: atkSpd,
-                            modifier: this.state.paragonStats.paragonAtkSpd.value,
-                            unit: ''
+                        switch (findElem) {
+                            case fireDmg:
+                                maxElement = 'Fire Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
+                                break;
+                            case coldDmg:
+                                maxElement = 'Cold Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
+                                break;
+                            case physicalDmg:
+                                maxElement = 'Physical Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
+                                break;
+                            case lightningDmg:
+                                maxElement = 'Lightning Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
+                                break;
+                            case poisonDmg:
+                                maxElement = 'Poison Damage Increase: ' + Math.round(findElem * 100) / 100 + '%';
+                                break;
                         }
-                    },
-                    customDefensiveStats: {
-                        goldPickup: {
-                            name: 'Gold Pick-up Range',
-                            value: goldPickUp,
-                            modifier: 0,
-                            unit: ' yards'
-                        },
-                        dmgRedMelee: {
-                            name: 'Melee Damage Reduction',
-                            value: Math.round((1 - dmgRedMelee) * 100 * 1000) / 1000,
-                            modifier: 0,
-                            unit: '%'
-                        },
 
-                        dmgRedRanged: {
-                            name: 'Ranged Damage Reduction',
-                            value: Math.round((1 - dmgRedRanged) * 100 * 1000) / 1000,
-                            modifier: 0,
-                            unit: '%'
-                        },
 
-                        eliteDmgRed: {
-                            name: 'Elite Damage Reduction',
-                            value: eliteDmgRed,
-                            modifier: 0,
-                            unit: '%'
-                        },
 
-                        maxHealth: {
-                            name: 'Max Health Bonus',
-                            value: maxHealth,
-                            modifier: this.state.paragonStats.paragonMaxHealth.value,
-                            unit: '%'
-                        }
-                    }
+                        // send results back to the main thread
+                        self.postMessage({
+                            statPool: statPool
+                        });
+
+                        // die
+                        self.close();
+                    });
+
+                    // create worker instance
+                    var worker = new Worker(workerBlob);
+
+                    worker.onmessage = function (e) {
+                        console.log(e.data);
+                        //// Find max Elemental Damage Bonus
+                        //if (findElem !== 0) {
+                        //    this.setState({
+                        //        maxEleDmg: maxElement,
+                        //        maxEleDmgValue: findElem
+                        //    });
+                        //} else {
+                        //    this.setState({
+                        //        maxEleDmg: '',
+                        //        maxEleDmgValue: 0
+                        //    });
+                        //}
+                        //
+                        //// set states of other stats
+                        //this.setState({
+                        //    customOffensiveStats: {
+                        //        cdrRed: {
+                        //            name: 'Cooldown Reduction',
+                        //            value: cdr,
+                        //            modifier: this.state.paragonStats.paragonCdr.value,
+                        //            unit: '%'
+                        //        },
+                        //        resRed: {
+                        //            name: 'Resource Cost Reduction',
+                        //            value: resRed,
+                        //            modifier: this.state.paragonStats.paragonResRed.value,
+                        //            unit: '%'
+                        //        },
+                        //        eliteDmg: {
+                        //            name: 'Elite Damage Bonus',
+                        //            value: eliteDmg,
+                        //            modifier: 0,
+                        //            unit: '%'
+                        //        },
+                        //        areaDmg: {
+                        //            name: 'Area Damage Bonus',
+                        //            value: areaDmg,
+                        //            modifier: this.state.paragonStats.paragonAreaDmg.value,
+                        //            unit: '%'
+                        //        },
+                        //        atkSpd: {
+                        //            name: 'Attack Speed Bonus',
+                        //            value: atkSpd,
+                        //            modifier: this.state.paragonStats.paragonAtkSpd.value,
+                        //            unit: ''
+                        //        }
+                        //    },
+                        //    customDefensiveStats: {
+                        //        goldPickup: {
+                        //            name: 'Gold Pick-up Range',
+                        //            value: goldPickUp,
+                        //            modifier: 0,
+                        //            unit: ' yards'
+                        //        },
+                        //        dmgRedMelee: {
+                        //            name: 'Melee Damage Reduction',
+                        //            value: Math.round((1 - dmgRedMelee) * 100 * 1000) / 1000,
+                        //            modifier: 0,
+                        //            unit: '%'
+                        //        },
+                        //
+                        //        dmgRedRanged: {
+                        //            name: 'Ranged Damage Reduction',
+                        //            value: Math.round((1 - dmgRedRanged) * 100 * 1000) / 1000,
+                        //            modifier: 0,
+                        //            unit: '%'
+                        //        },
+                        //
+                        //        eliteDmgRed: {
+                        //            name: 'Elite Damage Reduction',
+                        //            value: eliteDmgRed,
+                        //            modifier: 0,
+                        //            unit: '%'
+                        //        },
+                        //
+                        //        maxHealth: {
+                        //            name: 'Max Health Bonus',
+                        //            value: maxHealth,
+                        //            modifier: this.state.paragonStats.paragonMaxHealth.value,
+                        //            unit: '%'
+                        //        }
+                        //    }
+                        //});
+                        //
+                        //console.log(this.state.customOffensiveStats.resRed);
+                        resolve();
+
+                        that.setState({
+                            calculatingStats: false
+                        });
+
+                        console.info('the web worker had a save journey');
+                    };
+
+                    // return a failure message if the worker didn't complete
+                    worker.onerror = function (e) {
+                        reject(Error(
+                                'one of the workers had an horrible accident\n' +
+                                e.message +
+                                ' in line ' +
+                                e.lineno)
+                        );
+                        this.terminate();
+                    };
+
+                    worker.postMessage({
+                        itemSlots: itemSlots,
+                        setPool: setPool,
+                        statPool: statPool
+                    });
                 });
-
-                console.log(this.state.customOffensiveStats.resRed);
             }
         },
 
