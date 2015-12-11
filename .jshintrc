@@ -94,6 +94,7 @@
         "SlowMo": true,
         "Bounce": true,
         "Back": true,
-        "Sine": true
+        "Sine": true,
+        "update": true
     }
 }
