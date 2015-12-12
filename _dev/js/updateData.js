@@ -2934,22 +2934,26 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             if (offensiveStats[offensiveStat].hasMods) {
                                 switch (offensiveStat) {
                                     case 'critDamage':
-                                        value = Math.round((statsState[offensiveStats[offensiveStat].key] +
+                                        value = Math.round((statsState[offensiveStats[offensiveStat].key] *
+                                                offensiveStats[offensiveStat].normalization +
                                                 offensiveStats[offensiveStat].paragonModifier.value +
                                                 offensiveStats[offensiveStat].errorCorrection / 100) * 1000) / 1000;
                                         break;
                                     default:
-                                        value = Math.round((statsState[offensiveStats[offensiveStat].key] +
+                                        value = Math.round((statsState[offensiveStats[offensiveStat].key] *
+                                                offensiveStats[offensiveStat].normalization +
                                                 offensiveStats[offensiveStat].paragonModifier.value) * 1000) / 1000;
                                 }
                             } else {
                                 switch (offensiveStat) {
                                     case 'critDamage':
-                                        value = Math.round((statsState[offensiveStats[offensiveStat].key] +
+                                        value = Math.round((statsState[offensiveStats[offensiveStat].key] *
+                                                offensiveStats[offensiveStat].normalization +
                                                 offensiveStats[offensiveStat].errorCorrection) * 1000) / 1000;
                                         break;
                                     default:
-                                        value = Math.round(statsState[offensiveStats[offensiveStat].key] * 1000) / 1000;
+                                        value = Math.round(statsState[offensiveStats[offensiveStat].key *
+                                                offensiveStats[offensiveStat].normalization] * 1000) / 1000;
                                 }
                             }
                         } else {
@@ -2964,7 +2968,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                         break;
                                     case 'attacksPerSecond':
                                         value = this.normalizeWeaponAttackSpeed(
-                                            offensiveStats[offensiveStat].value,
+                                            offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization,
                                             offensiveStats[offensiveStat].paragonModifier.value,
                                             mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
                                             offHandState.attacksPerSecond ? 0.15 : 0
@@ -2972,7 +2976,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                         break;
                                     default:
                                         value = (offensiveStats[offensiveStat].paragonModifier.value +
-                                            offensiveStats[offensiveStat].value);
+                                            offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization);
                                 }
                             } else {
                                 switch (offensiveStat) {
@@ -2985,14 +2989,14 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                         break;
                                     case 'attacksPerSecond':
                                         value = this.normalizeWeaponAttackSpeed(
-                                            offensiveStats[offensiveStat].value,
+                                            offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization,
                                             1,
                                             mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
                                             offHandState.attacksPerSecond ? 0.15 : 0
                                         );
                                         break;
                                     default:
-                                        value = offensiveStats[offensiveStat].value;
+                                        value = offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization;
                                 }
                             }
                         }
@@ -3001,7 +3005,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             additionalStatsOffensive.push(React.DOM.div({
                                 key: offensiveStat,
                                 className: 'bonusstat'
-                            }, contentName + (value * offensiveStats[offensiveStat].normalization) + offensiveStats[offensiveStat].unit));
+                            }, contentName + value + offensiveStats[offensiveStat].unit));
                         }
                     }
                 }
@@ -3029,16 +3033,20 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
                         if (defenseStats[defenseStat].fromApi) {
                             if (defenseStats[defenseStat].hasMods) {
-                                value = Math.round((defenseStats[defenseStat].paragonModifier.value + statsState[defenseStats[defenseStat].key]) * 1000) / 1000;
+                                value = Math.round((defenseStats[defenseStat].paragonModifier.value +
+                                        statsState[defenseStats[defenseStat].key] *
+                                        defenseStats[defenseStat].normalization) * 1000) / 1000;
                             } else {
                                 value = Math.round((statsState[defenseStats[defenseStat].key]) * 1000) / 1000;
                             }
                         } else {
                             if (defenseStats[defenseStat].hasMods) {
                                 value = Math.round((defenseStats[defenseStat].paragonModifier.value +
-                                        defenseStats[defenseStat].value) * 1000) / 1000;
+                                        defenseStats[defenseStat].value *
+                                        defenseStats[defenseStat].normalization) * 1000) / 1000;
                             } else {
-                                value = Math.round((defenseStats[defenseStat].value) * 1000) / 1000;
+                                value = Math.round((defenseStats[defenseStat].value *
+                                        defenseStats[defenseStat].normalization) * 1000) / 1000;
                             }
                         }
 
@@ -3046,7 +3054,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             additionalStatsDefensive.push(React.DOM.div({
                                 key: defenseStat,
                                 className: 'bonusstat'
-                            }, contentName + (value * defenseStats[defenseStat].normalization) + defenseStats[defenseStat].unit));
+                            }, contentName + value + defenseStats[defenseStat].unit));
                         }
                     }
                 }
