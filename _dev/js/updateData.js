@@ -229,13 +229,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
     d3Profile = React.createClass({
         displayName: 'd3Profile',
         getInitialState: function () {
-            var initialRealm;
-            if (!localStorage.getItem('realm')) {
-                initialRealm = 'eu';
-            } else {
-                initialRealm = localStorage.getItem('realm');
-            }
-
             return {
                 debugMode: false,
                 skills: [],
@@ -274,7 +267,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 itemUrl: '',
                 cubeItems: {},
                 panelAnimationComplete: false,
-                realm: initialRealm,
                 calculatingStatsSetRing: false,
                 calculatingStatsNoSetRing: false,
                 calculatingStats: false,
@@ -554,6 +546,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
         changeChar: function (id) {
             this.loadHeroData(id);
+            this.initStats();
         },
 
         changeBattleTag: function (tag) {
@@ -962,15 +955,22 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         },
 
         componentDidMount: function () {
-            var savedBattleTag = this.getFromLocalStorage('battleTag');
-            if (savedBattleTag) {
-                this.loadHeroesList(savedBattleTag);
-            }
-            setInterval(this.startStatCollectorRunner, 3000);
-            setInterval(this.loadHeroesList(this.state.battleTag), this.props.pollInterval);
-            setInterval(this.loadHeroData(this.state.selectedChar), this.props.pollInterval);
+            var initialRealm = this.getFromLocalStorage('realm') ? this.getFromLocalStorage('realm') : 'eu',
+                savedBattleTag = this.getFromLocalStorage('battleTag');
 
             this.createRealmList();
+
+            this.setState({
+                realm: initialRealm
+            }, function() {
+                this.loadHeroesList(savedBattleTag);
+                setInterval(this.startStatCollectorRunner, 3000);
+                // Todo this is kind of garbage
+                setInterval(this.loadHeroesList(this.state.battleTag), this.props.pollInterval);
+                setInterval(this.loadHeroData(this.state.selectedChar), this.props.pollInterval);
+
+            });
+
             this.initStats();
 
             // panel shorthands p = panel, l = left and so forth TODO redo this shit
@@ -1047,7 +1047,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             });
 
             this.changeChar(e.target.value);
-            this.initStats();
 
             if (this.state.heroes.code) {
                 this.setState({invalid: true});
