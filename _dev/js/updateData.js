@@ -3056,6 +3056,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 if (mergedStats.hasOwnProperty(pstat)) {
                     if (mergedStats[pstat].isParagonStat) {
                         paragon.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
+                            // TODO change unit for paragonStat invidiually
                             mergedStats[pstat].name + ' ' + Math.round(mergedStats[pstat].paragonModifier.value * 10) / 10 + mergedStats[pstat].unit,
                             React.DOM.span({
                                 className: 'paragon-stat-increment',
