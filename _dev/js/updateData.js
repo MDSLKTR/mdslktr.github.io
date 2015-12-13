@@ -269,6 +269,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 panelAnimationComplete: false,
                 calculatingStatsSetRing: false,
                 calculatingStatsNoSetRing: false,
+                calculatingSkillDamage: false,
                 calculatingStats: false,
                 battleTag: localStorage.getItem('battleTag'),
                 apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
@@ -904,6 +905,10 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                         normalization: 1,
                         isParagonStat: true
                     }
+                },
+                skillDamage: {
+                    unit: '%',
+                    value: 0
                 }
             }, function () {
                 this.loadParagonStats();
@@ -929,7 +934,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         triggerStatCollector: function () {
             this.collectStats();
             //this.checkSetItems();
-            //this.collectSkillDamage();
+            this.collectSkillDamage();
             console.log('manual stat collector');
         },
 
@@ -1048,11 +1053,9 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
             this.changeChar(e.target.value);
 
-            if (this.state.heroes.code) {
-                this.setState({invalid: true});
-            } else {
-                this.setState({invalid: false});
-            }
+            this.setState({
+                invalid: this.state.heroes.code ? true : false
+            });
 
             this.animatePanelsOut();
             setTimeout(this.animatePanelsIn, 1000);
@@ -1990,15 +1993,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         //},
 
         collectSkillDamage: function () {
-            // TODO webworker here
-            var i,
-                k,
-                m,
-                countedValues;
-
-            skilldmgArray.length = 0;
-            saveArr.length = 0;
-            saveValues.length = 0;
+            var that = this;
 
             if (this.state.items) {
                 var itemSlots = [
@@ -2017,67 +2012,126 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                     this.state.ringItemRight
                 ];
 
-                if (this.state.generalStats && this.state.skills && this.state.skills.length > 0) {
-                    for (m = 0; m < this.state.skills.length; m++) {
-                        if (this.state.skills[m].skill) {
-                            switch (this.state.generalStats.class.name) {
-                                case 'demon-hunter':
-                                    saveArr.push('Power_Damage_Percent_Bonus#DemonHunter_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'witch-doctor':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Witchdoctor_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'barbarian':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Barbarian_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'crusader':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Crusader_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'monk':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Monk_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                case 'wizard':
-                                    saveArr.push('Power_Damage_Percent_Bonus#Wizard_' + this.state.skills[m].skill.name.replace(/ /g, ''));
-                                    break;
-                                default:
+                if (this.state.calculatingSkillDamage) {
+                    return;
+                }
+                return new Promise(function (resolve, reject) {
+                    that.setState({
+                        calculatingSkillDamage: true
+                    });
+                    Worker.create = function (workerJob) {
+                        var str = workerJob.toString();
+                        var blob = new Blob(
+                            ['\'use strict\';\nself.onmessage =' + str],
+                            {type: 'text/javascript'}
+                        );
+                        return window.URL.createObjectURL(blob);
+                    };
+
+                    var workerBlob = Worker.create(function (e) {
+                        var itemSlots = e.data.itemSlots,
+                            skillDamage = e.data.skillDamage,
+                            skills = e.data.skills,
+                            className = e.data.className,
+                            i,
+                            k,
+                            m,
+                            p,
+                            stackedValues = [],
+                            skillPrefixMapping = [
+                                ['demon-hunter','Power_Damage_Percent_Bonus#DemonHunter_'],
+                                ['witch-doctor','Power_Damage_Percent_Bonus#Witchdoctor_'],
+                                ['barbarian','Power_Damage_Percent_Bonus#Barbarian_'],
+                                ['crusader','Power_Damage_Percent_Bonus#Crusader_'],
+                                ['monk','Power_Damage_Percent_Bonus#Monk_'],
+                                ['wizard','Power_Damage_Percent_Bonus#Wizard_']
+                            ],
+                            skillsPercentBonusNames = [],
+                            skillsPercentBonusValues = [];
+
+                        skillDamage.value = 0;
+
+                        console.log(className, skills);
+
+                        for (m = 0; m < skills.length; m++) {
+                            if (skills[m].skill) {
+                                for (p = 0; p < skillPrefixMapping.length; p++) {
+                                    if (skillPrefixMapping[p][0] === className) {
+                                        skillsPercentBonusNames.push(skillPrefixMapping[p][1] + skills[m].skill.name.replace(/ /g, ''));
+                                    }
+                                }
                             }
                         }
-                    }
 
-                    // skill bonus damage iterator
-                    for (i = 0; i < itemSlots.length; i++) {
-                        if (itemSlots[i] && itemSlots[i].attributesRaw) {
-                            for (k = 0; k < saveArr.length; k++) {
-                                if (itemSlots[i].attributesRaw[saveArr[k]] && itemSlots[i].attributesRaw[saveArr[k]].min) {
-                                    if (typeof parseInt(itemSlots[i].attributesRaw[saveArr[k]].min === 'number')) {
-                                        results[k] = Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 1000) / 1000;
-                                        if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[saveArr[k]] === saveArr[k])) {
-                                            saveValues.push(this.state.skills[k].skill.name + ' ' + Math.round(itemSlots[i].attributesRaw[saveArr[k]].min * 10000) / 100 + '%');
-
-                                            skilldmgArray.push(itemSlots[i].attributesRaw[saveArr[k]].min + this.state.skills[k].skill.name);
-
-                                            countedValues = skilldmgArray.reduce(function (p, c) {
-                                                if (c in p) {
-                                                    p[c]++;
-                                                } else {
-                                                    p[c] = 1;
-                                                }
-                                                return p;
-                                            }, {});
+                        // skill bonus damage iterator
+                        for (i = 0; i < itemSlots.length; i++) {
+                            if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                                for (k = 0; k < skillsPercentBonusNames.length; k++) {
+                                    if (itemSlots[i].attributesRaw[skillsPercentBonusNames[k]] && itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min) {
+                                        if (typeof parseInt(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min === 'number')) {
+                                            if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]] === skillsPercentBonusNames[k])) {
+                                                skillsPercentBonusValues.push(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min + skills[k].skill.name);
+                                                stackedValues = skillsPercentBonusValues.reduce(function (p, c) {
+                                                    if (c in p) {
+                                                        p[c]++;
+                                                    } else {
+                                                        p[c] = 1;
+                                                    }
+                                                    return p;
+                                                }, {});
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                }
-            }
 
-            this.setState({skillDmg: this.skillDmgSanitize(countedValues)});
+                        // send results back to the main thread
+                        self.postMessage({
+                            countedValues: stackedValues
+                        });
+
+                        // die
+                        self.close();
+                    });
+
+                    // create worker instance
+                    var worker = new Worker(workerBlob);
+
+                    worker.onmessage = function (e) {
+                        resolve();
+
+                        that.setState({
+                            calculatingSkillDamage: false
+                        });
+
+                        that.setState({skillDmg: that.skillDmgSanitize(e.data.countedValues)});
+
+                        console.info('the web worker had a save journey');
+                    };
+
+                    // return a failure message if the worker didn't complete
+                    worker.onerror = function (e) {
+                        reject(Error(
+                                'one of the workers had an horrible accident\n' +
+                                e.message +
+                                ' in line ' +
+                                e.lineno)
+                        );
+                        this.terminate();
+                    };
+
+                    worker.postMessage({
+                        itemSlots: itemSlots,
+                        skillDamage: that.state.skillDamage,
+                        skills: that.state.skills,
+                        className: that.state.generalStats.class.value
+                    });
+                });
+            }
         },
 
         collectStats: function () {
-            // Todo webworker here
             var that = this;
 
             if (this.state.items) {
@@ -2120,18 +2174,39 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             off = e.data.offensiveStats,
                             def = e.data.defensiveStats,
                             stat,
-                            i;
+                            i,
+                            mergedProps = Object.assign({}, off,def);
+
+                        for (stat in mergedProps) {
+                            if (mergedProps.hasOwnProperty(stat)) {
+                                mergedProps[stat].value = mergedProps[stat].multiplicative ? 1 : 0;
+                            }
+                        }
 
                         for (i = 0; i < itemSlots.length; i++) {
                             for (stat in off) {
                                 if (off.hasOwnProperty(stat)) {
-                                    console.log(off[stat].key);
                                     if (itemSlots[i].attributesRaw) {
                                         if (itemSlots[i].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw[off[stat].key].min) {
-                                            off[stat].value = parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
-                                        }
 
-                                        if (itemSlots[i].gems[0]) {
+                                            if (off[stat].multiplicative ) {
+                                                off[stat].value *= parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
+                                            } else {
+                                                off[stat].value += parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
+                                            }
+                                        }
+                                    }
+
+                                    if (itemSlots[i].gems && itemSlots[i].gems[0]) {
+                                        if (off[stat].multiplicative) {
+                                            if (itemSlots[i].gems[0].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
+                                                off[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
+                                            }
+
+                                            if (itemSlots[i].gems[0].attributesRaw[off[stat].key] && !itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
+                                                off[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min);
+                                            }
+                                        } else {
                                             if (itemSlots[i].gems[0].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
                                                 off[stat].value += parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
                                             }
@@ -2146,13 +2221,29 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
                             for (stat in def) {
                                 if (def.hasOwnProperty(stat)) {
-                                    console.log(def[stat].key);
                                     if (itemSlots[i].attributesRaw) {
                                         if (itemSlots[i].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw[def[stat].key].min) {
-                                            def[stat].value = parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
-                                        }
 
-                                        if (itemSlots[i].gems[0]) {
+                                            if (def[stat].multiplicative ) {
+                                                def[stat].value *= parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
+                                            } else {
+                                                def[stat].value += parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
+                                            }
+
+
+                                        }
+                                    }
+
+                                    if (itemSlots[i].gems && itemSlots[i].gems[0]) {
+                                        if (def[stat].multiplicative ) {
+                                            if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
+                                                def[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
+                                            }
+
+                                            if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && !itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
+                                                def[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min);
+                                            }
+                                        } else {
                                             if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
                                                 def[stat].value += parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
                                             }
@@ -2962,9 +3053,9 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                     case 'ResCostRed':
                                     case 'cooldownReduction':
                                         value = this.normalizeMultiplicativeStat(
-                                                offensiveStats[offensiveStat].value,
-                                                offensiveStats[offensiveStat].paragonModifier.value
-                                            );
+                                            offensiveStats[offensiveStat].value,
+                                            offensiveStats[offensiveStat].paragonModifier.value
+                                        );
                                         break;
                                     case 'attacksPerSecond':
                                         value = this.normalizeWeaponAttackSpeed(
@@ -2976,16 +3067,16 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                         break;
                                     default:
                                         value = (offensiveStats[offensiveStat].paragonModifier.value +
-                                            offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization);
+                                        offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization);
                                 }
                             } else {
                                 switch (offensiveStat) {
                                     case 'ResCostRed':
                                     case 'cooldownReduction':
                                         value= this.normalizeMultiplicativeStat(
-                                                offensiveStats[offensiveStat].value,
-                                                1
-                                            );
+                                            offensiveStats[offensiveStat].value,
+                                            1
+                                        );
                                         break;
                                     case 'attacksPerSecond':
                                         value = this.normalizeWeaponAttackSpeed(
