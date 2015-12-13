@@ -2063,23 +2063,20 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             }
                         }
 
-                        // skill bonus damage iterator
                         for (i = 0; i < itemSlots.length; i++) {
-                            if (itemSlots[i] && itemSlots[i].attributesRaw) {
+                            if (itemSlots[i].attributesRaw) {
                                 for (k = 0; k < skillsPercentBonusNames.length; k++) {
-                                    if (itemSlots[i].attributesRaw[skillsPercentBonusNames[k]] && itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min) {
-                                        if (typeof parseInt(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min === 'number')) {
-                                            if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]] === skillsPercentBonusNames[k])) {
-                                                skillsPercentBonusValues.push(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min + skills[k].skill.name);
-                                                stackedValues = skillsPercentBonusValues.reduce(function (p, c) {
-                                                    if (c in p) {
-                                                        p[c]++;
-                                                    } else {
-                                                        p[c] = 1;
-                                                    }
-                                                    return p;
-                                                }, {});
-                                            }
+                                    if (itemSlots[i].attributesRaw[skillsPercentBonusNames[k]]) {
+                                        if (Object.getOwnPropertyNames(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]] === skillsPercentBonusNames[k])) {
+                                            skillsPercentBonusValues.push(parseFloat(itemSlots[i].attributesRaw[skillsPercentBonusNames[k]].min) + skills[k].skill.name);
+                                            stackedValues = skillsPercentBonusValues.reduce(function (p, c) {
+                                                if (c in p) {
+                                                    p[c]++;
+                                                } else {
+                                                    p[c] = 1;
+                                                }
+                                                return p;
+                                            }, {});
                                         }
                                     }
                                 }
