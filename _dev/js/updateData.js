@@ -139,13 +139,10 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
     k,
     m,
     results,
-    saveArr = [],
-    saveArray = [],
+    skillDamageRaw = [],
     combined,
     string,
     calc,
-    saveValues = [],
-    skilldmgArray = [],
     skills = [],
     skillsDesc = [],
     heroes = [],
@@ -230,7 +227,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         displayName: 'd3Profile',
         getInitialState: function () {
             return {
-                debugMode: false,
+                debugMode: true,
                 skills: [],
                 passives: [],
                 stats: [],
@@ -267,8 +264,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 itemUrl: '',
                 cubeItems: {},
                 panelAnimationComplete: false,
-                calculatingStatsSetRing: false,
-                calculatingStatsNoSetRing: false,
                 calculatingSkillDamage: false,
                 calculatingStats: false,
                 battleTag: localStorage.getItem('battleTag'),
@@ -862,6 +857,20 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                         fromApi: true,
                         normalization: 1
                     },
+                    'arcaneResist': {
+                        name: 'Arcane Resist',
+                        paragonModifier: {
+                            increment: 5,
+                            max: 250,
+                            value: 0
+                        },
+                        unit: '',
+                        key: 'arcaneResist',
+                        value: 0,
+                        hasMods: true,
+                        fromApi: true,
+                        normalization: 1
+                    },
                     'lifeOnHit': {
                         name: 'Life on Hit',
                         paragonModifier: {
@@ -875,6 +884,41 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                         hasMods: true,
                         fromApi: true,
                         normalization: 1,
+                        isParagonStat: true
+                    },
+                    'magicFind': {
+                        name: 'Magic Find',
+                        unit: '',
+                        key: 'magicFind',
+                        value: 0,
+                        hasMods: false,
+                        fromApi: true,
+                        normalization: 100,
+                        isParagonStat: false
+                    },
+                    'thorns': {
+                        name: 'Thorns',
+                        key: 'Thorns_Fixed#Physical',
+                        unit: '',
+                        value: 0,
+                        hasMods: false,
+                        fromApi: false,
+                        normalization: 100,
+                        isParagonStat: false
+                    },
+                    'movementSpeed': {
+                        name: 'Movement Speed',
+                        paragonModifier: {
+                            increment: 0.5,
+                            max: 25,
+                            value: 0
+                        },
+                        unit: '%',
+                        value: 0,
+                        key: 'Movement_Scalar',
+                        hasMods: true,
+                        fromApi: false,
+                        normalization: 100,
                         isParagonStat: true
                     },
                     'armor': {
@@ -915,8 +959,8 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             });
         },
 
-        loadParagonStats: function() {
-            var mergedObjects = Object.assign({}, this.state.offensiveStats,this.state.defensiveStats);
+        loadParagonStats: function () {
+            var mergedObjects = Object.assign({}, this.state.offensiveStats, this.state.defensiveStats);
 
             for (var stat in mergedObjects) {
                 if (mergedObjects.hasOwnProperty(stat)) {
@@ -932,8 +976,8 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         },
 
         triggerStatCollector: function () {
+            this.checkSetItems();
             this.collectStats();
-            //this.checkSetItems();
             this.collectSkillDamage();
             console.log('manual stat collector');
         },
@@ -955,7 +999,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         },
 
         saveToLocalStorage: function (key, value) {
-            localStorage.setItem(key,value);
+            localStorage.setItem(key, value);
             console.info(key + ' saved');
         },
 
@@ -967,7 +1011,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
             this.setState({
                 realm: initialRealm
-            }, function() {
+            }, function () {
                 this.loadHeroesList(savedBattleTag);
                 setInterval(this.startStatCollectorRunner, 3000);
                 // Todo this is kind of garbage
@@ -1398,7 +1442,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         },
 
         checkParagon: function () {
-            var mergedObjects = Object.assign({}, this.state.offensiveStats,this.state.defensiveStats);
+            var mergedObjects = Object.assign({}, this.state.offensiveStats, this.state.defensiveStats);
 
             for (var stat in mergedObjects) {
                 if (mergedObjects.hasOwnProperty(stat)) {
@@ -1417,7 +1461,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             parentElement = target.parentNode;
             // Todo remap wrong paragon stats
 
-            var mergedObjects = Object.assign({}, this.state.offensiveStats,this.state.defensiveStats);
+            var mergedObjects = Object.assign({}, this.state.offensiveStats, this.state.defensiveStats);
 
             for (var stat in mergedObjects) {
                 if (mergedObjects.hasOwnProperty(stat)) {
@@ -1514,7 +1558,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             calc = 0;
             string = '';
             combined = '';
-            saveArray.length = 0;
+            skillDamageRaw.length = 0;
 
             for (var p in obj) {
                 if (obj.hasOwnProperty(p)) {
@@ -1527,470 +1571,53 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
                     if (calc !== 0) {
                         combined += string + ' ' + Math.round(calc * 10000) / 100 + '%' + '<br>';
-                        saveArray.push(calc + ' ' + string);
+                        skillDamageRaw.push(calc + ' ' + string);
                     }
                 }
             }
             if (combined !== '') {
-                this.setState({skillDmgRaw: saveArray});
+                this.setState({skillDmgRaw: skillDamageRaw});
                 return combined;
             }
         },
 
-        //collectSetNoRingStats: function () {
-        //    var that = this;
-        //
-        //    if (this.state.items) {
-        //        var itemSlots = [
-        //            this.state.helmItem,
-        //            this.state.amuletItem,
-        //            this.state.chestItem,
-        //            this.state.bootsItem,
-        //            this.state.glovesItem,
-        //            this.state.shouldersItem,
-        //            this.state.legsItem,
-        //            this.state.bracersItem,
-        //            this.state.mainItem,
-        //            this.state.offItem,
-        //            this.state.beltItem,
-        //            this.state.ringItemLeft,
-        //            this.state.ringItemRight
-        //        ];
-        //
-        //        if (this.state.calculatingStatsNoSetRing) {
-        //            return;
-        //        }
-        //        return new Promise(function (resolve, reject) {
-        //            that.setState({
-        //                calculatingStatsNoSetRing: true
-        //            });
-        //            Worker.create = function (workerJob) {
-        //                var str = workerJob.toString();
-        //                var blob = new Blob(
-        //                    ['\'use strict\';\nself.onmessage =' + str],
-        //                    {type: 'text/javascript'}
-        //                );
-        //                return window.URL.createObjectURL(blob);
-        //            };
-        //
-        //            // worker job
-        //            var workerBlob = Worker.create(function (e) {
-        //                // image modification data goes here
-        //                var itemSlots = e.data.itemSlots,
-        //                    setPool = e.data.setPool,
-        //                    statPool = e.data.statPool,
-        //                    fireDmg = e.data.fireDmg,
-        //                    lightningDmg = e.data.lightningDmg,
-        //                    coldDmg = e.data.coldDmg,
-        //                    physicalDmg = e.data.physicalDmg,
-        //                    poisonDmg = e.data.poisonDmg,
-        //                    cdr = e.data.cdr,
-        //                    resRed = e.data.resRed,
-        //                    eliteDmg = e.data.eliteDmg,
-        //                    eliteDmgRed = e.data.eliteDmgRed,
-        //                    areaDmg = e.data.areaDmg,
-        //                    goldPickUp = e.data.goldPickUp,
-        //                    dmgRedMelee = e.data.dmgRedMelee,
-        //                    dmgRedRanged = e.data.dmgRedRanged,
-        //                    maxHealth = e.data.maxHealth,
-        //                    atkSpd = e.data.atkSpd,
-        //                    repeatSet = [],
-        //                    results = [];
-        //
-        //                for (var i = 0; i < itemSlots.length; i++) {
-        //                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
-        //
-        //                        for (var m = 0; m < setPool.length; m++) {
-        //                            if (itemSlots[i].set.name === setPool[m][0]) {
-        //                                setPool[m][1]++;
-        //                            }
-        //                            for (var j = 0; j < itemSlots[i].set.ranks.length; j++) {
-        //                                if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
-        //                                    for (var k = 0; k < statPool.length; k++) {
-        //                                        // check if the stats are releveant for stat building
-        //                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-        //                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-        //                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-        //                                                switch (statPool[k]) {
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
-        //                                                        fireDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
-        //                                                        coldDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
-        //                                                        lightningDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
-        //                                                        physicalDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
-        //                                                        poisonDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Power_Cooldown_Reduction_Percent_All':
-        //                                                        cdr *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Resource_Cost_Reduction_Percent_All':
-        //                                                        resRed *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Bonus_Vs_Elites':
-        //                                                        eliteDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Reduction_From_Elites':
-        //                                                        eliteDmgRed += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Splash_Damage_Effect_Percent':
-        //                                                        areaDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Gold_PickUp_Radius':
-        //                                                        goldPickUp += results[k];
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Reduction_From_Melee':
-        //                                                        dmgRedMelee *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Reduction_From_Ranged':
-        //                                                        dmgRedRanged *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
-        //                                                        maxHealth += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Attacks_Per_Second_Percent':
-        //                                                        atkSpd += results[k];
-        //                                                        break;
-        //                                                }
-        //                                            }
-        //                                        }
-        //                                    }
-        //                                }
-        //                            }
-        //                        }
-        //                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
-        //                            continue;
-        //                        }
-        //                        repeatSet.push(itemSlots[i].set.name);
-        //                    }
-        //                }
-        //
-        //                // send results back to the main thread
-        //                self.postMessage({
-        //                    fireDmg: fireDmg,
-        //                    lightningDmg: lightningDmg,
-        //                    coldDmg: coldDmg,
-        //                    physicalDmg: physicalDmg,
-        //                    poisonDmg: poisonDmg,
-        //                    cdr: cdr,
-        //                    resRed: resRed,
-        //                    eliteDmg: eliteDmg,
-        //                    eliteDmgRed: eliteDmgRed,
-        //                    areaDmg: areaDmg,
-        //                    goldPickUp: goldPickUp,
-        //                    dmgRedMelee: dmgRedMelee,
-        //                    dmgRedRanged: dmgRedRanged,
-        //                    maxHealth: maxHealth,
-        //                    atkSpd: atkSpd
-        //                });
-        //
-        //                // die
-        //                self.close();
-        //            });
-        //
-        //            // create worker instance
-        //            var worker = new Worker(workerBlob);
-        //
-        //            worker.onmessage = function (e) {
-        //                // TODO shit needs to be applied too wtf
-        //                console.log(e.data);
-        //                resolve(e);
-        //
-        //                that.setState({
-        //                    calculatingStatsNoSetRing: false
-        //                });
-        //
-        //                console.info('the web worker had a save journey');
-        //            };
-        //
-        //            // return a failure message if the worker didn't complete
-        //            worker.onerror = function (e) {
-        //                reject(Error(
-        //                        'one of the workers had an horrible accident\n' +
-        //                        e.message +
-        //                        ' in line ' +
-        //                        e.lineno)
-        //                );
-        //                this.terminate();
-        //            };
-        //
-        //            worker.postMessage({
-        //                itemSlots: itemSlots,
-        //                setPool: setPool,
-        //                statPool: statPool,
-        //                fireDmg: fireDmg,
-        //                lightningDmg: lightningDmg,
-        //                coldDmg: coldDmg,
-        //                physicalDmg: physicalDmg,
-        //                poisonDmg: poisonDmg,
-        //                cdr: cdr,
-        //                resRed: resRed,
-        //                eliteDmg: eliteDmg,
-        //                eliteDmgRed: eliteDmgRed,
-        //                areaDmg: areaDmg,
-        //                goldPickUp: goldPickUp,
-        //                dmgRedMelee: dmgRedMelee,
-        //                dmgRedRanged: dmgRedRanged,
-        //                maxHealth: maxHealth,
-        //                atkSpd: atkSpd
-        //            });
-        //        });
-        //    }
-        //},
-        //
-        //collectSetRingStats: function () {
-        //    var that = this;
-        //
-        //    if (this.state.items) {
-        //        var itemSlots = [
-        //            this.state.helmItem,
-        //            this.state.amuletItem,
-        //            this.state.chestItem,
-        //            this.state.bootsItem,
-        //            this.state.glovesItem,
-        //            this.state.shouldersItem,
-        //            this.state.legsItem,
-        //            this.state.bracersItem,
-        //            this.state.mainItem,
-        //            this.state.offItem,
-        //            this.state.beltItem,
-        //            this.state.ringItemLeft,
-        //            this.state.ringItemRight
-        //        ];
-        //
-        //        if (this.state.calculatingStatsSetRing) {
-        //            return;
-        //        }
-        //        return new Promise(function (resolve, reject) {
-        //            that.setState({
-        //                calculatingStatsSetRing: true
-        //            });
-        //            Worker.create = function (workerJob) {
-        //                var str = workerJob.toString();
-        //                var blob = new Blob(
-        //                    ['\'use strict\';\nself.onmessage =' + str],
-        //                    {type: 'text/javascript'}
-        //                );
-        //                return window.URL.createObjectURL(blob);
-        //            };
-        //
-        //            // worker job
-        //            var workerBlob = Worker.create(function (e) {
-        //                // image modification data goes here
-        //                var itemSlots = e.data.itemSlots,
-        //                    setPool = e.data.setPool,
-        //                    statPool = e.data.statPool,
-        //                    fireDmg = e.data.fireDmg,
-        //                    lightningDmg = e.data.lightningDmg,
-        //                    coldDmg = e.data.coldDmg,
-        //                    physicalDmg = e.data.physicalDmg,
-        //                    poisonDmg = e.data.poisonDmg,
-        //                    cdr = e.data.cdr,
-        //                    resRed = e.data.resRed,
-        //                    eliteDmg = e.data.eliteDmg,
-        //                    eliteDmgRed = e.data.eliteDmgRed,
-        //                    areaDmg = e.data.areaDmg,
-        //                    goldPickUp = e.data.goldPickUp,
-        //                    dmgRedMelee = e.data.dmgRedMelee,
-        //                    dmgRedRanged = e.data.dmgRedRanged,
-        //                    maxHealth = e.data.maxHealth,
-        //                    atkSpd = e.data.atkSpd,
-        //                    repeatSet = [],
-        //                    results = [];
-        //
-        //                for (var i = 0; i < itemSlots.length; i++) {
-        //                    if (itemSlots[i] && itemSlots[i].set && itemSlots[i].set.ranks) {
-        //
-        //                        for (var m = 0; m < setPool.length; m++) {
-        //                            if (itemSlots[i].set.name === setPool[m][0]) {
-        //                                setPool[m][1]++;
-        //                            }
-        //                            for (var j = 0; j < itemSlots[i].set.ranks.length; j++) {
-        //                                if (
-        //                                    itemSlots[i].set.name === setPool[m][0] &&
-        //                                    itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
-        //                                    setPool[m][1] >= 2
-        //                                ) {
-        //                                    for (var k = 0; k < statPool.length; k++) {
-        //                                        // check if the stats are releveant for stat building
-        //                                        if (itemSlots[i].set.ranks[j].attributesRaw[statPool[k]] && itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min) {
-        //                                            if (typeof parseInt(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min === 'number')) {
-        //                                                results[k] = Math.round(itemSlots[i].set.ranks[j].attributesRaw[statPool[k]].min * 1000) / 1000;
-        //                                                switch (statPool[k]) {
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Fire':
-        //                                                        fireDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Cold':
-        //                                                        coldDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Lightning':
-        //                                                        lightningDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Physical':
-        //                                                        physicalDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Dealt_Percent_Bonus#Poison':
-        //                                                        poisonDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Power_Cooldown_Reduction_Percent_All':
-        //                                                        cdr *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Resource_Cost_Reduction_Percent_All':
-        //                                                        resRed *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Bonus_Vs_Elites':
-        //                                                        eliteDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Reduction_From_Elites':
-        //                                                        eliteDmgRed += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Splash_Damage_Effect_Percent':
-        //                                                        areaDmg += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Gold_PickUp_Radius':
-        //                                                        goldPickUp += results[k];
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Reduction_From_Melee':
-        //                                                        dmgRedMelee *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Damage_Percent_Reduction_From_Ranged':
-        //                                                        dmgRedRanged *= (1 - results[k]);
-        //                                                        break;
-        //                                                    case 'Hitpoints_Max_Percent_Bonus_Item':
-        //                                                        maxHealth += results[k] * 100;
-        //                                                        break;
-        //                                                    case 'Attacks_Per_Second_Percent':
-        //                                                        atkSpd += results[k];
-        //                                                        break;
-        //                                                }
-        //                                            }
-        //                                        }
-        //                                    }
-        //                                }
-        //                            }
-        //                        }
-        //                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
-        //                            continue;
-        //                        }
-        //                        repeatSet.push(itemSlots[i].set.name);
-        //                    }
-        //                }
-        //
-        //                // send results back to the main thread
-        //                self.postMessage({
-        //                    fireDmg: fireDmg,
-        //                    lightningDmg: lightningDmg,
-        //                    coldDmg: coldDmg,
-        //                    physicalDmg: physicalDmg,
-        //                    poisonDmg: poisonDmg,
-        //                    cdr: cdr,
-        //                    resRed: resRed,
-        //                    eliteDmg: eliteDmg,
-        //                    eliteDmgRed: eliteDmgRed,
-        //                    areaDmg: areaDmg,
-        //                    goldPickUp: goldPickUp,
-        //                    dmgRedMelee: dmgRedMelee,
-        //                    dmgRedRanged: dmgRedRanged,
-        //                    maxHealth: maxHealth,
-        //                    atkSpd: atkSpd
-        //                });
-        //
-        //                // die
-        //                self.close();
-        //            });
-        //
-        //            // create worker instance
-        //            var worker = new Worker(workerBlob);
-        //
-        //            worker.onmessage = function (e) {
-        //                resolve();
-        //
-        //                that.setState({
-        //                    calculatingStatsSetRing: false
-        //                });
-        //
-        //                console.info('the web worker had a save journey');
-        //            };
-        //
-        //            // return a failure message if the worker didn't complete
-        //            worker.onerror = function (e) {
-        //                reject(Error(
-        //                        'one of the workers had an horrible accident\n' +
-        //                        e.message +
-        //                        ' in line ' +
-        //                        e.lineno)
-        //                );
-        //                this.terminate();
-        //            };
-        //
-        //            worker.postMessage({
-        //                itemSlots: itemSlots,
-        //                setPool: setPool,
-        //                statPool: statPool,
-        //                fireDmg: fireDmg,
-        //                lightningDmg: lightningDmg,
-        //                coldDmg: coldDmg,
-        //                physicalDmg: physicalDmg,
-        //                poisonDmg: poisonDmg,
-        //                cdr: cdr,
-        //                resRed: resRed,
-        //                eliteDmg: eliteDmg,
-        //                eliteDmgRed: eliteDmgRed,
-        //                areaDmg: areaDmg,
-        //                goldPickUp: goldPickUp,
-        //                dmgRedMelee: dmgRedMelee,
-        //                dmgRedRanged: dmgRedRanged,
-        //                maxHealth: maxHealth,
-        //                atkSpd: atkSpd
-        //            });
-        //        });
-        //    }
-        //},
-        //
-        //checkSetItems: function () {
-        //    var checkSave = [],
-        //        setRing = false;
-        //
-        //    if (this.state.items) {
-        //        var itemSlots = [
-        //            this.state.helmItem,
-        //            this.state.amuletItem,
-        //            this.state.chestItem,
-        //            this.state.bootsItem,
-        //            this.state.glovesItem,
-        //            this.state.shouldersItem,
-        //            this.state.legsItem,
-        //            this.state.bracersItem,
-        //            this.state.mainItem,
-        //            this.state.offItem,
-        //            this.state.beltItem,
-        //            this.state.ringItemLeft,
-        //            this.state.ringItemRight
-        //        ];
-        //
-        //        // detect Set -1 ring
-        //        for (i = 0; i < itemSlots.length; i++) {
-        //            checkSave.push(itemSlots[i].name);
-        //            if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
-        //                setRing = true;
-        //                this.collectSetRingStats();
-        //            } else {
-        //                this.collectSetNoRingStats();
-        //            }
-        //        }
-        //
-        //        // putting this into the loop will cause a freeze, weird
-        //        this.setState({
-        //            setRing: setRing
-        //        });
-        //    }
-        //},
+        checkSetItems: function () {
+            var checkSave = [],
+                setRing = false;
+
+            if (this.state.items) {
+                var itemSlots = [
+                    this.state.helmItem,
+                    this.state.amuletItem,
+                    this.state.chestItem,
+                    this.state.bootsItem,
+                    this.state.glovesItem,
+                    this.state.shouldersItem,
+                    this.state.legsItem,
+                    this.state.bracersItem,
+                    this.state.mainItem,
+                    this.state.offItem,
+                    this.state.beltItem,
+                    this.state.ringItemLeft,
+                    this.state.ringItemRight
+                ];
+
+                // detect Set -1 ring
+                for (i = 0; i < itemSlots.length; i++) {
+                    checkSave.push(itemSlots[i].name);
+                    if (checkSave.indexOf('Ring of Royal Grandeur') > -1) {
+                        setRing = true;
+                    }
+                }
+
+                // putting this into the loop will cause a freeze, weird
+                this.setState({
+                    setRing: setRing
+                });
+
+                this.forceUpdate();
+            }
+        },
 
         collectSkillDamage: function () {
             var that = this;
@@ -2039,19 +1666,17 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             p,
                             stackedValues = [],
                             skillPrefixMapping = [
-                                ['demon-hunter','Power_Damage_Percent_Bonus#DemonHunter_'],
-                                ['witch-doctor','Power_Damage_Percent_Bonus#Witchdoctor_'],
-                                ['barbarian','Power_Damage_Percent_Bonus#Barbarian_'],
-                                ['crusader','Power_Damage_Percent_Bonus#Crusader_'],
-                                ['monk','Power_Damage_Percent_Bonus#Monk_'],
-                                ['wizard','Power_Damage_Percent_Bonus#Wizard_']
+                                ['demon-hunter', 'Power_Damage_Percent_Bonus#DemonHunter_'],
+                                ['witch-doctor', 'Power_Damage_Percent_Bonus#Witchdoctor_'],
+                                ['barbarian', 'Power_Damage_Percent_Bonus#Barbarian_'],
+                                ['crusader', 'Power_Damage_Percent_Bonus#Crusader_'],
+                                ['monk', 'Power_Damage_Percent_Bonus#Monk_'],
+                                ['wizard', 'Power_Damage_Percent_Bonus#Wizard_']
                             ],
                             skillsPercentBonusNames = [],
                             skillsPercentBonusValues = [];
 
                         skillDamage.value = 0;
-
-                        console.log(className, skills);
 
                         for (m = 0; m < skills.length; m++) {
                             if (skills[m].skill) {
@@ -2170,9 +1795,14 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                         var itemSlots = e.data.itemSlots,
                             off = e.data.offensiveStats,
                             def = e.data.defensiveStats,
+                            setRing = e.data.setRing,
                             stat,
+                            setPool = e.data.setPool,
                             i,
-                            mergedProps = Object.assign({}, off,def);
+                            m,
+                            j,
+                            mergedProps = Object.assign({}, off, def),
+                            repeatSet = [];
 
                         for (stat in mergedProps) {
                             if (mergedProps.hasOwnProperty(stat)) {
@@ -2186,7 +1816,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                     if (itemSlots[i].attributesRaw) {
                                         if (itemSlots[i].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw[off[stat].key].min) {
 
-                                            if (off[stat].multiplicative ) {
+                                            if (off[stat].multiplicative) {
                                                 off[stat].value *= parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
                                             } else {
                                                 off[stat].value += parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
@@ -2213,6 +1843,48 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                             }
                                         }
                                     }
+
+                                    if (itemSlots[i].set && itemSlots[i].set.ranks) {
+                                        for (m = 0; m < setPool.length; m++) {
+                                            if (itemSlots[i].set.name === setPool[m][0]) {
+                                                setPool[m][1]++;
+                                            }
+
+                                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                                                if (setRing) {
+                                                    // TODO this is failing
+                                                    if (
+                                                        itemSlots[i].set.name === setPool[m][0] &&
+                                                        itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
+                                                        setPool[m][1] >= 2
+                                                    ) {
+                                                        if (itemSlots[i].set.ranks[j].attributesRaw[off[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min) {
+                                                            if (off[stat].multiplicative) {
+                                                                off[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
+                                                            } else {
+                                                                off[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
+                                                        if (itemSlots[i].set.ranks[j].attributesRaw[off[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min) {
+                                                            if (off[stat].multiplicative) {
+                                                                off[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
+                                                            } else {
+                                                                off[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        // TODO this is failing
+                                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
+                                            continue;
+                                        }
+                                        repeatSet.push(itemSlots[i].set.name);
+                                    }
                                 }
                             }
 
@@ -2221,7 +1893,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                     if (itemSlots[i].attributesRaw) {
                                         if (itemSlots[i].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw[def[stat].key].min) {
 
-                                            if (def[stat].multiplicative ) {
+                                            if (def[stat].multiplicative) {
                                                 def[stat].value *= parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
                                             } else {
                                                 def[stat].value += parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
@@ -2232,7 +1904,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                     }
 
                                     if (itemSlots[i].gems && itemSlots[i].gems[0]) {
-                                        if (def[stat].multiplicative ) {
+                                        if (def[stat].multiplicative) {
                                             if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
                                                 def[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
                                             }
@@ -2250,9 +1922,47 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                             }
                                         }
                                     }
+
+                                    if (itemSlots[i].set && itemSlots[i].set.ranks) {
+                                        for (m = 0; m < setPool.length; m++) {
+                                            if (itemSlots[i].set.name === setPool[m][0]) {
+                                                setPool[m][1]++;
+                                            }
+                                            for (j = 0; j < itemSlots[i].set.ranks.length; j++) {
+                                                if (setRing) {
+                                                    if (
+                                                        itemSlots[i].set.name === setPool[m][0] &&
+                                                        itemSlots[i].set.ranks[j].required <= setPool[m][1] + 1 &&
+                                                        setPool[m][1] >= 2
+                                                    ) {
+                                                        if (itemSlots[i].set.ranks[j].attributesRaw[def[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min) {
+                                                            if (def[stat].multiplicative) {
+                                                                def[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
+                                                            } else {
+                                                                def[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
+                                                        if (itemSlots[i].set.ranks[j].attributesRaw[def[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min) {
+                                                            if (def[stat].multiplicative) {
+                                                                def[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
+                                                            } else {
+                                                                def[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (repeatSet.indexOf(itemSlots[i].set.name) > -1) {
+                                            continue;
+                                        }
+                                        repeatSet.push(itemSlots[i].set.name);
+                                    }
                                 }
                             }
-
                         }
 
                         // send results back to the main thread
@@ -2297,7 +2007,9 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                     worker.postMessage({
                         itemSlots: itemSlots,
                         offensiveStats: that.state.offensiveStats,
-                        defensiveStats: that.state.defensiveStats
+                        defensiveStats: that.state.defensiveStats,
+                        setPool: setPool,
+                        setRing: that.state.setRing
                     });
                 });
             }
@@ -3070,7 +2782,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                                 switch (offensiveStat) {
                                     case 'ResCostRed':
                                     case 'cooldownReduction':
-                                        value= this.normalizeMultiplicativeStat(
+                                        value = this.normalizeMultiplicativeStat(
                                             offensiveStats[offensiveStat].value,
                                             1
                                         );
