@@ -95,6 +95,11 @@
         "Bounce": true,
         "Back": true,
         "Sine": true,
-        "update": true
+        "update": true,
+        "offensiveStats": true,
+        "defensiveStats": true,
+        "skillDamageStat": true,
+        "storage": true,
+        "initStats": true
     }
 }

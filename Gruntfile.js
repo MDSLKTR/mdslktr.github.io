@@ -86,8 +86,10 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/scripts.min.js': [
-                        '_dev/js/updateData.js',
-                        '_dev/js/animateBg.js'
+                        '_dev/js/stats-initializer.js',
+                        '_dev/js/local-storage.js',
+                        '_dev/js/view.js',
+                        '_dev/js/animate-background.js'
                     ]
                 }
             }
