@@ -148,7 +148,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
     heroes = [],
     passives = [],
     passivesDesc = [],
-    stats = [],
+    statsArray = [],
     paragon = [],
     specialPassive = [],
     base = [],
@@ -555,9 +555,9 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
         initStats: function () {
             this.setState({
-                offensiveStats: initStats.get('OffensiveStats'),
-                defensiveStats: initStats.get('DefensiveStats'),
-                skillDamage: initStats.get('SkillDamageStat')
+                offensiveStats: stats.init('OffensiveStats'),
+                defensiveStats: stats.init('DefensiveStats'),
+                skillDamage: stats.init('SkillDamageStat')
             }, function () {
                 this.loadParagonStats();
             });
@@ -1729,7 +1729,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             heroes = [];
             passives = [];
             passivesDesc = [];
-            stats = [];
+            statsArray = [];
             paragon = [];
             specialPassive = [];
             base = [];
@@ -2307,7 +2307,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             content += primaryStats[primaryStat].name + ': ' + Math.round(statsState[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                         }
 
-                        stats.push(React.DOM.div({key: primaryStat}, content));
+                        statsArray.push(React.DOM.div({key: primaryStat}, content));
                     }
                 }
             }
@@ -2580,13 +2580,13 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 effectiveDpsCalc = sheetDpsCalc * calculatedAttackSpeed * (effectiveCritChance * effectiveCritDamage + 1) * nativeSkillDamage * (1 + buffMult) * (1 + gemMult);
 
                 if (!effectiveDpsCalc) {
-                    stats.push(React.DOM.div({key: 'dps'}, 'DPS: ',
+                    statsArray.push(React.DOM.div({key: 'dps'}, 'DPS: ',
                         Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                         ' | EDPS: ',
                         'Calculating EDPS..'
                     ));
                 } else {
-                    stats.push(React.DOM.div({key: 'dps'}, 'DPS: ',
+                    statsArray.push(React.DOM.div({key: 'dps'}, 'DPS: ',
                         Math.round(sheetDpsCalc * calculatedAttackSpeed * (critChanceCalc * critDmgCalc + 1)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'),
                         ' | EDPS: ',
                         Math.round(effectiveDpsCalc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
@@ -2683,7 +2683,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             className: 'panel-right ' + this.state.toggle
                         },
                         'Stats',
-                        stats,
+                        statsArray,
                         React.DOM.a({
                             className: 'button',
                             onClick: this.handleBonusStatsClick,

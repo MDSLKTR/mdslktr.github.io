@@ -1,6 +1,6 @@
-var initStats = React.createClass({
+var stats = React.createClass({
     statics: {
-        get: function (statList) {
+        init: function (statList) {
             var statKeys = [
                     'OffensiveStats',
                     'DefensiveStats',
@@ -18,7 +18,6 @@ var initStats = React.createClass({
                     returnValue = self[func]();
                 }
             });
-
             return returnValue;
         },
 
