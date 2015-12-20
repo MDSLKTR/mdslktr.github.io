@@ -6,17 +6,11 @@ module.exports = function (grunt) {
     var sourcemaps = true;
 
     require('jit-grunt')(grunt, {
-        'scsslint' : 'grunt-scss-lint',
         'sass' : 'grunt-sass',
         'browserSync' : 'grunt-browser-sync'
     });
 
     grunt.initConfig({
-        scsslint: {
-            all: [
-                '_dev/**/*.scss'
-            ]
-        },
         sass: {
             all: {
                 options: {
@@ -163,7 +157,6 @@ module.exports = function (grunt) {
         'js'
     ]);
     grunt.registerTask('css', [
-        'scsslint',
         'sass',
         'autoprefixer',
         'cssmin',
