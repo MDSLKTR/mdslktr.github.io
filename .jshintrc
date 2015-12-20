@@ -107,6 +107,8 @@
         "d3Profile": true,
         "api": true,
         "heroes1": true,
-        "heroes": true
+        "heroes": true,
+        "paragon": true,
+        "EventSystem": true
     }
 }

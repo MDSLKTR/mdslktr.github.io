@@ -1,9 +1,21 @@
 var heroClass = React.createClass({
-    loadHeroData: function (id) {
+    componentDidMount: function () {
+        var self = this;
+        EventSystem.subscribe('api.call.hero', function( data ) {
+            self.setState({
+                battleTag: data.tag,
+                realm: data.realm,
+                id: data.id
+            }, function () {
+                self.loadHeroData( self.state.battleTag, self.state.realm, self.state.id );
+            });
+        });
+    },
+    loadHeroData: function ( tag, realm, id ) {
         var self = this,
             type = 'hero-data';
         if (id) {
-            service.create(type, this.state.realm, this.state.battleTag, id).then(function (url) {
+            service.create(type, tag, realm, id).then(function (url) {
                 service.get(url).then(function (response) {
                     var data = JSON.parse(response);
 
@@ -56,7 +68,11 @@ var heroClass = React.createClass({
         }
     },
 
-    render: function () {}
+    render: function () {
+        return (
+            console.log(1)
+        );
+    }
 });
 
 var hero = React.createFactory(heroClass);

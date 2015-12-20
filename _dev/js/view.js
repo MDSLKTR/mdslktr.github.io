@@ -143,7 +143,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
     passives = [],
     passivesDesc = [],
     statsArray = [],
-    paragon = [],
     specialPassive = [],
     base = [],
     style = [],
@@ -225,7 +224,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 skills: [],
                 passives: [],
                 stats: [],
-                heroes: {},
                 items: {},
                 attributes: [],
                 class: '',
@@ -245,7 +243,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 beltItem: {},
                 ringItemLeft: {},
                 ringItemRight: {},
-                invalid: false,
                 setRing: false,
                 time: 0,
                 toggle: '',
@@ -266,15 +263,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             };
         },
 
-        changeChar: function (id) {
-            api.loadHeroData(id);
-            this.initStats();
-        },
-
-        changeBattleTag: function (tag) {
-            api.loadHeroesList(tag);
-        },
-
         checkParagonStat: function (stat) {
             return stat.paragonModifier ? true : false;
         },
@@ -287,22 +275,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             }, function () {
                 this.loadParagonStats();
             });
-        },
-
-        loadParagonStats: function () {
-            var mergedObjects = Object.assign({}, this.state.offensiveStats, this.state.defensiveStats);
-
-            for (var stat in mergedObjects) {
-                if (mergedObjects.hasOwnProperty(stat)) {
-                    if (mergedObjects[stat].isParagonStat) {
-                        if (localStorage.getItem(stat)) {
-                            mergedObjects[stat].paragonModifier.value = parseInt(localStorage.getItem(stat));
-                        } else {
-                            mergedObjects[stat].paragonModifier.value = 0;
-                        }
-                    }
-                }
-            }
         },
 
         triggerStatCollector: function () {
@@ -325,7 +297,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         },
 
         componentDidMount: function () {
-            this.initStats();
+            //this.initStats();
 
             // panel shorthands p = panel, l = left and so forth TODO redo this shit
             panelLeft = ReactDOM.findDOMNode(this.refs.pl);
@@ -338,57 +310,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             panelBottomRightAdditional = ReactDOM.findDOMNode(this.refs.pbra);
             itemWrapper = ReactDOM.findDOMNode(this.refs.items);
             charBgWrapper = ReactDOM.findDOMNode(this.refs.charbg);
-        },
-
-        setBattleTag: function (e) {
-            this.setState({
-                setRing: false,
-                toggle: 'hidden',
-                paragonToggle: 'hidden',
-                skillDescToggle: 'hidden',
-                passiveDescToggle: 'hidden'
-            });
-
-            this.animatePanelsOut();
-
-            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
-            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
-            this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
-
-            this.setState({
-                battleTag: e.target.value
-            }, function () {
-                this.changeBattleTag(this.state.battleTag);
-            });
-
-            storage.save('battleTag', e.target.value);
-        },
-
-        setCharacterSelect: function (e) {
-            this.setState({
-                selectedChar: e.target.value,
-                panels: 'visible',
-                toggle: 'hidden',
-                paragonToggle: 'hidden',
-                skillDescToggle: 'hidden',
-                passiveDescToggle: 'hidden'
-            });
-
-            this.changeChar(e.target.value);
-
-            this.setState({
-                invalid: this.state.heroes.code ? true : false
-            });
-
-            this.animatePanelsOut();
-            setTimeout(this.animatePanelsIn, 1000);
-
-            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
-            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
-            this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
-
         },
 
         animatePanelsIn: function () {
@@ -606,20 +527,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             }
         },
 
-        handleParagonStatsClick: function () {
-            this.checkParagon();
-            this.setState({panelAnimationComplete: false});
-
-            panelLeftAdditionalHeight = panelLeftAdditional.offsetHeight;
-            if (this.state.paragonToggle !== 'visible') {
-                this.animateBonusPanelIn(panelLeftAdditional, panelLeftAdditionalHeight, false);
-                this.setState({paragonToggle: 'visible'});
-            } else {
-                this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight, -1);
-                this.setState({paragonToggle: 'hidden'});
-            }
-        },
-
         handleSkillDescClick: function () {
             this.setState({panelAnimationComplete: false});
 
@@ -719,57 +626,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
 
                 }
             }
-        },
-
-        checkParagon: function () {
-            var mergedObjects = Object.assign({}, this.state.offensiveStats, this.state.defensiveStats);
-
-            for (var stat in mergedObjects) {
-                if (mergedObjects.hasOwnProperty(stat)) {
-                    if (mergedObjects[stat].isParagonStat) {
-                        var node = ReactDOM.findDOMNode(this.refs[stat]);
-                        if (mergedObjects[stat].paragonModifier.value === mergedObjects[stat].paragonModifier.max) {
-                            node.classList.add('maxed');
-                        }
-                    }
-                }
-            }
-        },
-
-        handleParagon: function (e) {
-            target = e.target;
-            parentElement = target.parentNode;
-            // Todo remap wrong paragon stats
-
-            var mergedObjects = Object.assign({}, this.state.offensiveStats, this.state.defensiveStats);
-
-            for (var stat in mergedObjects) {
-                if (mergedObjects.hasOwnProperty(stat)) {
-                    if (mergedObjects[stat].isParagonStat) {
-                        if (parentElement.classList.contains(stat)) {
-                            if (target.classList.contains('paragon-stat-increment')) {
-                                if (mergedObjects[stat].paragonModifier.value < mergedObjects[stat].paragonModifier.max) {
-                                    mergedObjects[stat].paragonModifier.value = Math.round((mergedObjects[stat].paragonModifier.value + mergedObjects[stat].paragonModifier.increment ) * 10) / 10;
-                                }
-                            } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
-                                target.classList.add('maxed');
-                                mergedObjects[stat].paragonModifier.value = mergedObjects[stat].paragonModifier.max;
-                            } else if (target.classList.contains('paragon-stat-max') && target.classList.contains('maxed')) {
-                                target.classList.remove('maxed');
-                                mergedObjects[stat].paragonModifier.value = 0;
-                            } else {
-                                if (mergedObjects[stat].paragonModifier.value > 0) {
-                                    mergedObjects[stat].paragonModifier.value = Math.round((mergedObjects[stat].paragonModifier.value - mergedObjects[stat].paragonModifier.increment) * 10) / 10;
-                                }
-                            }
-
-                            storage.save(stat, mergedObjects[stat].paragonModifier.value);
-                        }
-                    }
-                }
-            }
-            this.triggerStatCollector();
-            this.forceUpdate();
         },
 
         getItemData: function () {
@@ -1316,7 +1172,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 skillsState = this.state.skills,
                 passivesState = this.state.passives,
                 statsState = this.state.stats,
-                heroesState = this.state.heroes,
                 itemsState = this.state.items,
                 generalStats = this.state.generalStats,
                 amuletState = this.state.amuletItem,
@@ -1400,11 +1255,9 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             additionalStatsDefensive = [];
             skills = [];
             skillsDesc = [];
-            heroes = [];
             passives = [];
             passivesDesc = [];
             statsArray = [];
-            paragon = [];
             specialPassive = [];
             base = [];
             style = [];
@@ -1447,38 +1300,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 backgroundImage = {
                     backgroundImage: 'none'
                 };
-            }
-
-            if (heroesState.heroes) {
-                heroes.push(React.DOM.option({
-                    key: 'heroes-list',
-                    value: '',
-                    style: {display: 'none'}
-                }, 'click to select hero'));
-                heroesState.heroes.forEach(function (heroName) {
-                    heroes.push(React.DOM.option({
-                        key: 'heroes-list' + heroName.id,
-                        value: heroName.id
-                    }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
-                });
-            } else if (heroesState.code) {
-                heroes.push(React.DOM.option({
-                    key: 'heroes-list-invalid',
-                    value: '',
-                    style: {display: 'none'}
-                }, 'invalid battleTag'));
-            } else if (!this.state.battleTag || this.state.battleTag === '') {
-                heroes.push(React.DOM.option({
-                    key: 'heroes-list-empty',
-                    value: '',
-                    style: {display: 'none'}
-                }, 'enter your battleTag in the field below'));
-            } else {
-                heroes.push(React.DOM.option({
-                    key: 'heroes-list-loading',
-                    value: '',
-                    style: {display: 'none'}
-                }, 'loading herolist...'));
             }
 
             for (var generalStat in this.state.generalStats) {
@@ -2129,30 +1950,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 }
             }
 
-            for (pstat in mergedStats) {
-                if (mergedStats.hasOwnProperty(pstat)) {
-                    if (mergedStats[pstat].isParagonStat) {
-                        paragon.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
-                            // TODO change unit for paragonStat invidiually
-                            mergedStats[pstat].name + ' ' + Math.round(mergedStats[pstat].paragonModifier.value * 10) / 10 + mergedStats[pstat].unit,
-                            React.DOM.span({
-                                className: 'paragon-stat-increment',
-                                onClick: self.handleParagon
-                            }, '+'),
-                            React.DOM.span({
-                                className: 'paragon-stat-decrement',
-                                onClick: self.handleParagon
-                            }, '-'),
-                            React.DOM.span({
-                                ref: pstat,
-                                className: 'paragon-stat-max',
-                                onClick: self.handleParagon
-                            })
-                        ));
-                    }
-                }
-            }
-
             //TODO custom dps shit unbreak this
             if (statsState && statsState.critDamage && statsState.critChance && minDmgCalc !== 0 && maxDmgCalc !== 0 && this.state.generalStats && this.state.offensiveStats) {
                 var statCalc,
@@ -2273,28 +2070,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                     React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: backgroundImage}),
                     React.DOM.div({className: 'd3-item-wrapper', ref: 'items'}, items),
                     realms(),
-                    React.DOM.div({className: 'd3-api-url'},
-                        '2 - Enter your BattleTag: ',
-
-                        React.DOM.input(
-                            {
-                                value: this.state.battleTag,
-                                placeholder: 'NAME#1234',
-                                onChange: this.setBattleTag
-                            }
-                        )
-                    ),
-                    React.DOM.div({className: 'd3-char-wrapper'},
-                        '3 - Click below to select your hero: ',
-                        React.DOM.select(
-                            {
-                                className: 'd3-chars',
-                                ref: 'select',
-                                value: this.state.selectedChar,
-                                onChange: this.setCharacterSelect
-                            }, heroes
-                        )
-                    ),
+                    heroes(),
                     React.DOM.div({
                         className: 'panel-left ' + this.state.paragonToggle,
                         ref: 'pl'
@@ -2311,14 +2087,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                             onClick: this.handleSkillDescClick
                         }, React.DOM.span({className: 'button-text'}, 'show details'))
                     ),
-                    React.DOM.div({
-                        className: 'panel-left-additional ',
-                        ref: 'pla'
-                    }, 'Paragon Points: ', paragon, React.DOM.a({
-                        className: 'button',
-                        onClick: this.handleParagonStatsClick,
-                        title: 'click to close'
-                    }, React.DOM.span({className: 'button-text'}, 'close'))),
+                    paragon(),
                     React.DOM.div({
                         className: 'panel-bottom-left-desc ' + this.state.skillDescToggle,
                         ref: 'pbla'
