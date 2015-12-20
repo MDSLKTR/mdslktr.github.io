@@ -86,10 +86,10 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/scripts.min.js': [
-                        '_dev/js/stats.js',
-                        '_dev/js/storage.js',
-                        '_dev/js/view.js',
-                        '_dev/js/animate.js'
+                        '_dev/js/helpers/*.js',
+                        '_dev/js/classes/*.js',
+                        '_dev/js/api/*.js',
+                        '_dev/js/*.js'
                     ]
                 }
             }
@@ -144,7 +144,7 @@ module.exports = function (grunt) {
                 ]
             },
             js: {
-                files: ['_dev/js/*.js'],
+                files: ['_dev/js/*.js', '_dev/js/**/*.js'],
                 tasks: [
                     'js'
                 ]

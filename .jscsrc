@@ -1,0 +1,10 @@
+{
+    "excludeFiles": ["assets/js, assets/css"],
+    "preset": "jquery",
+    "maximumLineLength": 120,
+    "requireCamelCaseOrUpperCaseIdentifiers": false,
+    "requireCapitalizedComments": null,
+    "requirePaddingNewLinesBeforeLineComments": false,
+    "validateIndentation": 4,
+    "validateQuoteMarks": { "mark": "'", "escape": true }
+}

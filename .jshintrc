@@ -100,6 +100,13 @@
         "defensiveStats": true,
         "skillDamageStat": true,
         "storage": true,
-        "stats": true
+        "stats": true,
+        "service": true,
+        "realms": true,
+        "realmsClass": true,
+        "d3Profile": true,
+        "api": true,
+        "heroes1": true,
+        "heroes": true
     }
 }

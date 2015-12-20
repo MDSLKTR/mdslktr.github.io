@@ -97,11 +97,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         ['Bane of the Trapped', 'Item_Power_Passive#ItemPassive_Unique_Gem_002_x1'],
         ['Gogok of the Swiftness', 'Item_Power_Passive#ItemPassive_Unique_Gem_008U_x1']
     ],
-    realmList = [
-        'eu',
-        'us',
-        'kr'
-    ],
     backgroundImage,
     itemSetCount,
     constructedLink,
@@ -145,7 +140,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
     calc,
     skills = [],
     skillsDesc = [],
-    heroes = [],
     passives = [],
     passivesDesc = [],
     statsArray = [],
@@ -267,286 +261,18 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 calculatingSkillDamage: false,
                 calculatingStats: false,
                 battleTag: localStorage.getItem('battleTag'),
-                apiKey: '?locale=en_GB&apikey=jrgy6zyyncxauzt2ub5m4f7zqg25fptm',
-                profile: '.api.battle.net/d3/profile/',
                 itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/', // icon + format .png,
-                skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/',
-                itemToolTipBase: '.api.battle.net/d3/data/'
+                skillIconBase: 'http://media.blizzard.com/d3/icons/skills/64/'
             };
         },
 
-        getData: function (url) {
-            return new Promise(function (resolve, reject) {
-                var request = new XMLHttpRequest();
-                request.open('GET', url, true);
-                request.onload = function () {
-                    if (request.status === 200) {
-                        resolve(request.response);
-                    } else {
-                        reject(Error(request.statusText));
-                    }
-                };
-                request.send();
-            });
-        },
-
-        loadHeroesList: function (tag) {
-            var self = this,
-                url;
-            if (tag) {
-                url = 'https://' + this.state.realm + this.state.profile.concat(tag.replace(/#/g, '-'), '/', this.state.apiKey);
-                this.getData(url).then(function (response) {
-                    var data = JSON.parse(response);
-
-                    if (self.state.debugMode) {
-                        console.log(data);
-                    }
-
-                    self.setState({
-                        heroes: data
-                    });
-                });
-            }
-        },
-
-        loadHeroData: function (id) {
-            var self = this,
-                url;
-            if (id) {
-                url = 'https://' + this.state.realm + this.state.profile.concat(this.state.battleTag.replace(/#/g, '-'), '/hero/', id, this.state.apiKey);
-                this.getData(url).then(function (response) {
-                    var data = JSON.parse(response);
-
-                    if (self.state.debugMode) {
-                        console.log(data);
-                    }
-
-                    self.setState({
-                        generalStats: {
-                            'name': {
-                                name: 'Name',
-                                value: data.name
-                            },
-                            'id': {
-                                name: 'Id',
-                                value: data.id
-                            },
-                            'class': {
-                                name: 'Class',
-                                value: data.class
-                            },
-                            'level': {
-                                name: 'Level',
-                                value: data.level
-                            },
-                            'paragonLevel': {
-                                name: 'Paragon Level',
-                                value: data.paragonLevel
-                            },
-                            'lastUpdated': {
-                                name: 'Last updated on',
-                                value: data['last-updated']
-                            }
-                        },
-                        items: data.items,
-                        stats: data.stats,
-                        kanai: data.legendaryPowers
-                    });
-
-                    if (data.skills) {
-                        self.setState({
-                            skills: data.skills.active,
-                            passives: data.skills.passive
-                        });
-                    }
-                }).then(function () {
-                    self.getItemData();
-                });
-            }
-        },
-
-        loadItemData: function (itemKey) {
-            var self = this,
-                url = 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey);
-
-            this.getData(url).then(function (response) {
-                var data = JSON.parse(response);
-
-                if (self.state.debugMode) {
-                    console.log(data);
-                }
-
-                switch (data.type.id) {
-                    case 'GenericHelm':
-                    case 'Helm':
-                    case 'Helm_Barbarian':
-                    case 'Helm_DemonHunter':
-                    case 'Helm_WitchDoctor':
-                    case 'Helm_Crusader':
-                    case 'Helm_Wizard':
-                    case 'Helm_Monk':
-                    case 'VoodooMask':
-                        self.setState({helmItem: data});
-                        break;
-                    case 'GenericShoulders':
-                    case 'Shoulders':
-                    case 'Shoulders_Barbarian':
-                    case 'Shoulders_DemonHunter':
-                    case 'Shoulders_WitchDoctor':
-                    case 'Shoulders_Crusader':
-                    case 'Shoulders_Wizard':
-                    case 'Shoulders_Monk':
-                        self.setState({shouldersItem: data});
-                        break;
-                    case 'Bracers':
-                        self.setState({bracersItem: data});
-                        break;
-                    case 'ChestArmor':
-                    case 'GenericChestArmor':
-                    case 'ChestArmor_Barbarian':
-                    case 'ChestArmor_DemonHunter':
-                    case 'ChestArmor_WitchDoctor':
-                    case 'ChestArmor_Crusader':
-                    case 'ChestArmor_Wizard':
-                    case 'ChestArmor_Monk':
-                    case 'Cloak':
-                        self.setState({chestItem: data});
-                        break;
-                    case 'GenericLegs':
-                    case 'Legs':
-                    case 'Legs_Barbarian':
-                    case 'Legs_DemonHunter':
-                    case 'Legs_WitchDoctor':
-                    case 'Legs_Crusader':
-                    case 'Legs_Wizard':
-                    case 'Legs_Monk':
-                        self.setState({legsItem: data});
-                        break;
-                    case 'GenericBoots':
-                    case 'Boots':
-                    case 'Boots_Barbarian':
-                    case 'Boots_DemonHunter':
-                    case 'Boots_WitchDoctor':
-                    case 'Boots_Crusader':
-                    case 'Boots_Wizard':
-                    case 'Boots_Monk':
-                        self.setState({bootsItem: data});
-                        break;
-                    case 'Polearm':
-                    case 'Crossbow':
-                    case 'Dagger':
-                    case 'Sword':
-                    case 'Sword2H':
-                    case 'Mace':
-                    case 'Axe':
-                    case 'FistWeapon':
-                    case 'CeremonialKnife':
-                    case 'MightyWeapon1H':
-                    case 'Flail2H':
-                    case 'Flail1H':
-                    case 'HandXbow':
-                    case 'Bow2H':
-                    case 'Bow':
-                    case 'Wand':
-                    case 'Staff':
-                    case 'Staff2H':
-                    case 'CeremonialDagger':
-                    case 'MightyWeapon2H':
-                    case 'Mace2H':
-                        self.setState({mainItem: data});
-                        break;
-                    case 'GenericGloves':
-                    case 'Gloves':
-                    case 'Gloves_Barbarian':
-                    case 'Gloves_DemonHunter':
-                    case 'Gloves_WitchDoctor':
-                    case 'Gloves_Crusader':
-                    case 'Gloves_Wizard':
-                    case 'Gloves_Monk':
-                        self.setState({glovesItem: data});
-                        break;
-                    case 'Belt':
-                    case 'GenericBelt':
-                    case 'Belt_Barbarian':
-                        self.setState({beltItem: data});
-                        break;
-                    case 'Amulet':
-                        self.setState({amuletItem: data});
-                        break;
-                }
-            });
-        },
-
-        loadKanaiItems: function (itemKey, index) {
-            var self = this,
-                url = 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey);
-
-            if (this.state.cubeItems[index]) {
-                // TODO Fix this better
-                return;
-            }
-
-            this.getData(url).then(function (response) {
-                var data = JSON.parse(response);
-
-                if (self.state.debugMode) {
-                    console.log(data);
-                }
-
-                self.state.cubeItems[index] = data;
-            });
-        },
-
-        loadItemDataWithProps: function (itemKey, left) {
-            var self = this,
-                url = 'https://' + this.state.realm + this.state.itemToolTipBase.concat(itemKey, this.state.apiKey);
-            this.getData(url).then(function (response) {
-                var data = JSON.parse(response);
-
-                if (self.state.debugMode) {
-                    console.log(data);
-                }
-
-                switch (data.type.id) {
-                    case 'Ring':
-                        if (left === true) {
-                            self.setState({ringItemLeft: data});
-                        } else {
-                            self.setState({ringItemRight: data});
-                        }
-                        break;
-                    case 'Quiver':
-                    case 'CrusaderShield':
-                    case 'Shield':
-                    case 'Orb':
-                    case 'Source':
-                    case 'Mojo':
-                        self.setState({offItem: data});
-                        break;
-                    case 'Dagger':
-                    case 'Sword':
-                    case 'Mace':
-                    case 'Axe':
-                    case 'FistWeapon':
-                    case 'MightyWeapon1H':
-                    case 'Flail1H':
-                    case 'HandXbow':
-                    case 'Bow':
-                    case 'Wand':
-                    case 'Staff':
-                        self.setState({offItem: data});
-                        break;
-                }
-            });
-        },
-
         changeChar: function (id) {
-            this.loadHeroData(id);
+            api.loadHeroData(id);
             this.initStats();
         },
 
         changeBattleTag: function (tag) {
-            this.loadHeroesList(tag);
+            api.loadHeroesList(tag);
         },
 
         checkParagonStat: function (stat) {
@@ -599,22 +325,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
         },
 
         componentDidMount: function () {
-            var initialRealm = storage.get('realm') ? storage.get('realm') : 'eu',
-                savedBattleTag = storage.get('battleTag');
-
-            this.createRealmList();
-
-            this.setState({
-                realm: initialRealm
-            }, function () {
-                this.loadHeroesList(savedBattleTag);
-                setInterval(this.startStatCollectorRunner, 3000);
-                // Todo this is kind of garbage
-                setInterval(this.loadHeroesList(this.state.battleTag), this.props.pollInterval);
-                setInterval(this.loadHeroData(this.state.selectedChar), this.props.pollInterval);
-
-            });
-
             this.initStats();
 
             // panel shorthands p = panel, l = left and so forth TODO redo this shit
@@ -653,31 +363,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             });
 
             storage.save('battleTag', e.target.value);
-        },
-
-        setRealm: function (e) {
-            this.setState({
-                setRing: false,
-                toggle: 'hidden',
-                paragonToggle: 'hidden',
-                skillDescToggle: 'hidden',
-                passiveDescToggle: 'hidden'
-            });
-
-            this.animatePanelsOut();
-
-            this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
-            this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
-            this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-            this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
-
-            this.setState({
-                realm: e.target.value
-            }, function () {
-                this.changeBattleTag(this.state.battleTag);
-            });
-
-            storage.save('realm', e.target.value);
         },
 
         setCharacterSelect: function (e) {
@@ -1132,7 +817,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 for (i = 0; i < itemSlots.length; i++) {
                     if (itemSlots[i]) {
                         itemData = itemSlots[i].tooltipParams;
-                        this.loadItemData(itemData);
+                        api.loadItemData(itemData);
                     }
                 }
 
@@ -1140,9 +825,9 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                     if (itemSlotsWithProps[i][0]) {
                         itemData = itemSlotsWithProps[i][0].tooltipParams;
                         if (itemSlotsWithProps[i][1] === 'left') {
-                            this.loadItemDataWithProps(itemData, true);
+                            api.loadItemDataWithProps(itemData, true);
                         } else {
-                            this.loadItemDataWithProps(itemData, false);
+                            api.loadItemDataWithProps(itemData, false);
                         }
                     }
                 }
@@ -1610,17 +1295,6 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
             }
         },
 
-        createRealmList: function () {
-            var realms = [];
-            realmList.forEach(function (realm) {
-                realms.push(React.DOM.option({key: realm, value: realm}, realm.toUpperCase()));
-            });
-
-            this.setState({
-                realms: realms
-            });
-        },
-
         normalizeMultiplicativeStat: function (value, modifier) {
             var normalizedMod = modifier / 100;
             if (value === 1) {
@@ -1944,7 +1618,7 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 this.state.kanai.forEach(function (power, currentIndex) {
                     if (power) {
                         // TODO broken
-                        self.loadKanaiItems(power.tooltipParams, currentIndex);
+                        api.loadKanaiItems(power.tooltipParams, currentIndex);
                         constructedLink = itemIconBaseUrl.concat(power.icon);
                         passives.push(React.DOM.div({
                             key: power.name,
@@ -2598,19 +2272,10 @@ var DamagePercentAll = 'Damage_Weapon_Percent_All',
                 React.DOM.div({className: 'd3-container'},
                     React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: backgroundImage}),
                     React.DOM.div({className: 'd3-item-wrapper', ref: 'items'}, items),
-                    React.DOM.div({className: 'd3-realm-wrapper'},
-                        '1 - Realm: ',
-                        React.DOM.select(
-                            {
-                                className: 'd3-realm',
-                                ref: 'select',
-                                value: this.state.realm,
-                                onChange: this.setRealm
-                            }, this.state.realms
-                        )
-                    ),
+                    realms(),
                     React.DOM.div({className: 'd3-api-url'},
                         '2 - Enter your BattleTag: ',
+
                         React.DOM.input(
                             {
                                 value: this.state.battleTag,
