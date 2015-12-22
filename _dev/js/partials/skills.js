@@ -4,7 +4,7 @@ var skillsClass = React.createClass({
         return {
             skills: [],
             skillIconBaseUrl: 'http://media.blizzard.com/d3/icons/skills/64/',
-            runeMap: stats.getRuneMap()
+            runeMap: Runes.get()
         };
     },
     componentDidMount: function () {

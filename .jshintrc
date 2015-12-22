@@ -119,6 +119,7 @@
         "hellfire": true,
         "items": true,
         "Sets": true,
+        "Runes": true,
         "WeaponElementsMin": true,
         "WeaponElementsDelta": true,
         "WeaponDamagePercentAll": true,
