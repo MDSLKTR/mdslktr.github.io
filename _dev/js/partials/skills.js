@@ -31,9 +31,9 @@ var skillsClass = React.createClass({
         this.state.skills.forEach(function (skillData) {
             if (skillData.rune) {
                 constructedLink = skillIconBaseUrl.concat(skillData.skill.icon);
-                if (skillData.rune.type === runeMap[skillData.rune.type].key) {
+                if (skillData.rune.type === runeMap.hasOwnProperty([skillData.rune.type])) {
                     runeType = {
-                        backgroundPosition: '0 ' + runeMap[skillData.rune.type].position
+                        backgroundPosition: '0 ' + runeMap[skillData.rune.type]
                     };
                 }
 
