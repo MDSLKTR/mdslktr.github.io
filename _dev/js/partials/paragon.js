@@ -8,11 +8,13 @@ var paragonClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.stats', function( data ) {
+
+        EventSystem.subscribe('api.collect.merged-stats', function( data ) {
             self.setState({
-                mergedStats: Object.assign({}, data.offensiveStats, data.defensiveStats)
+                mergedStats: data
             }, function () {
-                self.loadParagonStats( self.state.mergedStats );
+                console.log(this.state.mergedStats);
+                self.loadParagonStats( this.state.mergedStats );
             });
         });
     },
@@ -47,16 +49,6 @@ var paragonClass = React.createClass({
     handleParagonStatsClick: function () {
         // TODO call animate service here
         this.checkParagon(this.state.mergedStats);
-        //this.setState({panelAnimationComplete: false});
-        //
-        //panelLeftAdditionalHeight = panelLeftAdditional.offsetHeight;
-        //if (this.state.paragonToggle !== 'visible') {
-        //    this.animateBonusPanelIn(panelLeftAdditional, panelLeftAdditionalHeight, false);
-        //    this.setState({paragonToggle: 'visible'});
-        //} else {
-        //    this.animateBonusPanelOut(panelLeftAdditional, panelLeftAdditionalHeight, -1);
-        //    this.setState({paragonToggle: 'hidden'});
-        //}
     },
 
     handleParagon: function (e) {
@@ -127,13 +119,8 @@ var paragonClass = React.createClass({
 
         return (
             React.DOM.div({
-                className: 'panel-left-additional ',
-                ref: 'pla'
-            }, 'Paragon Points: ', paragonStats, React.DOM.a({
-                className: 'button',
-                onClick: this.handleParagonStatsClick,
-                title: 'click to close'
-            }, React.DOM.span({className: 'button-text'}, 'close')))
+                className: 'panel-left-additional'
+            }, 'Paragon Points: ', paragonStats)
         );
     }
 });

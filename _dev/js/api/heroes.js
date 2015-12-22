@@ -53,15 +53,7 @@ var heroesClass = React.createClass({
             EventSystem.publish('api.call.hero', this.state.apiData);
         });
 
-        this.setState({
-            stats: {
-                offensiveStats: stats.init('OffensiveStats'),
-                defensiveStats: stats.init('DefensiveStats'),
-                skillDamage: stats.init('SkillDamageStat')
-            }
-        }, function () {
-            EventSystem.publish('api.call.stats', this.state.stats);
-        });
+        EventSystem.publish('api.clear.item-collection');
     },
 
 

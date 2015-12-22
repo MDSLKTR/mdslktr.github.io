@@ -2,7 +2,9 @@ var itemsClass = React.createClass({
     displayName: 'items-component',
     getInitialState: function () {
         return {
-            itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/'
+            itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/',
+            itemCollection: [],
+            setRing: false
         };
     },
     componentDidMount: function () {
@@ -14,9 +16,27 @@ var itemsClass = React.createClass({
             });
         });
 
+        EventSystem.subscribe('api.clear.item-collection', function () {
+            self.setState({
+                itemCollection: []
+            });
+        });
+
         EventSystem.subscribe('api.call.items', function (data) {
             self.setState({
                 items: data
+            }, function () {
+                for (var item in this.state.items) {
+                    if (this.state.items.hasOwnProperty(item)) {
+                        if (this.state.items[item].name === 'Ring of Royal Grandeur') {
+                            this.setState({
+                                setRing: true
+                            }, function () {
+                                EventSystem.publish('api.call.item.set-ring', this.state.setRing);
+                            });
+                        }
+                    }
+                }
             });
         });
 
@@ -46,7 +66,9 @@ var itemsClass = React.createClass({
                     case 'Helm_Wizard':
                     case 'Helm_Monk':
                     case 'VoodooMask':
-                        self.setState({helmItem: data});
+                        self.setState({helmItem: data}, function () {
+                            self.state.itemCollection.push(self.state.helmItem);
+                        });
                         break;
                     case 'GenericShoulders':
                     case 'Shoulders':
@@ -56,10 +78,14 @@ var itemsClass = React.createClass({
                     case 'Shoulders_Crusader':
                     case 'Shoulders_Wizard':
                     case 'Shoulders_Monk':
-                        self.setState({shouldersItem: data});
+                        self.setState({shouldersItem: data}, function () {
+                            self.state.itemCollection.push(self.state.shouldersItem);
+                        });
                         break;
                     case 'Bracers':
-                        self.setState({bracersItem: data});
+                        self.setState({bracersItem: data}, function () {
+                            self.state.itemCollection.push(self.state.bracersItem);
+                        });
                         break;
                     case 'ChestArmor':
                     case 'GenericChestArmor':
@@ -70,7 +96,9 @@ var itemsClass = React.createClass({
                     case 'ChestArmor_Wizard':
                     case 'ChestArmor_Monk':
                     case 'Cloak':
-                        self.setState({chestItem: data});
+                        self.setState({chestItem: data}, function () {
+                            self.state.itemCollection.push(self.state.chestItem);
+                        });
                         break;
                     case 'GenericLegs':
                     case 'Legs':
@@ -80,7 +108,9 @@ var itemsClass = React.createClass({
                     case 'Legs_Crusader':
                     case 'Legs_Wizard':
                     case 'Legs_Monk':
-                        self.setState({legsItem: data});
+                        self.setState({legsItem: data}, function () {
+                            self.state.itemCollection.push(self.state.legsItem);
+                        });
                         break;
                     case 'GenericBoots':
                     case 'Boots':
@@ -90,7 +120,9 @@ var itemsClass = React.createClass({
                     case 'Boots_Crusader':
                     case 'Boots_Wizard':
                     case 'Boots_Monk':
-                        self.setState({bootsItem: data});
+                        self.setState({bootsItem: data}, function () {
+                            self.state.itemCollection.push(self.state.bootsItem);
+                        });
                         break;
                     case 'Polearm':
                     case 'Crossbow':
@@ -113,7 +145,10 @@ var itemsClass = React.createClass({
                     case 'CeremonialDagger':
                     case 'MightyWeapon2H':
                     case 'Mace2H':
-                        self.setState({mainItem: data});
+                        self.setState({mainItem: data}, function () {
+                            EventSystem.publish('api.call.item.mainhand', self.state.mainItem);
+                            self.state.itemCollection.push(self.state.mainItem);
+                        });
                         break;
                     case 'GenericGloves':
                     case 'Gloves':
@@ -123,19 +158,29 @@ var itemsClass = React.createClass({
                     case 'Gloves_Crusader':
                     case 'Gloves_Wizard':
                     case 'Gloves_Monk':
-                        self.setState({glovesItem: data});
+                        self.setState({glovesItem: data}, function () {
+                            self.state.itemCollection.push(self.state.glovesItem);
+                        });
                         break;
                     case 'Belt':
                     case 'GenericBelt':
                     case 'Belt_Barbarian':
-                        self.setState({beltItem: data});
+                        self.setState({beltItem: data}, function () {
+                            self.state.itemCollection.push(self.state.beltItem);
+                        });
                         break;
                     case 'Amulet':
                         self.setState({amuletItem: data}, function () {
                             EventSystem.publish('api.call.item.amulet', self.state.amuletItem);
+                            self.state.itemCollection.push(self.state.amuletItem);
                         });
                         break;
                 }
+
+                EventSystem.publish('api.call.item.collection', self.state.itemCollection);
+
+                console.log(self.state.itemCollection);
+
             });
         });
     },
@@ -151,9 +196,13 @@ var itemsClass = React.createClass({
                 switch (data.type.id) {
                     case 'Ring':
                         if (param === 'left') {
-                            self.setState({ringItemLeft: data});
+                            self.setState({ringItemLeft: data}, function () {
+                                self.state.itemCollection.push(self.state.ringItemLeft);
+                            });
                         } else {
-                            self.setState({ringItemRight: data});
+                            self.setState({ringItemRight: data}, function () {
+                                self.state.itemCollection.push(self.state.ringItemRight);
+                            });
                         }
                         break;
                     case 'Quiver':
@@ -162,7 +211,10 @@ var itemsClass = React.createClass({
                     case 'Orb':
                     case 'Source':
                     case 'Mojo':
-                        self.setState({offItem: data});
+                        self.setState({offItem: data}, function () {
+                            self.state.itemCollection.push(self.state.offItem);
+                            EventSystem.publish('api.call.item.offhand', self.state.offItem);
+                        });
                         break;
                     case 'Dagger':
                     case 'Sword':
@@ -175,9 +227,14 @@ var itemsClass = React.createClass({
                     case 'Bow':
                     case 'Wand':
                     case 'Staff':
-                        self.setState({offItem: data});
+                        self.setState({offItem: data}, function () {
+                            self.state.itemCollection.push(self.state.offItem);
+                            EventSystem.publish('api.call.item.offhand', self.state.offItem);
+                        });
                         break;
                 }
+
+                EventSystem.publish('api.call.item.collection', self.state.itemCollection);
             });
         });
     },
@@ -266,6 +323,24 @@ var itemsClass = React.createClass({
                 view: belt
             }
         };
+
+
+        for (m = 0; m < setPool.length; m++) {
+            setPool[m][1] = 0;
+        }
+
+        for (var itemIterator in itemCollection) {
+            if (itemCollection.hasOwnProperty(itemIterator)) {
+                for (m = 0; m < setPool.length; m++) {
+                    if (itemCollection[itemIterator].itemData && itemCollection[itemIterator].itemData.set) {
+                        if (itemCollection[itemIterator].itemData.set.name === setPool[m][0]) {
+                            setPool[m][1]++;
+                        }
+                    }
+                }
+            }
+        }
+
         // Item Parser
         if (this.state.items) {
             for (var item in itemCollection) {

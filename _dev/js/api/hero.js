@@ -101,6 +101,8 @@ var heroClass = React.createClass({
             React.DOM.div({className: ''},
                 primaryStats(),
                 generalStats(),
+                offensiveStats(),
+                defensiveStats(),
                 skills(),
                 passives(),
                 kanai()

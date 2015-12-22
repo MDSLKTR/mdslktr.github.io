@@ -1,10 +1,10 @@
-var stats = React.createClass({
+var Stats = React.createClass({
     statics: {
         init: function (statList) {
             var statKeys = [
                     'OffensiveStats',
                     'DefensiveStats',
-                    'SkillDamageStat'
+                    'SkillDamage'
                 ],
                 self = this,
                 returnValue = null;
@@ -422,7 +422,7 @@ var stats = React.createClass({
             };
         },
 
-        initSkillDamageStat: function () {
+        initSkillDamage: function () {
             return {
                 unit: '%',
                 value: 0
