@@ -1,4 +1,5 @@
 var heroClass = React.createClass({
+    displayName: 'hero-component',
     componentDidMount: function () {
         var self = this;
         EventSystem.subscribe('api.call.hero', function( data ) {
@@ -15,13 +16,9 @@ var heroClass = React.createClass({
         var self = this,
             type = 'hero-data';
         if (id) {
-            service.create(type, tag, realm, id).then(function (url) {
+            service.create(type, realm, tag, id).then(function (url) {
                 service.get(url).then(function (response) {
                     var data = JSON.parse(response);
-
-                    if (self.state.debugMode) {
-                        console.log(data);
-                    }
 
                     self.setState({
                         generalStats: {
@@ -51,26 +48,63 @@ var heroClass = React.createClass({
                             }
                         },
                         items: data.items,
-                        stats: data.stats,
+                        primaryStats: data.stats,
                         kanai: data.legendaryPowers
+                    }, function () {
+                        EventSystem.publish('api.call.general-stats', this.state.generalStats);
+                        EventSystem.publish('api.call.primary-stats', this.state.primaryStats);
+                        EventSystem.publish('api.call.kanai', this.state.kanai);
+                        EventSystem.publish('api.call.items', this.state.items);
+                        this.requestItemData();
                     });
 
                     if (data.skills) {
                         self.setState({
                             skills: data.skills.active,
                             passives: data.skills.passive
+                        }, function () {
+                            EventSystem.publish('api.call.active-skills', this.state.skills);
+                            EventSystem.publish('api.call.passive-skills', this.state.passives);
                         });
                     }
-                }).then(function () {
-                    self.getItemData();
                 });
             });
         }
     },
 
+    requestItemData: function () {
+        var itemData,
+            addParams = {
+            leftFinger: 'left',
+            rightFinger: 'right',
+            offHand: 'offhand'
+        };
+
+        for (var item in this.state.items) {
+            if (this.state.items.hasOwnProperty(item)) {
+                if (addParams.hasOwnProperty(item)) {
+                    itemData = {
+                        url: this.state.items[item].tooltipParams,
+                        param: addParams[item]
+                    };
+                    EventSystem.publish('api.call.item-with-props', itemData);
+                } else {
+                    itemData = this.state.items[item].tooltipParams;
+                    EventSystem.publish('api.call.item', itemData);
+                }
+            }
+        }
+    },
+
     render: function () {
         return (
-            console.log(1)
+            React.DOM.div({className: ''},
+                primaryStats(),
+                generalStats(),
+                skills(),
+                passives(),
+                kanai()
+            )
         );
     }
 });

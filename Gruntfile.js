@@ -80,8 +80,9 @@ module.exports = function (grunt) {
                 },
                 files: {
                     'assets/js/scripts.min.js': [
+                        '_dev/js/factories/*.js',
                         '_dev/js/helpers/*.js',
-                        '_dev/js/classes/*.js',
+                        '_dev/js/partials/*.js',
                         '_dev/js/api/*.js',
                         '_dev/js/*.js'
                     ]

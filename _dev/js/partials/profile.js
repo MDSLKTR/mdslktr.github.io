@@ -1,4 +1,4 @@
-var realmsClass = React.createClass({
+var profileClass = React.createClass({
     displayName: 'realm-component',
     getInitialState: function () {
         return {
@@ -47,17 +47,9 @@ var realmsClass = React.createClass({
             setRing: false,
             toggle: 'hidden',
             paragonToggle: 'hidden',
-
             skillDescToggle: 'hidden',
             passiveDescToggle: 'hidden'
         });
-
-        // TODO new Interface
-        //this.animatePanelsOut();
-        //this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
-        //this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
-        //this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-        //this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
         this.setState({
             apiData: {
@@ -79,13 +71,6 @@ var realmsClass = React.createClass({
             skillDescToggle: 'hidden',
             passiveDescToggle: 'hidden'
         });
-
-        //this.animatePanelsOut();
-        //
-        //this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
-        //this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
-        //this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-        //this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
 
         this.setState({
             apiData: {
@@ -132,4 +117,4 @@ var realmsClass = React.createClass({
     }
 });
 
-var realms = React.createFactory(realmsClass);
+var profile = React.createFactory(profileClass);

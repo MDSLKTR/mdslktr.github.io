@@ -25,7 +25,7 @@ var heroesClass = React.createClass({
         });
     },
 
-    loadHeroesList: function (tag, realm, debugMode) {
+    loadHeroesList: function (tag, realm) {
         var self = this,
             type = 'heroes-list';
 
@@ -33,10 +33,6 @@ var heroesClass = React.createClass({
             service.create(type, realm, tag).then(function (url) {
                 service.get(url).then(function (response) {
                     var data = JSON.parse(response);
-
-                    if (debugMode) {
-                        console.log(data);
-                    }
 
                     self.setState({
                         heroesData: data
@@ -49,9 +45,9 @@ var heroesClass = React.createClass({
     setCharacterSelect: function (e) {
         this.setState({
             apiData: {
-                battleTag: this.state.battleTag,
+                tag: this.state.battleTag,
                 realm: this.state.realm,
-                heroId: e.target.value
+                id: e.target.value
             }
         }, function () {
             EventSystem.publish('api.call.hero', this.state.apiData);
@@ -66,15 +62,6 @@ var heroesClass = React.createClass({
         }, function () {
             EventSystem.publish('api.call.stats', this.state.stats);
         });
-
-        //this.animatePanelsOut();
-        //setTimeout(this.animatePanelsIn, 1000);
-        //
-        //this.animateBonusPanelOut(panelRightAdditional, document.documentElement.clientHeight / 1.5, -1);
-        //this.animateBonusPanelOut(panelLeftAdditional, document.documentElement.clientHeight / 1.5, -1);
-        //this.animateBonusPanelOut(panelBottomLeftAdditional, document.documentElement.clientHeight, 1);
-        //this.animateBonusPanelOut(panelBottomRightAdditional, document.documentElement.clientHeight / 1.5, 1);
-
     },
 
 

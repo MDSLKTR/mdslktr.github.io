@@ -868,8 +868,8 @@ footer {
   margin: 0.3rem auto;
   text-align: center;
   box-shadow: 0 3px 0 #590000, 0 5px 1px rgba(0, 0, 0, 0.1);
-  -webkit-transition: box-shadow 0.2s ease-in-out;
-          transition: box-shadow 0.2s ease-in-out; }
+  -webkit-transition: box-shadow .2s ease-in-out;
+          transition: box-shadow .2s ease-in-out; }
   .button:hover {
     box-shadow: 0 3px 0 #590000, 0 4px 0 rgba(0, 0, 0, 0.1); }
     .button:hover .button-text {

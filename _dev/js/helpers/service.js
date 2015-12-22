@@ -11,6 +11,8 @@ var service = React.createClass({
                     separator = '/',
                     toolTipBase = '.api.battle.net/d3/data/';
 
+                console.log('api-get[' + type + '] server[' + realm + '] profile[' + battleTag + '] param[' + key + ']');
+
                 switch ( type ) {
                     case 'heroes-list':
                         url = prefix + realm + apiBase.concat(formatBattleTag, separator, apiKey);
