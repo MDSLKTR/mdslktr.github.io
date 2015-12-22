@@ -24,7 +24,6 @@ select, input {
   appearance: none; }
 
 body {
-  overflow: hidden;
   margin: 0;
   padding: 0;
   width: 100%;
@@ -91,7 +90,6 @@ main {
     opacity: 0; } }
 
 .d3-bg {
-  background: transparent url("/assets/images/bg-3.jpg") 50% 50%/cover no-repeat;
   position: absolute;
   height: 120%;
   overflow: hidden;

@@ -53,7 +53,6 @@ var d3Profile = React.createClass({
                     heroes(),
                     hero(),
                     paragon(),
-
                     skillDamageCollector(),
                     statsCollector()
                 )
