@@ -172,7 +172,7 @@ var skillDamageCollectorClass = React.createClass({
 
             worker.postMessage({
                 itemSlots: that.state.itemCollection,
-                skillDamage: Stats.init('SkillDamage'),
+                skillDamage: Stats.get('SkillDamage'),
                 skills: that.state.skills,
                 className: that.state.generalStats.class.value
             });

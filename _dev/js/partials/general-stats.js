@@ -45,8 +45,7 @@ var generalStatsClass = React.createClass({
         return (
             // TODO where to put this
             React.DOM.div({
-                    className: 'whatever',
-                    ref: 'pl'
+                    className: ''
                 }, 'General', base
             )
         );

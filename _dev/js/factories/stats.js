@@ -1,5 +1,8 @@
-var Stats = React.createClass({
+var Stats;
+Stats = React.createClass({
     statics: {
+        offensiveStats: {},
+        defensiveStats: {},
         init: function (statList) {
             var statKeys = [
                     'OffensiveStats',
@@ -21,8 +24,50 @@ var Stats = React.createClass({
             return returnValue;
         },
 
+        get: function (statList) {
+            var statKeys = [
+                    'OffensiveStats',
+                    'DefensiveStats',
+                    'SkillDamage'
+                ],
+                self = this,
+                returnValue = null;
+
+            statKeys.forEach(function (statKey) {
+                if (statList === statKey) {
+                    var key = statKey.toString(),
+                        prefix = 'get',
+                        func = prefix.concat(key);
+
+                    returnValue = self[func]();
+                }
+            });
+            return returnValue;
+        },
+
+        set: function (statList, stat, prop, deepProp, value) {
+            var statKeys = [
+                    'OffensiveStats',
+                    'DefensiveStats',
+                    'SkillDamage'
+                ],
+                self = this,
+                returnValue = null;
+
+            statKeys.forEach(function (statKey) {
+                if (statList === statKey) {
+                    var key = statKey.toString(),
+                        prefix = 'set',
+                        func = prefix.concat(key);
+
+                    returnValue = self[func](stat, prop, deepProp, value);
+                }
+            });
+            return returnValue;
+        },
+
         initOffensiveStats: function () {
-            return {
+            this.offensiveStats = {
                 'critChance': {
                     name: 'Critical Hit Chance',
                     paragonModifier: {
@@ -191,10 +236,12 @@ var Stats = React.createClass({
                     normalization: 100
                 }
             };
+
+            EventSystem.publish('api.collect.offensive-stats', this.offensiveStats);
         },
 
         initDefensiveStats: function () {
-            return {
+            this.defensiveStats = {
                 goldPickUpRange: {
                     name: 'Gold Pick-up Range',
                     unit: ' yards',
@@ -420,13 +467,47 @@ var Stats = React.createClass({
                     isParagonStat: true
                 }
             };
+
+            EventSystem.publish('api.collect.defensive-stats', this.defensiveStats);
         },
 
-        initSkillDamage: function () {
+        getOffensiveStats: function () {
+            console.log('get', this.offensiveStats);
+            return this.offensiveStats;
+        },
+
+        getDefensiveStats: function () {
+            return this.defensiveStats;
+        },
+
+        getSkillDamage: function () {
             return {
                 unit: '%',
                 value: 0
             };
+        },
+
+        setOffensiveStats: function (stat, prop, deepProp, value) {
+            console.log(stat, prop, deepProp, value);
+            if (deepProp) {
+                this.offensiveStats[stat][prop][deepProp] = value;
+            } else {
+                this.offensiveStats[stat][prop] = value;
+            }
+
+            console.log('set', this.offensiveStats);
+            EventSystem.publish('api.call.collect');
+        },
+
+        setDefensiveStats: function (stat, prop, deepProp, value) {
+            console.log(stat, prop, deepProp, value);
+            if (deepProp) {
+                this.defensiveStats[stat][prop][deepProp] = value;
+            } else {
+                this.defensiveStats[stat][prop] = value;
+            }
+
+            EventSystem.publish('api.call.collect');
         }
     },
 

@@ -31,6 +31,11 @@ var d3Profile = React.createClass({
                     generalStats: data
                 });
             });
+
+            Stats.init('OffensiveStats');
+            Stats.init('DefensiveStats');
+
+            EventSystem.publish('api.call.paragon');
         },
 
         render: function () {

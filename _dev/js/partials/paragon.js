@@ -9,12 +9,13 @@ var paragonClass = React.createClass({
     componentDidMount: function () {
         var self = this;
 
-        EventSystem.subscribe('api.collect.merged-stats', function( data ) {
+        // todo fix this better
+        EventSystem.subscribe('api.call.paragon', function () {
             self.setState({
-                mergedStats: data
+                offensiveStats: Stats.get('OffensiveStats'),
+                defensiveStats: Stats.get('DefensiveStats')
             }, function () {
-                console.log(this.state.mergedStats);
-                self.loadParagonStats( this.state.mergedStats );
+                self.loadParagonStats( Object.assign(self.state.mergedStats, self.state.offensiveStats, self.state.defensiveStats) );
             });
         });
     },
@@ -25,8 +26,6 @@ var paragonClass = React.createClass({
                 if (mergedStats[stat].isParagonStat) {
                     if (storage.get(stat)) {
                         mergedStats[stat].paragonModifier.value = parseInt(storage.get(stat));
-                    } else {
-                        mergedStats[stat].paragonModifier.value = 0;
                     }
                 }
             }
@@ -54,7 +53,7 @@ var paragonClass = React.createClass({
     handleParagon: function (e) {
         var target = e.target;
         var parentElement = target.parentNode;
-        // Todo remap wrong paragon stats
+        // Todo remap wrong paragon stats, also there is no hook which stats need to be boosted
 
         var mergedStats = this.state.mergedStats;
 
@@ -64,7 +63,8 @@ var paragonClass = React.createClass({
                     if (parentElement.classList.contains(stat)) {
                         if (target.classList.contains('paragon-stat-increment')) {
                             if (mergedStats[stat].paragonModifier.value < mergedStats[stat].paragonModifier.max) {
-                                mergedStats[stat].paragonModifier.value = Math.round((mergedStats[stat].paragonModifier.value + mergedStats[stat].paragonModifier.increment ) * 10) / 10;
+                                console.log(mergedStats[stat].paragonModifier.value,mergedStats[stat].paragonModifier.max);
+                                mergedStats[stat].paragonModifier.value = mergedStats[stat].paragonModifier.value + mergedStats[stat].paragonModifier.increment;
                             }
                         } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
                             target.classList.add('maxed');
@@ -74,11 +74,12 @@ var paragonClass = React.createClass({
                             mergedStats[stat].paragonModifier.value = 0;
                         } else {
                             if (mergedStats[stat].paragonModifier.value > 0) {
-                                mergedStats[stat].paragonModifier.value = Math.round((mergedStats[stat].paragonModifier.value - mergedStats[stat].paragonModifier.increment) * 10) / 10;
+                                mergedStats[stat].paragonModifier.value = mergedStats[stat].paragonModifier.value - mergedStats[stat].paragonModifier.increment;
                             }
                         }
 
                         storage.save(stat, mergedStats[stat].paragonModifier.value);
+                        Stats.set('OffensiveStats', stat.toString(), 'paragonModifier', 'value', mergedStats[stat].paragonModifier.value);
                     }
                 }
             }

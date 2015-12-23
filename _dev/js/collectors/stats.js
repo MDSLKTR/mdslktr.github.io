@@ -32,9 +32,10 @@ var statsCollectorClass = React.createClass({
             });
         });
 
-        setInterval(function () {
+        EventSystem.subscribe('api.call.collect', function () {
             self.collect();
-        }, 5000);
+        });
+
     },
 
     collect: function () {
@@ -74,11 +75,11 @@ var statsCollectorClass = React.createClass({
                     mergedProps = Object.assign({}, off, def),
                     repeatSet = [];
 
-                for (stat in mergedProps) {
-                    if (mergedProps.hasOwnProperty(stat)) {
-                        mergedProps[stat].value = mergedProps[stat].multiplicative ? 1 : 0;
-                    }
-                }
+                //for (stat in mergedProps) {
+                //    if (mergedProps.hasOwnProperty(stat)) {
+                //        mergedProps[stat].value = mergedProps[stat].multiplicative ? 1 : 0;
+                //    }
+                //}
 
                 for (i = 0; i < itemSlots.length; i++) {
                     for (stat in off) {
@@ -253,10 +254,8 @@ var statsCollectorClass = React.createClass({
                     offensiveStats: e.data.offensiveStats,
                     defensiveStats: e.data.defensiveStats
                 }, function () {
-                    var mergedObjects = Object.assign({}, that.state.offensiveStats, that.state.defensiveStats);
                     EventSystem.publish('api.collect.offensive-stats', that.state.offensiveStats);
                     EventSystem.publish('api.collect.defensive-stats', that.state.defensiveStats);
-                    EventSystem.publish('api.collect.merged-stats', mergedObjects);
                 });
 
                 resolve();
@@ -281,8 +280,8 @@ var statsCollectorClass = React.createClass({
 
             worker.postMessage({
                 itemSlots: that.state.itemCollection,
-                offensiveStats: Stats.init('OffensiveStats'),
-                defensiveStats: Stats.init('DefensiveStats'),
+                offensiveStats: Stats.get('OffensiveStats'),
+                defensiveStats: Stats.get('DefensiveStats'),
                 setPool: Sets.get(),
                 setRing: that.state.setRing
             });

@@ -28,8 +28,6 @@ var skillsClass = React.createClass({
             return;
         }
 
-        console.log(runeMap);
-
         this.state.skills.forEach(function (skillData) {
             if (skillData.rune) {
                 constructedLink = skillIconBaseUrl.concat(skillData.skill.icon);

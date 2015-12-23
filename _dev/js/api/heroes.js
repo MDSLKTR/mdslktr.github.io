@@ -54,6 +54,7 @@ var heroesClass = React.createClass({
         });
 
         EventSystem.publish('api.clear.item-collection');
+        EventSystem.publish('api.clear.item');
     },
 
 

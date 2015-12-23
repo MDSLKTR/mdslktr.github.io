@@ -19,47 +19,49 @@ var hellfireClass = React.createClass({
                 amuletItem: data
             });
         });
+
+        EventSystem.subscribe('api.clear.item', function () {
+            self.setState({
+                amuletItem: {}
+            });
+        });
     },
 
     render: function () {
         var hellfirePassive = [],
-            constructedLink,
-            hellfirePassiveLink,
-            hellfirePassiveDisplay,
+            constructedLink = '',
+            hellfirePassiveName = '',
+            hellfirePassiveDisplay = '',
             skillIconBaseUrl = this.state.skillIconBaseUrl,
-            amuletState = this.state.amuletItem;
+            prefix,
+            passivePrefixMapping = {
+                'demon-hunter': 'demonhunter_passive_',
+                'witch-doctor': 'witchdoctor_passive_',
+                'barbarian': 'barbarian_passive_',
+                'crusader': 'crusader_passive_',
+                'monk': 'monk_passive_',
+                'wizard': 'wizard_passive_'
+            };
 
-        if (amuletState && this.state.generalStats) {
-            if (amuletState.name === 'Hellfire Amulet') {
-                hellfirePassiveLink = amuletState.attributes.passive[0].text
+        if (this.state.amuletItem && this.state.generalStats) {
+            if (this.state.amuletItem.name === 'Hellfire Amulet') {
+                hellfirePassiveName = this.state.amuletItem.attributes.passive[0].text
                     .substring(9)
                     .replace(' passive.', '')
-                    .replace(/ /g, '').toLowerCase();
-                hellfirePassiveDisplay = amuletState.attributes.passive[0].text
+                    .replace(/ /g, '')
+                    .toLowerCase();
+                hellfirePassiveDisplay = this.state.amuletItem.attributes.passive[0].text
                     .substring(9)
                     .replace(' passive.', '');
-                switch (this.state.generalStats.class.value) {
-                    case 'demon-hunter':
-                        constructedLink = skillIconBaseUrl.concat('demonhunter_passive_', hellfirePassiveLink);
-                        break;
-                    case 'witch-doctor':
-                        constructedLink = skillIconBaseUrl.concat('witchdoctor_passive_', hellfirePassiveLink);
-                        break;
-                    case 'barbarian':
-                        constructedLink = skillIconBaseUrl.concat('barbarian_passive_', hellfirePassiveLink);
-                        break;
-                    case 'crusader':
-                        constructedLink = skillIconBaseUrl.concat('crusader_passive_', hellfirePassiveLink);
-                        break;
-                    case 'monk':
-                        constructedLink = skillIconBaseUrl.concat('monk_passive_', hellfirePassiveLink);
-                        break;
-                    case 'wizard':
-                        constructedLink = skillIconBaseUrl.concat('wizard_passive_', hellfirePassiveLink);
-                        break;
-                    default:
-                        console.log('new class?');
+
+                for (prefix in passivePrefixMapping) {
+                    if (passivePrefixMapping.hasOwnProperty(prefix)) {
+                        if (this.state.generalStats.class.value === prefix) {
+                            constructedLink = skillIconBaseUrl.concat(passivePrefixMapping[prefix], hellfirePassiveName);
+                        }
+                    }
                 }
+
                 hellfirePassive.push(React.DOM.div({
                     key: hellfirePassiveDisplay,
                     className: 'hasIcon'
@@ -72,9 +74,7 @@ var hellfireClass = React.createClass({
         }
 
         return (
-            React.DOM.div({
-                    className: ''
-                }, 'Hellfire Passive', hellfirePassive
+            React.DOM.div({className: ''}, 'Hellfire Passive', hellfirePassive
             )
         );
     }
