@@ -15,7 +15,11 @@ var paragonClass = React.createClass({
                 offensiveStats: Stats.get('OffensiveStats'),
                 defensiveStats: Stats.get('DefensiveStats')
             }, function () {
-                self.loadParagonStats( Object.assign(self.state.mergedStats, self.state.offensiveStats, self.state.defensiveStats) );
+                self.setState({
+                    mergedStats: Object.assign(self.state.offensiveStats, self.state.defensiveStats)
+                }, function () {
+                    self.loadParagonStats( this.state.mergedStats );
+                });
             });
         });
     },
@@ -25,7 +29,13 @@ var paragonClass = React.createClass({
             if (mergedStats.hasOwnProperty(stat)) {
                 if (mergedStats[stat].isParagonStat) {
                     if (storage.get(stat)) {
-                        mergedStats[stat].paragonModifier.value = parseInt(storage.get(stat));
+                        if (Stats.get('OffensiveStats').hasOwnProperty(stat)) {
+                            Stats.set('OffensiveStats', stat.toString(), 'paragonModifier', 'value', parseFloat(storage.get(stat)));
+                        } else {
+                            Stats.set('DefensiveStats', stat.toString(), 'paragonModifier', 'value', parseFloat(storage.get(stat)));
+                        }
+                        this.forceUpdate();
+                        //mergedStats[stat].paragonModifier.value = parseInt(storage.get(stat));
                     }
                 }
             }
@@ -51,11 +61,9 @@ var paragonClass = React.createClass({
     },
 
     handleParagon: function (e) {
-        var target = e.target;
-        var parentElement = target.parentNode;
-        // Todo remap wrong paragon stats, also there is no hook which stats need to be boosted
-
-        var mergedStats = this.state.mergedStats;
+        var target = e.target,
+            parentElement = target.parentNode,
+            mergedStats = this.state.mergedStats;
 
         for (var stat in mergedStats) {
             if (mergedStats.hasOwnProperty(stat)) {
@@ -63,8 +71,7 @@ var paragonClass = React.createClass({
                     if (parentElement.classList.contains(stat)) {
                         if (target.classList.contains('paragon-stat-increment')) {
                             if (mergedStats[stat].paragonModifier.value < mergedStats[stat].paragonModifier.max) {
-                                console.log(mergedStats[stat].paragonModifier.value,mergedStats[stat].paragonModifier.max);
-                                mergedStats[stat].paragonModifier.value = mergedStats[stat].paragonModifier.value + mergedStats[stat].paragonModifier.increment;
+                                mergedStats[stat].paragonModifier.value = Math.round((mergedStats[stat].paragonModifier.value + mergedStats[stat].paragonModifier.increment) * 10) / 10;
                             }
                         } else if (target.classList.contains('paragon-stat-max') && !target.classList.contains('maxed')) {
                             target.classList.add('maxed');
@@ -74,18 +81,21 @@ var paragonClass = React.createClass({
                             mergedStats[stat].paragonModifier.value = 0;
                         } else {
                             if (mergedStats[stat].paragonModifier.value > 0) {
-                                mergedStats[stat].paragonModifier.value = mergedStats[stat].paragonModifier.value - mergedStats[stat].paragonModifier.increment;
+                                mergedStats[stat].paragonModifier.value = Math.round((mergedStats[stat].paragonModifier.value - mergedStats[stat].paragonModifier.increment) * 10) / 10;
                             }
                         }
 
                         storage.save(stat, mergedStats[stat].paragonModifier.value);
-                        Stats.set('OffensiveStats', stat.toString(), 'paragonModifier', 'value', mergedStats[stat].paragonModifier.value);
+
+                        if (Stats.get('OffensiveStats').hasOwnProperty(stat)) {
+                            Stats.set('OffensiveStats', stat.toString(), 'paragonModifier', 'value', mergedStats[stat].paragonModifier.value);
+                        } else {
+                            Stats.set('DefensiveStats', stat.toString(), 'paragonModifier', 'value', mergedStats[stat].paragonModifier.value);
+                        }
                     }
                 }
             }
         }
-        // Todo, send to stats collector
-        //this.triggerStatCollector();
         this.forceUpdate();
     },
 
