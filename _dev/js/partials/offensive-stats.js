@@ -2,7 +2,9 @@ var offensiveStatsClass = React.createClass({
     displayName: 'offensive-stats-component',
     getInitialState: function () {
         return {
-            primaryStats: {}
+            primaryStats: {},
+            offhand: {},
+            mainHand: {}
         };
     },
     componentDidMount: function () {
@@ -13,13 +15,13 @@ var offensiveStatsClass = React.createClass({
             });
         });
 
-        EventSystem.subscribe('api.call.item-offhand', function (data) {
+        EventSystem.subscribe('api.call.item.offhand', function (data) {
             self.setState({
                 offHand: data
             });
         });
 
-        EventSystem.subscribe('api.call.item-mainhand', function (data) {
+        EventSystem.subscribe('api.call.item.mainhand', function (data) {
             self.setState({
                 mainHand: data
             });
@@ -127,8 +129,8 @@ var offensiveStatsClass = React.createClass({
                                     value = this.normalizeWeaponAttackSpeed(
                                         offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization,
                                         1,
-                                        mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
-                                        offHandState.attacksPerSecond ? 0.15 : 0
+                                        mainHandState && mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
+                                        offHandState && offHandState.attacksPerSecond ? 0.15 : 0
                                     );
                                     break;
                                 default:
@@ -137,7 +139,7 @@ var offensiveStatsClass = React.createClass({
                         }
                     }
 
-                    if (value) {
+                    if (value && !offensiveStats[offensiveStat].hide) {
                         stats.push(React.DOM.div({
                             key: offensiveStat,
                             className: 'bonusstat'
