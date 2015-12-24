@@ -185,7 +185,7 @@ var itemsClass = React.createClass({
                 self.setState({
                     itemsLoaded: self.state.itemsLoaded + 1
                 }, function () {
-                    EventSystem.publish('api.call.items-loaded', self.state.itemsLoaded);
+                    EventSystem.publish('api.try.collect', self.state.itemsLoaded);
                 });
             });
         });

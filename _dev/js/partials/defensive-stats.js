@@ -77,10 +77,7 @@ var defensiveStatsClass = React.createClass({
             }
         }
         return (
-            React.DOM.div({
-                    className: 'whatever'
-                }, 'Defensive Stats', stats
-            )
+            React.DOM.div(null, 'Defensive Stats', stats)
         );
     }
 });

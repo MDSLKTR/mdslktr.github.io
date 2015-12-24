@@ -26,11 +26,7 @@ var skillDamageClass = React.createClass({
             }));
         }
         return (
-            React.DOM.span({
-                    className: 'whatever'
-                }, skillDamage
-            )
-
+            React.DOM.span(null, skillDamage)
         );
     }
 });

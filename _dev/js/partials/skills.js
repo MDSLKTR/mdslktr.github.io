@@ -104,9 +104,7 @@ var skillsClass = React.createClass({
         });
 
         return (
-            React.DOM.div({
-                    className: ''
-                }, 'Skills', skills
+            React.DOM.div(null, 'Skills', skills
             )
         );
     }

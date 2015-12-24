@@ -121,6 +121,7 @@
         "skillDamage": true,
         "Sets": true,
         "Runes": true,
+        "Realms": true,
         "skillDamageCollector": true,
         "statsCollector": true,
         "WeaponElementsMin": true,

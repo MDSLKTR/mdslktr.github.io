@@ -74,8 +74,7 @@ var hellfireClass = React.createClass({
         }
 
         return (
-            React.DOM.div({className: ''}, 'Hellfire Passive', hellfirePassive
-            )
+            React.DOM.div(null, 'Hellfire Passive', hellfirePassive)
         );
     }
 });
