@@ -17,9 +17,9 @@ var profileClass = React.createClass({
         this.setState({
             apiData: {
                 tag: savedBattleTag,
-                realm: initialRealm,
-                realms: realms
-            }
+                realm: initialRealm
+            },
+            realms: realms
         }, function () {
             EventSystem.publish('api.call.heroes', this.state.apiData);
         });
@@ -30,14 +30,6 @@ var profileClass = React.createClass({
     },
 
     setRealm: function (e) {
-        this.setState({
-            setRing: false,
-            toggle: 'hidden',
-            paragonToggle: 'hidden',
-            skillDescToggle: 'hidden',
-            passiveDescToggle: 'hidden'
-        });
-
         this.setState({
             apiData: {
                 tag: this.state.apiData.tag,

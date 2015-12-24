@@ -2,8 +2,7 @@ var d3Profile = React.createClass({
         displayName: 'd3Profile',
         getInitialState: function () {
             return {
-                setRing: false,
-                calculatingStats: false
+                generalStats: null
             };
         },
 
@@ -48,7 +47,8 @@ var d3Profile = React.createClass({
         }
     });
 
-ReactDOM.render(React.createElement(d3Profile, null), document.querySelector('.d3-profile'));
+ReactDOM.render(React.createElement(d3Profile, {}),
+    document.querySelector('.d3-profile'));
 
 // todo find out how the % dmg of the skill can be gathered
 // todo add more buffs
