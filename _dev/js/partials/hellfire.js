@@ -8,9 +8,9 @@ var hellfireClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.general-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                generalStats: data
+                generalStats: data.general
             });
         });
 

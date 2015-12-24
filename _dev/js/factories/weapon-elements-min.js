@@ -12,6 +12,5 @@ var WeaponElementsMin = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });

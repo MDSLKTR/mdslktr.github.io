@@ -7,9 +7,9 @@ var generalStatsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.general-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                generalStats: data
+                generalStats: data.general
             });
         });
     },
@@ -43,10 +43,7 @@ var generalStatsClass = React.createClass({
         }
 
         return (
-            // TODO where to put this
-            React.DOM.div({
-                    className: ''
-                }, 'General', base
+            React.DOM.div(null, 'General', base
             )
         );
     }

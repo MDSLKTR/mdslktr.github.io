@@ -25,12 +25,6 @@ var profileClass = React.createClass({
             }
         }, function () {
             EventSystem.publish('api.call.heroes', this.state.apiData);
-
-            //setInterval(this.startStatCollectorRunner, 3000);
-            // Todo this is kind of garbage
-            //setInterval(api.loadHeroesList(this.state.battleTag), this.props.pollInterval);
-            //setInterval(api.loadHeroData(this.state.selectedChar), this.props.pollInterval);
-
         });
 
         this.state.realmList.forEach(function (realm) {

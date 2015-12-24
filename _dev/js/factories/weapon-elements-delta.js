@@ -12,8 +12,7 @@ var WeaponElementsDelta = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

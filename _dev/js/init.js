@@ -7,28 +7,11 @@ var d3Profile = React.createClass({
             };
         },
 
-        triggerStatCollector: function () {
-            this.collectStats();
-            this.collectSkillDamage();
-            console.log('manual stat collector');
-        },
-
-        startStatCollectorRunner: function () {
-            if (this.state.panelAnimationComplete) {
-                //this.collectStats();
-                //this.collectSkillDamage();
-
-                console.log('automatic stat collector');
-                return;
-            }
-            console.log('waiting for animations');
-        },
-
         componentDidMount: function () {
             var self = this;
-            EventSystem.subscribe('api.call.general-stats', function (data) {
+            EventSystem.subscribe('api.call.stats', function (data) {
                 self.setState({
-                    generalStats: data
+                    generalStats: data.general
                 });
             });
 
@@ -65,10 +48,7 @@ var d3Profile = React.createClass({
         }
     });
 
-ReactDOM.render(React.createElement(d3Profile, {
-        pollInterval: 600000
-    }),
-    document.querySelector('.d3-profile'));
+ReactDOM.render(React.createElement(d3Profile, null), document.querySelector('.d3-profile'));
 
 // todo find out how the % dmg of the skill can be gathered
 // todo add more buffs

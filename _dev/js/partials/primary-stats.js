@@ -2,24 +2,11 @@ var primaryStatsClass = React.createClass({
     displayName: 'primary-stats-component',
     getInitialState: function () {
         return {
-            primaryStats: {}
-        };
-    },
-    componentDidMount: function () {
-        var self = this;
-        EventSystem.subscribe('api.call.primary-stats', function (data) {
-            self.setState({
-                primaryStats: data
-            });
-        });
-    },
-
-    render: function () {
-        var content,
-            stats = [],
-            primaryStats = {
+            primaryStats: {},
+            primaryStatsMap: {
                 'life': {
-                    name: 'Life'
+                    name: 'Life',
+                    paragonMod: 'maxHealthBonus'
                 },
                 'toughness': {
                     name: 'Toughness'
@@ -37,7 +24,8 @@ var primaryStatsClass = React.createClass({
                     name: 'Vitality'
                 },
                 'armor': {
-                    name: 'Armor'
+                    name: 'Armor',
+                    paragonMod: 'armor'
                 },
                 'damageIncrease': {
                     name: 'Damage Increase'
@@ -45,22 +33,43 @@ var primaryStatsClass = React.createClass({
                 'healing': {
                     name: 'Healing'
                 }
-            };
+            }
+        };
+    },
+    componentDidMount: function () {
+        var self = this;
+        EventSystem.subscribe('api.call.stats', function (data) {
+            self.setState({
+                primaryStats: data.primary
+            });
+        });
+
+        EventSystem.subscribe('api.collect.defensive-stats', function (data) {
+            self.setState({
+                defensiveStats: data
+            });
+        });
+    },
+
+    render: function () {
+        var content,
+            stats = [],
+            primaryStats = this.state.primaryStatsMap;
 
         for (var primaryStat in primaryStats) {
             if (primaryStats.hasOwnProperty(primaryStat)) {
                 content = '';
                 if (this.state.primaryStats[primaryStat] > 100) {
-                    if (primaryStat === 'life' && this.state.defensiveStats) {
+                    if (this.state.defensiveStats && primaryStats[primaryStat].paragonMod) {
                         content += primaryStats[primaryStat].name + ': ' + Math.round(this.state.primaryStats[primaryStat] +
-                                this.state.primaryStats[primaryStat] *
-                                this.state.defensiveStats.maxHealthBonus.paragonModifier.value / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                    } else if (primaryStat === 'armor' && this.state.defensiveStats) {
-                        content += primaryStats[primaryStat].name + ': ' + Math.round(this.state.primaryStats[primaryStat] +
-                                this.state.primaryStats[primaryStat] *
-                                this.state.defensiveStats.armor.paragonModifier.value / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                                    this.state.primaryStats[primaryStat] *
+                                    this.state.defensiveStats[primaryStats[primaryStat].paragonMod].paragonModifier.value / 100)
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                     } else {
-                        content += primaryStats[primaryStat].name + ': ' + Math.round(this.state.primaryStats[primaryStat]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                        content += primaryStats[primaryStat].name + ': ' + Math.round(this.state.primaryStats[primaryStat])
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
                     }
 
                     stats.push(React.DOM.div({key: primaryStat}, content));
@@ -69,11 +78,7 @@ var primaryStatsClass = React.createClass({
         }
 
         return (
-            // TODO where to put this
-            React.DOM.div({
-                    className: 'whatever',
-                    ref: 'pl'
-                }, 'Primary Stats', stats
+            React.DOM.div(null, 'Primary Stats', stats
             )
         );
     }

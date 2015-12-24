@@ -3,7 +3,7 @@ var statsCollectorClass = React.createClass({
     getInitialState: function () {
         return {
             itemCollection: [],
-            calculating: false
+            itemCount: 0
         };
     },
     componentDidMount: function () {
@@ -14,15 +14,15 @@ var statsCollectorClass = React.createClass({
             });
         });
 
-        EventSystem.subscribe('api.call.active-skills', function (data) {
+        EventSystem.subscribe('api.call.skills', function (data) {
             self.setState({
-                skills: data
+                skills: data.actives
             });
         });
 
-        EventSystem.subscribe('api.call.general-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                generalStats: data
+                generalStats: data.general
             });
         });
 
@@ -32,10 +32,22 @@ var statsCollectorClass = React.createClass({
             });
         });
 
+        EventSystem.subscribe('api.call.items', function (data) {
+            self.setState({
+                itemCount: data.count
+            });
+        });
+
+
+        EventSystem.subscribe('api.try.collect', function (data) {
+            if (self.state.itemCount === data) {
+                self.collect();
+            }
+        });
+
         EventSystem.subscribe('api.call.collect', function () {
             self.collect();
         });
-
     },
 
     collect: function () {
@@ -44,13 +56,8 @@ var statsCollectorClass = React.createClass({
         if (!this.state.itemCollection || !this.state.skills || !this.state.generalStats ) {
             return;
         }
-        if (this.state.calculating) {
-            return;
-        }
+
         return new Promise(function (resolve, reject) {
-            that.setState({
-                calculating: true
-            });
             Worker.create = function (workerJob) {
                 var str = workerJob.toString();
                 var blob = new Blob(
@@ -72,14 +79,7 @@ var statsCollectorClass = React.createClass({
                     i,
                     m,
                     j,
-                    mergedProps = Object.assign({}, off, def),
                     repeatSet = [];
-
-                //for (stat in mergedProps) {
-                //    if (mergedProps.hasOwnProperty(stat)) {
-                //        mergedProps[stat].value = mergedProps[stat].multiplicative ? 1 : 0;
-                //    }
-                //}
 
                 for (i = 0; i < itemSlots.length; i++) {
                     for (stat in off) {
@@ -169,8 +169,6 @@ var statsCollectorClass = React.createClass({
                                     } else {
                                         def[stat].value += parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
                                     }
-
-
                                 }
                             }
 
@@ -260,10 +258,6 @@ var statsCollectorClass = React.createClass({
 
                 resolve();
 
-                that.setState({
-                    calculating: false
-                });
-
                 console.info('the web worker had a save journey');
             };
 
@@ -291,8 +285,8 @@ var statsCollectorClass = React.createClass({
     render: function () {
         return (
             React.DOM.div({
-                    className: '', style: {'visibility': 'hidden'}
-                }, 'Stat Collector on:', this.state.calculating.toString()
+                    style: {'visibility': 'hidden'}
+                }, 'Api Requests received:', this.state.itemsLoaded
             )
         );
     }

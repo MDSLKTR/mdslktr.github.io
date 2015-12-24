@@ -3,6 +3,7 @@ var itemsClass = React.createClass({
     getInitialState: function () {
         return {
             itemIconBase: 'http://media.blizzard.com/d3/icons/items/large/',
+            itemsLoaded: 0,
             itemCollection: [],
             setRing: false
         };
@@ -16,9 +17,10 @@ var itemsClass = React.createClass({
             });
         });
 
-        EventSystem.subscribe('api.clear.item-collection', function () {
+        EventSystem.subscribe('api.clear.items', function () {
             self.setState({
-                itemCollection: []
+                itemCollection: [],
+                itemsLoaded: 0
             });
         });
 
@@ -175,12 +177,16 @@ var itemsClass = React.createClass({
                             self.state.itemCollection.push(self.state.amuletItem);
                         });
                         break;
+                    default:
+                        console.warn('item category does not exist');
                 }
 
                 EventSystem.publish('api.call.item.collection', self.state.itemCollection);
-
-                console.log(self.state.itemCollection);
-
+                self.setState({
+                    itemsLoaded: self.state.itemsLoaded + 1
+                }, function () {
+                    EventSystem.publish('api.call.items-loaded', self.state.itemsLoaded);
+                });
             });
         });
     },
@@ -232,9 +238,16 @@ var itemsClass = React.createClass({
                             EventSystem.publish('api.call.item.offhand', self.state.offItem);
                         });
                         break;
+                    default:
+                        console.warn('item category does not exist');
                 }
 
                 EventSystem.publish('api.call.item.collection', self.state.itemCollection);
+                self.setState({
+                    itemsLoaded: self.state.itemsLoaded + 1
+                }, function () {
+                    EventSystem.publish('api.try.collect', self.state.itemsLoaded);
+                });
             });
         });
     },
@@ -607,7 +620,7 @@ var itemsClass = React.createClass({
         }
 
         return (
-            React.DOM.div({className: 'd3-item-wrapper', ref: 'items'}, items)
+            React.DOM.div({className: 'd3-item-wrapper'}, items)
         );
     }
 });

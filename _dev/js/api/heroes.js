@@ -53,7 +53,7 @@ var heroesClass = React.createClass({
             EventSystem.publish('api.call.hero', this.state.apiData);
         });
 
-        EventSystem.publish('api.clear.item-collection');
+        EventSystem.publish('api.clear.items');
         EventSystem.publish('api.clear.item');
     },
 
@@ -75,7 +75,9 @@ var heroesClass = React.createClass({
                         value: heroName.id
                     }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
                 });
-            } else if (heroesData.code) {
+            }
+
+            if (heroesData.code) {
                 heroesCollection.push(React.DOM.option({
                     key: 'heroes-list-invalid',
                     value: '',
@@ -104,7 +106,6 @@ var heroesClass = React.createClass({
                 React.DOM.select(
                     {
                         className: 'd3-chars',
-                        ref: 'select',
                         value: this.state.apiData.id,
                         onChange: this.setCharacterSelect
                     }, heroesCollection

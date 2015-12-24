@@ -7,9 +7,9 @@ var defensiveStatsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.primary-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                primaryStats: data
+                primaryStats: data.primary
             });
         });
 
@@ -45,6 +45,11 @@ var defensiveStatsClass = React.createClass({
                         } else {
                             value = Math.round((this.state.primaryStats[defensiveStats[defensiveStat].key]) * 1000) / 1000;
                         }
+
+                        if (defensiveStats[defensiveStat].addStat) {
+                            value += Math.round((defensiveStats[defensiveStats[defensiveStat].addStat].paragonModifier.value *
+                                    defensiveStats[defensiveStats[defensiveStat].addStat].normalization) * 1000) / 1000;
+                        }
                     } else {
                         if (defensiveStats[defensiveStat].hasMods) {
                             value = Math.round((defensiveStats[defensiveStat].paragonModifier.value +
@@ -54,9 +59,15 @@ var defensiveStatsClass = React.createClass({
                             value = Math.round((defensiveStats[defensiveStat].value *
                                     defensiveStats[defensiveStat].normalization) * 1000) / 1000;
                         }
+
+                        if (defensiveStats[defensiveStat].addStat) {
+                            value += Math.round((defensiveStats[defensiveStats[defensiveStat].addStat].paragonModifier.value +
+                                    defensiveStats[defensiveStats[defensiveStat].addStat].value *
+                                    defensiveStats[defensiveStats[defensiveStat].addStat].normalization) * 1000) / 1000;
+                        }
                     }
 
-                    if (value) {
+                    if (value && !defensiveStats[defensiveStat].hide) {
                         stats.push(React.DOM.div({
                             key: defensiveStat,
                             className: 'bonusstat'

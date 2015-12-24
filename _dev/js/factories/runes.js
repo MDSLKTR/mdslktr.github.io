@@ -11,8 +11,7 @@ var Runes = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

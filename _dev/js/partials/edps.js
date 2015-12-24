@@ -7,9 +7,9 @@ var edpsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.primary-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                primaryStats: data
+                primaryStats: data.primary
             });
         });
     },

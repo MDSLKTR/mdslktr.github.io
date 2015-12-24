@@ -2,7 +2,7 @@ var skillDamageClass = React.createClass({
     displayName: 'skill-damage-component',
     getInitialState: function () {
         return {
-            skillDmg: {}
+            skillDmg: ''
         };
     },
     componentDidMount: function () {

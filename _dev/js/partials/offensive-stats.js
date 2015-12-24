@@ -7,9 +7,9 @@ var offensiveStatsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.primary-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                primaryStats: data
+                primaryStats: data.primary
             });
         });
 
@@ -73,7 +73,7 @@ var offensiveStatsClass = React.createClass({
                                     value = Math.round((this.state.primaryStats[offensiveStats[offensiveStat].key] *
                                             offensiveStats[offensiveStat].normalization +
                                             offensiveStats[offensiveStat].paragonModifier.value +
-                                            offensiveStats[offensiveStat].errorCorrection / 100) * 1000) / 1000;
+                                            offensiveStats[offensiveStat].errorCorrection) * 1000) / 1000;
                                     break;
                                 default:
                                     value = Math.round((this.state.primaryStats[offensiveStats[offensiveStat].key] *

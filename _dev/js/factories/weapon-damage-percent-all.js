@@ -7,8 +7,7 @@ var WeaponDamagePercentAll = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

@@ -9,9 +9,9 @@ var skillsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.active-skills', function (data) {
+        EventSystem.subscribe('api.call.skills', function (data) {
             self.setState({
-                skills: data
+                skills: data.actives
             });
         });
     },

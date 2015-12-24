@@ -8,9 +8,9 @@ var passivesClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.passive-skills', function (data) {
+        EventSystem.subscribe('api.call.skills', function (data) {
             self.setState({
-                passives: data
+                passives: data.passives
             });
         });
     },

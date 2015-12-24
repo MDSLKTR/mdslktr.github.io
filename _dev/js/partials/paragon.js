@@ -9,16 +9,16 @@ var paragonClass = React.createClass({
     componentDidMount: function () {
         var self = this;
 
-        // todo fix this better
         EventSystem.subscribe('api.call.paragon', function () {
             self.setState({
                 offensiveStats: Stats.get('OffensiveStats'),
                 defensiveStats: Stats.get('DefensiveStats')
             }, function () {
                 self.setState({
-                    mergedStats: Object.assign(self.state.offensiveStats, self.state.defensiveStats)
+                    mergedStats: Object.assign({}, self.state.offensiveStats, self.state.defensiveStats)
                 }, function () {
                     self.loadParagonStats( this.state.mergedStats );
+                    self.checkParagon( this.state.mergedStats );
                 });
             });
         });
@@ -34,8 +34,8 @@ var paragonClass = React.createClass({
                         } else {
                             Stats.set('DefensiveStats', stat.toString(), 'paragonModifier', 'value', parseFloat(storage.get(stat)));
                         }
+
                         this.forceUpdate();
-                        //mergedStats[stat].paragonModifier.value = parseInt(storage.get(stat));
                     }
                 }
             }
@@ -53,11 +53,6 @@ var paragonClass = React.createClass({
                 }
             }
         }
-    },
-
-    handleParagonStatsClick: function () {
-        // TODO call animate service here
-        this.checkParagon(this.state.mergedStats);
     },
 
     handleParagon: function (e) {

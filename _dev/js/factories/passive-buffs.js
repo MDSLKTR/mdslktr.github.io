@@ -17,8 +17,7 @@ var PassiveBuffs = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

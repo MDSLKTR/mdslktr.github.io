@@ -8,8 +8,7 @@ var SkillBuffs = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

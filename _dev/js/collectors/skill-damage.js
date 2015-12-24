@@ -3,7 +3,7 @@ var skillDamageCollectorClass = React.createClass({
     getInitialState: function () {
         return {
             itemCollection: [],
-            calculating: false
+            itemCount: 0
         };
     },
     componentDidMount: function () {
@@ -14,21 +14,33 @@ var skillDamageCollectorClass = React.createClass({
             });
         });
 
-        EventSystem.subscribe('api.call.active-skills', function (data) {
+        EventSystem.subscribe('api.call.skills', function (data) {
             self.setState({
-                skills: data
+                skills: data.actives
             });
         });
 
-        EventSystem.subscribe('api.call.general-stats', function (data) {
+        EventSystem.subscribe('api.call.stats', function (data) {
             self.setState({
-                generalStats: data
+                generalStats: data.general
             });
         });
 
-        setInterval(function () {
+        EventSystem.subscribe('api.call.items', function (data) {
+            self.setState({
+                itemCount: data.count
+            });
+        });
+
+        EventSystem.subscribe('api.try.collect', function (data) {
+            if (self.state.itemCount === data) {
+                self.collect();
+            }
+        });
+
+        EventSystem.subscribe('api.call.collect', function () {
             self.collect();
-        }, 5000);
+        });
     },
 
     skillDmgSanitize: function (obj) {
@@ -61,17 +73,10 @@ var skillDamageCollectorClass = React.createClass({
     collect: function () {
         var that = this;
 
-        if (this.state.calculating) {
-            return;
-        }
-
         if (!this.state.itemCollection || !this.state.skills || !this.state.generalStats ) {
             return;
         }
         return new Promise(function (resolve, reject) {
-            that.setState({
-                calculatingSkillDamage: true
-            });
             Worker.create = function (workerJob) {
                 var str = workerJob.toString();
                 var blob = new Blob(
@@ -150,7 +155,6 @@ var skillDamageCollectorClass = React.createClass({
                 resolve();
 
                 that.setState({
-                    calculating: false,
                     skillDmg: that.skillDmgSanitize(e.data.countedValues)
                 }, function () {
                     EventSystem.publish('api.collect.skill-damage', that.state.skillDmg);
@@ -182,8 +186,8 @@ var skillDamageCollectorClass = React.createClass({
     render: function () {
         return (
             React.DOM.div({
-                    className: '', style: {'visibility': 'hidden'}
-                }, 'Stat Collector on:', this.state.calculating.toString()
+                    style: {'visibility': 'hidden'}
+                }, 'Api Requests received:', this.state.itemsLoaded
             )
         );
     }

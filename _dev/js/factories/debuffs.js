@@ -7,8 +7,7 @@ var Debuffs = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

@@ -9,8 +9,7 @@ var Gems = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

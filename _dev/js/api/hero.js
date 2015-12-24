@@ -51,10 +51,15 @@ var heroClass = React.createClass({
                         primaryStats: data.stats,
                         kanai: data.legendaryPowers
                     }, function () {
-                        EventSystem.publish('api.call.general-stats', this.state.generalStats);
-                        EventSystem.publish('api.call.primary-stats', this.state.primaryStats);
+                        EventSystem.publish('api.call.stats', {
+                            general: this.state.generalStats,
+                            primary: this.state.primaryStats
+                        });
                         EventSystem.publish('api.call.kanai', this.state.kanai);
-                        EventSystem.publish('api.call.items', this.state.items);
+                        EventSystem.publish('api.call.items', {
+                            items: this.state.items,
+                            count: Object.keys(this.state.items).length
+                        });
                         this.requestItemData();
                     });
 
@@ -63,8 +68,10 @@ var heroClass = React.createClass({
                             skills: data.skills.active,
                             passives: data.skills.passive
                         }, function () {
-                            EventSystem.publish('api.call.active-skills', this.state.skills);
-                            EventSystem.publish('api.call.passive-skills', this.state.passives);
+                            EventSystem.publish('api.call.skills', {
+                                actives: this.state.skills,
+                                passives: this.state.passives
+                            });
                         });
                     }
                 });

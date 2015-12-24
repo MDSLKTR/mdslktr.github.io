@@ -3,7 +3,7 @@ Stats = React.createClass({
     statics: {
         offensiveStats: {},
         defensiveStats: {},
-        init: function (statList) {
+        _findMethod: function ( type, statList, stat, prop, deepProp, value) {
             var statKeys = [
                     'OffensiveStats',
                     'DefensiveStats',
@@ -15,55 +15,25 @@ Stats = React.createClass({
             statKeys.forEach(function (statKey) {
                 if (statList === statKey) {
                     var key = statKey.toString(),
-                        prefix = 'init',
-                        func = prefix.concat(key);
-
-                    returnValue = self[func]();
-                }
-            });
-            return returnValue;
-        },
-
-        get: function (statList) {
-            var statKeys = [
-                    'OffensiveStats',
-                    'DefensiveStats',
-                    'SkillDamage'
-                ],
-                self = this,
-                returnValue = null;
-
-            statKeys.forEach(function (statKey) {
-                if (statList === statKey) {
-                    var key = statKey.toString(),
-                        prefix = 'get',
-                        func = prefix.concat(key);
-
-                    returnValue = self[func]();
-                }
-            });
-            return returnValue;
-        },
-
-        set: function (statList, stat, prop, deepProp, value) {
-            var statKeys = [
-                    'OffensiveStats',
-                    'DefensiveStats',
-                    'SkillDamage'
-                ],
-                self = this,
-                returnValue = null;
-
-            statKeys.forEach(function (statKey) {
-                if (statList === statKey) {
-                    var key = statKey.toString(),
-                        prefix = 'set',
+                        prefix = type,
                         func = prefix.concat(key);
 
                     returnValue = self[func](stat, prop, deepProp, value);
                 }
             });
+
             return returnValue;
+        },
+        init: function (statList) {
+            return this._findMethod( 'init', statList );
+        },
+
+        get: function (statList) {
+            return this._findMethod( 'get', statList );
+        },
+
+        set: function (statList, stat, prop, deepProp, value ) {
+            this._findMethod( 'set', statList, stat, prop, deepProp, value );
         },
 
         initOffensiveStats: function () {
@@ -316,7 +286,8 @@ Stats = React.createClass({
                     value: 0,
                     hasMods: true,
                     fromApi: true,
-                    normalization: 1
+                    normalization: 1,
+                    addStat: 'allResist'
                 },
                 'coldResist': {
                     name: 'Cold Resist',
@@ -330,7 +301,8 @@ Stats = React.createClass({
                     value: 0,
                     hasMods: true,
                     fromApi: true,
-                    normalization: 1
+                    normalization: 1,
+                    addStat: 'allResist'
                 },
                 'lightningResist': {
                     name: 'Lightning Resist',
@@ -344,7 +316,8 @@ Stats = React.createClass({
                     value: 0,
                     hasMods: true,
                     fromApi: true,
-                    normalization: 1
+                    normalization: 1,
+                    addStat: 'allResist'
                 },
                 'physicalResist': {
                     name: 'Physical Resist',
@@ -358,7 +331,8 @@ Stats = React.createClass({
                     value: 0,
                     hasMods: true,
                     fromApi: true,
-                    normalization: 1
+                    normalization: 1,
+                    addStat: 'allResist'
                 },
                 'poisonResist': {
                     name: 'Poison Resist',
@@ -372,7 +346,8 @@ Stats = React.createClass({
                     value: 0,
                     hasMods: true,
                     fromApi: true,
-                    normalization: 1
+                    normalization: 1,
+                    addStat: 'allResist'
                 },
                 'arcaneResist': {
                     name: 'Arcane Resist',
@@ -386,7 +361,8 @@ Stats = React.createClass({
                     value: 0,
                     hasMods: true,
                     fromApi: true,
-                    normalization: 1
+                    normalization: 1,
+                    addStat: 'allResist'
                 },
                 'lifeOnHit': {
                     name: 'Life on Hit',
@@ -450,21 +426,23 @@ Stats = React.createClass({
                     hasMods: true,
                     fromApi: false,
                     normalization: 1,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    hide: true
                 },
                 'allResist': {
                     name: 'Resist All',
                     paragonModifier: {
-                        increment: 0.5,
-                        max: 25,
+                        increment: 5,
+                        max: 250,
                         value: 0
                     },
-                    unit: '%',
+                    unit: '',
                     value: 0,
                     hasMods: true,
                     fromApi: false,
                     normalization: 1,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    hide: true
                 }
             };
 
@@ -472,7 +450,6 @@ Stats = React.createClass({
         },
 
         getOffensiveStats: function () {
-            console.log('get', this.offensiveStats);
             return this.offensiveStats;
         },
 
@@ -488,25 +465,20 @@ Stats = React.createClass({
         },
 
         setOffensiveStats: function (stat, prop, deepProp, value) {
-            console.log(stat, prop, deepProp, value);
             if (deepProp) {
                 this.offensiveStats[stat][prop][deepProp] = value;
             } else {
                 this.offensiveStats[stat][prop] = value;
             }
-
-            console.log('set', this.offensiveStats);
             EventSystem.publish('api.call.collect');
         },
 
         setDefensiveStats: function (stat, prop, deepProp, value) {
-            console.log(stat, prop, deepProp, value);
             if (deepProp) {
                 this.defensiveStats[stat][prop][deepProp] = value;
             } else {
                 this.defensiveStats[stat][prop] = value;
             }
-
             EventSystem.publish('api.call.collect');
         }
     },

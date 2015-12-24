@@ -7,8 +7,7 @@ var WeaponDamageBonusMinPhysical = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 

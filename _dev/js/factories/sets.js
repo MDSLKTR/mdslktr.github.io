@@ -58,8 +58,7 @@ var Sets = React.createClass({
         }
     },
 
-    render: function () {
-    }
+    render: function () {}
 });
 
 
