@@ -286,7 +286,7 @@ var statsCollectorClass = React.createClass({
         return (
             React.DOM.div({
                     style: {'visibility': 'hidden'}
-                }, 'Api Requests received:', this.state.itemsLoaded
+                }, 'Stats Worker'
             )
         );
     }

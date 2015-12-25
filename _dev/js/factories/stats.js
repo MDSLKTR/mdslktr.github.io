@@ -1,5 +1,4 @@
-var Stats;
-Stats = React.createClass({
+var Stats = React.createClass({
     statics: {
         offensiveStats: {},
         defensiveStats: {},
