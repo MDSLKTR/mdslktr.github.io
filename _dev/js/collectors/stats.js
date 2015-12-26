@@ -88,7 +88,7 @@ var statsCollectorClass = React.createClass({
                                 if (itemSlots[i].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw[off[stat].key].min) {
 
                                     if (off[stat].multiplicative) {
-                                        off[stat].value *= parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
+                                        off[stat].value *= (1 - parseFloat(itemSlots[i].attributesRaw[off[stat].key].min));
                                     } else {
                                         off[stat].value += parseFloat(itemSlots[i].attributesRaw[off[stat].key].min);
                                     }
@@ -98,11 +98,11 @@ var statsCollectorClass = React.createClass({
                             if (itemSlots[i].gems && itemSlots[i].gems[0]) {
                                 if (off[stat].multiplicative) {
                                     if (itemSlots[i].gems[0].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                        off[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
+                                        off[stat].value *= (1 - parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min));
                                     }
 
                                     if (itemSlots[i].gems[0].attributesRaw[off[stat].key] && !itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                        off[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min);
+                                        off[stat].value *= (1 - parseFloat(itemSlots[i].gems[0].attributesRaw[off[stat].key].min));
                                     }
                                 } else {
                                     if (itemSlots[i].gems[0].attributesRaw[off[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
@@ -131,7 +131,7 @@ var statsCollectorClass = React.createClass({
                                             ) {
                                                 if (itemSlots[i].set.ranks[j].attributesRaw[off[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min) {
                                                     if (off[stat].multiplicative) {
-                                                        off[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
+                                                        off[stat].value *= (1 - parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min));
                                                     } else {
                                                         off[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
                                                     }
@@ -141,7 +141,7 @@ var statsCollectorClass = React.createClass({
                                             if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
                                                 if (itemSlots[i].set.ranks[j].attributesRaw[off[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min) {
                                                     if (off[stat].multiplicative) {
-                                                        off[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
+                                                        off[stat].value *= (1 - parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min));
                                                     } else {
                                                         off[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[off[stat].key].min);
                                                     }
@@ -165,7 +165,7 @@ var statsCollectorClass = React.createClass({
                                 if (itemSlots[i].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw[def[stat].key].min) {
 
                                     if (def[stat].multiplicative) {
-                                        def[stat].value *= parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
+                                        def[stat].value *= (1 - parseFloat(itemSlots[i].attributesRaw[def[stat].key].min));
                                     } else {
                                         def[stat].value += parseFloat(itemSlots[i].attributesRaw[def[stat].key].min);
                                     }
@@ -175,11 +175,11 @@ var statsCollectorClass = React.createClass({
                             if (itemSlots[i].gems && itemSlots[i].gems[0]) {
                                 if (def[stat].multiplicative) {
                                     if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                        def[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
+                                        def[stat].value *= (1 -parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min));
                                     }
 
                                     if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && !itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                        def[stat].value *= parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min);
+                                        def[stat].value *= (1 - parseFloat(itemSlots[i].gems[0].attributesRaw[def[stat].key].min));
                                     }
                                 } else {
                                     if (itemSlots[i].gems[0].attributesRaw[def[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
@@ -206,7 +206,7 @@ var statsCollectorClass = React.createClass({
                                             ) {
                                                 if (itemSlots[i].set.ranks[j].attributesRaw[def[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min) {
                                                     if (def[stat].multiplicative) {
-                                                        def[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
+                                                        def[stat].value *= (1 - parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min));
                                                     } else {
                                                         def[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
                                                     }
@@ -216,7 +216,7 @@ var statsCollectorClass = React.createClass({
                                             if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
                                                 if (itemSlots[i].set.ranks[j].attributesRaw[def[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min) {
                                                     if (def[stat].multiplicative) {
-                                                        def[stat].value *= parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
+                                                        def[stat].value *= (1 - parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min));
                                                     } else {
                                                         def[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[def[stat].key].min);
                                                     }

@@ -58,7 +58,7 @@ var heroClass = React.createClass({
                         EventSystem.publish('api.call.kanai', this.state.kanai);
                         EventSystem.publish('api.call.items', {
                             items: this.state.items,
-                            count: Object.keys(this.state.items).length
+                            count: this.state.items ? Object.keys(this.state.items).length : 0
                         });
                         this.requestItemData();
                     });

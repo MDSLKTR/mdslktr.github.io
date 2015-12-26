@@ -39,10 +39,16 @@ var offensiveStatsClass = React.createClass({
         if (value === 1) {
             return modifier;
         }
-        return Math.floor((1 - Math.floor(value * (1 - normalizedMod) * 10000) / 10000) * 100) / 100;
+
+        if ( modifier ) {
+            value *= ( 1 - normalizedMod );
+        }
+
+        return Math.floor((1 - value) * 10000) / 100;
     },
 
     normalizeWeaponAttackSpeed: function (value, modifier, mainHandSpeed, offHandModifier) {
+        // todo fix this
         return offHandModifier ?
         Math.round((mainHandSpeed + mainHandSpeed * (offHandModifier + value + modifier)) * 100) / 100 :
         Math.round((mainHandSpeed + mainHandSpeed * (value + modifier)) * 100) / 100;
@@ -149,9 +155,7 @@ var offensiveStatsClass = React.createClass({
             }
         }
         return (
-            React.DOM.div({
-                    className: 'whatever'
-                }, 'Offensive Stats', stats, skillDamage()
+            React.DOM.div(null, 'Offensive Stats', stats, skillDamage()
             )
         );
     }
