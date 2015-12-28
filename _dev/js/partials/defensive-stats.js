@@ -7,12 +7,6 @@ var defensiveStatsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.stats', function (data) {
-            self.setState({
-                primaryStats: data.primary
-            });
-        });
-
         EventSystem.subscribe('api.collect.defensive-stats', function (data) {
             self.setState({
                 defensiveStats: data
@@ -22,57 +16,23 @@ var defensiveStatsClass = React.createClass({
 
     render: function () {
         var contentName,
-            value,
             stats = [],
             defensiveStats = this.state.defensiveStats;
 
-        if (this.state.primaryStats) {
-            for (var defensiveStat in defensiveStats) {
-                if (defensiveStats.hasOwnProperty(defensiveStat)) {
-                    contentName = '';
-                    value = 0;
+        for (var defensiveStat in defensiveStats) {
+            if (defensiveStats.hasOwnProperty(defensiveStat)) {
+                contentName = '';
 
-                    if (defensiveStats[defensiveStat].name) {
-                        contentName += defensiveStats[defensiveStat].name;
-                        contentName += ': ';
-                    }
+                if (defensiveStats[defensiveStat].name) {
+                    contentName += defensiveStats[defensiveStat].name;
+                    contentName += ': ';
+                }
 
-                    if (defensiveStats[defensiveStat].fromApi) {
-                        if (defensiveStats[defensiveStat].hasMods) {
-                            value = Math.round((defensiveStats[defensiveStat].paragonModifier.value +
-                                    this.state.primaryStats[defensiveStats[defensiveStat].key] *
-                                    defensiveStats[defensiveStat].normalization) * 1000) / 1000;
-                        } else {
-                            value = Math.round((this.state.primaryStats[defensiveStats[defensiveStat].key]) * 1000) / 1000;
-                        }
-
-                        if (defensiveStats[defensiveStat].addStat) {
-                            value += Math.round((defensiveStats[defensiveStats[defensiveStat].addStat].paragonModifier.value *
-                                    defensiveStats[defensiveStats[defensiveStat].addStat].normalization) * 1000) / 1000;
-                        }
-                    } else {
-                        if (defensiveStats[defensiveStat].hasMods) {
-                            value = Math.round((defensiveStats[defensiveStat].paragonModifier.value +
-                                    defensiveStats[defensiveStat].value *
-                                    defensiveStats[defensiveStat].normalization) * 1000) / 1000;
-                        } else {
-                            value = Math.round((defensiveStats[defensiveStat].value *
-                                    defensiveStats[defensiveStat].normalization) * 1000) / 1000;
-                        }
-
-                        if (defensiveStats[defensiveStat].addStat) {
-                            value += Math.round((defensiveStats[defensiveStats[defensiveStat].addStat].paragonModifier.value +
-                                    defensiveStats[defensiveStats[defensiveStat].addStat].value *
-                                    defensiveStats[defensiveStats[defensiveStat].addStat].normalization) * 1000) / 1000;
-                        }
-                    }
-
-                    if (value && !defensiveStats[defensiveStat].hide) {
-                        stats.push(React.DOM.div({
-                            key: defensiveStat,
-                            className: 'bonusstat'
-                        }, contentName + value + defensiveStats[defensiveStat].unit));
-                    }
+                if (defensiveStats[defensiveStat].value && !defensiveStats[defensiveStat].hide) {
+                    stats.push(React.DOM.div({
+                        key: defensiveStat,
+                        className: 'bonusstat'
+                    }, contentName + defensiveStats[defensiveStat].value + defensiveStats[defensiveStat].unit));
                 }
             }
         }

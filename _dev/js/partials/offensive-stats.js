@@ -9,11 +9,6 @@ var offensiveStatsClass = React.createClass({
     },
     componentDidMount: function () {
         var self = this;
-        EventSystem.subscribe('api.call.stats', function (data) {
-            self.setState({
-                primaryStats: data.primary
-            });
-        });
 
         EventSystem.subscribe('api.call.item.offhand', function (data) {
             self.setState({
@@ -34,24 +29,15 @@ var offensiveStatsClass = React.createClass({
         });
     },
 
-    normalizeMultiplicativeStat: function (value, modifier) {
-        var normalizedMod = modifier / 100;
-        if (value === 1) {
-            return modifier;
-        }
-
-        if ( modifier ) {
-            value *= ( 1 - normalizedMod );
-        }
-
+    normalizeMultiplicativeStat: function (value) {
         return Math.floor((1 - value) * 10000) / 100;
     },
 
-    normalizeWeaponAttackSpeed: function (value, modifier, mainHandSpeed, offHandModifier) {
+    normalizeWeaponAttackSpeed: function (value, mainHandSpeed, offHandModifier) {
         // todo fix this
         return offHandModifier ?
-        Math.round((mainHandSpeed + mainHandSpeed * (offHandModifier + value + modifier)) * 100) / 100 :
-        Math.round((mainHandSpeed + mainHandSpeed * (value + modifier)) * 100) / 100;
+        Math.round((mainHandSpeed + mainHandSpeed * (offHandModifier + value)) * 100) / 100 :
+        Math.round((mainHandSpeed + mainHandSpeed * value) * 100) / 100;
     },
 
     render: function () {
@@ -62,95 +48,30 @@ var offensiveStatsClass = React.createClass({
             offHandState = this.state.offHand,
             offensiveStats = this.state.offensiveStats;
 
-        if (this.state.primaryStats) {
-            for (var offensiveStat in offensiveStats) {
-                if (offensiveStats.hasOwnProperty(offensiveStat)) {
-                    contentName = '';
-                    value = 0;
+        for (var offensiveStat in offensiveStats) {
+            if (offensiveStats.hasOwnProperty(offensiveStat)) {
+                contentName = '';
+                value = 0;
 
-                    if (offensiveStats[offensiveStat].name) {
-                        contentName += offensiveStats[offensiveStat].name;
-                        contentName += ': ';
-                    }
+                if (offensiveStats[offensiveStat].name) {
+                    contentName += offensiveStats[offensiveStat].name;
+                    contentName += ': ';
+                }
 
+                if (offensiveStat === 'attacksPerSecond') {
+                    value = this.normalizeWeaponAttackSpeed(
+                        offensiveStats[offensiveStat].value / offensiveStats[offensiveStat].normalization,
+                        mainHandState && mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
+                        offHandState && offHandState.attacksPerSecond ? 0.15 : 0);
+                } else {
+                    value = offensiveStats[offensiveStat].value;
+                }
 
-                    if (offensiveStats[offensiveStat].fromApi) {
-                        if (offensiveStats[offensiveStat].hasMods) {
-                            switch (offensiveStat) {
-                                case 'critDamage':
-                                    value = Math.round((this.state.primaryStats[offensiveStats[offensiveStat].key] *
-                                            offensiveStats[offensiveStat].normalization +
-                                            offensiveStats[offensiveStat].paragonModifier.value +
-                                            offensiveStats[offensiveStat].errorCorrection) * 1000) / 1000;
-                                    break;
-                                default:
-                                    value = Math.round((this.state.primaryStats[offensiveStats[offensiveStat].key] *
-                                            offensiveStats[offensiveStat].normalization +
-                                            offensiveStats[offensiveStat].paragonModifier.value) * 1000) / 1000;
-                            }
-                        } else {
-                            switch (offensiveStat) {
-                                case 'critDamage':
-                                    value = Math.round((this.state.primaryStats[offensiveStats[offensiveStat].key] *
-                                            offensiveStats[offensiveStat].normalization +
-                                            offensiveStats[offensiveStat].errorCorrection) * 1000) / 1000;
-                                    break;
-                                default:
-                                    value = Math.round(this.state.primaryStats[offensiveStats[offensiveStat].key *
-                                            offensiveStats[offensiveStat].normalization] * 1000) / 1000;
-                            }
-                        }
-                    } else {
-                        if (offensiveStats[offensiveStat].hasMods) {
-                            switch (offensiveStat) {
-                                case 'ResCostRed':
-                                case 'cooldownReduction':
-                                    value = this.normalizeMultiplicativeStat(
-                                        offensiveStats[offensiveStat].value,
-                                        offensiveStats[offensiveStat].paragonModifier.value
-                                    );
-                                    break;
-                                case 'attacksPerSecond':
-                                    value = this.normalizeWeaponAttackSpeed(
-                                        offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization,
-                                        offensiveStats[offensiveStat].paragonModifier.value,
-                                        mainHandState && mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
-                                        offHandState && offHandState.attacksPerSecond ? 0.15 : 0
-                                    );
-                                    break;
-                                default:
-                                    value = (offensiveStats[offensiveStat].paragonModifier.value +
-                                    offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization);
-                            }
-                        } else {
-                            switch (offensiveStat) {
-                                case 'ResCostRed':
-                                case 'cooldownReduction':
-                                    value = this.normalizeMultiplicativeStat(
-                                        offensiveStats[offensiveStat].value,
-                                        1
-                                    );
-                                    break;
-                                case 'attacksPerSecond':
-                                    value = this.normalizeWeaponAttackSpeed(
-                                        offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization,
-                                        1,
-                                        mainHandState && mainHandState.attacksPerSecond ? mainHandState.attacksPerSecond.max : 0,
-                                        offHandState && offHandState.attacksPerSecond ? 0.15 : 0
-                                    );
-                                    break;
-                                default:
-                                    value = offensiveStats[offensiveStat].value * offensiveStats[offensiveStat].normalization;
-                            }
-                        }
-                    }
-
-                    if (value && !offensiveStats[offensiveStat].hide) {
-                        stats.push(React.DOM.div({
-                            key: offensiveStat,
-                            className: 'bonusstat'
-                        }, contentName + value + offensiveStats[offensiveStat].unit));
-                    }
+                if (value && !offensiveStats[offensiveStat].hide) {
+                    stats.push(React.DOM.div({
+                        key: offensiveStat,
+                        className: 'bonusstat'
+                    }, contentName + value + offensiveStats[offensiveStat].unit));
                 }
             }
         }

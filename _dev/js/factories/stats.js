@@ -47,8 +47,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'critChance',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -63,8 +61,6 @@ var Stats = React.createClass({
                     errorCorrection: -100,
                     key: 'critDamage',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -78,8 +74,6 @@ var Stats = React.createClass({
                     unit: '',
                     key: 'primaryResource',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     isParagonStat: true
                 },
@@ -94,8 +88,6 @@ var Stats = React.createClass({
                     key: 'Power_Cooldown_Reduction_Percent_All',
                     multiplicative: true,
                     value: 1,
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -110,8 +102,6 @@ var Stats = React.createClass({
                     key: 'Resource_Cost_Reduction_Percent_All',
                     multiplicative: true,
                     value: 1,
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -120,8 +110,6 @@ var Stats = React.createClass({
                     unit: '%',
                     value: 0,
                     key: 'Damage_Percent_Bonus_Vs_Elites',
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100
                 },
                 areaDamage: {
@@ -134,24 +122,27 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Splash_Damage_Effect_Percent',
                     value: 0,
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 100,
                     isParagonStat: true
                 },
                 attacksPerSecond: {
                     name: 'Attacks Per Second',
+                    unit: '',
+                    value: 0,
+                    normalization: 100,
+                    addStat: 'attackSpeedIncrease'
+                },
+                attackSpeedIncrease: {
+                    name: 'Attack Speed Increase',
                     paragonModifier: {
                         increment: 0.2,
                         max: 10,
                         value: 0
                     },
-                    unit: '',
+                    unit: '%',
                     key: 'Attacks_Per_Second_Percent',
                     value: 0,
-                    hasMods: true,
-                    fromApi: false,
-                    normalization: 1,
+                    normalization: 100,
                     isParagonStat: true
                 },
                 fireDmgBonus: {
@@ -160,8 +151,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Dealt_Percent_Bonus#Fire',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100
                 },
                 physicalDmgBonus: {
@@ -170,8 +159,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Dealt_Percent_Bonus#Physical',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100
                 },
                 coldDmgBonus: {
@@ -180,8 +167,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Dealt_Percent_Bonus#Cold',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100
                 },
                 poisonDmgBonus: {
@@ -190,8 +175,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Dealt_Percent_Bonus#Poison',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100
                 },
                 lightningDmgBonus: {
@@ -200,8 +183,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Dealt_Percent_Bonus#Lightning',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100
                 }
             };
@@ -216,8 +197,6 @@ var Stats = React.createClass({
                     unit: ' yards',
                     key: 'Gold_PickUp_Radius',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 1
                 },
                 meleeDamageReduction: {
@@ -225,9 +204,7 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Percent_Reduction_From_Melee',
                     multiplicative: true,
-                    value: 0,
-                    hasMods: false,
-                    fromApi: false,
+                    value: 1,
                     normalization: 100
                 },
                 rangedDamageReduction: {
@@ -235,18 +212,15 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Percent_Reduction_From_Ranged',
                     multiplicative: true,
-                    value: 0,
-                    hasMods: false,
-                    fromApi: false,
+                    value: 1,
                     normalization: 100
                 },
                 eliteDamageReduction: {
                     name: 'Elite Damage Reduction',
                     unit: '%',
                     key: 'Damage_Percent_Reduction_From_Elites',
-                    value: 0,
-                    hasMods: false,
-                    fromApi: false,
+                    value: 1,
+                    multiplicative: true,
                     normalization: 100
                 },
                 maxHealthBonus: {
@@ -259,8 +233,6 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Hitpoints_Max_Percent_Bonus_Item',
                     value: 0,
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -269,97 +241,53 @@ var Stats = React.createClass({
                     unit: '',
                     key: 'secondaryResource',
                     value: 0,
-                    hasMods: false,
-                    fromApi: true,
                     normalization: 1
                 },
                 'fireResist': {
                     name: 'Fire Resist',
-                    paragonModifier: {
-                        increment: 5,
-                        max: 250,
-                        value: 0
-                    },
                     unit: '',
                     key: 'fireResist',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     addStat: 'allResist'
                 },
                 'coldResist': {
                     name: 'Cold Resist',
-                    paragonModifier: {
-                        increment: 5,
-                        max: 250,
-                        value: 0
-                    },
                     unit: '',
                     key: 'coldResist',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     addStat: 'allResist'
                 },
                 'lightningResist': {
                     name: 'Lightning Resist',
-                    paragonModifier: {
-                        increment: 5,
-                        max: 250,
-                        value: 0
-                    },
                     unit: '',
                     key: 'lightningResist',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     addStat: 'allResist'
                 },
                 'physicalResist': {
                     name: 'Physical Resist',
-                    paragonModifier: {
-                        increment: 5,
-                        max: 250,
-                        value: 0
-                    },
                     unit: '',
                     key: 'physicalResist',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     addStat: 'allResist'
                 },
                 'poisonResist': {
                     name: 'Poison Resist',
-                    paragonModifier: {
-                        increment: 5,
-                        max: 250,
-                        value: 0
-                    },
                     unit: '',
                     key: 'poisonResist',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     addStat: 'allResist'
                 },
                 'arcaneResist': {
                     name: 'Arcane Resist',
-                    paragonModifier: {
-                        increment: 5,
-                        max: 250,
-                        value: 0
-                    },
                     unit: '',
                     key: 'arcaneResist',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     addStat: 'allResist'
                 },
@@ -373,8 +301,6 @@ var Stats = React.createClass({
                     unit: '',
                     key: 'lifeOnHit',
                     value: 0,
-                    hasMods: true,
-                    fromApi: true,
                     normalization: 1,
                     isParagonStat: true
                 },
@@ -383,8 +309,6 @@ var Stats = React.createClass({
                     unit: '',
                     key: 'magicFind',
                     value: 0,
-                    hasMods: false,
-                    fromApi: true,
                     normalization: 100,
                     isParagonStat: false
                 },
@@ -393,8 +317,6 @@ var Stats = React.createClass({
                     key: 'Thorns_Fixed#Physical',
                     unit: '',
                     value: 0,
-                    hasMods: false,
-                    fromApi: false,
                     normalization: 100,
                     isParagonStat: false
                 },
@@ -408,10 +330,9 @@ var Stats = React.createClass({
                     unit: '%',
                     value: 0,
                     key: 'Movement_Scalar',
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 100,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    cap: 25
                 },
                 'armor': {
                     name: 'Armor',
@@ -422,8 +343,6 @@ var Stats = React.createClass({
                     },
                     unit: '%',
                     value: 0,
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 1,
                     isParagonStat: true,
                     hide: true
@@ -437,8 +356,6 @@ var Stats = React.createClass({
                     },
                     unit: '',
                     value: 0,
-                    hasMods: true,
-                    fromApi: false,
                     normalization: 1,
                     isParagonStat: true,
                     hide: true
