@@ -2,9 +2,9 @@ var offensiveStatsClass = React.createClass({
     displayName: 'offensive-stats-component',
     getInitialState: function () {
         return {
-            primaryStats: {},
             offhand: {},
-            mainHand: {}
+            mainHand: {},
+            offensiveStats: {}
         };
     },
     componentDidMount: function () {
@@ -29,12 +29,7 @@ var offensiveStatsClass = React.createClass({
         });
     },
 
-    normalizeMultiplicativeStat: function (value) {
-        return Math.floor((1 - value) * 10000) / 100;
-    },
-
     normalizeWeaponAttackSpeed: function (value, mainHandSpeed, offHandModifier) {
-        // todo fix this
         return offHandModifier ?
         Math.round((mainHandSpeed + mainHandSpeed * (offHandModifier + value)) * 100) / 100 :
         Math.round((mainHandSpeed + mainHandSpeed * value) * 100) / 100;

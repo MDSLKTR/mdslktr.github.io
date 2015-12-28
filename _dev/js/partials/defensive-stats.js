@@ -2,7 +2,7 @@ var defensiveStatsClass = React.createClass({
     displayName: 'defensive-stats-component',
     getInitialState: function () {
         return {
-            primaryStats: {}
+            defensiveStats: {}
         };
     },
     componentDidMount: function () {
