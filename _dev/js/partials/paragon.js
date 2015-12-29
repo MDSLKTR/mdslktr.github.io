@@ -3,7 +3,8 @@ var paragonClass = React.createClass({
     getInitialState: function () {
         return {
             mergedStats: {},
-            paragonStats: []
+            paragonStats: [],
+            generalStats: {}
         };
     },
     componentDidMount: function () {
@@ -20,6 +21,12 @@ var paragonClass = React.createClass({
                     self.loadParagonStats( this.state.mergedStats );
                     self.checkParagon( this.state.mergedStats );
                 });
+            });
+        });
+
+        EventSystem.subscribe('api.call.stats', function (data) {
+            self.setState({
+                generalStats: data.general
             });
         });
     },
@@ -97,13 +104,27 @@ var paragonClass = React.createClass({
     render: function () {
         var mergedStats = this.state.mergedStats,
             paragonStats = [],
-            self = this;
+            self = this,
+            contentName = '';
 
         for (var pstat in mergedStats) {
             if (mergedStats.hasOwnProperty(pstat)) {
+                contentName = '';
                 if (mergedStats[pstat].isParagonStat) {
+
+
+                    if (mergedStats[pstat].specificName && this.state.generalStats.class) {
+                        if (mergedStats[pstat].specificName[this.state.generalStats.class.value]) {
+                            contentName += mergedStats[pstat].specificName[this.state.generalStats.class.value];
+                        }
+                    } else {
+                        contentName += mergedStats[pstat].name;
+                    }
+
+                    contentName += ': ';
+
                     paragonStats.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
-                        mergedStats[pstat].name + ' ' + Math.round(mergedStats[pstat].paragonModifier.value * 10) / 10 + mergedStats[pstat].unit,
+                        contentName + ' ' + mergedStats[pstat].paragonModifier.value + mergedStats[pstat].unit,
                         React.DOM.span({
                             className: 'paragon-stat-increment',
                             onClick: self.handleParagon

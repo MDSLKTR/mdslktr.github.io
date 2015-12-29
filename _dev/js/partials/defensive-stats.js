@@ -2,7 +2,8 @@ var defensiveStatsClass = React.createClass({
     displayName: 'defensive-stats-component',
     getInitialState: function () {
         return {
-            defensiveStats: {}
+            defensiveStats: {},
+            generalStats: {}
         };
     },
     componentDidMount: function () {
@@ -10,6 +11,12 @@ var defensiveStatsClass = React.createClass({
         EventSystem.subscribe('api.collect.defensive-stats', function (data) {
             self.setState({
                 defensiveStats: data
+            });
+        });
+
+        EventSystem.subscribe('api.call.stats', function (data) {
+            self.setState({
+                generalStats: data.general
             });
         });
     },
@@ -23,10 +30,15 @@ var defensiveStatsClass = React.createClass({
             if (defensiveStats.hasOwnProperty(defensiveStat)) {
                 contentName = '';
 
-                if (defensiveStats[defensiveStat].name) {
+                if (defensiveStats[defensiveStat].specificName && this.state.generalStats.class) {
+                    if (defensiveStats[defensiveStat].specificName[this.state.generalStats.class.value]) {
+                        contentName += defensiveStats[defensiveStat].specificName[this.state.generalStats.class.value];
+                    }
+                } else {
                     contentName += defensiveStats[defensiveStat].name;
-                    contentName += ': ';
                 }
+
+                contentName += ': ';
 
                 if (defensiveStats[defensiveStat].value && !defensiveStats[defensiveStat].hide) {
                     stats.push(React.DOM.div({

@@ -4,7 +4,8 @@ var offensiveStatsClass = React.createClass({
         return {
             offhand: {},
             mainHand: {},
-            offensiveStats: {}
+            offensiveStats: {},
+            generalStats: {}
         };
     },
     componentDidMount: function () {
@@ -25,6 +26,12 @@ var offensiveStatsClass = React.createClass({
         EventSystem.subscribe('api.collect.offensive-stats', function (data) {
             self.setState({
                 offensiveStats: data
+            });
+        });
+
+        EventSystem.subscribe('api.call.stats', function (data) {
+            self.setState({
+                generalStats: data.general
             });
         });
     },
@@ -48,11 +55,15 @@ var offensiveStatsClass = React.createClass({
                 contentName = '';
                 value = 0;
 
-                if (offensiveStats[offensiveStat].name) {
+                if (offensiveStats[offensiveStat].specificName && this.state.generalStats.class) {
+                    if (offensiveStats[offensiveStat].specificName[this.state.generalStats.class.value]) {
+                        contentName += offensiveStats[offensiveStat].specificName[this.state.generalStats.class.value];
+                    }
+                } else {
                     contentName += offensiveStats[offensiveStat].name;
-                    contentName += ': ';
                 }
 
+                contentName += ': ';
                 if (offensiveStat === 'attacksPerSecond') {
                     value = this.normalizeWeaponAttackSpeed(
                         offensiveStats[offensiveStat].value / offensiveStats[offensiveStat].normalization,

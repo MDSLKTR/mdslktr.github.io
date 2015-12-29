@@ -75,7 +75,15 @@ var Stats = React.createClass({
                     key: 'primaryResource',
                     value: 0,
                     normalization: 1,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    specificName: {
+                        'barbarian': 'Fury',
+                        'demon-hunter': 'Hatred',
+                        'witch-doctor': 'Mana',
+                        'crusader': 'Wrath',
+                        'monk': 'Spirit',
+                        'wizard': 'Arcane Power'
+                    }
                 },
                 'cooldownReduction': {
                     name: 'Cooldown Reduction',
@@ -241,7 +249,10 @@ var Stats = React.createClass({
                     unit: '',
                     key: 'secondaryResource',
                     value: 0,
-                    normalization: 1
+                    normalization: 1,
+                    specificName: {
+                        'demon-hunter': 'Discipline'
+                    }
                 },
                 'fireResist': {
                     name: 'Fire Resist',
