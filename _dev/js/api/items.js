@@ -26,7 +26,7 @@ var itemsClass = React.createClass({
 
         EventSystem.subscribe('api.call.items', function (data) {
             self.setState({
-                items: data
+                items: data.items
             }, function () {
                 for (var item in this.state.items) {
                     if (this.state.items.hasOwnProperty(item)) {
@@ -68,6 +68,7 @@ var itemsClass = React.createClass({
                     case 'Helm_Wizard':
                     case 'Helm_Monk':
                     case 'VoodooMask':
+                    case 'SpiritStone_Monk':
                         self.setState({helmItem: data}, function () {
                             self.state.itemCollection.push(self.state.helmItem);
                         });
@@ -178,7 +179,7 @@ var itemsClass = React.createClass({
                         });
                         break;
                     default:
-                        console.warn('item category does not exist');
+                        console.warn('item category ' + data.type.id + ' does not exist');
                 }
 
                 EventSystem.publish('api.call.item.collection', self.state.itemCollection);
@@ -337,7 +338,6 @@ var itemsClass = React.createClass({
             }
         };
 
-
         for (m = 0; m < setPool.length; m++) {
             setPool[m][1] = 0;
         }
@@ -360,7 +360,6 @@ var itemsClass = React.createClass({
                 if (itemCollection.hasOwnProperty(item)) {
                     if (this.state.items[item] && itemCollection[item].itemData) {
                         constructedLink = this.state.itemIconBase.concat(this.state.items[item].icon, '.png');
-
                         switch (this.state.items[item].displayColor) {
                             case 'green':
                                 itemQuality = 'set';

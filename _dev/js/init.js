@@ -52,5 +52,4 @@ ReactDOM.render(React.createElement(d3Profile, {}),
 
 // todo find out how the % dmg of the skill can be gathered
 // todo add more buffs
-// todo add new interface + refactor data
-// todo split parser into components
+// todo add new interface

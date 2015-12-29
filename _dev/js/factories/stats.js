@@ -87,7 +87,7 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Power_Cooldown_Reduction_Percent_All',
                     multiplicative: true,
-                    value: 1,
+                    value: 0,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -101,7 +101,7 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Resource_Cost_Reduction_Percent_All',
                     multiplicative: true,
-                    value: 1,
+                    value: 0,
                     normalization: 100,
                     isParagonStat: true
                 },
@@ -204,7 +204,7 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Percent_Reduction_From_Melee',
                     multiplicative: true,
-                    value: 1,
+                    value: 0,
                     normalization: 100
                 },
                 rangedDamageReduction: {
@@ -212,14 +212,14 @@ var Stats = React.createClass({
                     unit: '%',
                     key: 'Damage_Percent_Reduction_From_Ranged',
                     multiplicative: true,
-                    value: 1,
+                    value: 0,
                     normalization: 100
                 },
                 eliteDamageReduction: {
                     name: 'Elite Damage Reduction',
                     unit: '%',
                     key: 'Damage_Percent_Reduction_From_Elites',
-                    value: 1,
+                    value: 0,
                     multiplicative: true,
                     normalization: 100
                 },

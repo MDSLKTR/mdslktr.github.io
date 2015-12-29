@@ -76,7 +76,7 @@ var statsCollectorClass = React.createClass({
                 var workerBlob = Worker.create(function (e) {
                     var itemSlots = e.data.itemSlots,
                         setRing = e.data.setRing,
-                        mergedStats = Object.assign({},e.data.offensiveStats, e.data.defensiveStats),
+                        mergedStats = Object.assign({}, e.data.offensiveStats, e.data.defensiveStats),
                         stat,
                         setPool = e.data.setPool,
                         primaryStats = e.data.primaryStats,
@@ -85,43 +85,50 @@ var statsCollectorClass = React.createClass({
                         j,
                         repeatSet = [];
 
-                    for (i = 0; i < itemSlots.length; i++) {
-                        for (stat in mergedStats) {
-                            if (mergedStats.hasOwnProperty(stat)) {
+                    for (stat in mergedStats) {
+                        if (mergedStats.hasOwnProperty(stat)) {
+                            if (mergedStats[stat].multiplicative) {
+                                mergedStats[stat].value = 1;
+                            } else {
+                                mergedStats[stat].value = 0;
+                            }
+                            for (i = 0; i < itemSlots.length; i++) {
+                                // Look for stats in item properties
                                 if (itemSlots[i].attributesRaw) {
                                     if (itemSlots[i].attributesRaw[mergedStats[stat].key] && itemSlots[i].attributesRaw[mergedStats[stat].key].min) {
                                         if (mergedStats[stat].multiplicative) {
-                                            mergedStats[stat].value *= (1 - parseFloat(itemSlots[i].attributesRaw[mergedStats[stat].key].min));
+                                            mergedStats[stat].value *= Math.floor((1 - itemSlots[i].attributesRaw[mergedStats[stat].key].min)* 10000 ) / 10000;
                                         } else {
-                                            mergedStats[stat].value += parseFloat(itemSlots[i].attributesRaw[mergedStats[stat].key].min);
+                                            mergedStats[stat].value += itemSlots[i].attributesRaw[mergedStats[stat].key].min;
                                         }
                                     }
                                 }
 
-                                if (itemSlots[i].gems && itemSlots[i].gems[0]) {
-                                    if (mergedStats[stat].multiplicative) {
-                                        if (itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                            mergedStats[stat].value *=
-                                                (1 - parseFloat(itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min));
-                                        }
-
-                                        if (itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key] && !itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                            mergedStats[stat].value *=
-                                                (1 - parseFloat(itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min));
-                                        }
-                                    } else {
-                                        if (itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key] && itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                            mergedStats[stat].value +=
-                                                parseFloat(itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
-                                        }
-
-                                        if (itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key] && !itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
-                                            mergedStats[stat].value +=
-                                                parseFloat(itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min);
+                                // Look for stats in item gems
+                                if (itemSlots[i].gems[0]) {
+                                    if (itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key]) {
+                                        if (mergedStats[stat].multiplicative) {
+                                            if (itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
+                                                mergedStats[stat].value *=
+                                                    Math.floor((1 - itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min *
+                                                        itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min)* 10000 ) / 10000;
+                                            } else {
+                                                mergedStats[stat].value *=
+                                                    Math.floor((1 - itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min)* 10000) / 10000;
+                                            }
+                                        } else {
+                                            if (itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
+                                                mergedStats[stat].value +=
+                                                    itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min * itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min;
+                                            } else {
+                                                mergedStats[stat].value +=
+                                                    itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min;
+                                            }
                                         }
                                     }
                                 }
 
+                                // Look for stats in set bonuses
                                 if (itemSlots[i].set && itemSlots[i].set.ranks) {
                                     for (m = 0; m < setPool.length; m++) {
                                         if (itemSlots[i].set.name === setPool[m][0]) {
@@ -138,9 +145,9 @@ var statsCollectorClass = React.createClass({
                                                 ) {
                                                     if (itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) {
                                                         if (mergedStats[stat].multiplicative) {
-                                                            mergedStats[stat].value *= (1 - parseFloat(itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min));
+                                                            mergedStats[stat].value *= Math.floor((1 - itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) * 10000 ) / 10000;
                                                         } else {
-                                                            mergedStats[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min);
+                                                            mergedStats[stat].value += itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min;
                                                         }
                                                     }
                                                 }
@@ -148,9 +155,9 @@ var statsCollectorClass = React.createClass({
                                                 if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
                                                     if (itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) {
                                                         if (mergedStats[stat].multiplicative) {
-                                                            mergedStats[stat].value *= (1 - parseFloat(itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min));
+                                                            mergedStats[stat].value *= Math.floor((1 - itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) * 10000 ) / 10000;
                                                         } else {
-                                                            mergedStats[stat].value += parseFloat(itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min);
+                                                            mergedStats[stat].value += itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min;
                                                         }
                                                     }
                                                 }
@@ -164,50 +171,64 @@ var statsCollectorClass = React.createClass({
                                     repeatSet.push(itemSlots[i].set.name);
                                 }
                             }
-                        }
-                    }
 
-                    for (stat in mergedStats) {
-                        if (mergedStats.hasOwnProperty(stat)) {
+                            // Read stats from the API
                             if (primaryStats[mergedStats[stat].key]) {
                                 if (mergedStats[stat].multiplicative) {
-                                    mergedStats[stat].value *= (1 - parseFloat(primaryStats[mergedStats[stat].key]));
+                                    mergedStats[stat].value *= (1 - primaryStats[mergedStats[stat].key]);
                                 } else {
                                     mergedStats[stat].value += primaryStats[mergedStats[stat].key];
                                 }
                             }
 
+                            // Apply paragon points
                             if (mergedStats[stat].paragonModifier) {
                                 if (mergedStats[stat].multiplicative) {
-                                    mergedStats[stat].value *= (1 - parseFloat(mergedStats[stat].paragonModifier.value / mergedStats[stat].normalization));
+
+                                    if (mergedStats[stat].value === 1) {
+                                        // to fix a weird floating rounding error, we need to make sure flooring is only applied when calculated with API data
+                                        mergedStats[stat].value = mergedStats[stat].paragonModifier.value;
+                                        continue;
+                                    }
+
+                                    mergedStats[stat].value *= Math.floor((1 - mergedStats[stat].paragonModifier.value / mergedStats[stat].normalization) * 10000 ) / 10000;
                                 } else {
                                     mergedStats[stat].value += mergedStats[stat].paragonModifier.value / mergedStats[stat].normalization;
                                 }
                             }
 
+                            // Format multiplicative stats
                             if (mergedStats[stat].multiplicative) {
-                                mergedStats[stat].value = 1 - mergedStats[stat].value;
+                                mergedStats[stat].value = Math.floor((1 - mergedStats[stat].value) * 10000 ) / 10000;
                             }
 
+                            // Normalize Stats
                             if (mergedStats[stat].normalization) {
                                 mergedStats[stat].value *= mergedStats[stat].normalization;
                             }
 
+                            // Correct API errors
                             if (mergedStats[stat].errorCorrection) {
                                 mergedStats[stat].value += mergedStats[stat].errorCorrection;
                             }
 
-                            if (mergedStats[stat].addStat) {
-                                mergedStats[stat].value += mergedStats[mergedStats[stat].addStat].value *
-                                    mergedStats[mergedStats[stat].addStat].normalization +
-                                    mergedStats[mergedStats[stat].addStat].paragonModifier.value;
-                            }
-
+                            // Apply stat cap
                             if (mergedStats[stat].value > mergedStats[stat].cap) {
                                 mergedStats[stat].value = mergedStats[stat].cap;
                             }
+                        }
+                    }
 
-                            mergedStats[stat].value = Math.floor((mergedStats[stat].value) * 100) / 100;
+                    for (stat in mergedStats) {
+                        if (mergedStats.hasOwnProperty(stat)) {
+                            // Re-map stats
+                            if (mergedStats[stat].addStat) {
+                                mergedStats[stat].value += mergedStats[mergedStats[stat].addStat].value;
+                            }
+
+                            if (mergedStats[stat].value && mergedStats[stat].unit === '%') {
+                                mergedStats[stat].value = mergedStats[stat].value.toFixed(2);
+                            }
                         }
                     }
 

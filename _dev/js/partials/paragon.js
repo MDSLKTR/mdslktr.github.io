@@ -98,11 +98,11 @@ var paragonClass = React.createClass({
         var mergedStats = this.state.mergedStats,
             paragonStats = [],
             self = this;
+
         for (var pstat in mergedStats) {
             if (mergedStats.hasOwnProperty(pstat)) {
                 if (mergedStats[pstat].isParagonStat) {
                     paragonStats.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
-                        // TODO change unit for paragonStat invidiually
                         mergedStats[pstat].name + ' ' + Math.round(mergedStats[pstat].paragonModifier.value * 10) / 10 + mergedStats[pstat].unit,
                         React.DOM.span({
                             className: 'paragon-stat-increment',
@@ -124,9 +124,7 @@ var paragonClass = React.createClass({
 
 
         return (
-            React.DOM.div({
-                className: 'panel-left-additional'
-            }, 'Paragon Points: ', paragonStats)
+            React.DOM.div({className: 'paragon-container'}, 'Paragon Points: ', paragonStats)
         );
     }
 });

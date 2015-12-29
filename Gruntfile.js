@@ -66,7 +66,7 @@ module.exports = function (grunt) {
                     'assets/js/vendor.min.js': [
                         '_vendor/promise-polyfill/Promise.min.js',
                         '_vendor/object-assign-polyfill/object-assign-polyfill.js',
-                        '_vendor/react/react-with-addons.js',
+                        '_vendor/react/react.js',
                         '_vendor/react/react-dom.min.js',
                         '_vendor/gsap/src/uncompressed/easing/EasePack.js',
                         '_vendor/gsap/src/uncompressed/plugins/CSSPlugin.js',
