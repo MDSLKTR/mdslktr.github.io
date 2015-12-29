@@ -55,7 +55,7 @@ var passivesClass = React.createClass({
 
         return (
             React.DOM.div({
-                className: ''
+                className: 'd3-passive-skills'
             }, 'Passives', passives, hellfire()
             )
         );

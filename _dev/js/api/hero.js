@@ -105,7 +105,7 @@ var heroClass = React.createClass({
 
     render: function () {
         return (
-            React.DOM.div({className: ''},
+            React.DOM.div({className: 'd3-hero-container'},
                 primaryStats(),
                 generalStats(),
                 offensiveStats(),

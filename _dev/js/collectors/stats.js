@@ -97,7 +97,8 @@ var statsCollectorClass = React.createClass({
                                 if (itemSlots[i].attributesRaw) {
                                     if (itemSlots[i].attributesRaw[mergedStats[stat].key] && itemSlots[i].attributesRaw[mergedStats[stat].key].min) {
                                         if (mergedStats[stat].multiplicative) {
-                                            mergedStats[stat].value *= Math.floor((1 - itemSlots[i].attributesRaw[mergedStats[stat].key].min)* 10000 ) / 10000;
+                                            console.log(itemSlots[i].attributesRaw[mergedStats[stat].key].min);
+                                            mergedStats[stat].value *= (1 - itemSlots[i].attributesRaw[mergedStats[stat].key].min);
                                         } else {
                                             mergedStats[stat].value += itemSlots[i].attributesRaw[mergedStats[stat].key].min;
                                         }
@@ -110,11 +111,11 @@ var statsCollectorClass = React.createClass({
                                         if (mergedStats[stat].multiplicative) {
                                             if (itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
                                                 mergedStats[stat].value *=
-                                                    Math.floor((1 - itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min *
-                                                        itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min)* 10000 ) / 10000;
+                                                    (1 - itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min *
+                                                        itemSlots[i].attributesRaw.Gem_Attributes_Multiplier.min);
                                             } else {
                                                 mergedStats[stat].value *=
-                                                    Math.floor((1 - itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min)* 10000) / 10000;
+                                                    (1 - itemSlots[i].gems[0].attributesRaw[mergedStats[stat].key].min);
                                             }
                                         } else {
                                             if (itemSlots[i].attributesRaw.Gem_Attributes_Multiplier) {
@@ -145,7 +146,7 @@ var statsCollectorClass = React.createClass({
                                                 ) {
                                                     if (itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) {
                                                         if (mergedStats[stat].multiplicative) {
-                                                            mergedStats[stat].value *= Math.floor((1 - itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) * 10000 ) / 10000;
+                                                            mergedStats[stat].value *= (1 - itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min);
                                                         } else {
                                                             mergedStats[stat].value += itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min;
                                                         }
@@ -155,7 +156,7 @@ var statsCollectorClass = React.createClass({
                                                 if (itemSlots[i].set.name === setPool[m][0] && itemSlots[i].set.ranks[j].required <= setPool[m][1]) {
                                                     if (itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key] && itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) {
                                                         if (mergedStats[stat].multiplicative) {
-                                                            mergedStats[stat].value *= Math.floor((1 - itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min) * 10000 ) / 10000;
+                                                            mergedStats[stat].value *= (1 - itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min);
                                                         } else {
                                                             mergedStats[stat].value += itemSlots[i].set.ranks[j].attributesRaw[mergedStats[stat].key].min;
                                                         }
@@ -175,7 +176,7 @@ var statsCollectorClass = React.createClass({
                             // Read stats from the API
                             if (primaryStats[mergedStats[stat].key]) {
                                 if (mergedStats[stat].multiplicative) {
-                                    mergedStats[stat].value *= (1 - primaryStats[mergedStats[stat].key]);
+                                    mergedStats[stat].value *=  (1 - primaryStats[mergedStats[stat].key]);
                                 } else {
                                     mergedStats[stat].value += primaryStats[mergedStats[stat].key];
                                 }
@@ -186,12 +187,12 @@ var statsCollectorClass = React.createClass({
                                 if (mergedStats[stat].multiplicative) {
 
                                     if (mergedStats[stat].value === 1) {
-                                        // to fix a weird floating rounding error, we need to make sure flooring is only applied when calculated with API data
+                                        // to fix a weird floating rounding error, we need to make sure truncing is only applied when calculated with API data
                                         mergedStats[stat].value = mergedStats[stat].paragonModifier.value;
                                         continue;
                                     }
 
-                                    mergedStats[stat].value *= Math.floor((1 - mergedStats[stat].paragonModifier.value / mergedStats[stat].normalization) * 10000 ) / 10000;
+                                    mergedStats[stat].value *= (1 - mergedStats[stat].paragonModifier.value / mergedStats[stat].normalization);
                                 } else {
                                     mergedStats[stat].value += mergedStats[stat].paragonModifier.value / mergedStats[stat].normalization;
                                 }

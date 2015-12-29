@@ -101,7 +101,7 @@ var heroesClass = React.createClass({
         }
 
         return (
-            React.DOM.div({className: 'd3-char-wrapper'},
+            React.DOM.div({className: 'd3-character-select'},
                 '3 - Click below to select your hero: ',
                 React.DOM.select(
                     {

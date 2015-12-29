@@ -124,7 +124,7 @@ var paragonClass = React.createClass({
                     contentName += ': ';
 
                     paragonStats.push(React.DOM.div({key: pstat, className: 'paragon-stat ' + pstat},
-                        contentName + ' ' + mergedStats[pstat].paragonModifier.value + mergedStats[pstat].unit,
+                        contentName + mergedStats[pstat].paragonModifier.value + mergedStats[pstat].unit,
                         React.DOM.span({
                             className: 'paragon-stat-increment',
                             onClick: self.handleParagon
@@ -145,7 +145,7 @@ var paragonClass = React.createClass({
 
 
         return (
-            React.DOM.div({className: 'paragon-container'}, 'Paragon Points: ', paragonStats)
+            React.DOM.div({className: 'd3-paragon-container'}, 'Paragon Points: ', paragonStats)
         );
     }
 });

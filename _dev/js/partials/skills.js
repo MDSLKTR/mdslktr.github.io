@@ -104,7 +104,7 @@ var skillsClass = React.createClass({
         });
 
         return (
-            React.DOM.div(null, 'Skills', skills
+            React.DOM.div({className: 'd3-active-skills'}, 'Skills', skills
             )
         );
     }

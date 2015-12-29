@@ -43,7 +43,7 @@ var generalStatsClass = React.createClass({
         }
 
         return (
-            React.DOM.div(null, 'General', base)
+            React.DOM.div({className: 'd3-general-stats'}, 'General', base)
         );
     }
 });

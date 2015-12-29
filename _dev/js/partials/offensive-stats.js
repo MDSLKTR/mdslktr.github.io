@@ -82,7 +82,7 @@ var offensiveStatsClass = React.createClass({
             }
         }
         return (
-            React.DOM.div(null, 'Offensive Stats', stats, skillDamage()
+            React.DOM.div({className: 'd3-offensive-stats'}, 'Offensive Stats', stats, skillDamage()
             )
         );
     }

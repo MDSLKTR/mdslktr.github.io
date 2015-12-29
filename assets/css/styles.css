@@ -95,6 +95,7 @@ main {
   overflow: hidden;
   width: 100%;
   top: -50px;
+  z-index: -1;
   -webkit-filter: brightness(0.75);
           filter: brightness(0.75); }
 
@@ -210,14 +211,10 @@ main {
 .d3-paragon-selector span {
   display: block; }
 
-.d3-item-wrapper {
-  margin: 0 auto;
+.d3-items-container {
   position: relative;
-  width: 405px;
-  height: 750px;
-  visibility: hidden;
-  opacity: 0; }
-  .d3-item-wrapper > div {
+  height: 200px; }
+  .d3-items-container > div {
     position: absolute;
     border-radius: 5px;
     background-size: 64px auto;
@@ -231,69 +228,69 @@ main {
     color: red;
     cursor: pointer;
     font-size: 0.8rem; }
-    .d3-item-wrapper > div:after {
+    .d3-items-container > div:after {
       opacity: 0;
       content: 'x';
       visibility: hidden;
       cursor: pointer; }
-    .d3-item-wrapper > div .desc {
+    .d3-items-container > div .desc {
       opacity: 0;
       visibility: hidden; }
-    .d3-item-wrapper > div.unique {
+    .d3-items-container > div.unique {
       -webkit-filter: drop-shadow(0px 0px 5px darkorange);
               filter: drop-shadow(0px 0px 5px darkorange);
       border: 1px solid darkorange; }
-      .d3-item-wrapper > div.unique:hover {
+      .d3-items-container > div.unique:hover {
         -webkit-filter: drop-shadow(0px 0px 20px darkorange);
                 filter: drop-shadow(0px 0px 20px darkorange); }
-      .d3-item-wrapper > div.unique.ancient {
+      .d3-items-container > div.unique.ancient {
         border: 1px solid #b8860b; }
-    .d3-item-wrapper > div.set {
+    .d3-items-container > div.set {
       -webkit-filter: drop-shadow(0px 0px 5px green);
               filter: drop-shadow(0px 0px 5px green);
       border: 1px solid green; }
-      .d3-item-wrapper > div.set:hover {
+      .d3-items-container > div.set:hover {
         -webkit-filter: drop-shadow(0px 0px 20px green);
                 filter: drop-shadow(0px 0px 20px green); }
-      .d3-item-wrapper > div.set.ancient {
+      .d3-items-container > div.set.ancient {
         border: 1px solid #b8860b; }
-    .d3-item-wrapper > div.magic {
+    .d3-items-container > div.magic {
       -webkit-filter: drop-shadow(0px 0px 5px blue);
               filter: drop-shadow(0px 0px 5px blue);
       border: 1px solid blue; }
-      .d3-item-wrapper > div.magic:hover {
+      .d3-items-container > div.magic:hover {
         -webkit-filter: drop-shadow(0px 0px 20px blue);
                 filter: drop-shadow(0px 0px 20px blue); }
-    .d3-item-wrapper > div.rare {
+    .d3-items-container > div.rare {
       -webkit-filter: drop-shadow(0px 0px 5px yellow);
               filter: drop-shadow(0px 0px 5px yellow);
       border: 1px solid yellow; }
-      .d3-item-wrapper > div.rare:hover {
+      .d3-items-container > div.rare:hover {
         -webkit-filter: drop-shadow(0px 0px 20px yellow);
                 filter: drop-shadow(0px 0px 20px yellow); }
-    .d3-item-wrapper > div.white {
+    .d3-items-container > div.white {
       -webkit-filter: drop-shadow(0px 0px 5px white);
               filter: drop-shadow(0px 0px 5px white);
       border: 1px solid white; }
-      .d3-item-wrapper > div.white:hover {
+      .d3-items-container > div.white:hover {
         -webkit-filter: drop-shadow(0px 0px 20px white);
                 filter: drop-shadow(0px 0px 20px white); }
-    .d3-item-wrapper > div.common {
+    .d3-items-container > div.common {
       -webkit-filter: drop-shadow(0px 0px 5px grey);
               filter: drop-shadow(0px 0px 5px grey);
       border: 1px solid grey; }
-      .d3-item-wrapper > div.common:hover {
+      .d3-items-container > div.common:hover {
         -webkit-filter: drop-shadow(0px 0px 20px grey);
                 filter: drop-shadow(0px 0px 20px grey); }
-    .d3-item-wrapper > div.empty {
+    .d3-items-container > div.empty {
       cursor: default;
       -webkit-filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.75));
               filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.75));
       border: 1px solid rgba(255, 255, 255, 0.5); }
-      .d3-item-wrapper > div.empty:hover {
+      .d3-items-container > div.empty:hover {
         -webkit-filter: drop-shadow(0px 0px 20px white);
                 filter: drop-shadow(0px 0px 20px white); }
-    .d3-item-wrapper > div.open {
+    .d3-items-container > div.open {
       z-index: 1;
       -webkit-transition: background-color 0.5s;
               transition: background-color 0.5s;
@@ -301,7 +298,7 @@ main {
               filter: drop-shadow(0px 0px 5px black);
       background-color: rgba(0, 0, 0, 0.85);
       cursor: default; }
-      .d3-item-wrapper > div.open:after {
+      .d3-items-container > div.open:after {
         content: 'x';
         font-size: 1.25rem;
         text-align: center;
@@ -320,7 +317,7 @@ main {
                 animation-delay: 0.5s;
         -webkit-animation-fill-mode: forwards;
                 animation-fill-mode: forwards; }
-      .d3-item-wrapper > div.open .desc {
+      .d3-items-container > div.open .desc {
         visibility: visible;
         -webkit-animation: fader 1s;
                 animation: fader 1s;
@@ -328,13 +325,13 @@ main {
                 animation-delay: 0.5s;
         -webkit-animation-fill-mode: forwards;
                 animation-fill-mode: forwards; }
-    .d3-item-wrapper > div > div {
+    .d3-items-container > div > div {
       overflow: hidden;
       position: absolute;
       right: 0;
       width: 75%;
       height: 100%; }
-      .d3-item-wrapper > div > div > ul {
+      .d3-items-container > div > div > ul {
         top: 50%;
         height: 100%;
         position: absolute;
@@ -362,82 +359,82 @@ main {
         -webkit-align-content: flex-start;
             -ms-flex-line-pack: start;
                 align-content: flex-start; }
-        .d3-item-wrapper > div > div > ul li {
+        .d3-items-container > div > div > ul li {
           margin: 0.25rem;
           display: inline-block; }
-        .d3-item-wrapper > div > div > ul .primary {
+        .d3-items-container > div > div > ul .primary {
           color: white;
           font-size: 0.9rem;
           width: 100%; }
-        .d3-item-wrapper > div > div > ul .secondary {
+        .d3-items-container > div > div > ul .secondary {
           color: silver;
           width: 100%;
           font-size: 0.8rem; }
-        .d3-item-wrapper > div > div > ul .passive {
+        .d3-items-container > div > div > ul .passive {
           color: goldenrod;
           width: 100%;
           font-size: 1rem; }
-        .d3-item-wrapper > div > div > ul .set-bonus-2,
-        .d3-item-wrapper > div > div > ul .set-bonus-3,
-        .d3-item-wrapper > div > div > ul .set-bonus-4,
-        .d3-item-wrapper > div > div > ul .set-bonus-5,
-        .d3-item-wrapper > div > div > ul .set-bonus-6 {
+        .d3-items-container > div > div > ul .set-bonus-2,
+        .d3-items-container > div > div > ul .set-bonus-3,
+        .d3-items-container > div > div > ul .set-bonus-4,
+        .d3-items-container > div > div > ul .set-bonus-5,
+        .d3-items-container > div > div > ul .set-bonus-6 {
           -webkit-box-flex: 1;
           -webkit-flex: 1 100%;
               -ms-flex: 1 100%;
                   flex: 1 100%;
           color: green;
           font-size: 0.9rem; }
-          .d3-item-wrapper > div > div > ul .set-bonus-2.inactive,
-          .d3-item-wrapper > div > div > ul .set-bonus-3.inactive,
-          .d3-item-wrapper > div > div > ul .set-bonus-4.inactive,
-          .d3-item-wrapper > div > div > ul .set-bonus-5.inactive,
-          .d3-item-wrapper > div > div > ul .set-bonus-6.inactive {
+          .d3-items-container > div > div > ul .set-bonus-2.inactive,
+          .d3-items-container > div > div > ul .set-bonus-3.inactive,
+          .d3-items-container > div > div > ul .set-bonus-4.inactive,
+          .d3-items-container > div > div > ul .set-bonus-5.inactive,
+          .d3-items-container > div > div > ul .set-bonus-6.inactive {
             color: grey; }
-        .d3-item-wrapper > div > div > ul .set-bonus-2:before {
+        .d3-items-container > div > div > ul .set-bonus-2:before {
           content: '[ 2 ] '; }
-        .d3-item-wrapper > div > div > ul .set-bonus-3:before {
+        .d3-items-container > div > div > ul .set-bonus-3:before {
           content: '[ 3 ] '; }
-        .d3-item-wrapper > div > div > ul .set-bonus-4:before {
+        .d3-items-container > div > div > ul .set-bonus-4:before {
           content: '[ 4 ] '; }
-        .d3-item-wrapper > div > div > ul .set-bonus-5:before {
+        .d3-items-container > div > div > ul .set-bonus-5:before {
           content: '[ 5 ] '; }
-        .d3-item-wrapper > div > div > ul .set-bonus-6:before {
+        .d3-items-container > div > div > ul .set-bonus-6:before {
           content: '[ 6 ] '; }
-        .d3-item-wrapper > div > div > ul .dps {
+        .d3-items-container > div > div > ul .dps {
           font-size: 1.1rem;
           color: white;
           -webkit-box-flex: 0;
           -webkit-flex: 0 100%;
               -ms-flex: 0 100%;
                   flex: 0 100%; }
-        .d3-item-wrapper > div > div > ul .raw-damage {
+        .d3-items-container > div > div > ul .raw-damage {
           font-size: 1rem;
           color: white;
           -webkit-box-flex: 0;
           -webkit-flex: 0 100%;
               -ms-flex: 0 100%;
                   flex: 0 100%; }
-        .d3-item-wrapper > div > div > ul .name {
+        .d3-items-container > div > div > ul .name {
           font-size: 1.2rem;
           -webkit-box-flex: 0;
           -webkit-flex: 0 90%;
               -ms-flex: 0 90%;
                   flex: 0 90%;
           text-transform: capitalize; }
-          .d3-item-wrapper > div > div > ul .name.set {
+          .d3-items-container > div > div > ul .name.set {
             color: green; }
-          .d3-item-wrapper > div > div > ul .name.unique {
+          .d3-items-container > div > div > ul .name.unique {
             color: darkorange; }
-          .d3-item-wrapper > div > div > ul .name.magic {
+          .d3-items-container > div > div > ul .name.magic {
             color: blue; }
-          .d3-item-wrapper > div > div > ul .name.rare {
+          .d3-items-container > div > div > ul .name.rare {
             color: yellow; }
-          .d3-item-wrapper > div > div > ul .name.common {
+          .d3-items-container > div > div > ul .name.common {
             color: grey; }
-          .d3-item-wrapper > div > div > ul .name.white {
+          .d3-items-container > div > div > ul .name.white {
             color: white; }
-        .d3-item-wrapper > div > div > ul .gem-level {
+        .d3-items-container > div > div > ul .gem-level {
           top: -15%;
           left: 85%;
           background: goldenrod;
@@ -445,13 +442,13 @@ main {
           border-radius: 50%;
           padding: 5%;
           position: absolute; }
-        .d3-item-wrapper > div > div > ul .gem-passive {
+        .d3-items-container > div > div > ul .gem-passive {
           color: goldenrod;
           -webkit-box-flex: 0;
           -webkit-flex: 0 80%;
               -ms-flex: 0 80%;
                   flex: 0 80%; }
-        .d3-item-wrapper > div > div > ul .socket {
+        .d3-items-container > div > div > ul .socket {
           height: 38px;
           -webkit-filter: drop-shadow(0px 0px 2px white);
                   filter: drop-shadow(0px 0px 2px white);
@@ -462,58 +459,58 @@ main {
           border: 2px solid white;
           border-radius: 30%;
           position: relative; }
-  .d3-item-wrapper .head {
+  .d3-items-container .head {
     left: 50%;
     top: 4.5%;
     -webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%); }
-  .d3-item-wrapper .torso {
+  .d3-items-container .torso {
     left: 50%;
     top: 22.5%;
     -webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%); }
-  .d3-item-wrapper .legs {
+  .d3-items-container .legs {
     left: 50%;
     top: 60%;
     -webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%); }
-  .d3-item-wrapper .feet {
+  .d3-items-container .feet {
     left: 50%;
     bottom: 5%;
     -webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%); }
-  .d3-item-wrapper .hands {
+  .d3-items-container .hands {
     left: 0;
     top: 45%; }
-  .d3-item-wrapper .bracers {
+  .d3-items-container .bracers {
     right: 0;
     top: 30%; }
-  .d3-item-wrapper .shoulders {
+  .d3-items-container .shoulders {
     left: 10%;
     top: 25%; }
-  .d3-item-wrapper .neck {
+  .d3-items-container .neck {
     right: 15%;
     top: 10%; }
-  .d3-item-wrapper .leftFinger {
+  .d3-items-container .leftFinger {
     left: 22.5%;
     top: 45%; }
-  .d3-item-wrapper .rightFinger {
+  .d3-items-container .rightFinger {
     right: 22.5%;
     top: 45%; }
-  .d3-item-wrapper .waist {
+  .d3-items-container .waist {
     top: 41.5%;
     left: 50%;
     -webkit-transform: translateX(-50%);
         -ms-transform: translateX(-50%);
             transform: translateX(-50%); }
-  .d3-item-wrapper .mainHand {
+  .d3-items-container .mainHand {
     bottom: 10%;
     left: 10%; }
-  .d3-item-wrapper .offHand {
+  .d3-items-container .offHand {
     bottom: 10%;
     right: 10%; }
 
@@ -686,45 +683,43 @@ main {
   padding: 0;
   margin-bottom: 0; }
 
-.paragon-container {
+.d3-paragon-container {
   -webkit-animation: fader 2s both linear;
           animation: fader 2s both linear;
   padding: 10px;
   border-radius: 0.3rem;
   background: #000;
-  box-shadow: inset 0 0 0 1px #8b0000;
-  position: absolute;
-  top: 0; }
-  .paragon-container span:not(.button-text) {
+  box-shadow: inset 0 0 0 1px #8b0000; }
+  .d3-paragon-container span:not(.button-text) {
     width: 100%; }
-  .paragon-container .paragon-stat {
+  .d3-paragon-container .paragon-stat {
     margin: 0.5rem;
     text-align: center;
     width: 30%;
     display: inline-block;
     font-size: 0.85rem; }
-    .paragon-container .paragon-stat .paragon-stat-increment {
+    .d3-paragon-container .paragon-stat .paragon-stat-increment {
       float: left; }
-    .paragon-container .paragon-stat .paragon-stat-decrement {
+    .d3-paragon-container .paragon-stat .paragon-stat-decrement {
       float: right; }
-    .paragon-container .paragon-stat .paragon-stat-max:after {
+    .d3-paragon-container .paragon-stat .paragon-stat-max:after {
       content: 'max';
       position: relative; }
-    .paragon-container .paragon-stat .paragon-stat-max.maxed:after {
+    .d3-paragon-container .paragon-stat .paragon-stat-max.maxed:after {
       content: 'clear';
       position: relative; }
-    .paragon-container .paragon-stat span {
+    .d3-paragon-container .paragon-stat span {
       background: sienna;
       display: inline-block;
       margin-bottom: 0.25rem;
       color: black;
       border-radius: 0.3rem; }
-    .paragon-container .paragon-stat span:first-child {
+    .d3-paragon-container .paragon-stat span:first-child {
       width: 100%; }
-    .paragon-container .paragon-stat span:not(:first-child) {
+    .d3-paragon-container .paragon-stat span:not(:first-child) {
       width: 31%;
       cursor: pointer; }
-      .paragon-container .paragon-stat span:not(:first-child):hover {
+      .d3-paragon-container .paragon-stat span:not(:first-child):hover {
         color: wheat; }
 
 .icon {

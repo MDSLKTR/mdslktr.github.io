@@ -78,7 +78,7 @@ var primaryStatsClass = React.createClass({
         }
 
         return (
-            React.DOM.div(null, 'Primary Stats', stats)
+            React.DOM.div({className: 'd3-primary-stats'}, 'Primary Stats', stats)
         );
     }
 });

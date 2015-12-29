@@ -57,8 +57,8 @@ var profileClass = React.createClass({
 
     render: function () {
         return (
-            React.DOM.div(null,
-                React.DOM.div({className: 'd3-realm-wrapper'},
+            React.DOM.div({className: 'd3-profile-select'},
+                React.DOM.div({className: 'd3-realm-select'},
                     '1 - Realm: ',
                     React.DOM.select(
                         {
@@ -69,7 +69,7 @@ var profileClass = React.createClass({
                         }, this.state.realms
                     )
                 ),
-                React.DOM.div({className: 'd3-api-url'},
+                React.DOM.div({className: 'd3-battle-tag-field'},
                     '2 - Enter your BattleTag: ',
                     React.DOM.input(
                         {

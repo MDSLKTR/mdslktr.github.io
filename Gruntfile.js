@@ -81,6 +81,7 @@ module.exports = function (grunt) {
                 files: {
                     'assets/js/scripts.min.js': [
                         '_dev/js/factories/*.js',
+                        '_dev/js/factories/**/*.js',
                         '_dev/js/collectors/*.js',
                         '_dev/js/helpers/*.js',
                         '_dev/js/partials/*.js',

@@ -1,11 +1,6 @@
-.d3-item-wrapper {
-    margin: 0 auto;
+.d3-items-container {
     position: relative;
-    width: 405px;
-    height: 750px;
-    visibility: hidden;
-    opacity: 0;
-
+    height: 200px;
     & > div {
         position: absolute;
         border-radius: 5px;

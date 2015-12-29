@@ -49,7 +49,7 @@ var defensiveStatsClass = React.createClass({
             }
         }
         return (
-            React.DOM.div(null, 'Defensive Stats', stats)
+            React.DOM.div({className: 'd3-defensive-stats'}, 'Defensive Stats', stats)
         );
     }
 });

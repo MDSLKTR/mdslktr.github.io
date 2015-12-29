@@ -127,6 +127,19 @@
         "WeaponElementsMin": true,
         "WeaponElementsDelta": true,
         "WeaponDamagePercentAll": true,
-        "WeaponDamageBonusMinPhysical": true
+        "WeaponDamageBonusMinPhysical": true,
+		"ItemQuality": true,
+		"Head": true,
+		"Bracers": true,
+		"Chest": true,
+		"Feet": true,
+		"Hands": true,
+		"Legs": true,
+		"MainHand": true,
+		"Neck": true,
+		"OffHand": true,
+		"Ring": true,
+		"Shoulders": true,
+		"Belt": true
     }
 }

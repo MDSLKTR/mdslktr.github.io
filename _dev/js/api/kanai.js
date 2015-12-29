@@ -88,7 +88,7 @@ var kanaiClass = React.createClass({
 
         return (
             React.DOM.div({
-                    className: ''
+                    className: 'd3-cube-powers'
                 }, 'Kanai', kanai
             )
         );

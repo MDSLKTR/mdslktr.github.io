@@ -5,6 +5,7 @@
     overflow: hidden;
     width: 100%;
     top: -50px;
+    z-index: -1;
     filter: unquote('brightness(0.75)');
 }
 
