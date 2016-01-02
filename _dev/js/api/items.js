@@ -293,6 +293,8 @@ var itemsClass = React.createClass({
             }
         };
 
+        console.log(itemCollection);
+
         if (!this.state.items) {
             return;
         }

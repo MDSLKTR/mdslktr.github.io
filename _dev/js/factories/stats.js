@@ -370,6 +370,52 @@ var Stats = React.createClass({
                     normalization: 1,
                     isParagonStat: true,
                     hide: true
+                },
+                'xpPerKill': {
+                    name: 'XP per Kill',
+                    key: 'Experience_Bonus',
+                    unit: '',
+                    value: 0,
+                    normalization: 1
+                },
+                'ccReduction': {
+                    name: 'Crowd Control Reduction',
+                    key: 'CrowdControl_Reduction',
+                    unit: '%',
+                    value: 0,
+                    normalization: 100,
+                    multiplicative: true
+                },
+                'knockbackOnHit': {
+                    name: 'Knockback on hit chance',
+                    key: 'Weapon_On_Hit_Knockback_Proc_Chance',
+                    unit: '%',
+                    value: 0,
+                    normalization: 100,
+                    multiplicative: true
+                },
+                'freezeOnHit': {
+                    name: 'Freeze on hit chance',
+                    key: 'On_Hit_Freeze_Proc_Chance',
+                    unit: '%',
+                    value: 0,
+                    normalization: 100,
+                    multiplicative: true
+                },
+                'stunOnHit': {
+                    name: 'Stun on hit chance',
+                    key: 'Weapon_On_Hit_Stun_Proc_Chance',
+                    unit: '%',
+                    value: 0,
+                    normalization: 100,
+                    multiplicative: true
+                },
+                'healthGlobeBonus': {
+                    name: 'Health Globe Bonus',
+                    key: 'Health_Globe_Bonus_Health',
+                    unit: '',
+                    value: 0,
+                    normalization: 1
                 }
             };
 

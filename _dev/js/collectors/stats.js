@@ -97,7 +97,6 @@ var statsCollectorClass = React.createClass({
                                 if (itemSlots[i].attributesRaw) {
                                     if (itemSlots[i].attributesRaw[mergedStats[stat].key] && itemSlots[i].attributesRaw[mergedStats[stat].key].min) {
                                         if (mergedStats[stat].multiplicative) {
-                                            console.log(itemSlots[i].attributesRaw[mergedStats[stat].key].min);
                                             mergedStats[stat].value *= (1 - itemSlots[i].attributesRaw[mergedStats[stat].key].min);
                                         } else {
                                             mergedStats[stat].value += itemSlots[i].attributesRaw[mergedStats[stat].key].min;
