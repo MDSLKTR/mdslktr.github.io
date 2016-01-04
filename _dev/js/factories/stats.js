@@ -48,7 +48,15 @@ var Stats = React.createClass({
                     key: 'critChance',
                     value: 0,
                     normalization: 100,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    maxMap: {
+                        'head': '0.06',
+                        'hands': '0.1',
+                        'bracers': '0.06',
+                        'ring': '0.06',
+                        'neck': '0.1',
+                        'offhand': '0.1'
+                    }
                 },
                 'critDamage': {
                     name: 'Critical Hit Damage',
