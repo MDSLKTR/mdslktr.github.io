@@ -45,7 +45,7 @@ var Stats = React.createClass({
                         value: 0
                     },
                     unit: '%',
-                    key: 'critChance',
+                    key: 'Crit_Percent_Bonus_Capped',
                     value: 0,
                     normalization: 100,
                     isParagonStat: true,
@@ -67,10 +67,16 @@ var Stats = React.createClass({
                     },
                     unit: '%',
                     errorCorrection: -100,
-                    key: 'critDamage',
+                    key: 'Crit_Percent_Bonus_Capped',
                     value: 0,
                     normalization: 100,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    maxMap: {
+                        'hands': '0.5',
+                        'ring': '0.5',
+                        'neck': '1',
+                        'offhand': '0.1'
+                    }
                 },
                 'primaryResource': {
                     name: 'Primary Resource',
@@ -105,7 +111,15 @@ var Stats = React.createClass({
                     multiplicative: true,
                     value: 0,
                     normalization: 100,
-                    isParagonStat: true
+                    isParagonStat: true,
+                    maxMap: {
+                        'hands': 0.08,
+                        'shoulders': 0.08,
+                        'ring': 0.08,
+                        'neck': 0.08,
+                        'mainHand': 0.1,
+                        'offhand': 0.1
+                    }
                 },
                 ResCostRed: {
                     name: 'Resource Cost Reduction',

@@ -25,6 +25,13 @@ var itemsClass = React.createClass({
             });
         });
 
+        EventSystem.subscribe('api.collect.offensive-stats', function (data) {
+            self.setState({
+                offensiveStats: data
+            });
+        });
+
+
         EventSystem.subscribe('api.call.items', function (data) {
             self.setState({
                 items: data.items
@@ -238,6 +245,8 @@ var itemsClass = React.createClass({
             isAncient,
             gemLink,
             constructedLink,
+            perfection = 0,
+            perfectionCount = 0,
             itemCollection = {
             'head': {
                 itemData: this.state.helmItem,
@@ -326,6 +335,7 @@ var itemsClass = React.createClass({
 
                     if (itemCollection[item].itemData.attributesRaw) {
                         isAncient = itemCollection[item].itemData.attributesRaw.Ancient_Rank && itemCollection[item].itemData.attributesRaw.Ancient_Rank.min === 1.0 ? 'ancient' : '';
+
                         if (item === 'mainHand' || item === 'offHand') {
                             if (itemCollection[item].itemData.type) {
                                 var mainHanded = '';
@@ -541,6 +551,24 @@ var itemsClass = React.createClass({
                             }
                         }
                     }
+
+                    console.log(this.state.offensiveStats);
+
+                    for (var stat in this.state.offensiveStats) {
+                        if (itemCollection[item].itemData.attributesRaw[this.state.offensiveStats[stat].key]) {
+                            if (this.state.offensiveStats[stat].maxMap && this.state.offensiveStats[stat].maxMap[item]) {
+                                perfection += Math.round((itemCollection[item].itemData.attributesRaw[this.state.offensiveStats[stat].key].min) * 100) / 100 / this.state.offensiveStats[stat].maxMap[item] * 100;
+                                perfectionCount++;
+                            }
+                        }
+                    }
+
+                    // TODO own factory here
+
+                    itemCollection[item].view.push(React.DOM.li({
+                        key: 'item-grade',
+                        className: 'item-grade'
+                    }, perfection / perfectionCount));
 
                     items.push(React.DOM.div({
                         key: item.toString(),
