@@ -6,7 +6,8 @@ var itemsClass = React.createClass({
             itemsLoaded: 0,
             itemCollection: [],
             items: {},
-            setRing: false
+            setRing: false,
+            perfection: Perfection.get()
         };
     },
     componentDidMount: function () {
@@ -24,13 +25,6 @@ var itemsClass = React.createClass({
                 itemsLoaded: 0
             });
         });
-
-        EventSystem.subscribe('api.collect.offensive-stats', function (data) {
-            self.setState({
-                offensiveStats: data
-            });
-        });
-
 
         EventSystem.subscribe('api.call.items', function (data) {
             self.setState({
@@ -552,13 +546,13 @@ var itemsClass = React.createClass({
                         }
                     }
 
-                    console.log(this.state.offensiveStats);
-
-                    for (var stat in this.state.offensiveStats) {
-                        if (itemCollection[item].itemData.attributesRaw[this.state.offensiveStats[stat].key]) {
-                            if (this.state.offensiveStats[stat].maxMap && this.state.offensiveStats[stat].maxMap[item]) {
-                                perfection += Math.round((itemCollection[item].itemData.attributesRaw[this.state.offensiveStats[stat].key].min) * 100) / 100 / this.state.offensiveStats[stat].maxMap[item] * 100;
-                                perfectionCount++;
+                    for (var stat in this.state.perfection) {
+                        if (this.state.perfection.hasOwnProperty(stat)) {
+                            if (itemCollection[item].itemData.attributesRaw[stat]) {
+                                if (this.state.perfection[stat].maxMap && this.state.perfection[stat].maxMap[item]) {
+                                    perfection += Math.round((itemCollection[item].itemData.attributesRaw[stat].min) * 100) / 100 / this.state.perfection[stat].maxMap[item] * 100;
+                                    perfectionCount++;
+                                }
                             }
                         }
                     }

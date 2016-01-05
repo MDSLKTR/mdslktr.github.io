@@ -140,6 +140,7 @@
 		"OffHand": true,
 		"Ring": true,
 		"Shoulders": true,
-		"Belt": true
+		"Belt": true,
+		"Perfection": true
     }
 }

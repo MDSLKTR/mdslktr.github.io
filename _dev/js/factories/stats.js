@@ -45,18 +45,10 @@ var Stats = React.createClass({
                         value: 0
                     },
                     unit: '%',
-                    key: 'Crit_Percent_Bonus_Capped',
+                    key: 'critChance',
                     value: 0,
                     normalization: 100,
-                    isParagonStat: true,
-                    maxMap: {
-                        'head': '0.06',
-                        'hands': '0.1',
-                        'bracers': '0.06',
-                        'ring': '0.06',
-                        'neck': '0.1',
-                        'offhand': '0.1'
-                    }
+                    isParagonStat: true
                 },
                 'critDamage': {
                     name: 'Critical Hit Damage',
@@ -67,16 +59,10 @@ var Stats = React.createClass({
                     },
                     unit: '%',
                     errorCorrection: -100,
-                    key: 'Crit_Percent_Bonus_Capped',
+                    key: 'critDamage',
                     value: 0,
                     normalization: 100,
-                    isParagonStat: true,
-                    maxMap: {
-                        'hands': '0.5',
-                        'ring': '0.5',
-                        'neck': '1',
-                        'offhand': '0.1'
-                    }
+                    isParagonStat: true
                 },
                 'primaryResource': {
                     name: 'Primary Resource',
@@ -111,15 +97,7 @@ var Stats = React.createClass({
                     multiplicative: true,
                     value: 0,
                     normalization: 100,
-                    isParagonStat: true,
-                    maxMap: {
-                        'hands': 0.08,
-                        'shoulders': 0.08,
-                        'ring': 0.08,
-                        'neck': 0.08,
-                        'mainHand': 0.1,
-                        'offhand': 0.1
-                    }
+                    isParagonStat: true
                 },
                 ResCostRed: {
                     name: 'Resource Cost Reduction',
