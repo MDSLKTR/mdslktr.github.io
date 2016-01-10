@@ -455,7 +455,8 @@ footer {
 
 select,
 input {
-  width: 100%; }
+  width: 100%;
+  -webkit-appearance: none; }
 
 input {
   border: none;

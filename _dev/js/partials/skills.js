@@ -55,6 +55,8 @@ var skillsClass = React.createClass({
                 });
             }
 
+            // todo fix this if no skills
+
             skills.push(
                 React.DOM.div({key: skillData.skill.name + '-icon', className: 'active-skill-bg'},
                     React.DOM.div({

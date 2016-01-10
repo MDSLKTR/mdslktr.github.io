@@ -71,6 +71,7 @@ var heroesClass = React.createClass({
                 }, 'click to select hero'));
                 heroesData.heroes.forEach(function (heroName) {
                     heroesCollection.push(React.DOM.option({
+                        style: {backgroundImage: 'url(/assets/images/career-portraits.jpg)'},
                         key: 'heroes-list' + heroName.id,
                         value: heroName.id
                     }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')'));
