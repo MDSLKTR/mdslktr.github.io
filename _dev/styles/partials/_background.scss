@@ -10,17 +10,11 @@
 }
 
 .d3-char-bg {
-    position: absolute;
-    left: 50%;
-    opacity: 0;
-    visibility: hidden;
-    top: 0;
-    transform: translateX(-50%);
-    margin-top: 2.5%;
-    width: 100%;
-    height: 615px;
+    position: relative;
+    width: 286px;
+    height: 418px;
+    margin: 0 auto;
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: 50% 50%;
-    filter: drop-shadow(1px 1px 30px rgba(255, 255, 255, 1));
+    background-position: 50% 0;
 }

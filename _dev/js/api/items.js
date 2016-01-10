@@ -60,8 +60,10 @@ var itemsClass = React.createClass({
             service.get(url).then(function (response) {
                 var data = JSON.parse(response);
 
+                console.log(data);
 
-                if ( Head.test(data.type.id) ) {
+
+                if (Head.test(data.type.id)) {
                     self.setState({helmItem: data}, function () {
                         self.state.itemCollection.push(self.state.helmItem);
                     });
@@ -70,7 +72,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Shoulders.test(data.type.id) ) {
+                if (Shoulders.test(data.type.id)) {
                     self.setState({shouldersItem: data}, function () {
                         self.state.itemCollection.push(self.state.shouldersItem);
                     });
@@ -79,7 +81,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Bracers.test(data.type.id) ) {
+                if (Bracers.test(data.type.id)) {
                     self.setState({bracersItem: data}, function () {
                         self.state.itemCollection.push(self.state.bracersItem);
                     });
@@ -88,7 +90,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Chest.test(data.type.id) ) {
+                if (Chest.test(data.type.id)) {
                     self.setState({chestItem: data}, function () {
                         self.state.itemCollection.push(self.state.chestItem);
                     });
@@ -97,7 +99,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Legs.test(data.type.id) ) {
+                if (Legs.test(data.type.id)) {
                     self.setState({legsItem: data}, function () {
                         self.state.itemCollection.push(self.state.legsItem);
                     });
@@ -106,7 +108,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Feet.test(data.type.id) ) {
+                if (Feet.test(data.type.id)) {
                     self.setState({bootsItem: data}, function () {
                         self.state.itemCollection.push(self.state.bootsItem);
                     });
@@ -115,7 +117,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( MainHand.test(data.type.id) ) {
+                if (MainHand.test(data.type.id)) {
                     self.setState({mainItem: data}, function () {
                         EventSystem.publish('api.call.item.mainhand', self.state.mainItem);
                         self.state.itemCollection.push(self.state.mainItem);
@@ -125,7 +127,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Hands.test(data.type.id) ) {
+                if (Hands.test(data.type.id)) {
                     self.setState({glovesItem: data}, function () {
                         self.state.itemCollection.push(self.state.glovesItem);
                     });
@@ -134,7 +136,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Belt.test(data.type.id) ) {
+                if (Belt.test(data.type.id)) {
                     self.setState({beltItem: data}, function () {
                         self.state.itemCollection.push(self.state.beltItem);
                     });
@@ -143,7 +145,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( Neck.test(data.type.id) ) {
+                if (Neck.test(data.type.id)) {
                     self.setState({amuletItem: data}, function () {
                         EventSystem.publish('api.call.item.amulet', self.state.amuletItem);
                         self.state.itemCollection.push(self.state.amuletItem);
@@ -175,8 +177,8 @@ var itemsClass = React.createClass({
             service.get(url).then(function (response) {
                 var data = JSON.parse(response);
 
-                if ( Ring.test(data.type.id) ) {
-                    if ( param === 'left') {
+                if (Ring.test(data.type.id)) {
+                    if (param === 'left') {
                         self.setState({ringItemLeft: data}, function () {
                             self.state.itemCollection.push(self.state.ringItemLeft);
                         });
@@ -193,7 +195,7 @@ var itemsClass = React.createClass({
                     return;
                 }
 
-                if ( OffHand.test(data.type.id) ) {
+                if (OffHand.test(data.type.id)) {
                     self.setState({offItem: data}, function () {
                         self.state.itemCollection.push(self.state.offItem);
                         EventSystem.publish('api.call.item.offhand', self.state.offItem);
@@ -206,6 +208,10 @@ var itemsClass = React.createClass({
                 console.warn('item category ' + data.type.id + ' does not exist');
             });
         });
+    },
+
+    handleItemClick: function (node) {
+        EventSystem.publish('api.open.overlay', node);
     },
 
     render: function () {
@@ -242,61 +248,59 @@ var itemsClass = React.createClass({
             perfection = 0,
             perfectionCount = 0,
             itemCollection = {
-            'head': {
-                itemData: this.state.helmItem,
-                view: helmet
-            },
-            'neck': {
-                itemData: this.state.amuletItem,
-                view: neck
-            },
-            'torso': {
-                itemData: this.state.chestItem,
-                view: torso
-            },
-            'feet': {
-                itemData: this.state.bootsItem,
-                view: feet
-            },
-            'hands': {
-                itemData: this.state.glovesItem,
-                view: hands
-            },
-            'shoulders': {
-                itemData: this.state.shouldersItem,
-                view: shoulders
-            },
-            'legs': {
-                itemData: this.state.legsItem,
-                view: legs
-            },
-            'bracers': {
-                itemData: this.state.bracersItem,
-                view: bracers
-            },
-            'mainHand': {
-                itemData: this.state.mainItem,
-                view: mainHand
-            },
-            'offHand': {
-                itemData: this.state.offItem,
-                view: offHand
-            },
-            'leftFinger': {
-                itemData: this.state.ringItemLeft,
-                view: ringLeft
-            },
-            'rightFinger': {
-                itemData: this.state.ringItemRight,
-                view: ringRight
-            },
-            'waist': {
-                itemData: this.state.beltItem,
-                view: belt
-            }
-        };
-
-        console.log(itemCollection);
+                'head': {
+                    itemData: this.state.helmItem,
+                    view: helmet
+                },
+                'neck': {
+                    itemData: this.state.amuletItem,
+                    view: neck
+                },
+                'torso': {
+                    itemData: this.state.chestItem,
+                    view: torso
+                },
+                'feet': {
+                    itemData: this.state.bootsItem,
+                    view: feet
+                },
+                'hands': {
+                    itemData: this.state.glovesItem,
+                    view: hands
+                },
+                'shoulders': {
+                    itemData: this.state.shouldersItem,
+                    view: shoulders
+                },
+                'legs': {
+                    itemData: this.state.legsItem,
+                    view: legs
+                },
+                'bracers': {
+                    itemData: this.state.bracersItem,
+                    view: bracers
+                },
+                'mainHand': {
+                    itemData: this.state.mainItem,
+                    view: mainHand
+                },
+                'offHand': {
+                    itemData: this.state.offItem,
+                    view: offHand
+                },
+                'leftFinger': {
+                    itemData: this.state.ringItemLeft,
+                    view: ringLeft
+                },
+                'rightFinger': {
+                    itemData: this.state.ringItemRight,
+                    view: ringRight
+                },
+                'waist': {
+                    itemData: this.state.beltItem,
+                    view: belt
+                }
+            };
 
         if (!this.state.items) {
             return;
@@ -557,28 +561,28 @@ var itemsClass = React.createClass({
                         }
                     }
 
-                    // TODO own factory here
-
                     itemCollection[item].view.push(React.DOM.li({
                         key: 'item-grade',
                         className: 'item-grade'
                     }, perfection / perfectionCount));
 
-                    items.push(React.DOM.div({
-                        key: item.toString(),
-                        className: 'item' + ' ' + isAncient + ' ' + itemQuality + ' ' + item,
-                        onClick: this.handleItemClick,
-                        style: {backgroundImage: 'url(' + constructedLink + ')'}
-                    }, React.DOM.div({className: 'desc'}, React.DOM.ul({
-                            className: 'stats'
+                    var node = React.DOM.div({className: 'd3-item-overlay', key: item + '-stats'}, React.DOM.ul({
+                            className: 'item-stats'
                         }, itemCollection[item].view)
-                    )));
+                    );
 
-                } else {
-                    items.push(React.DOM.div({
-                        key: item.toString(),
-                        className: 'empty item ' + item
-                    }));
+                    items.push(
+                        React.DOM.div({
+                                className: 'item-wrapper' + ' ' + isAncient + ' ' + itemQuality + ' ' + item,
+                                key: item,
+                                onClick: this.handleItemClick.bind(this, node)
+                            },
+                            React.DOM.img({
+                                className: 'item-icon',
+                                key: item + '-image',
+                                src: constructedLink
+                            })));
+
                 }
             }
         }

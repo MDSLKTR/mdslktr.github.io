@@ -20,6 +20,8 @@ var heroClass = React.createClass({
                 service.get(url).then(function (response) {
                     var data = JSON.parse(response);
 
+                    console.log(data);
+
                     self.setState({
                         generalStats: {
                             'name': {
@@ -41,6 +43,22 @@ var heroClass = React.createClass({
                             'paragonLevel': {
                                 name: 'Paragon Level',
                                 value: data.paragonLevel
+                            },
+                            'gender': {
+                                name: '',
+                                value: data.gender === 0 ? 'male' : 'female'
+                            },
+                            'hardcore': {
+                                name: '',
+                                value: data.hardcore ? 'Hardcore Character' : ''
+                            },
+                            'dead': {
+                                name: '',
+                                value: data.dead ? 'Character is dead' : ''
+                            },
+                            'seasonal': {
+                                name: '',
+                                value: data.seasonal ? 'Season Character': ''
                             },
                             'lastUpdated': {
                                 name: 'Last updated on',

@@ -33,12 +33,21 @@ var generalStatsClass = React.createClass({
                         this.state.generalStats[generalStat].value.toString().replace(/-/g, '').slice(1).toLowerCase();
                 }
 
+                // todo get icons from the api here
+                if (generalStat === 'hardcore') {
+                    if (this.state.generalStats[generalStat].value) {
+                        this.state.generalStats[generalStat].name = 'Hardcore Character';
+                    }
+                }
+
                 if (generalStat === 'lastUpdated') {
                     var t = new Date(this.state.generalStats[generalStat].value * 1000);
                     content = t.toLocaleDateString() + ' - ' + t.toLocaleTimeString();
                 }
 
-                base.push(React.DOM.div({key: generalStat}, this.state.generalStats[generalStat].name + ': ' + content));
+                if ( content ) {
+                    base.push(React.DOM.div({key: generalStat}, this.state.generalStats[generalStat].name + ': ' + content));
+                }
             }
         }
 

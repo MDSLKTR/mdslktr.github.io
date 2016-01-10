@@ -2,7 +2,8 @@ var d3Profile = React.createClass({
         displayName: 'd3Profile',
         getInitialState: function () {
             return {
-                generalStats: null
+                generalStats: null,
+                charBackgroundUrl: 'assets/images/'
             };
         },
 
@@ -18,24 +19,27 @@ var d3Profile = React.createClass({
             Stats.init('DefensiveStats');
 
             EventSystem.publish('api.call.paragon');
+
+            EventSystem.subscribe('api.open.overlay', function (data) {
+                self.setState({
+                    overlay: data
+                });
+            });
         },
 
         render: function () {
-            var backgroundImage;
+
+            var backgroundImage = {};
             if (this.state.generalStats) {
+                console.log(this.state.charBackgroundUrl + this.state.generalStats.class.value + '-' + this.state.generalStats.gender.value + '.jpg)');
                 backgroundImage = {
-                    backgroundImage: 'url(assets/images/' + this.state.generalStats.class.value + '.png)'
-                };
-            } else {
-                backgroundImage = {
-                    backgroundImage: 'none'
+                    backgroundImage: 'url(' + this.state.charBackgroundUrl + this.state.generalStats.class.value + '-' + this.state.generalStats.gender.value + '.jpg)'
                 };
             }
 
             return (
-                React.DOM.div({className: 'd3-container'},
-                    React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: backgroundImage}),
-                    items(),
+                React.DOM.div({className: 'd3-container', ref: 'container'},
+                    React.DOM.div({className: 'd3-char-bg', ref: 'charbg', style: backgroundImage}, items(), this.state.overlay),
                     profile(),
                     heroes(),
                     hero(),

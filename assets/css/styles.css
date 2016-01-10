@@ -100,22 +100,13 @@ main {
           filter: brightness(0.75); }
 
 .d3-char-bg {
-  position: absolute;
-  left: 50%;
-  opacity: 0;
-  visibility: hidden;
-  top: 0;
-  -webkit-transform: translateX(-50%);
-      -ms-transform: translateX(-50%);
-          transform: translateX(-50%);
-  margin-top: 2.5%;
-  width: 100%;
-  height: 615px;
+  position: relative;
+  width: 286px;
+  height: 418px;
+  margin: 0 auto;
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: 50% 50%;
-  -webkit-filter: drop-shadow(1px 1px 30px white);
-          filter: drop-shadow(1px 1px 30px white); }
+  background-position: 50% 0; }
 
 .setButton {
   position: absolute;
@@ -211,308 +202,161 @@ main {
 .d3-paragon-selector span {
   display: block; }
 
-.d3-items-container {
-  position: relative;
-  height: 200px; }
-  .d3-items-container > div {
-    position: absolute;
-    border-radius: 5px;
-    background-size: 64px auto;
-    background-color: rgba(0, 0, 0, 0.5);
-    background-position: 5% 50%;
-    background-repeat: no-repeat;
-    -webkit-transition: background-color 0.5s, -webkit-filter 0.5s, filter 0.5s;
-            transition: background-color 0.5s, -webkit-filter 0.5s, filter 0.5s;
-    width: 64px;
-    height: 128px;
-    color: red;
-    cursor: pointer;
-    font-size: 0.8rem; }
-    .d3-items-container > div:after {
-      opacity: 0;
-      content: 'x';
-      visibility: hidden;
-      cursor: pointer; }
-    .d3-items-container > div .desc {
-      opacity: 0;
-      visibility: hidden; }
-    .d3-items-container > div.unique {
-      -webkit-filter: drop-shadow(0px 0px 5px darkorange);
-              filter: drop-shadow(0px 0px 5px darkorange);
-      border: 1px solid darkorange; }
-      .d3-items-container > div.unique:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px darkorange);
-                filter: drop-shadow(0px 0px 20px darkorange); }
-      .d3-items-container > div.unique.ancient {
-        border: 1px solid #b8860b; }
-    .d3-items-container > div.set {
-      -webkit-filter: drop-shadow(0px 0px 5px green);
-              filter: drop-shadow(0px 0px 5px green);
-      border: 1px solid green; }
-      .d3-items-container > div.set:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px green);
-                filter: drop-shadow(0px 0px 20px green); }
-      .d3-items-container > div.set.ancient {
-        border: 1px solid #b8860b; }
-    .d3-items-container > div.magic {
-      -webkit-filter: drop-shadow(0px 0px 5px blue);
-              filter: drop-shadow(0px 0px 5px blue);
-      border: 1px solid blue; }
-      .d3-items-container > div.magic:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px blue);
-                filter: drop-shadow(0px 0px 20px blue); }
-    .d3-items-container > div.rare {
-      -webkit-filter: drop-shadow(0px 0px 5px yellow);
-              filter: drop-shadow(0px 0px 5px yellow);
-      border: 1px solid yellow; }
-      .d3-items-container > div.rare:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px yellow);
-                filter: drop-shadow(0px 0px 20px yellow); }
-    .d3-items-container > div.white {
-      -webkit-filter: drop-shadow(0px 0px 5px white);
-              filter: drop-shadow(0px 0px 5px white);
-      border: 1px solid white; }
-      .d3-items-container > div.white:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px white);
-                filter: drop-shadow(0px 0px 20px white); }
-    .d3-items-container > div.common {
-      -webkit-filter: drop-shadow(0px 0px 5px grey);
-              filter: drop-shadow(0px 0px 5px grey);
-      border: 1px solid grey; }
-      .d3-items-container > div.common:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px grey);
-                filter: drop-shadow(0px 0px 20px grey); }
-    .d3-items-container > div.empty {
-      cursor: default;
-      -webkit-filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.75));
-              filter: drop-shadow(0px 0px 5px rgba(255, 255, 255, 0.75));
-      border: 1px solid rgba(255, 255, 255, 0.5); }
-      .d3-items-container > div.empty:hover {
-        -webkit-filter: drop-shadow(0px 0px 20px white);
-                filter: drop-shadow(0px 0px 20px white); }
-    .d3-items-container > div.open {
-      z-index: 1;
-      -webkit-transition: background-color 0.5s;
-              transition: background-color 0.5s;
-      -webkit-filter: drop-shadow(0px 0px 5px black);
-              filter: drop-shadow(0px 0px 5px black);
-      background-color: rgba(0, 0, 0, 0.85);
-      cursor: default; }
-      .d3-items-container > div.open:after {
-        content: 'x';
-        font-size: 1.25rem;
-        text-align: center;
-        position: absolute;
-        color: white;
-        background: black;
-        border: 1px solid white;
-        width: 30px;
-        height: 30px;
-        right: -1px;
-        top: -1px;
-        visibility: visible;
-        -webkit-animation: fader 1s;
-                animation: fader 1s;
-        -webkit-animation-delay: 0.5s;
-                animation-delay: 0.5s;
-        -webkit-animation-fill-mode: forwards;
-                animation-fill-mode: forwards; }
-      .d3-items-container > div.open .desc {
-        visibility: visible;
-        -webkit-animation: fader 1s;
-                animation: fader 1s;
-        -webkit-animation-delay: 0.5s;
-                animation-delay: 0.5s;
-        -webkit-animation-fill-mode: forwards;
-                animation-fill-mode: forwards; }
-    .d3-items-container > div > div {
-      overflow: hidden;
-      position: absolute;
-      right: 0;
-      width: 75%;
-      height: 100%; }
-      .d3-items-container > div > div > ul {
-        top: 50%;
-        height: 100%;
-        position: absolute;
-        -webkit-transform: translateY(-50%);
-            -ms-transform: translateY(-50%);
-                transform: translateY(-50%);
-        padding: 0;
-        margin: 3% 1.5%;
-        list-style: none;
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-flow: row wrap;
-            -ms-flex-flow: row wrap;
-                flex-flow: row wrap;
-        -webkit-box-pack: justify;
-        -webkit-justify-content: space-between;
-            -ms-flex-pack: justify;
-                justify-content: space-between;
-        -webkit-box-align: center;
-        -webkit-align-items: center;
-            -ms-flex-align: center;
-                align-items: center;
-        -webkit-align-content: flex-start;
-            -ms-flex-line-pack: start;
-                align-content: flex-start; }
-        .d3-items-container > div > div > ul li {
-          margin: 0.25rem;
-          display: inline-block; }
-        .d3-items-container > div > div > ul .primary {
-          color: white;
-          font-size: 0.9rem;
-          width: 100%; }
-        .d3-items-container > div > div > ul .secondary {
-          color: silver;
-          width: 100%;
-          font-size: 0.8rem; }
-        .d3-items-container > div > div > ul .passive {
-          color: goldenrod;
-          width: 100%;
-          font-size: 1rem; }
-        .d3-items-container > div > div > ul .set-bonus-2,
-        .d3-items-container > div > div > ul .set-bonus-3,
-        .d3-items-container > div > div > ul .set-bonus-4,
-        .d3-items-container > div > div > ul .set-bonus-5,
-        .d3-items-container > div > div > ul .set-bonus-6 {
-          -webkit-box-flex: 1;
-          -webkit-flex: 1 100%;
-              -ms-flex: 1 100%;
-                  flex: 1 100%;
-          color: green;
-          font-size: 0.9rem; }
-          .d3-items-container > div > div > ul .set-bonus-2.inactive,
-          .d3-items-container > div > div > ul .set-bonus-3.inactive,
-          .d3-items-container > div > div > ul .set-bonus-4.inactive,
-          .d3-items-container > div > div > ul .set-bonus-5.inactive,
-          .d3-items-container > div > div > ul .set-bonus-6.inactive {
-            color: grey; }
-        .d3-items-container > div > div > ul .set-bonus-2:before {
-          content: '[ 2 ] '; }
-        .d3-items-container > div > div > ul .set-bonus-3:before {
-          content: '[ 3 ] '; }
-        .d3-items-container > div > div > ul .set-bonus-4:before {
-          content: '[ 4 ] '; }
-        .d3-items-container > div > div > ul .set-bonus-5:before {
-          content: '[ 5 ] '; }
-        .d3-items-container > div > div > ul .set-bonus-6:before {
-          content: '[ 6 ] '; }
-        .d3-items-container > div > div > ul .dps {
-          font-size: 1.1rem;
-          color: white;
-          -webkit-box-flex: 0;
-          -webkit-flex: 0 100%;
-              -ms-flex: 0 100%;
-                  flex: 0 100%; }
-        .d3-items-container > div > div > ul .raw-damage {
-          font-size: 1rem;
-          color: white;
-          -webkit-box-flex: 0;
-          -webkit-flex: 0 100%;
-              -ms-flex: 0 100%;
-                  flex: 0 100%; }
-        .d3-items-container > div > div > ul .name {
-          font-size: 1.2rem;
-          -webkit-box-flex: 0;
-          -webkit-flex: 0 90%;
-              -ms-flex: 0 90%;
-                  flex: 0 90%;
-          text-transform: capitalize; }
-          .d3-items-container > div > div > ul .name.set {
-            color: green; }
-          .d3-items-container > div > div > ul .name.unique {
-            color: darkorange; }
-          .d3-items-container > div > div > ul .name.magic {
-            color: blue; }
-          .d3-items-container > div > div > ul .name.rare {
-            color: yellow; }
-          .d3-items-container > div > div > ul .name.common {
-            color: grey; }
-          .d3-items-container > div > div > ul .name.white {
-            color: white; }
-        .d3-items-container > div > div > ul .gem-level {
-          top: -15%;
-          left: 85%;
-          background: goldenrod;
-          color: black;
-          border-radius: 50%;
-          padding: 5%;
-          position: absolute; }
-        .d3-items-container > div > div > ul .gem-passive {
-          color: goldenrod;
-          -webkit-box-flex: 0;
-          -webkit-flex: 0 80%;
-              -ms-flex: 0 80%;
-                  flex: 0 80%; }
-        .d3-items-container > div > div > ul .socket {
-          height: 38px;
-          -webkit-filter: drop-shadow(0px 0px 2px white);
-                  filter: drop-shadow(0px 0px 2px white);
-          background-size: 32px;
-          background-position: 50% 50%;
-          background-repeat: no-repeat;
-          width: 38px;
-          border: 2px solid white;
-          border-radius: 30%;
-          position: relative; }
-  .d3-items-container .head {
-    left: 50%;
-    top: 4.5%;
-    -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-            transform: translateX(-50%); }
-  .d3-items-container .torso {
-    left: 50%;
-    top: 22.5%;
-    -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-            transform: translateX(-50%); }
-  .d3-items-container .legs {
-    left: 50%;
-    top: 60%;
-    -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-            transform: translateX(-50%); }
-  .d3-items-container .feet {
-    left: 50%;
-    bottom: 5%;
-    -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-            transform: translateX(-50%); }
-  .d3-items-container .hands {
-    left: 0;
-    top: 45%; }
-  .d3-items-container .bracers {
-    right: 0;
-    top: 30%; }
-  .d3-items-container .shoulders {
-    left: 10%;
-    top: 25%; }
-  .d3-items-container .neck {
-    right: 15%;
-    top: 10%; }
-  .d3-items-container .leftFinger {
-    left: 22.5%;
-    top: 45%; }
-  .d3-items-container .rightFinger {
-    right: 22.5%;
-    top: 45%; }
-  .d3-items-container .waist {
-    top: 41.5%;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-        -ms-transform: translateX(-50%);
-            transform: translateX(-50%); }
-  .d3-items-container .mainHand {
-    bottom: 10%;
-    left: 10%; }
-  .d3-items-container .offHand {
-    bottom: 10%;
-    right: 10%; }
+.d3-items-container img {
+  height: auto;
+  overflow: visible;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  position: absolute;
+  left: 50%;
+  top: 50%; }
+
+.d3-items-container .item-wrapper {
+  position: absolute;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-transition: background-color 0.5s, -webkit-filter 0.5s, filter 0.5s;
+          transition: background-color 0.5s, -webkit-filter 0.5s, filter 0.5s;
+  color: red;
+  cursor: pointer;
+  font-size: 0.8rem; }
+  .d3-items-container .item-wrapper.unique {
+    -webkit-filter: drop-shadow(0px 0px 5px darkorange);
+            filter: drop-shadow(0px 0px 5px darkorange);
+    border: 1px solid darkorange; }
+    .d3-items-container .item-wrapper.unique:hover {
+      -webkit-filter: drop-shadow(0px 0px 20px darkorange);
+              filter: drop-shadow(0px 0px 20px darkorange); }
+    .d3-items-container .item-wrapper.unique.ancient {
+      border: 1px solid #b8860b; }
+  .d3-items-container .item-wrapper.set {
+    -webkit-filter: drop-shadow(0px 0px 5px green);
+            filter: drop-shadow(0px 0px 5px green);
+    border: 1px solid green; }
+    .d3-items-container .item-wrapper.set:hover {
+      -webkit-filter: drop-shadow(0px 0px 20px green);
+              filter: drop-shadow(0px 0px 20px green); }
+    .d3-items-container .item-wrapper.set.ancient {
+      border: 1px solid #b8860b; }
+  .d3-items-container .item-wrapper.magic {
+    -webkit-filter: drop-shadow(0px 0px 5px blue);
+            filter: drop-shadow(0px 0px 5px blue);
+    border: 1px solid blue; }
+    .d3-items-container .item-wrapper.magic:hover {
+      -webkit-filter: drop-shadow(0px 0px 20px blue);
+              filter: drop-shadow(0px 0px 20px blue); }
+  .d3-items-container .item-wrapper.rare {
+    -webkit-filter: drop-shadow(0px 0px 5px yellow);
+            filter: drop-shadow(0px 0px 5px yellow);
+    border: 1px solid yellow; }
+    .d3-items-container .item-wrapper.rare:hover {
+      -webkit-filter: drop-shadow(0px 0px 20px yellow);
+              filter: drop-shadow(0px 0px 20px yellow); }
+  .d3-items-container .item-wrapper.white {
+    -webkit-filter: drop-shadow(0px 0px 5px white);
+            filter: drop-shadow(0px 0px 5px white);
+    border: 1px solid white; }
+    .d3-items-container .item-wrapper.white:hover {
+      -webkit-filter: drop-shadow(0px 0px 20px white);
+              filter: drop-shadow(0px 0px 20px white); }
+  .d3-items-container .item-wrapper.common {
+    -webkit-filter: drop-shadow(0px 0px 5px grey);
+            filter: drop-shadow(0px 0px 5px grey);
+    border: 1px solid grey; }
+    .d3-items-container .item-wrapper.common:hover {
+      -webkit-filter: drop-shadow(0px 0px 20px grey);
+              filter: drop-shadow(0px 0px 20px grey); }
+
+.d3-items-container .head,
+.d3-items-container .legs,
+.d3-items-container .hands,
+.d3-items-container .feet,
+.d3-items-container .shoulders,
+.d3-items-container .mainHand,
+.d3-items-container .offHand,
+.d3-items-container .bracers {
+  width: 66px; }
+
+.d3-items-container .feet,
+.d3-items-container .hands,
+.d3-items-container .bracers,
+.d3-items-container .legs,
+.d3-items-container .shoulders {
+  height: 86px; }
+
+.d3-items-container .head,
+.d3-items-container .torso,
+.d3-items-container .legs,
+.d3-items-container .feet,
+.d3-items-container .waist {
+  -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+          transform: translateX(-50%);
+  left: 50%; }
+
+.d3-items-container .leftFinger,
+.d3-items-container .rightFinger {
+  top: 226px;
+  width: 40px;
+  height: 40px; }
+
+.d3-items-container .torso,
+.d3-items-container .waist {
+  width: 80px; }
+
+.d3-items-container .mainHand,
+.d3-items-container .offHand {
+  top: 280px;
+  height: 130px; }
+
+.d3-items-container .head {
+  top: 3px;
+  height: 66px; }
+
+.d3-items-container .torso {
+  top: 72px;
+  height: 114px; }
+
+.d3-items-container .legs {
+  top: 230px; }
+
+.d3-items-container .feet {
+  top: 322px; }
+
+.d3-items-container .hands {
+  left: 3px;
+  top: 126px; }
+
+.d3-items-container .bracers {
+  right: 3px;
+  top: 126px; }
+
+.d3-items-container .shoulders {
+  left: 28px;
+  top: 26px; }
+
+.d3-items-container .neck {
+  right: 36px;
+  top: 46px;
+  width: 56px;
+  height: 56px; }
+
+.d3-items-container .leftFinger {
+  left: 15px; }
+
+.d3-items-container .rightFinger {
+  right: 15px; }
+
+.d3-items-container .waist {
+  top: 192px;
+  height: 32px; }
+
+.d3-items-container .mainHand {
+  left: 3px; }
+
+.d3-items-container .offHand {
+  right: 3px; }
 
 .panel-left,
 .panel-right,
@@ -883,5 +727,134 @@ footer {
     box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.1);
     -webkit-transition: -webkit-transform 0.2s ease-in-out;
             transition: transform 0.2s ease-in-out; }
+
+.d3-item-overlay {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  background: black;
+  width: 100%; }
+  .d3-item-overlay .item-stats {
+    padding: 0;
+    z-index: 10;
+    list-style: none;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-flow: row wrap;
+        -ms-flex-flow: row wrap;
+            flex-flow: row wrap;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-align-content: flex-start;
+        -ms-flex-line-pack: start;
+            align-content: flex-start; }
+    .d3-item-overlay .item-stats li {
+      margin: 0.25rem;
+      display: inline-block; }
+    .d3-item-overlay .item-stats .primary {
+      color: white;
+      font-size: 0.9rem;
+      width: 100%; }
+    .d3-item-overlay .item-stats .secondary {
+      color: silver;
+      width: 100%;
+      font-size: 0.8rem; }
+    .d3-item-overlay .item-stats .passive {
+      color: goldenrod;
+      width: 100%;
+      font-size: 1rem; }
+    .d3-item-overlay .item-stats .set-bonus-2,
+    .d3-item-overlay .item-stats .set-bonus-3,
+    .d3-item-overlay .item-stats .set-bonus-4,
+    .d3-item-overlay .item-stats .set-bonus-5,
+    .d3-item-overlay .item-stats .set-bonus-6 {
+      -webkit-box-flex: 1;
+      -webkit-flex: 1 100%;
+          -ms-flex: 1 100%;
+              flex: 1 100%;
+      color: green;
+      font-size: 0.9rem; }
+      .d3-item-overlay .item-stats .set-bonus-2.inactive,
+      .d3-item-overlay .item-stats .set-bonus-3.inactive,
+      .d3-item-overlay .item-stats .set-bonus-4.inactive,
+      .d3-item-overlay .item-stats .set-bonus-5.inactive,
+      .d3-item-overlay .item-stats .set-bonus-6.inactive {
+        color: grey; }
+    .d3-item-overlay .item-stats .set-bonus-2:before {
+      content: '[ 2 ] '; }
+    .d3-item-overlay .item-stats .set-bonus-3:before {
+      content: '[ 3 ] '; }
+    .d3-item-overlay .item-stats .set-bonus-4:before {
+      content: '[ 4 ] '; }
+    .d3-item-overlay .item-stats .set-bonus-5:before {
+      content: '[ 5 ] '; }
+    .d3-item-overlay .item-stats .set-bonus-6:before {
+      content: '[ 6 ] '; }
+    .d3-item-overlay .item-stats .dps {
+      font-size: 1.1rem;
+      color: white;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 100%;
+          -ms-flex: 0 100%;
+              flex: 0 100%; }
+    .d3-item-overlay .item-stats .raw-damage {
+      font-size: 1rem;
+      color: white;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 100%;
+          -ms-flex: 0 100%;
+              flex: 0 100%; }
+    .d3-item-overlay .item-stats .name {
+      font-size: 1.2rem;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 90%;
+          -ms-flex: 0 90%;
+              flex: 0 90%;
+      text-transform: capitalize; }
+      .d3-item-overlay .item-stats .name.set {
+        color: green; }
+      .d3-item-overlay .item-stats .name.unique {
+        color: darkorange; }
+      .d3-item-overlay .item-stats .name.magic {
+        color: blue; }
+      .d3-item-overlay .item-stats .name.rare {
+        color: yellow; }
+      .d3-item-overlay .item-stats .name.common {
+        color: grey; }
+      .d3-item-overlay .item-stats .name.white {
+        color: white; }
+    .d3-item-overlay .item-stats .gem-level {
+      top: -15%;
+      left: 85%;
+      background: goldenrod;
+      color: black;
+      border-radius: 50%;
+      padding: 5%;
+      position: absolute; }
+    .d3-item-overlay .item-stats .gem-passive {
+      color: goldenrod;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 80%;
+          -ms-flex: 0 80%;
+              flex: 0 80%; }
+    .d3-item-overlay .item-stats .socket {
+      height: 38px;
+      -webkit-filter: drop-shadow(0px 0px 2px white);
+              filter: drop-shadow(0px 0px 2px white);
+      background-size: 32px;
+      background-position: 50% 50%;
+      background-repeat: no-repeat;
+      width: 38px;
+      border: 2px solid white;
+      border-radius: 30%;
+      position: relative; }
 
 /*# sourceMappingURL=styles.css.map */
