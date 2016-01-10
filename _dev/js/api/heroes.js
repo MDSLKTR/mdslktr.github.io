@@ -90,7 +90,7 @@ var heroesClass = React.createClass({
                     key: 'heroes-list-empty',
                     value: '',
                     style: {display: 'none'}
-                }, 'enter your battleTag in the field below'));
+                }, 'Enter your BattleTag above'));
             } else {
                 heroesCollection.push(React.DOM.option({
                     key: 'heroes-list-loading',
@@ -102,7 +102,7 @@ var heroesClass = React.createClass({
 
         return (
             React.DOM.div({className: 'd3-character-select'},
-                '3 - Click below to select your hero: ',
+                React.DOM.h3(null,'Characters'),
                 React.DOM.select(
                     {
                         className: 'd3-chars',

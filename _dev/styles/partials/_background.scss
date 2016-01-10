@@ -1,20 +1,29 @@
 .d3-bg {
-    //background: transparent url('/assets/images/bg-3.jpg') 50% 50% / cover no-repeat;
+    background: transparent url('/assets/images/bg-3.jpg') 50% 50% / cover no-repeat;
     position: absolute;
     height: 120%;
     overflow: hidden;
     width: 100%;
-    top: -50px;
+    top: rem(-50);
     z-index: -1;
     filter: unquote('brightness(0.75)');
 }
 
 .d3-char-bg {
     position: relative;
-    width: 286px;
-    height: 418px;
-    margin: 0 auto;
+    width: rem(286);
+    height: rem(418);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50% 0;
+    box-shadow: 0 0 rem(18), rem(12), #121212 inset;
+}
+
+.d3-stats-container,
+.d3-paragon-container,
+.d3-passive-skills,
+.d3-active-skills,
+.d3-char-bg,
+.d3-cube-power {
+    display: none;
 }

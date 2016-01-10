@@ -1,101 +1,45 @@
-.icon {
-    position: absolute;
-    height: 64px;
-    width: 64px;
-    background-size: contain;
-    background-position: center center;
-    background-repeat: no-repeat;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(0, 0, 0, 1);
-    border: 2px solid rgba(255, 0, 0, 0.5);
-}
+.d3-active-skills {
+    .active-skill-bg {
+        background: url('/assets/images/sprite-v2.png') 0 0 no-repeat;
+        width: 100%;
+        height: 108px;
+        position: relative;
+    }
 
-.icon-front,
-.icon-back {
-    position: absolute;
-    height: 64px;
-    width: 64px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 1);
-    border: 2px solid rgba(255, 0, 0, 0.5);
-    transition: opacity 0.5s;
-}
-
-.icon-front:not(.no-rune) {
-    z-index: 2;
-    opacity: 1;
-
-    &:before {
-        content: '';
+    .active-skill-icon {
+        width: 64px;
+        height: 64px;
+        background-repeat: no-repeat;
         position: absolute;
-        top: -25%;
-        left: -25%;
-        width: 125%;
-        height: 125%;
-        border: ((10 / 16) * 1rem) solid rgba(255, 255, 255, 0.3);
-        box-shadow: inset 0 0 ((40 / 16) * 1rem) rgba(255, 255, 255, 0.3);
-        pointer-events: none;
-        transform: scale(0.001);
-        animation-name: pulse;
-        animation-duration: 2500ms;
-        animation-iteration-count: 1;
-        animation-fill-mode: both;
-        animation-timing-function: ease-out;
+        left: 20px;
+        top: 15px;
     }
 
-    &:hover:not(.no-rune) {
-        transition: opacity 0.5s;
-        opacity: 0.1;
-
-        &:before {
-            animation-name: pulse;
-            animation-duration: 2500ms;
-            animation-iteration-count: 1;
-            animation-fill-mode: both;
-            animation-timing-function: ease-out;
-            display: none;
-        }
+    .active-skill-name {
+        position: absolute;
+        color: white;
+        top: 22px;
+        left: 92px;
+        font-size: 1.5rem;
     }
 
-    &:hover:not(.no-rune) ~ .icon-back {
-        transition: opacity 0.5s;
-        opacity: 1;
+    .active-skill-rune {
+        position: absolute;
+        color: yellow;
+        top: 48px;
+        left: 92px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
     }
-}
 
-.icon-back {
-    background: url('/assets/images/runes.jpg');
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    backface-visibility: hidden;
-    opacity: 0;
-}
-
-.hasIcon {
-    animation: fader 2s both linear;
-    background: rgba(0, 0, 0, 1);
-    padding-top: 1.75vh;
-    padding-bottom: 1.75vh;
-    margin-bottom: 1.5vh;
-    position: relative;
-    box-shadow: inset 0 0 0 1px darkred;
-}
-
-.description {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-    z-index: 5;
-    margin: 0.6rem 0;
-    font-size: 0.8rem;
-
-    span {
-        color: wheat;
-        font-size: 1.2rem;
+    .active-skill-rune-icon {
+        display: inline-block;
+        background-image: url('/assets/images/runes.jpg');
+        background-size: 25px;
+        background-repeat: no-repeat;
+        width: 25px;
+        height: 25px;
+        margin-right: 10px;
     }
 }

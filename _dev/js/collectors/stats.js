@@ -284,7 +284,7 @@ var statsCollectorClass = React.createClass({
         render: function () {
             return (
                 React.DOM.div({
-                        style: {'visibility': 'hidden'}
+                        style: {'display': 'none'}
                     }, 'Stats Worker'
                 )
             );

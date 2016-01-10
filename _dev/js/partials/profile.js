@@ -11,22 +11,27 @@ var profileClass = React.createClass({
     },
     componentDidMount: function () {
         var realms = [],
-            initialRealm = storage.get('realm') ? storage.get('realm') : Realms.get()[0],
+            initialRealm = storage.get('realm'),
             savedBattleTag = storage.get('battleTag');
-
-        this.setState({
-            apiData: {
-                tag: savedBattleTag,
-                realm: initialRealm
-            },
-            realms: realms
-        }, function () {
-            EventSystem.publish('api.call.heroes', this.state.apiData);
-        });
 
         this.state.realmList.forEach(function (realm) {
             realms.push(React.DOM.option({key: realm, value: realm}, realm.toUpperCase()));
         });
+
+        this.setState({
+            realms: realms
+        });
+
+        if ( initialRealm ) {
+            this.setState({
+                apiData: {
+                    tag: savedBattleTag,
+                    realm: initialRealm
+                }
+            }, function () {
+                EventSystem.publish('api.call.heroes', this.state.apiData);
+            });
+        }
     },
 
     setRealm: function (e) {
@@ -59,18 +64,21 @@ var profileClass = React.createClass({
         return (
             React.DOM.div({className: 'd3-profile-select'},
                 React.DOM.div({className: 'd3-realm-select'},
-                    '1 - Realm: ',
+                    React.DOM.h3(null,'Realm'),
                     React.DOM.select(
                         {
                             className: 'd3-realm',
                             ref: 'select',
                             value: this.state.apiData.realm,
                             onChange: this.setRealm
-                        }, this.state.realms
+                        }, React.DOM.option({
+                            style: {display: 'none'},
+                            disabled: 'disabled'
+                        }, 'Select your Realm'), this.state.realms
                     )
                 ),
                 React.DOM.div({className: 'd3-battle-tag-field'},
-                    '2 - Enter your BattleTag: ',
+                    React.DOM.h3(null,'BattleTag'),
                     React.DOM.input(
                         {
                             value: this.state.apiData.tag,

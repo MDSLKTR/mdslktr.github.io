@@ -123,14 +123,11 @@ var heroClass = React.createClass({
 
     render: function () {
         return (
-            React.DOM.div({className: 'd3-hero-container'},
+            React.DOM.div({className: 'd3-stats-container'},
                 primaryStats(),
                 generalStats(),
                 offensiveStats(),
-                defensiveStats(),
-                skills(),
-                passives(),
-                kanai()
+                defensiveStats()
             )
         );
     }

@@ -186,7 +186,7 @@ var skillDamageCollectorClass = React.createClass({
     render: function () {
         return (
             React.DOM.div({
-                    style: {'visibility': 'hidden'}
+                    style: {'display': 'none'}
                 }, 'Skill Damage Worker'
             )
         );
