@@ -1,6 +1,6 @@
-var WeaponElementsMin = React.createClass({
+var WeaponElementsMin = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return [
                 'Damage_Weapon_Min#Arcane',
                 'Damage_Weapon_Min#Fire',
@@ -12,5 +12,5 @@ var WeaponElementsMin = React.createClass({
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

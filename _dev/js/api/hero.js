@@ -1,28 +1,28 @@
-var heroClass = React.createClass({
+var heroClass = React.createClass( {
     displayName: 'hero-component',
-    componentDidMount: function () {
+    componentDidMount: function() {
         var self = this;
-        EventSystem.subscribe('api.call.hero', function( data ) {
-            self.setState({
+        EventSystem.subscribe( 'api.call.hero', function( data ) {
+            self.setState( {
                 battleTag: data.tag,
                 realm: data.realm,
                 id: data.id
-            }, function () {
+            }, function() {
                 self.loadHeroData( self.state.battleTag, self.state.realm, self.state.id );
-            });
-        });
+            } );
+        } );
     },
-    loadHeroData: function ( tag, realm, id ) {
+    loadHeroData: function( tag, realm, id ) {
         var self = this,
             type = 'hero-data';
-        if (id) {
-            service.create(type, realm, tag, id).then(function (url) {
-                service.get(url).then(function (response) {
-                    var data = JSON.parse(response);
+        if ( id ) {
+            service.create( type, realm, tag, id ).then( function( url ) {
+                service.get( url ).then( function( response ) {
+                    var data = JSON.parse( response );
 
-                    console.log(data);
+                    console.log( data );
 
-                    self.setState({
+                    self.setState( {
                         generalStats: {
                             'name': {
                                 name: 'Name',
@@ -58,46 +58,46 @@ var heroClass = React.createClass({
                             },
                             'seasonal': {
                                 name: '',
-                                value: data.seasonal ? 'Season Character': ''
+                                value: data.seasonal ? 'Season Character' : ''
                             },
                             'lastUpdated': {
                                 name: 'Last updated on',
-                                value: data['last-updated']
+                                value: data[ 'last-updated' ]
                             }
                         },
                         items: data.items,
                         primaryStats: data.stats,
                         kanai: data.legendaryPowers
-                    }, function () {
-                        EventSystem.publish('api.call.stats', {
+                    }, function() {
+                        EventSystem.publish( 'api.call.stats', {
                             general: this.state.generalStats,
                             primary: this.state.primaryStats
-                        });
-                        EventSystem.publish('api.call.kanai', this.state.kanai);
-                        EventSystem.publish('api.call.items', {
+                        } );
+                        EventSystem.publish( 'api.call.kanai', this.state.kanai );
+                        EventSystem.publish( 'api.call.items', {
                             items: this.state.items,
-                            count: this.state.items ? Object.keys(this.state.items).length : 0
-                        });
+                            count: this.state.items ? Object.keys( this.state.items ).length : 0
+                        } );
                         this.requestItemData();
-                    });
+                    } );
 
-                    if (data.skills) {
-                        self.setState({
+                    if ( data.skills ) {
+                        self.setState( {
                             skills: data.skills.active,
                             passives: data.skills.passive
-                        }, function () {
-                            EventSystem.publish('api.call.skills', {
+                        }, function() {
+                            EventSystem.publish( 'api.call.skills', {
                                 actives: this.state.skills,
                                 passives: this.state.passives
-                            });
-                        });
+                            } );
+                        } );
                     }
-                });
-            });
+                } );
+            } );
         }
     },
 
-    requestItemData: function () {
+    requestItemData: function() {
         var itemData,
             addParams = {
             leftFinger: 'left',
@@ -105,25 +105,25 @@ var heroClass = React.createClass({
             offHand: 'offhand'
         };
 
-        for (var item in this.state.items) {
-            if (this.state.items.hasOwnProperty(item)) {
-                if (addParams.hasOwnProperty(item)) {
+        for ( var item in this.state.items ) {
+            if ( this.state.items.hasOwnProperty( item ) ) {
+                if ( addParams.hasOwnProperty( item ) ) {
                     itemData = {
-                        url: this.state.items[item].tooltipParams,
-                        param: addParams[item]
+                        url: this.state.items[ item ].tooltipParams,
+                        param: addParams[ item ]
                     };
-                    EventSystem.publish('api.call.item-with-props', itemData);
+                    EventSystem.publish( 'api.call.item-with-props', itemData );
                 } else {
-                    itemData = this.state.items[item].tooltipParams;
-                    EventSystem.publish('api.call.item', itemData);
+                    itemData = this.state.items[ item ].tooltipParams;
+                    EventSystem.publish( 'api.call.item', itemData );
                 }
             }
         }
     },
 
-    render: function () {
+    render: function() {
         return (
-            React.DOM.div({className: 'd3-stats-container'},
+            React.DOM.div( { className: 'd3-stats-container' },
                 primaryStats(),
                 generalStats(),
                 offensiveStats(),
@@ -131,6 +131,6 @@ var heroClass = React.createClass({
             )
         );
     }
-});
+} );
 
-var hero = React.createFactory(heroClass);
+var hero = React.createFactory( heroClass );

@@ -1,19 +1,19 @@
-var Ring = React.createClass({
+var Ring = React.createClass( {
     statics: {
         idList: [
             'Ring'
         ],
-        test: function ( type ) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function ( listType ) {
+            this.idList.forEach( function( listType ) {
                 if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

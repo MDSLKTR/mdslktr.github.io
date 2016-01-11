@@ -1,20 +1,20 @@
-var edpsClass = React.createClass({
+var edpsClass = React.createClass( {
     displayName: 'edps-component',
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             primaryStats: {}
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var self = this;
-        EventSystem.subscribe('api.call.stats', function (data) {
-            self.setState({
+        EventSystem.subscribe( 'api.call.stats', function( data ) {
+            self.setState( {
                 primaryStats: data.primary
-            });
-        });
+            } );
+        } );
     },
 
-    render: function () {
+    render: function() {
         var stats = null;
         //if (statsState && statsState.critDamage && statsState.critChance && minDmgCalc !== 0 && maxDmgCalc !== 0 && this.state.generalStats && this.state.offensiveStats) {
         //    var statCalc,
@@ -132,13 +132,13 @@ var edpsClass = React.createClass({
 
         return (
             // TODO where to put this
-            React.DOM.div({
+            React.DOM.div( {
                     className: 'whatever',
                     ref: 'pl'
                 }, 'Primary Stats', stats
             )
         );
     }
-});
+} );
 
-var edps = React.createFactory(edpsClass);
+var edps = React.createFactory( edpsClass );

@@ -1,4 +1,4 @@
-var MainHand = React.createClass({
+var MainHand = React.createClass( {
     statics: {
         idList: [
             'Polearm',
@@ -23,17 +23,17 @@ var MainHand = React.createClass({
             'MightyWeapon2H',
             'Mace2H'
         ],
-        test: function ( type ) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function ( listType ) {
+            this.idList.forEach( function( listType ) {
                 if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

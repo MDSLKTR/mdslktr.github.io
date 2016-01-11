@@ -1,57 +1,57 @@
-var defensiveStatsClass = React.createClass({
+var defensiveStatsClass = React.createClass( {
     displayName: 'defensive-stats-component',
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             defensiveStats: {},
             generalStats: {}
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var self = this;
-        EventSystem.subscribe('api.collect.defensive-stats', function (data) {
-            self.setState({
+        EventSystem.subscribe( 'api.collect.defensive-stats', function( data ) {
+            self.setState( {
                 defensiveStats: data
-            });
-        });
+            } );
+        } );
 
-        EventSystem.subscribe('api.call.stats', function (data) {
-            self.setState({
+        EventSystem.subscribe( 'api.call.stats', function( data ) {
+            self.setState( {
                 generalStats: data.general
-            });
-        });
+            } );
+        } );
     },
 
-    render: function () {
+    render: function() {
         var contentName,
             stats = [],
             defensiveStats = this.state.defensiveStats;
 
-        for (var defensiveStat in defensiveStats) {
-            if (defensiveStats.hasOwnProperty(defensiveStat)) {
+        for ( var defensiveStat in defensiveStats ) {
+            if ( defensiveStats.hasOwnProperty( defensiveStat ) ) {
                 contentName = '';
 
-                if (defensiveStats[defensiveStat].specificName && this.state.generalStats.class) {
-                    if (defensiveStats[defensiveStat].specificName[this.state.generalStats.class.value]) {
-                        contentName += defensiveStats[defensiveStat].specificName[this.state.generalStats.class.value];
+                if ( defensiveStats[ defensiveStat ].specificName && this.state.generalStats.class ) {
+                    if ( defensiveStats[ defensiveStat ].specificName[ this.state.generalStats.class.value ] ) {
+                        contentName += defensiveStats[ defensiveStat ].specificName[ this.state.generalStats.class.value ];
                     }
                 } else {
-                    contentName += defensiveStats[defensiveStat].name;
+                    contentName += defensiveStats[ defensiveStat ].name;
                 }
 
                 contentName += ': ';
 
-                if (defensiveStats[defensiveStat].value && !defensiveStats[defensiveStat].hide) {
-                    stats.push(React.DOM.div({
+                if ( defensiveStats[ defensiveStat ].value && !defensiveStats[ defensiveStat ].hide ) {
+                    stats.push( React.DOM.div( {
                         key: defensiveStat,
                         className: 'bonusstat'
-                    }, contentName + defensiveStats[defensiveStat].value + defensiveStats[defensiveStat].unit));
+                    }, contentName + defensiveStats[ defensiveStat ].value + defensiveStats[ defensiveStat ].unit ) );
                 }
             }
         }
         return (
-            React.DOM.div({className: 'd3-defensive-stats'}, 'Defensive Stats', stats)
+            React.DOM.div( { className: 'd3-defensive-stats' }, 'Defensive Stats', stats )
         );
     }
-});
+} );
 
-var defensiveStats = React.createFactory(defensiveStatsClass);
+var defensiveStats = React.createFactory( defensiveStatsClass );

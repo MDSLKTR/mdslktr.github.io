@@ -1,18 +1,12 @@
-var WeaponDamageBonusMinPhysical = React.createClass({
+var WeaponDamageBonusMinPhysical = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return [
                 'Damage_Weapon_Bonus_Min_X1#Physical'
             ];
         }
     },
 
-    render: function () {}
-});
-
-
-
-
-
-
+    render: function() {}
+} );
 

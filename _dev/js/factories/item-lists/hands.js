@@ -1,4 +1,4 @@
-var Hands = React.createClass({
+var Hands = React.createClass( {
     statics: {
         idList: [
             'GenericGloves',
@@ -10,17 +10,17 @@ var Hands = React.createClass({
             'Gloves_Wizard',
             'Gloves_Monk'
         ],
-        test: function ( type ) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function ( listType ) {
+            this.idList.forEach( function( listType ) {
                 if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

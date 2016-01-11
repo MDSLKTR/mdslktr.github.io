@@ -1,6 +1,6 @@
-(function () {
-    var bg = document.querySelector('.d3-bg'),
-        animateDown = function () {
+( function() {
+    var bg = document.querySelector( '.d3-bg' ),
+        animateDown = function() {
             TweenLite.fromTo(
                 bg,
                 3,
@@ -16,8 +16,7 @@
         };
 
     animateDown();
-}());
-
+}() );
 
 //animatePanelsIn: function () {
 //    this.setState({panelAnimationComplete: false});

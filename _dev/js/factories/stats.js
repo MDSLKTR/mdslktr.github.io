@@ -1,8 +1,8 @@
-var Stats = React.createClass({
+var Stats = React.createClass( {
     statics: {
         offensiveStats: {},
         defensiveStats: {},
-        _findMethod: function ( type, statList, stat, prop, deepProp, value) {
+        _findMethod: function( type, statList, stat, prop, deepProp, value ) {
             var statKeys = [
                     'OffensiveStats',
                     'DefensiveStats',
@@ -11,31 +11,31 @@ var Stats = React.createClass({
                 self = this,
                 returnValue = null;
 
-            statKeys.forEach(function (statKey) {
-                if (statList === statKey) {
+            statKeys.forEach( function( statKey ) {
+                if ( statList === statKey ) {
                     var key = statKey.toString(),
                         prefix = type,
-                        func = prefix.concat(key);
+                        func = prefix.concat( key );
 
-                    returnValue = self[func](stat, prop, deepProp, value);
+                    returnValue = self[ func ]( stat, prop, deepProp, value );
                 }
-            });
+            } );
 
             return returnValue;
         },
-        init: function (statList) {
+        init: function( statList ) {
             return this._findMethod( 'init', statList );
         },
 
-        get: function (statList) {
+        get: function( statList ) {
             return this._findMethod( 'get', statList );
         },
 
-        set: function (statList, stat, prop, deepProp, value ) {
+        set: function( statList, stat, prop, deepProp, value ) {
             this._findMethod( 'set', statList, stat, prop, deepProp, value );
         },
 
-        initOffensiveStats: function () {
+        initOffensiveStats: function() {
             this.offensiveStats = {
                 'critChance': {
                     name: 'Critical Hit Chance',
@@ -195,10 +195,10 @@ var Stats = React.createClass({
                 }
             };
 
-            EventSystem.publish('api.collect.offensive-stats', this.offensiveStats);
+            EventSystem.publish( 'api.collect.offensive-stats', this.offensiveStats );
         },
 
-        initDefensiveStats: function () {
+        initDefensiveStats: function() {
             this.defensiveStats = {
                 goldPickUpRange: {
                     name: 'Gold Pick-up Range',
@@ -419,49 +419,43 @@ var Stats = React.createClass({
                 }
             };
 
-            EventSystem.publish('api.collect.defensive-stats', this.defensiveStats);
+            EventSystem.publish( 'api.collect.defensive-stats', this.defensiveStats );
         },
 
-        getOffensiveStats: function () {
+        getOffensiveStats: function() {
             return this.offensiveStats;
         },
 
-        getDefensiveStats: function () {
+        getDefensiveStats: function() {
             return this.defensiveStats;
         },
 
-        getSkillDamage: function () {
+        getSkillDamage: function() {
             return {
                 unit: '%',
                 value: 0
             };
         },
 
-        setOffensiveStats: function (stat, prop, deepProp, value) {
-            if (deepProp) {
-                this.offensiveStats[stat][prop][deepProp] = value;
+        setOffensiveStats: function( stat, prop, deepProp, value ) {
+            if ( deepProp ) {
+                this.offensiveStats[ stat ][ prop ][ deepProp ] = value;
             } else {
-                this.offensiveStats[stat][prop] = value;
+                this.offensiveStats[ stat ][ prop ] = value;
             }
-            EventSystem.publish('api.call.collect');
+            EventSystem.publish( 'api.call.collect' );
         },
 
-        setDefensiveStats: function (stat, prop, deepProp, value) {
-            if (deepProp) {
-                this.defensiveStats[stat][prop][deepProp] = value;
+        setDefensiveStats: function( stat, prop, deepProp, value ) {
+            if ( deepProp ) {
+                this.defensiveStats[ stat ][ prop ][ deepProp ] = value;
             } else {
-                this.defensiveStats[stat][prop] = value;
+                this.defensiveStats[ stat ][ prop ] = value;
             }
-            EventSystem.publish('api.call.collect');
+            EventSystem.publish( 'api.call.collect' );
         }
     },
 
-    render: function () {}
-});
-
-
-
-
-
-
+    render: function() {}
+} );
 

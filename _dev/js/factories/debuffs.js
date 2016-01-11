@@ -1,18 +1,12 @@
-var Debuffs = React.createClass({
+var Debuffs = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return [
-                ['Marked for Death', 'Damage', 0.2]
+                [ 'Marked for Death', 'Damage', 0.2 ]
             ];
         }
     },
 
-    render: function () {}
-});
-
-
-
-
-
-
+    render: function() {}
+} );
 

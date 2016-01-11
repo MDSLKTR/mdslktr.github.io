@@ -1,16 +1,16 @@
 /*global module: false, require: false */
 
-module.exports = function (grunt) {
+module.exports = function( grunt ) {
     'use strict';
 
     var sourcemaps = true;
 
-    require('jit-grunt')(grunt, {
-        'sass' : 'grunt-sass',
-        'browserSync' : 'grunt-browser-sync'
-    });
+    require( 'jit-grunt' )( grunt, {
+        'sass': 'grunt-sass',
+        'browserSync': 'grunt-browser-sync'
+    } );
 
-    grunt.initConfig({
+    grunt.initConfig( {
         sass: {
             all: {
                 options: {
@@ -91,22 +91,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-        lineending: {
-            options: {
-                eol: 'lf',
-                overwrite: true
-            },
-            css: {
-                files: {
-                    '': ['assets/css/*']
-                }
-            },
-            js: {
-                files: {
-                    '': ['assets/js/*']
-                }
-            }
-        },
         browserSync: {
             dev: {
                 bsFiles: {
@@ -119,7 +103,7 @@ module.exports = function (grunt) {
                         'site/snippets/*.php'
                     ]
                 },
-                options : {
+                options: {
                     proxy: 'http://localhost:1234'
                 }
             }
@@ -141,37 +125,35 @@ module.exports = function (grunt) {
                 ]
             },
             js: {
-                files: ['_dev/js/*.js', '_dev/js/**/*.js'],
+                files: [ '_dev/js/*.js', '_dev/js/**/*.js' ],
                 tasks: [
                     'js'
                 ]
             },
             Gruntfile: {
-                files: ['Gruntfile.js'],
+                files: [ 'Gruntfile.js' ],
                 tasks: [
                     'jshint:Gruntfile'
                 ]
             }
         }
-    });
+    } );
 
-    grunt.registerTask('default', [
+    grunt.registerTask( 'default', [
         'css',
         'js'
-    ]);
-    grunt.registerTask('css', [
+    ] );
+    grunt.registerTask( 'css', [
         'sass',
         'autoprefixer',
-        'cssmin',
-        'lineending:css'
-    ]);
-    grunt.registerTask('js', [
+        'cssmin'
+    ] );
+    grunt.registerTask( 'js', [
         'jshint',
         'uglify:vendor',
-        'uglify:scripts',
-        'lineending:js'
-    ]);
-    grunt.registerTask('browsersync', [
+        'uglify:scripts'
+    ] );
+    grunt.registerTask( 'browsersync', [
         'browserSync'
-    ]);
+    ] );
 };

@@ -1,18 +1,12 @@
-var WeaponDamagePercentAll = React.createClass({
+var WeaponDamagePercentAll = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return [
                 'Damage_Weapon_Percent_All'
             ];
         }
     },
 
-    render: function () {}
-});
-
-
-
-
-
-
+    render: function() {}
+} );
 

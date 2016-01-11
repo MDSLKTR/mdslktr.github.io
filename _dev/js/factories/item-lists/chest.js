@@ -1,4 +1,4 @@
-var Chest = React.createClass({
+var Chest = React.createClass( {
     statics: {
         idList: [
             'ChestArmor',
@@ -11,17 +11,17 @@ var Chest = React.createClass({
             'ChestArmor_Monk',
             'Cloak'
         ],
-        test: function ( type ) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function ( listType ) {
+            this.idList.forEach( function( listType ) {
                 if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

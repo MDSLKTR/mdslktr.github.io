@@ -1,6 +1,6 @@
-var WeaponElementsDelta = React.createClass({
+var WeaponElementsDelta = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return [
                 'Damage_Weapon_Delta#Arcane',
                 'Damage_Weapon_Delta#Fire',
@@ -12,12 +12,6 @@ var WeaponElementsDelta = React.createClass({
         }
     },
 
-    render: function () {}
-});
-
-
-
-
-
-
+    render: function() {}
+} );
 

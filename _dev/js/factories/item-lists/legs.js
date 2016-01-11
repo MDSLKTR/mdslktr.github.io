@@ -1,4 +1,4 @@
-var Legs = React.createClass({
+var Legs = React.createClass( {
     statics: {
         idList: [
             'GenericLegs',
@@ -10,17 +10,17 @@ var Legs = React.createClass({
             'Legs_Wizard',
             'Legs_Monk'
         ],
-        test: function ( type ) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function ( listType ) {
+            this.idList.forEach( function( listType ) {
                 if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

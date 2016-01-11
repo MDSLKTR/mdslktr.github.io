@@ -1,6 +1,6 @@
-var Runes = React.createClass({
+var Runes = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return {
                 'a': '49%',
                 'b': '97%',
@@ -11,5 +11,5 @@ var Runes = React.createClass({
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

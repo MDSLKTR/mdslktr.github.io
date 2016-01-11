@@ -1,13 +1,13 @@
-var storage = React.createClass({
+var storage = React.createClass( {
     statics: {
-        get: function (key) {
-            return localStorage.getItem(key);
+        get: function( key ) {
+            return localStorage.getItem( key );
         },
 
-        save: function (key, value) {
-            localStorage.setItem(key, value);
+        save: function( key, value ) {
+            localStorage.setItem( key, value );
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

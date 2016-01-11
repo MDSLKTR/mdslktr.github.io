@@ -1,7 +1,7 @@
 {
     "excludeFiles": ["assets/js, assets/css"],
     "preset": "jquery",
-    "maximumLineLength": 120,
+    "maximumLineLength": 200,
     "requireCamelCaseOrUpperCaseIdentifiers": false,
     "requireCapitalizedComments": null,
     "requirePaddingNewLinesBeforeLineComments": false,

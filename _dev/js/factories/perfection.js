@@ -1,6 +1,6 @@
-var Perfection = React.createClass({
+var Perfection = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return {
                 /// todo sockets too
                 'Crit_Percent_Bonus_Capped': {
@@ -35,7 +35,6 @@ var Perfection = React.createClass({
 
                 },
                 'Strength_Item': {
-
 
                 },
                 'Intelligence_Item': {
@@ -182,5 +181,5 @@ var Perfection = React.createClass({
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

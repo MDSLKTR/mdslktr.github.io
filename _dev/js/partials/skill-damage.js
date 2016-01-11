@@ -1,34 +1,34 @@
-var skillDamageClass = React.createClass({
+var skillDamageClass = React.createClass( {
     displayName: 'skill-damage-component',
-    getInitialState: function () {
+    getInitialState: function() {
         return {
             skillDmg: ''
         };
     },
-    componentDidMount: function () {
+    componentDidMount: function() {
         var self = this;
-        EventSystem.subscribe('api.collect.skill-damage', function (data) {
-            self.setState({
+        EventSystem.subscribe( 'api.collect.skill-damage', function( data ) {
+            self.setState( {
                 skillDmg: data
-            });
-        });
+            } );
+        } );
 
     },
 
-    render: function () {
+    render: function() {
         var skillDamage = [];
 
-        if (this.state.skillDmg) {
-            skillDamage.push(React.DOM.div({
-                dangerouslySetInnerHTML: {__html: 'Skill Damage: ' + this.state.skillDmg},
+        if ( this.state.skillDmg ) {
+            skillDamage.push( React.DOM.div( {
+                dangerouslySetInnerHTML: { __html: 'Skill Damage: ' + this.state.skillDmg },
                 key: 'Skill Damage Stat',
                 className: 'bonusstat'
-            }));
+            } ) );
         }
         return (
-            React.DOM.span(null, skillDamage)
+            React.DOM.span( null, skillDamage )
         );
     }
-});
+} );
 
-var skillDamage = React.createFactory(skillDamageClass);
+var skillDamage = React.createFactory( skillDamageClass );

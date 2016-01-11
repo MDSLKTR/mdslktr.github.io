@@ -1,8 +1,8 @@
-var ItemQuality = React.createClass({
+var ItemQuality = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return {
-                'green' : 'set',
+                'green': 'set',
                 'orange': 'unique',
                 'blue': 'magic',
                 'yellow': 'rare',
@@ -12,5 +12,5 @@ var ItemQuality = React.createClass({
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

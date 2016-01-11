@@ -1,6 +1,6 @@
-var Realms = React.createClass({
+var Realms = React.createClass( {
     statics: {
-        get: function () {
+        get: function() {
             return [
                 'eu',
                 'us',
@@ -9,5 +9,5 @@ var Realms = React.createClass({
         }
     },
 
-    render: function () {}
-});
+    render: function() {}
+} );

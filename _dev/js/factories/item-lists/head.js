@@ -1,4 +1,4 @@
-var Head = React.createClass({
+var Head = React.createClass( {
     statics: {
         idList: [
             'GenericHelm',
@@ -12,18 +12,18 @@ var Head = React.createClass({
             'VoodooMask',
             'SpiritStone_Monk'
         ],
-        test: function (type) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function (listType) {
-                if (type === listType) {
+            this.idList.forEach( function( listType ) {
+                if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {
+    render: function() {
     }
-});
+} );

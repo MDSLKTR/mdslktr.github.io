@@ -1,4 +1,4 @@
-var Shoulders = React.createClass({
+var Shoulders = React.createClass( {
     statics: {
         idList: [
             'GenericShoulders',
@@ -10,18 +10,18 @@ var Shoulders = React.createClass({
             'Shoulders_Wizard',
             'Shoulders_Monk'
         ],
-        test: function (type) {
+        test: function( type ) {
             var result = false;
-            this.idList.forEach(function (listType) {
-                if (type === listType) {
+            this.idList.forEach( function( listType ) {
+                if ( type === listType ) {
                     result = true;
                 }
-            });
+            } );
 
             return result;
         }
     },
 
-    render: function () {
+    render: function() {
     }
-});
+} );
