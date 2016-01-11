@@ -31,67 +31,69 @@ var skillsClass = React.createClass( {
             return;
         }
 
+        console.log( this.state.skills );
+
         this.state.skills.forEach( function( skillData ) {
-            if ( skillData.rune ) {
-                constructedLink = skillIconBaseUrl.concat( skillData.skill.icon );
-                if ( runeMap.hasOwnProperty( skillData.rune.type ) ) {
-                    runeType = {
-                        backgroundPosition: '0 ' + runeMap[ skillData.rune.type ]
-                    };
+            if ( skillData.skill ) {
+                if ( skillData.rune ) {
+                    constructedLink = skillIconBaseUrl.concat( skillData.skill.icon );
+                    if ( runeMap.hasOwnProperty( skillData.rune.type ) ) {
+                        runeType = {
+                            backgroundPosition: '0 ' + runeMap[ skillData.rune.type ]
+                        };
+                    }
+
+                    runeName = skillData.rune.name;
+
+                    rune = React.DOM.span( {
+                        key: skillData.rune.name + '-active-skill-rune-icon',
+                        className: 'active-skill-rune-icon',
+                        style: runeType
+                    } );
+
+                    runeDesc = React.DOM.p( {
+                        dangerouslySetInnerHTML: { __html: skillData.rune.description.replace( /\n/g, '<br/>' ) },
+                        key: skillData.rune.name + '-desc',
+                        className: 'rune-desc'
+                    } );
                 }
 
-                runeName = skillData.rune.name;
-
-                rune = React.DOM.span( {
-                    key: skillData.rune.name + '-active-skill-rune-icon',
-                    className: 'active-skill-rune-icon',
-                    style: runeType
-                } );
-
-                runeDesc = React.DOM.p( {
-                    dangerouslySetInnerHTML: { __html: skillData.rune.description.replace( /\n/g, '<br/>' ) },
-                    key: skillData.rune.name + '-desc',
-                    className: 'rune-desc'
-                } );
-            }
-
-            // todo fix this if no skills
-
-            skills.push(
-                React.DOM.div( { key: skillData.skill.name + '-icon', className: 'active-skill-bg' },
+                skills.push(
+                    React.DOM.div( { key: skillData.skill.name + '-icon', className: 'active-skill-bg' },
+                        React.DOM.div( {
+                            key: skillData.skill.name + '-active-skill-icon',
+                            className: 'active-skill-icon',
+                            style: { backgroundImage: 'url(' + constructedLink + '.png)' }
+                        } ),
+                        React.DOM.span( {
+                            className: 'active-skill-name'
+                        }, skillData.skill.name ),
+                        React.DOM.span( {
+                                className: 'active-skill-rune'
+                            }, rune,
+                            React.DOM.span( {
+                                className: 'active-skill-rune-name'
+                            }, runeName ) )
+                    )
+                );
+                skillsDesc.push( React.DOM.div( {
+                        key: skillData.skill.name + '-description',
+                        className: 'description'
+                    },
                     React.DOM.div( {
-                        key: skillData.skill.name + '-active-skill-icon',
-                        className: 'active-skill-icon',
+                        key: skillData.skill.name + '-desc-icon',
+                        className: 'desc-icon',
                         style: { backgroundImage: 'url(' + constructedLink + '.png)' }
                     } ),
-                    React.DOM.span( {
-                        className: 'active-skill-name'
-                    }, skillData.skill.name ),
-                    React.DOM.span( {
-                            className: 'active-skill-rune'
-                        }, rune,
-                        React.DOM.span( {
-                            className: 'active-skill-rune-name'
-                        }, runeName ) )
-                )
-            );
-            skillsDesc.push( React.DOM.div( {
-                    key: skillData.skill.name + '-description',
-                    className: 'description'
-                },
-                React.DOM.div( {
-                    key: skillData.skill.name + '-desc-icon',
-                    className: 'desc-icon',
-                    style: { backgroundImage: 'url(' + constructedLink + '.png)' }
-                } ),
-                skillData.skill.name + ' with ' + runeName,
-                React.DOM.p( {
-                    dangerouslySetInnerHTML: { __html: skillData.skill.description.replace( /\n/g, '<br/>' ) },
-                    key: skillData.skill.name + '-desc',
-                    className: 'skill-desc'
-                } ),
-                runeDesc
-            ) );
+                    skillData.skill.name + ' with ' + runeName,
+                    React.DOM.p( {
+                        dangerouslySetInnerHTML: { __html: skillData.skill.description.replace( /\n/g, '<br/>' ) },
+                        key: skillData.skill.name + '-desc',
+                        className: 'skill-desc'
+                    } ),
+                    runeDesc
+                ) );
+            }
         } );
 
         return (

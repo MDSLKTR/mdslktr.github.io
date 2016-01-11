@@ -142,7 +142,8 @@ var statsCollectorClass = React.createClass( {
                                                     itemSlots[ i ].set.ranks[ j ].required <= setPool[ m ][ 1 ] + 1 &&
                                                     setPool[ m ][ 1 ] >= 2
                                                 ) {
-                                                    if ( itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ] && itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ].min ) {
+                                                    if ( itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ] &&
+                                                        itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ].min ) {
                                                         if ( mergedStats[ stat ].multiplicative ) {
                                                             mergedStats[ stat ].value *= ( 1 - itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ].min );
                                                         } else {
@@ -152,7 +153,8 @@ var statsCollectorClass = React.createClass( {
                                                 }
                                             } else {
                                                 if ( itemSlots[ i ].set.name === setPool[ m ][ 0 ] && itemSlots[ i ].set.ranks[ j ].required <= setPool[ m ][ 1 ] ) {
-                                                    if ( itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ] && itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ].min ) {
+                                                    if ( itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ] &&
+                                                        itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ].min ) {
                                                         if ( mergedStats[ stat ].multiplicative ) {
                                                             mergedStats[ stat ].value *= ( 1 - itemSlots[ i ].set.ranks[ j ].attributesRaw[ mergedStats[ stat ].key ].min );
                                                         } else {
