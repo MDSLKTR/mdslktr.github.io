@@ -31,8 +31,6 @@ var skillsClass = React.createClass( {
             return;
         }
 
-        console.log( this.state.skills );
-
         this.state.skills.forEach( function( skillData ) {
             if ( skillData.skill ) {
                 if ( skillData.rune ) {

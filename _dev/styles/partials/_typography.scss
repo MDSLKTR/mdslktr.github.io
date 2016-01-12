@@ -1,0 +1,23 @@
+h3 {
+    color: $text-colour;
+    margin: rem(5) 0 rem(5) rem(26);
+    position: relative;
+    font-size: 1.25rem;
+
+    &:before {
+        content: '';
+        right: 100%;
+        position: absolute;
+        background: $text-colour url('/assets/images/icon.png');
+        width: rem(20);
+        height: rem(20);
+        background-size: rem(18);
+        background-position: center;
+        background-repeat: no-repeat;
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        margin-right: rem(5);
+        box-shadow: inset 0 0 rem(1) 0 black;
+    }
+}

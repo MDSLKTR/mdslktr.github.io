@@ -18,6 +18,9 @@
     animateDown();
 }() );
 
+
+// TODO make this a prototype as well
+
 //animatePanelsIn: function () {
 //    this.setState({panelAnimationComplete: false});
 //

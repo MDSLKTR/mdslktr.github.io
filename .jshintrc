@@ -141,6 +141,7 @@
 		"Ring": true,
 		"Shoulders": true,
 		"Belt": true,
-		"Perfection": true
+		"Perfection": true,
+        "CharIcons": true
     }
 }

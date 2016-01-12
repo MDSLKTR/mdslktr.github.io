@@ -2,3 +2,18 @@ $fontBase: 16;
 @function rem($px) {
     @return ($px / $fontBase) + rem;
 }
+
+$tablet: 64em;
+$mobile: 48em;
+$small: 30em;
+
+$json: '';
+$json: $json + '{ ';
+$json: $json + '"desktop": { "mq": "not screen and (max-width: #{$tablet})", "px": 9999 }';
+$json: $json + ', ';
+$json: $json + '"tablet": { "mq": "(max-width: #{$tablet})", "px": #{$tablet / 0.0625em} }';
+$json: $json + ', ';
+$json: $json + '"mobile": { "mq": "(max-width: #{$mobile})", "px": #{$mobile / 0.0625em} }';
+$json: $json + ', ';
+$json: $json + '"small": { "mq": "(max-width: #{$small})", "px": #{$small / 0.0625em} }';
+$json: $json + ' }';

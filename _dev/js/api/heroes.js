@@ -9,7 +9,8 @@ var heroesClass = React.createClass( {
                 tag: '',
                 realm: '',
                 id: ''
-            }
+            },
+            charIconMap: CharIcons.get()
         };
     },
 
@@ -43,6 +44,7 @@ var heroesClass = React.createClass( {
     },
 
     setCharacterSelect: function( e ) {
+        var self = this;
         this.setState( {
             apiData: {
                 tag: this.state.battleTag,
@@ -51,6 +53,24 @@ var heroesClass = React.createClass( {
             }
         }, function() {
             EventSystem.publish( 'api.call.hero', this.state.apiData );
+        } );
+
+        // TODO call animator
+
+        this.state.heroesData.heroes.forEach( function( hero ) {
+            if ( hero.id.toString() === e.target.value ) {
+                self.setState( {
+                    selectedClass: React.DOM.span( {
+                        className: 'd3-character-icon',
+                        style: {
+                            backgroundImage: 'url(\'assets/images/portraits.png\') ',
+                            backgroundPosition:
+                                self.state.charIconMap[ hero.class.concat( '_', hero.gender ) ].x + 'px ' +
+                                self.state.charIconMap[ hero.class.concat( '_', hero.gender ) ].y + 'px'
+                        }
+                    } )
+                } );
+            }
         } );
 
         EventSystem.publish( 'api.clear.items' );
@@ -68,12 +88,11 @@ var heroesClass = React.createClass( {
                     value: '',
                     style: { display: 'none' }
                 }, 'click to select hero' ) );
-                heroesData.heroes.forEach( function( heroName ) {
+                heroesData.heroes.forEach( function( hero ) {
                     heroesCollection.push( React.DOM.option( {
-                        style: { backgroundImage: 'url(/assets/images/career-portraits.jpg)' },
-                        key: 'heroes-list' + heroName.id,
-                        value: heroName.id
-                    }, '[' + heroName.class + '] ' + heroName.name + ' (id: ' + heroName.id + ')' ) );
+                        key: 'heroes-list' + hero.id,
+                        value: hero.id
+                    }, hero.level + ' - ' + hero.name + ' (' + hero.class.charAt( 0 ).toUpperCase() + hero.class.slice( 1 ) + ')' ) );
                 } );
             }
 
@@ -103,6 +122,7 @@ var heroesClass = React.createClass( {
         return (
             React.DOM.div( { className: 'd3-character-select' },
                 React.DOM.h3( null, 'Characters' ),
+                this.state.selectedClass,
                 React.DOM.select(
                     {
                         className: 'd3-chars',

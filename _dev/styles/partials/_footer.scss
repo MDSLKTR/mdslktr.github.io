@@ -1,11 +1,14 @@
 footer {
     position: absolute;
-    bottom: 0;
+    bottom: rem(5);
     left: 50%;
     font-size: 0.8rem;
     transform: translateX(-50%);
+    width: 100%;
+    padding: 0 rem(20);
+    text-align: center;
 
-    span {
+    small {
         color: wheat;
     }
 }
