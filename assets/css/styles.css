@@ -450,6 +450,9 @@ footer {
   width: 75%; }
   @media screen and (min-width: 31em) {
     .d3-profile-select-container {
+      width: 35%; } }
+  @media screen and (min-width: 65em) {
+    .d3-profile-select-container {
       width: 15%; } }
 
 .d3-profile-select,

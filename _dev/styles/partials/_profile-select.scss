@@ -6,6 +6,10 @@
     width: 75%;
 
     @media screen and (min-width: ($small + 1)) {
+        width: 35%;
+    }
+
+    @media screen and (min-width: ($tablet + 1)) {
         width: 15%;
     }
 }
